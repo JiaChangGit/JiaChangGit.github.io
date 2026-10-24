@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "course": "pcie-course",
+  "chapter": 20,
+  "updated": "2026-10-24",
+  "claims": [
+    {
+      "id": "PCIE-CH20-001",
+      "claim": "電氣測試以pin為參考，Tx測試板與時脈取樣條件。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "8.3.1"
+      ],
+      "document_pages": [
+        1318
+      ],
+      "pdf_pages": [
+        1318
+      ],
+      "figures": [
+        "8-1",
+        "8-2"
+      ],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH20-002",
+      "claim": "Tx差分電壓與按速率的等化控制。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "8.3.3",
+        "8.3.3.1",
+        "8.3.3.2"
+      ],
+      "document_pages": [
+        1321
+      ],
+      "pdf_pages": [
+        1321
+      ],
+      "figures": [
+        "8-3"
+      ],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH20-003",
+      "claim": "Jitter測試圖樣、速率與環境條件。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "8.3.5"
+      ],
+      "document_pages": [
+        1336
+      ],
+      "pdf_pages": [
+        1336
+      ],
+      "figures": [],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    }
+  ]
+}

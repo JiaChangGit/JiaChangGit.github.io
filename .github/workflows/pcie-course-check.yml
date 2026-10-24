@@ -4,11 +4,23 @@ on:
   push:
     paths:
       - ".ai/pcie-course/**"
+      - ".ai/spec-teaching/**"
+      - "assets/css/spec-teaching.css"
+      - "scripts/spec_teaching.py"
+      - "scripts/spec_terms.py"
+      - "scripts/run_project_checks.py"
+      - "scripts/package_spec_teaching_toolkit.py"
+      - "scripts/verify_teaching_bundle.py"
+      - "scripts/validate_public_teaching.py"
       - "DOCS/pcie-course/**"
       - "_posts/*pcie-chapter*.md"
       - "docs/pcie-course-plan.md"
       - "scripts/build_pcie_course.py"
       - "scripts/validate_pcie_course.py"
+      - "scripts/validate_pcie_examples.py"
+      - "tests/test_pcie_examples.py"
+      - "tests/test_spec_terms.py"
+      - "tests/test_spec_teaching.py"
       - "scripts/pcie_teaching.py"
       - "scripts/validate_pcie_teaching.py"
       - "scripts/check_pcie_browser.cjs"
@@ -17,11 +29,23 @@ on:
   pull_request:
     paths:
       - ".ai/pcie-course/**"
+      - ".ai/spec-teaching/**"
+      - "assets/css/spec-teaching.css"
+      - "scripts/spec_teaching.py"
+      - "scripts/spec_terms.py"
+      - "scripts/run_project_checks.py"
+      - "scripts/package_spec_teaching_toolkit.py"
+      - "scripts/verify_teaching_bundle.py"
+      - "scripts/validate_public_teaching.py"
       - "DOCS/pcie-course/**"
       - "_posts/*pcie-chapter*.md"
       - "docs/pcie-course-plan.md"
       - "scripts/build_pcie_course.py"
       - "scripts/validate_pcie_course.py"
+      - "scripts/validate_pcie_examples.py"
+      - "tests/test_pcie_examples.py"
+      - "tests/test_spec_terms.py"
+      - "tests/test_spec_teaching.py"
       - "scripts/pcie_teaching.py"
       - "scripts/validate_pcie_teaching.py"
       - "scripts/check_pcie_browser.cjs"
@@ -43,4 +67,7 @@ jobs:
           python3 -B scripts/build_pcie_course.py --check
           python3 -B scripts/validate_pcie_course.py
           python3 -B scripts/validate_pcie_teaching.py
-          python3 -B -m unittest discover -s tests -p 'test_pcie_teaching.py' -v
+          python3 -B scripts/validate_pcie_examples.py
+          python3 -B scripts/validate_public_teaching.py
+          python3 -B -m unittest discover -s tests -p 'test_pcie*.py' -v
+          python3 -B -m unittest discover -s tests -p 'test_spec*.py' -v

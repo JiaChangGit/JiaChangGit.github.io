@@ -7,18 +7,21 @@ permalink: /nvme/question-bank/identify/en/
 lang: en
 nvme_quickref: true
 nvme_qa: true
+spec_teaching: true
+last_modified_at: 2026-10-23
 ---
 
-<div class="nvme-quickref nvme-qa">
+<div class="nvme-quickref nvme-qa spec-teaching" data-spec-series="nvme">
 <nav class="qr-top" aria-label="Bank and editions"><a href="#content">Skip to content</a><a href="/nvme/question-bank/en/">Question index</a><a href="/nvme/question-bank/identify/zh-tw/">繁體中文</a><a href="/DOCS/nvme-question-bank/identify.html">Chinese tutorial HTML</a></nav>
-<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–328</p>
-<header><p class="qa-range">Q44–Q53</p><h1>Identify and capability discovery</h1><p class="qr-intro">Treat Identify as several distinct query interfaces. Choose the object and structure before CNS, CSI, NSID and other selectors. Separate capability, current configuration and changing lists to find real contradictions.</p><p>Practice first, then reveal the explanation. Each question uses the prose, field interpretation, comparison or flow that suits it. All numerical examples are hypothetical. Status is written SCT/SC; h indicates hexadecimal.</p></header>
-<aside class="qa-glossary"><h2>Terms used in this volume</h2><dl><dt>Controller / namespace</dt><dd>A controller receives commands and manages access. A namespace is a logical storage space that commands can address. An NVM subsystem contains controllers and nonvolatile storage resources.</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission and Completion Queues carry command entries (SQEs) and completion entries (CQEs). QID identifies a queue, CID distinguishes outstanding commands in one SQ, and NSID identifies a namespace.</dd><dt>Register / Identify / Feature / Log</dt><dd>A register exposes control or state. Identify queries capabilities and attributes; features query or configure operation; log pages report specific state or records. FID, LID, CNS and CSI select features, logs, Identify structures and command sets.</dd><dt>index / offset / zero-based</dt><dd>An index selects an entry, usually starting at 0; an offset measures distance from an origin in specified units. A zero-based count encodes count−1, but not every zero-valued field is a count. A Dword is 4 bytes; a byte is 8 bits.</dd><dt>Scope / reset / retention</dt><dd>Scope names the affected objects; retention means preserving state. Controller Reset (clearing CC.EN) is one form of Controller Level Reset, or CLR. Different CLR triggers can retain different registers.</dd></dl></aside>
+<main id="content"><p class="qr-eyebrow">NVMe · Q1–328</p>
+<div class="st-specs" aria-label="Specification editions"><span>NVM Express Base 2.4</span><span>NVM Command Set 1.3</span><span>NVMe over PCIe Transport 1.4</span></div>
+<header><p class="qa-range">Q44–Q53</p><h1>Identify and capability discovery</h1><aside class="st-context"><p>Identify queries object capabilities and attributes. CNS (Controller or Namespace Structure) selects the response structure, NSID (Namespace Identifier) identifies a namespace, and CSI (Command Set Identifier) selects a command set where applicable. A namespace is a command-addressable logical storage space.</p></aside><p class="qr-intro">Treat Identify as several distinct query interfaces. Choose the object and structure before CNS, CSI, NSID and other selectors. Separate capability, current configuration and changing lists to find real contradictions.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>CNS</dt><dd>Controller or Namespace Structure, selecting Identify data</dd></div><div><dt>CSI</dt><dd>Command Set Identifier</dd></div><div><dt>NSID</dt><dd>Namespace Identifier</dd></div></dl><p>Each question is followed by its explanation. Start with the volume overview, then follow the field interpretations, comparisons or processes. Essential conditions and the normal path are visible from the start. All numerical examples are hypothetical. Status is written SCT/SC; h indicates hexadecimal.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>SCT</dt><dd>Status Code Type</dd></div></dl></header>
 <section id="overview" class="qa-overview"><h2>Choose the question before the Identify structure</h2><p class="qa-takeaway">Different CNS values answer different questions; allocated does not automatically mean accessible through this controller.</p>
-<div class="qr-table" tabindex="0" role="region" aria-label="Horizontally scrollable comparison table"><table><thead><tr><th scope="col">Question</th><th scope="col">Query</th><th scope="col">How to use the response</th></tr></thead><tbody><tr><td>Advertised controller capability</td><td>CNS=01h</td><td>Read OACS, ONCS, MDTS and their field conditions</td></tr><tr><td>Currently active namespaces</td><td>CNS=02h</td><td>Active list, not all allocated capacity</td></tr><tr><td>Allocated namespaces</td><td>CNS=10h with Namespace Management support</td><td>May include namespaces not attached to this controller</td></tr><tr><td>Format of one NVM namespace</td><td>CNS=00h; additionally CNS=05h, CSI=00h when applicable</td><td>Interpret NSZE/NCAP, FLBAS, LBAF and PI together</td></tr><tr><td>Command-set-independent namespace properties</td><td>CNS=08h</td><td>Keep separate from the NVM-specific LBA format structure</td></tr></tbody></table></div>
+<div class="qr-table" tabindex="0" role="region" aria-label="Horizontally scrollable comparison table"><table><thead><tr><th scope="col">Question</th><th scope="col">Query</th><th scope="col">How to use the response</th></tr></thead><tbody><tr><td>Advertised controller capability</td><td>CNS=01h</td><td>Read OACS, ONCS, MDTS and their field conditions</td></tr><tr><td>Currently active namespaces</td><td>CNS=02h</td><td>Active list, not all allocated capacity</td></tr><tr><td>Allocated namespaces</td><td>CNS=10h with Namespace Management support</td><td>May include namespaces not attached to this controller</td></tr><tr><td>Format of one NVM namespace</td><td>CNS=00h; additionally CNS=05h, CSI=00h when applicable</td><td>Interpret NSZE/NCAP, FLBAS, LBAF and PI together</td></tr><tr><td>Command-set-independent namespace properties</td><td>CNS=08h</td><td>Keep separate from the NVM-specific LBA format structure</td></tr></tbody></table><dl class="st-terms" aria-label="Terms in this passage"><div><dt>PI</dt><dd>Protection Information</dd></div><div><dt>LBA</dt><dd>Logical Block Address</dd></div></dl></div>
 <p><strong>Worked interpretation: </strong>If Allocated={1,2} and this controller’s Active={1}, namespace 2 is absent from this active list; that does not establish deletion. Check attachment and relevant state, preserving controller identity and query time.</p>
 <p class="qa-citations">Sources: <a href="#ref-idcmd">Base 2.4 §5.2.14.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-nsmanage">Base 2.4 §5.2.24–5.2.25, 8.1.17</a></p>
 </section>
+<details class="qa-glossary st-glossary"><summary>Review the terminology when needed</summary><dl><dt>Controller / namespace</dt><dd>A controller receives commands and manages access. A namespace is a logical storage space that commands can address. An NVM subsystem contains controllers and nonvolatile storage resources.</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission and Completion Queues carry command entries (SQEs) and completion entries (CQEs). QID identifies a queue, CID distinguishes outstanding commands in one SQ, and NSID identifies a namespace.</dd><dt>Register / Identify / Feature / Log</dt><dd>A register exposes control or state. Identify queries capabilities and attributes; features query or configure operation; log pages report specific state or records. FID, LID, CNS and CSI select features, logs, Identify structures and command sets.</dd><dt>index / offset / zero-based</dt><dd>An index selects an entry, usually starting at 0; an offset measures distance from an origin in specified units. A zero-based count encodes count−1, but not every zero-valued field is a count. A Dword is 4 bytes; a byte is 8 bits.</dd><dt>Scope / reset / retention</dt><dd>Scope names the affected objects; retention means preserving state. Controller Reset (clearing CC.EN) is one form of Controller Level Reset, or CLR. Different CLR triggers can retain different registers.</dd></dl></details>
 <div class="qa-controls" hidden><label>Search this page <input type="search" id="qa-search" placeholder="Question number, field or keyword"></label><button type="button" data-expand="true">Expand all answers</button><button type="button" data-expand="false">Collapse all answers</button><output id="qa-count" aria-live="polite"></output></div>
 <section id="question-index"><h2>Questions in this volume</h2><ol class="qa-index">
 <li><a href="#q-044">Q44 · What important information is provided by Identify Controller and Identify Namespace?</a></li>
@@ -33,8 +36,8 @@ nvme_qa: true
 <li><a href="#q-053">Q53 · How should inconsistencies among Identify, features, logs and command behavior be investigated?</a></li>
 </ol></section>
 <article class="qa-question" id="q-044" data-question="44" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-044">Q44</a> What important information is provided by Identify Controller and Identify Namespace?</h2>
-<p class="qa-prompt">Identify the key difference and one case where the alternatives are not interchangeable.</p>
-<details class="qa-answer" id="q-044-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-044-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-044-a-01">Separate controller capability from a particular namespace&#x27;s capacity, format and protection configuration.</p><div class="qa-sections">
 <section class="qa-section" id="q-044-s-01" data-answer-section="1"><h3><span>1.</span> What differs</h3>
 <span class="qa-anchor" id="q-044-a-02"></span><p>Controller data describes the receiving controller&#x27;s view; NSID/CNS/CSI select namespace information.</p>
@@ -42,21 +45,22 @@ nvme_qa: true
 </section>
 <section class="qa-section" id="q-044-s-02" data-answer-section="2"><h3><span>2.</span> How to choose and verify</h3>
 <span class="qa-anchor" id="q-044-a-03"></span><p>Main entry points are CNS 01h Controller and CNS 00h NVM Namespace; CNS 05h/06h are command-set specific, while CNS 08h is command-set independent Namespace data.</p>
-<span class="qa-anchor" id="q-044-a-05"></span><p>Read Controller and the active list, then the applicable structures for each namespace. Convert block counts using the currently selected LBA format.</p>
-<span class="qa-anchor" id="q-044-a-06"></span><p>Identify returns a 4096-byte structure and successful CQE. NSZE=8192 and LBADS=12 describe 32 MiB of logical address space.</p>
+<span class="qa-anchor" id="q-044-a-05"></span><p>Read Controller and the active list, then the applicable structures for each namespace. Convert block counts using the currently selected LBA format.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>LBA</dt><dd>Logical Block Address</dd></div></dl>
+<span class="qa-anchor" id="q-044-a-06"></span><p>Identify returns a 4096-byte structure and successful CQE. NSZE=8192 and LBADS=12 describe 32 MiB of logical address space.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>CQE</dt><dd>Completion Queue Entry</dd></div></dl>
 </section>
-<section class="qa-section" id="q-044-s-03" data-answer-section="3"><h3><span>3.</span> Where the comparison stops</h3>
+<section class="qa-section" id="q-044-s-03" data-answer-section="3"><h3><span>3.</span> Conditions that shape the comparison</h3>
 <span class="qa-anchor" id="q-044-a-07"></span><p>Unsupported CNS uses Invalid Field (0/02h); an incompatible namespace command set uses Invalid I/O Command Set (1/2Ch). Apply CNS-specific NSID rules.</p>
 <span class="qa-anchor" id="q-044-a-16"></span><p>Controller opcode support does not make every namespace format or current state suitable; both levels must permit the operation.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-idcmd">Base 2.4 §5.2.14.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-044-a-17"></span><span class="qa-anchor" id="q-044-a-08"></span><span class="qa-anchor" id="q-044-a-09"></span><span class="qa-anchor" id="q-044-a-10"></span><span class="qa-anchor" id="q-044-a-11"></span><span class="qa-anchor" id="q-044-a-12"></span><span class="qa-anchor" id="q-044-a-13"></span><span class="qa-anchor" id="q-044-a-14"></span><span class="qa-anchor" id="q-044-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-idcmd">Base 2.4 §5.2.14.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-045" data-question="45" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-045">Q45</a> How do active, allocated and namespace descriptor lists differ?</h2>
-<p class="qa-prompt">Identify the key difference and one case where the alternatives are not interchangeable.</p>
-<details class="qa-answer" id="q-045-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-045-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-045-a-01">Separate accessibility through this controller, allocation/existence and the identity of one namespace.</p><div class="qa-sections">
 <section class="qa-section" id="q-045-s-01" data-answer-section="1"><h3><span>1.</span> What differs</h3>
 <span class="qa-anchor" id="q-045-a-02"></span><p>The active list is controller-relative; the allocated list can include unattached namespaces; descriptors describe one NSID.</p>
@@ -67,18 +71,19 @@ nvme_qa: true
 <span class="qa-anchor" id="q-045-a-05"></span><p>Start list enumeration at NSID=0 and continue from returned IDs; for a descriptor query NSID selects the target, not a cursor.</p>
 <span class="qa-anchor" id="q-045-a-06"></span><p>Allocated={1,3,8} and Active={1,8} mean namespace 3 is allocated but not active here, not necessarily damaged.</p>
 </section>
-<section class="qa-section" id="q-045-s-03" data-answer-section="3"><h3><span>3.</span> Where the comparison stops</h3>
+<section class="qa-section" id="q-045-s-03" data-answer-section="3"><h3><span>3.</span> Conditions that shape the comparison</h3>
 <span class="qa-anchor" id="q-045-a-07"></span><p>CNS 02h/10h cursors FFFFFFFEh or FFFFFFFFh shall return Invalid Namespace or Format (0/0Bh); unsupported CNS uses 0/02h.</p>
 <span class="qa-anchor" id="q-045-a-16"></span><p>Correlate stable descriptor identifiers rather than assuming NSIDs never change. Restart enumeration when configuration changes compromise a consistent view.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nsid">Base 2.4 §3.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-045-a-17"></span><span class="qa-anchor" id="q-045-a-08"></span><span class="qa-anchor" id="q-045-a-09"></span><span class="qa-anchor" id="q-045-a-10"></span><span class="qa-anchor" id="q-045-a-11"></span><span class="qa-anchor" id="q-045-a-12"></span><span class="qa-anchor" id="q-045-a-13"></span><span class="qa-anchor" id="q-045-a-14"></span><span class="qa-anchor" id="q-045-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nsid">Base 2.4 §3.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-046" data-question="46" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-046">Q46</a> What are Controller Lists, the UUID List and I/O Command Set Identify data used for?</h2>
-<p class="qa-prompt">Identify the key difference and one case where the alternatives are not interchangeable.</p>
-<details class="qa-answer" id="q-046-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-046-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-046-a-01">Answer three different questions: which controllers can access, which vendor definition to use and which command sets can operate together.</p><div class="qa-sections">
 <section class="qa-section" id="q-046-s-01" data-answer-section="1"><h3><span>1.</span> What differs</h3>
 <span class="qa-anchor" id="q-046-a-02"></span><p>Controller Lists describe relationships. The UUID List selects vendor-specific information and is not the namespace UUID descriptor.</p>
@@ -86,21 +91,22 @@ nvme_qa: true
 </section>
 <section class="qa-section" id="q-046-s-02" data-answer-section="2"><h3><span>2.</span> How to choose and verify</h3>
 <span class="qa-anchor" id="q-046-a-03"></span><p>CNS 12h lists controllers attached to a namespace, 13h subsystem I/O controllers, 17h the UUID List and 1Ch command-set combinations.</p>
-<span class="qa-anchor" id="q-046-a-05"></span><p>Select CNS and selectors for the question. After CNS 1Ch discovery, FID 19h.IOCSCI selects the combination index, not the CSI bitmap itself.</p>
+<span class="qa-anchor" id="q-046-a-05"></span><p>Select CNS and selectors for the question. After CNS 1Ch discovery, FID 19h.IOCSCI selects the combination index, not the CSI bitmap itself.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>FID</dt><dd>Feature Identifier</dd></div></dl>
 <span class="qa-anchor" id="q-046-a-06"></span><p>Lists return identities/counts or UUID entries; command-set vectors advertise available combinations without automatically enabling them.</p>
 </section>
-<section class="qa-section" id="q-046-s-03" data-answer-section="3"><h3><span>3.</span> Where the comparison stops</h3>
+<section class="qa-section" id="q-046-s-03" data-answer-section="3"><h3><span>3.</span> Conditions that shape the comparison</h3>
 <span class="qa-anchor" id="q-046-a-07"></span><p>Unsupported CNS and CNS 12h NSID=FFFFFFFFh use 0/02h. Illegal UUID selection follows §8.1.31, not namespace-absence rules.</p>
-<span class="qa-anchor" id="q-046-a-16"></span><p>Keep CNTID and NSID roles separate and verify that FID 19h Current selects the intended vector.</p>
+<span class="qa-anchor" id="q-046-a-16"></span><p>Keep CNTID and NSID roles separate and verify that FID 19h Current selects the intended vector.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>FID</dt><dd>Feature Identifier</dd></div></dl>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-idcmd">Base 2.4 §5.2.14.1</a> · <a href="#ref-uuid">Base 2.4 §8.1.31.1–8.1.31.2</a> · <a href="#ref-profile">Base 2.4 §5.2.30.1.18</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-046-a-17"></span><span class="qa-anchor" id="q-046-a-08"></span><span class="qa-anchor" id="q-046-a-09"></span><span class="qa-anchor" id="q-046-a-10"></span><span class="qa-anchor" id="q-046-a-11"></span><span class="qa-anchor" id="q-046-a-12"></span><span class="qa-anchor" id="q-046-a-13"></span><span class="qa-anchor" id="q-046-a-14"></span><span class="qa-anchor" id="q-046-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-idcmd">Base 2.4 §5.2.14.1</a> · <a href="#ref-uuid">Base 2.4 §8.1.31.1–8.1.31.2</a> · <a href="#ref-profile">Base 2.4 §5.2.30.1.18</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-047" data-question="47" data-answer-kind="lookup"><h2><a class="qa-qid" href="#q-047">Q47</a> Which Identify structures describe NVM Sets, Endurance Groups, Domains and Secondary Controllers?</h2>
-<p class="qa-prompt">Choose the interface and target, then identify the returned field that supports your conclusion.</p>
-<details class="qa-answer" id="q-047-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-047-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-047-a-01">Establish resource membership instead of treating sets, groups, domains and controllers as interchangeable objects.</p><div class="qa-sections">
 <section class="qa-section" id="q-047-s-01" data-answer-section="1"><h3><span>1.</span> Select the target and information</h3>
 <span class="qa-anchor" id="q-047-a-02"></span><p>Each list has its own IDs and capacity/resource fields. This question discovers information rather than changing capacity or virtualization state.</p>
@@ -117,13 +123,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-047-a-17"></span><p>First check the selected primary controller and pagination starting point.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-virtual">Base 2.4 §8.2.7</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-047-a-08"></span><span class="qa-anchor" id="q-047-a-09"></span><span class="qa-anchor" id="q-047-a-10"></span><span class="qa-anchor" id="q-047-a-11"></span><span class="qa-anchor" id="q-047-a-12"></span><span class="qa-anchor" id="q-047-a-13"></span><span class="qa-anchor" id="q-047-a-14"></span><span class="qa-anchor" id="q-047-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-virtual">Base 2.4 §8.2.7</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-048" data-question="48" data-answer-kind="error"><h2><a class="qa-qid" href="#q-048">Q48</a> How should unsupported or invalid CNS, CSI, NSID and UUID Index values be handled?</h2>
-<p class="qa-prompt">Distinguish failure conditions before deciding whether a particular response is required.</p>
-<details class="qa-answer" id="q-048-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-048-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-048-a-01">Judge selectors by their actual roles rather than calling every Identify failure an invalid namespace.</p><div class="qa-sections">
 <section class="qa-section" id="q-048-s-01" data-answer-section="1"><h3><span>1.</span> Distinguish the failure conditions</h3>
 <span class="qa-anchor" id="q-048-a-02"></span><p>The same NSID/CSI can be legal for one CNS and illegal for another; fix the CNS and prerequisites in each test.</p>
@@ -136,17 +143,18 @@ nvme_qa: true
 </section>
 <section class="qa-section" id="q-048-s-03" data-answer-section="3"><h3><span>3.</span> Outcome and follow-up checks</h3>
 <span class="qa-anchor" id="q-048-a-06"></span><p>Valid queries return 4096 bytes. CNS 11h can return zero-filled data for a defined unallocated NSID, distinct from an invalid-NSID error.</p>
-<span class="qa-anchor" id="q-048-a-16"></span><p>Preserve CQE with CDW10/11/14; different selectors can produce the same 0/02h.</p>
+<span class="qa-anchor" id="q-048-a-16"></span><p>Preserve CQE with CDW10/11/14; different selectors can produce the same 0/02h.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>CQE</dt><dd>Completion Queue Entry</dd></div></dl>
 <span class="qa-anchor" id="q-048-a-17"></span><p>First check whether the CNS uses that selector. Ignoring an unused field is not automatically a validation omission.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-idcmd">Base 2.4 §5.2.14.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-uuid">Base 2.4 §8.1.31.1–8.1.31.2</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-048-a-08"></span><span class="qa-anchor" id="q-048-a-09"></span><span class="qa-anchor" id="q-048-a-10"></span><span class="qa-anchor" id="q-048-a-11"></span><span class="qa-anchor" id="q-048-a-12"></span><span class="qa-anchor" id="q-048-a-13"></span><span class="qa-anchor" id="q-048-a-14"></span><span class="qa-anchor" id="q-048-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-idcmd">Base 2.4 §5.2.14.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-uuid">Base 2.4 §8.1.31.1–8.1.31.2</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-049" data-question="49" data-answer-kind="fields"><h2><a class="qa-qid" href="#q-049">Q49</a> How are SN, MN, FR, MDTS and optional Admin capability fields interpreted?</h2>
-<p class="qa-prompt">Explain the units and encoding, then work through one set of values.</p>
-<details class="qa-answer" id="q-049-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-049-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-049-a-01">One large Identify structure combines identity strings, transfer limits and capability bitmaps, requiring different interpretation methods.</p><div class="qa-sections">
 <section class="qa-section" id="q-049-s-01" data-answer-section="1"><h3><span>1.</span> Establish the source and scope</h3>
 <span class="qa-anchor" id="q-049-a-02"></span><p>SN/MN identify the subsystem, FR the active firmware, MDTS a transfer limit and OACS optional Admin capabilities.</p>
@@ -162,17 +170,18 @@ nvme_qa: true
 <span class="qa-anchor" id="q-049-a-16"></span><p>Compare FR with the currently active firmware slot, not a pending slot; cross-check OACS with corresponding command-support entries.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-cap">Base 2.4 §3.1.4 (CAP, VS)</a> · <a href="#ref-conventions">Base 2.4 §1.4.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-049-a-17"></span><span class="qa-anchor" id="q-049-a-08"></span><span class="qa-anchor" id="q-049-a-09"></span><span class="qa-anchor" id="q-049-a-10"></span><span class="qa-anchor" id="q-049-a-11"></span><span class="qa-anchor" id="q-049-a-12"></span><span class="qa-anchor" id="q-049-a-13"></span><span class="qa-anchor" id="q-049-a-14"></span><span class="qa-anchor" id="q-049-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-cap">Base 2.4 §3.1.4 (CAP, VS)</a> · <a href="#ref-conventions">Base 2.4 §1.4.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-050" data-question="50" data-answer-kind="lookup"><h2><a class="qa-qid" href="#q-050">Q50</a> How can advertised Identify support be cross-checked against commands and the Commands Supported and Effects Log?</h2>
-<p class="qa-prompt">Choose the interface and target, then identify the returned field that supports your conclusion.</p>
-<details class="qa-answer" id="q-050-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-050-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-050-a-01">Connect an advertised bit to a legal operation instead of validating the bit alone.</p><div class="qa-sections">
 <section class="qa-section" id="q-050-s-01" data-answer-section="1"><h3><span>1.</span> Select the target and information</h3>
 <span class="qa-anchor" id="q-050-a-02"></span><p>Compare the same controller, command set, namespace configuration and time.</p>
-<span class="qa-anchor" id="q-050-a-03"></span><p>Check Identify support, LPA.CSES and the correct Admin/I/O opcode&#x27;s CSUPP and effects in LID 05h.</p>
+<span class="qa-anchor" id="q-050-a-03"></span><p>Check Identify support, LPA.CSES and the correct Admin/I/O opcode&#x27;s CSUPP and effects in LID 05h.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>LID</dt><dd>Log Page Identifier</dd></div></dl>
 <span class="qa-anchor" id="q-050-a-04"></span><p>Read CSUPP together with LBCC, NCC, NIC, CCC and CSE to understand data/capability/list changes and execution restrictions.</p>
 </section>
 <section class="qa-section" id="q-050-s-02" data-answer-section="2"><h3><span>2.</span> Query sequence and interpretation</h3>
@@ -185,13 +194,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-050-a-17"></span><p>First check Admin versus I/O entry selection and CSI.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-effects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idcmd">Base 2.4 §5.2.14.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-050-a-08"></span><span class="qa-anchor" id="q-050-a-09"></span><span class="qa-anchor" id="q-050-a-10"></span><span class="qa-anchor" id="q-050-a-11"></span><span class="qa-anchor" id="q-050-a-12"></span><span class="qa-anchor" id="q-050-a-13"></span><span class="qa-anchor" id="q-050-a-14"></span><span class="qa-anchor" id="q-050-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-effects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idcmd">Base 2.4 §5.2.14.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-051" data-question="51" data-answer-kind="process"><h2><a class="qa-qid" href="#q-051">Q51</a> Which Identify data and lists change after namespace creation, deletion, attachment, detachment or format?</h2>
-<p class="qa-prompt">Order the actions and identify which completion must precede the next action.</p>
-<details class="qa-answer" id="q-051-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-051-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-051-a-01">Connect configuration changes to rediscovery instead of continuing with stale capacity, format or attachment data.</p><div class="qa-sections">
 <section class="qa-section" id="q-051-s-01" data-answer-section="1"><h3><span>1.</span> Prepare the operation</h3>
 <span class="qa-anchor" id="q-051-a-02"></span><p>Create/Delete change existence, Attach/Detach controller accessibility, and Format the data format within its defined scope.</p>
@@ -207,17 +217,18 @@ nvme_qa: true
 <span class="qa-anchor" id="q-051-a-16"></span><p>Correlate management results, lists, namespace data and applicable Changed Namespace notification. The event is not a full replacement for Identify configuration data.</p>
 </section>
 <section class="qa-section" id="q-051-s-04" data-answer-section="4"><h3><span>4.</span> Evidence supplied by the log</h3>
-<span class="qa-anchor" id="q-051-a-10"></span><p>Check Changed Namespace List (LID 04h) alongside fresh Identify data. The list identifies changed NSIDs, not current configuration. RAE affects acknowledgement; preserve the event and list before subsequent queries.</p>
+<span class="qa-anchor" id="q-051-a-10"></span><p>Check Changed Namespace List (LID 04h) alongside fresh Identify data. The list identifies changed NSIDs, not current configuration. RAE affects acknowledgement; preserve the event and list before subsequent queries.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>LID</dt><dd>Log Page Identifier</dd></div></dl>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-nsmanage">Base 2.4 §5.2.24–5.2.25, 8.1.17</a> · <a href="#ref-effects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-nschange">Base 2.4 §5.2.13.1.5, 5.2.13.1.14.2.6–5.2.13.1.14.2.8</a></p>
 <span class="qa-anchor" id="q-051-a-17"></span><span class="qa-anchor" id="q-051-a-08"></span><span class="qa-anchor" id="q-051-a-09"></span><span class="qa-anchor" id="q-051-a-11"></span><span class="qa-anchor" id="q-051-a-12"></span><span class="qa-anchor" id="q-051-a-13"></span><span class="qa-anchor" id="q-051-a-14"></span><span class="qa-anchor" id="q-051-a-15"></span>
 <p class="qa-related">Related mechanisms: <a href="/nvme/question-bank/namespace-management/en/#q-167">Q167</a></p>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-nsmanage">Base 2.4 §5.2.24–5.2.25, 8.1.17</a> · <a href="#ref-effects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-nschange">Base 2.4 §5.2.13.1.5, 5.2.13.1.14.2.6–5.2.13.1.14.2.8</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-052" data-question="52" data-answer-kind="lifecycle"><h2><a class="qa-qid" href="#q-052">Q52</a> Which Identify data may change after firmware activation, reset or power cycling?</h2>
-<p class="qa-prompt">Name the reset or interruption, then assess settings, ongoing operations and data separately.</p>
-<details class="qa-answer" id="q-052-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-052-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-052-a-01">Judge change by field semantics instead of requiring the whole 4096-byte buffer to remain identical.</p><div class="qa-sections">
 <section class="qa-section" id="q-052-s-01" data-answer-section="1"><h3><span>1.</span> Identify the trigger and affected objects</h3>
 <span class="qa-anchor" id="q-052-a-02"></span><p>Separate stable identity, firmware-advertised capability, persistent configuration and dynamic state.</p>
@@ -234,29 +245,31 @@ nvme_qa: true
 <span class="qa-anchor" id="q-052-a-17"></span><p>First check concurrent pending firmware activation and accidental selection of another controller/namespace.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-identity">Base 2.4 §4.7.1</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-effects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-052-a-08"></span><span class="qa-anchor" id="q-052-a-09"></span><span class="qa-anchor" id="q-052-a-10"></span><span class="qa-anchor" id="q-052-a-11"></span><span class="qa-anchor" id="q-052-a-12"></span><span class="qa-anchor" id="q-052-a-13"></span><span class="qa-anchor" id="q-052-a-14"></span><span class="qa-anchor" id="q-052-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-identity">Base 2.4 §4.7.1</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-effects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-053" data-question="53" data-answer-kind="diagnose"><h2><a class="qa-qid" href="#q-053">Q53</a> How should inconsistencies among Identify, features, logs and command behavior be investigated?</h2>
-<p class="qa-prompt">Separate available evidence from missing information before judging conformance.</p>
-<details class="qa-answer" id="q-053-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-053-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-053-a-01">Build a complete evidence chain instead of letting one advertised capability override current conditions.</p><div class="qa-sections">
 <section class="qa-section" id="q-053-s-01" data-answer-section="1"><h3><span>1.</span> Preserve the evidence first</h3>
 <span class="qa-anchor" id="q-053-a-02"></span><p>Hold controller, NSID, CSI, time and configuration constant; different views/times need not describe the same state.</p>
 <span class="qa-anchor" id="q-053-a-03"></span><p>Identify discovers capability, Get Features configuration, and logs state/events or effect declarations. Their roles differ.</p>
-<span class="qa-anchor" id="q-053-a-04"></span><p>Preserve SQE/CQE, raw Identify, Feature SEL and log selectors. Distinguish Current from Supported Capabilities.</p>
+<span class="qa-anchor" id="q-053-a-04"></span><p>Preserve SQE/CQE, raw Identify, Feature SEL and log selectors. Distinguish Current from Supported Capabilities.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>SQE</dt><dd>Submission Queue Entry</dd></div></dl>
 </section>
 <section class="qa-section" id="q-053-s-02" data-answer-section="2"><h3><span>2.</span> Work through the possible causes</h3>
 <span class="qa-anchor" id="q-053-a-17"></span><p>First verify that all evidence describes the same controller/namespace, configuration interval and selectors.</p>
 <span class="qa-anchor" id="q-053-a-05"></span><p>Check revision/decoding, scope/selectors, legal parameters, current state/order and result; isolate one variable when reproducing.</p>
 </section>
-<section class="qa-section" id="q-053-s-03" data-answer-section="3"><h3><span>3.</span> Decide what the evidence supports</h3>
+<section class="qa-section" id="q-053-s-03" data-answer-section="3"><h3><span>3.</span> Connect observations to specification conditions</h3>
 <span class="qa-anchor" id="q-053-a-06"></span><p>Consistency means the specified relationships hold, not equal numeric values. CHANG=1 and Current=0 can both be correct.</p>
-<span class="qa-anchor" id="q-053-a-07"></span><p>Use original SCT/SC for next steps and associated Error Information when More=1. A host timeout without status first requires locating the submission/completion stage.</p>
+<span class="qa-anchor" id="q-053-a-07"></span><p>Use original SCT/SC for next steps and associated Error Information when More=1. A host timeout without status first requires locating the submission/completion stage.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>SCT</dt><dd>Status Code Type</dd></div></dl>
 <span class="qa-anchor" id="q-053-a-16"></span><p>A defensible noncompliance conclusion requires fixed prerequisites, object and timing, plus a remaining contradiction with an explicit requirement.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-idcmd">Base 2.4 §5.2.14.1</a> · <a href="#ref-effects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-getfeat">Base 2.4 §5.2.12</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-053-a-08"></span><span class="qa-anchor" id="q-053-a-09"></span><span class="qa-anchor" id="q-053-a-10"></span><span class="qa-anchor" id="q-053-a-11"></span><span class="qa-anchor" id="q-053-a-12"></span><span class="qa-anchor" id="q-053-a-13"></span><span class="qa-anchor" id="q-053-a-14"></span><span class="qa-anchor" id="q-053-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-idcmd">Base 2.4 §5.2.14.1</a> · <a href="#ref-effects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-getfeat">Base 2.4 §5.2.12</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>

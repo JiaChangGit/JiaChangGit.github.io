@@ -223,6 +223,64 @@
 /* Self-contained teaching diagrams use the same theme in standalone pages and posts. */
 .pcie-surface .course-diagram text { fill: var(--ink); font-family: inherit; font-size: 18px; }
 
+/* Applied only to explicitly authorized teaching roots. */
+html .spec-teaching[data-spec-series] .st-terms { margin:.35rem 0 1rem; padding:.5rem .8rem; border-inline-start:3px solid var(--st-accent); background:var(--st-soft); font-size:.88em; color:var(--st-muted); }
+html .spec-teaching[data-spec-series] .st-terms > div { display:flex; flex-wrap:wrap; gap:.2em .7em; }
+html .spec-teaching[data-spec-series] .st-terms dt { font-weight:650; }
+html .spec-teaching[data-spec-series] .st-terms dd { margin:0; flex:1 1 14em; }
+html .spec-teaching[data-spec-series] {
+ --st-diagram-width:900px;
+ --st-paper:#f2f6f8; --st-surface:#fff; --st-ink:#192d40; --st-muted:#4c6479;
+ --st-line:#cbd9e3; --st-accent:#145f9d; --st-soft:#edf5fc;
+ --paper:var(--st-paper); --surface:var(--st-surface); --surface-2:var(--st-soft); --surface-alt:var(--st-soft);
+ --ink:var(--st-ink); --muted:var(--st-muted); --line:var(--st-line);
+ --accent:var(--st-accent); --accent-2:var(--st-accent); --soft:var(--st-soft); --blue-soft:var(--st-soft); --teal-soft:var(--st-soft);
+ --qr-paper:var(--st-paper); --qr-surface:var(--st-surface); --qr-ink:var(--st-ink); --qr-muted:var(--st-muted);
+ --qr-line:var(--st-line); --qr-accent:var(--st-accent); --qr-soft:var(--st-soft);
+ color:var(--st-ink); background:var(--st-paper); font-size:17px; line-height:1.9;
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+}
+html .spec-teaching[data-spec-series="nvme"] { --st-accent:#086b56; --st-soft:#e7f4ee; }
+@media(prefers-color-scheme:dark) {
+ html:not([data-theme="light"]) .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+ html:not([data-theme="light"]) .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+}
+html[data-theme="dark"] .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+html[data-theme="dark"] .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+.spec-teaching * { box-sizing:border-box; }
+.spec-teaching :is(h1,h2,h3,h4,h5,p,li,td,th,summary,strong,figcaption) { color:var(--st-ink); }
+.spec-teaching svg text { font-family:inherit; }
+.spec-teaching h1 { font-size:clamp(1.8rem,3.2vw,2.65rem); line-height:1.4; }
+.spec-teaching h2 { font-size:clamp(1.3rem,2.5vw,1.7rem); line-height:1.55; }
+.spec-teaching h3 { font-size:1.15rem; line-height:1.65; }
+.spec-teaching h4 { font-size:1rem; line-height:1.7; }
+.spec-teaching :is(h1,h2,h3,h4) { overflow-wrap:anywhere; }
+.spec-teaching p { margin:.7rem 0 1.15rem; }
+.spec-teaching :is(a,summary) { text-underline-offset:.2em; }
+.spec-teaching :focus-visible { outline:3px solid var(--st-accent); outline-offset:4px; }
+.spec-teaching :is(.qa-takeaway,.qa-answer-lead,.st-takeaway) { color:var(--st-ink); font-weight:650; font-size:1.06rem; line-height:1.9; }
+.spec-teaching :is(.qa-question,.qr-card,.guided-walk) { border:1px solid var(--st-line); border-radius:12px; background:var(--st-surface); padding:clamp(18px,3vw,30px); margin:1.8rem 0; }
+.spec-teaching :is(.qa-flow,.qr-note,.qr-observations,.st-context,.st-route) { background:var(--st-soft); border-left:4px solid var(--st-accent); padding:1rem 1.2rem; margin:1.4rem 0; }
+.spec-teaching :is(.qr-step,.qa-qid,.st-label) { color:var(--st-accent); font-weight:700; }
+.spec-teaching :is(.qa-citations,.qa-source-links,.qr-case-sources,.walk-source,.st-source) { font-size:.84rem; line-height:1.75; color:var(--st-muted); overflow-wrap:anywhere; }
+.spec-teaching :is(.qr-table,.table-wrap) { overflow-x:auto; margin:1.4rem 0; border-radius:7px; }
+.spec-teaching :is(th,td) { line-height:1.8; vertical-align:top; min-width:120px; }
+.spec-teaching :is(table,td) { background:var(--st-surface); }
+.spec-teaching th { background:var(--st-soft); }
+.spec-teaching .st-step { border-left:3px solid var(--st-line); padding:.6rem 1rem; margin:1.2rem 0; }
+.spec-teaching .st-step:target { border-left-color:var(--st-accent); background:var(--st-soft); }
+.spec-teaching .st-glossary { border:1px solid var(--st-line); padding:.7rem 1rem; margin:1.4rem 0; border-radius:8px; }
+.spec-teaching .st-glossary > summary { min-height:44px; cursor:pointer; }
+.spec-teaching .st-specs { display:flex; flex-wrap:wrap; gap:.4rem 1rem; color:var(--st-muted); font-size:.8rem; line-height:1.8; margin:1rem 0; }
+.spec-teaching .st-specs span { border-bottom:2px solid var(--st-accent); padding:.2rem 0; }
+@media(max-width:620px) { .spec-teaching :is(.qa-question,.qr-card,.guided-walk) { padding:16px; } .spec-teaching .diagram svg { min-width:var(--st-diagram-width); } }
+@media print {
+ .spec-teaching { --st-paper:#fff!important; --st-surface:#fff!important; --st-ink:#000!important; --st-muted:#333!important; --st-line:#999!important; --st-accent:#000!important; --st-soft:#fff!important; }
+ .spec-teaching details > * { display:block!important; }
+ .spec-teaching details::details-content { content-visibility:visible!important; }
+ .spec-teaching .st-step { break-inside:avoid; }
+}
+
 /* Native reading guides: selection highlights; it never hides teaching content.
    build_pcie_course.py changes .pcie-surface to .pcie-article for the posts. */
 .pcie-surface .guided-walk { margin: 1.8rem 0; padding: 1.2rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); min-width: 0; }
@@ -288,7 +346,7 @@
   .pcie-surface .walk-steps { padding-left: 1.15rem; }
   .pcie-surface .walk-step { padding: .5rem .6rem; }
   .pcie-surface .walk-diagram { overflow-x: auto; }
-  .pcie-surface .walk-diagram svg { min-width: 700px; }
+  .pcie-surface .walk-diagram svg { min-width: var(--st-diagram-width, 700px); }
 }
 @media (forced-colors: active) {
   .pcie-surface .walk-choice:checked + .walk-label { border-color: Highlight; }
@@ -311,7 +369,7 @@
 .pcie-surface .walk-summary { margin: 1rem 0 1.5rem; }
   </style>
 </head>
-<body class="pcie-surface">
+<body class="pcie-surface spec-teaching" data-spec-series="pcie">
   <a class="skip-link" href="#content">跳到正文</a>
   <div class="site-shell">
     <nav class="topbar" aria-label="課程導覽">
@@ -378,9 +436,9 @@
 <tr><td>Data Link Layer（資料連結層）</td><td>完成適用的 Feature Exchange（功能交換）與 VC0（預設虛擬通道）的 Flow Control（流量控制）初始化，進入 DL_Active（資料連結可用）。</td><td>BAR（Base Address Register，基底位址暫存器）、中斷與 DMA（Direct Memory Access，直接記憶體存取）映射的配置。</td></tr>
 <tr><td>Function（功能單位）／系統軟體</td><td>裝置能接受設定，系統完成資源與工作介面的初始化。</td><td>啟動工作後，依裝置介面查看完成結果。</td></tr>
 </tbody></table></div>
-<p>Virtual Channel（VC，虛擬通道）用來區分相關傳輸資源；本章只使用預設的通道 0。Flow Control（FC，流量控制）依接收端公布的緩衝空間，控制後續 TLP（交易層封包）的發送。這些資訊透過 DLLP（資料連結層封包）在相鄰兩端交換。</p>
+<p>Virtual Channel（VC，虛擬通道）用來區分相關傳輸資源；本章只使用預設的通道 0。Flow Control（FC，流量控制）依接收端公布的緩衝空間，控制後續 TLP（交易層封包）的發送。這些資訊透過 DLLP（資料連結層封包）在相鄰兩端交換。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>TLP</dt><dd>Transaction Layer Packet，交易層封包</dd></div><div><dt>DLLP</dt><dd>Data Link Layer Packet，資料鏈結層封包</dd></div></dl>
 <details class="source-note"><summary>分層與初始化來源</summary><p>Base 6.0 §3.1–§3.2，Figure 3-1／3-2（pp.263–265）；§3.4（pp.270–276）；§6.6.1（p.721）。FC 記帳由 Transaction Layer 負責，Data Link Layer 協助傳遞 FC 資訊，見 §2.6.1（p.236）。</p></details></section>
-<section id="training"><h2>2. 沿 LTSSM 訓練狀態建立連線</h2>
+<section id="training"><h2>2. 沿 LTSSM 訓練狀態建立連線</h2><dl class="st-terms" aria-label="本段名詞"><div><dt>LTSSM</dt><dd>Link Training and Status State Machine，鏈結訓練與狀態機</dd></div></dl>
 <p>LTSSM（連線訓練狀態機）先找出可用通道，再建立同步與通道編號。下面保留初次建立連線的主要路徑；Configuration 在此負責組成連線。完整狀態機還包含逾時、重試、測試及省電分支。</p>
 <figure class="diagram"><svg viewBox="0 0 820 315" role="img" aria-labelledby="training-title training-desc" class="course-diagram"><title id="training-title">初次訓練與後續 Recovery 的不同目的</title><desc id="training-desc">初次連線依序經過 Detect、Polling、Configuration 到 L0。L0 可進入 Recovery 調整速率或恢復同步，再回 L0；這不是完整 LTSSM。</desc><g fill="var(--blue-soft)" stroke="var(--line)"><rect x="20" y="30" width="160" height="100" rx="12"/><rect x="220" y="30" width="160" height="100" rx="12"/><rect x="420" y="30" width="180" height="100" rx="12"/><rect x="640" y="30" width="160" height="100" rx="12"/><rect x="460" y="205" width="270" height="80" rx="12"/></g><g stroke="var(--accent)" stroke-width="2.5" fill="none"><path d="M180 80 H215"/><path d="M380 80 H415"/><path d="M600 80 H635"/><path d="M750 130 V245 H735"/><path d="M500 205 V165 H680 V135"/></g><g fill="var(--accent)"><path d="M208 75 L218 80 L208 85 Z M408 75 L418 80 L408 85 Z M628 75 L638 80 L628 85 Z M738 240 L728 245 L738 250 Z M675 140 L680 130 L685 140 Z"/></g><g text-anchor="middle"><text x="100" y="65">Detect</text><text x="100" y="100">偵測遠端終端</text><text x="300" y="65">Polling</text><text x="300" y="100">取得同步</text><text x="510" y="65">Configuration</text><text x="510" y="100">組成 Link</text><text x="720" y="65">L0</text><text x="720" y="100">正常傳輸</text><text x="595" y="235">Recovery</text><text x="595" y="265">變更速率／重新取得同步</text></g></svg><figcaption>作者依 §4.2.6 繪製的閱讀導圖，只保留本節需要的路徑；完整分支與條件請對照 Figure 4-48。</figcaption></figure>
 <p>Detect 先檢查遠端終端是否存在；Polling 交換訓練 Ordered Sets（有固定用途的符號序列），建立位元／符號同步並處理通道極性；Configuration 把 Lane 組成 Link，處理寬度與 Lane 間對齊。L0 是正常傳輸狀態。Recovery 用來重新取得同步，也支援速率變更。閱讀這段路徑時，要連同進入原因與後續狀態一起觀察。</p>
@@ -401,7 +459,7 @@
 <details class="question"><summary>調整目標速率後，接著查看哪些狀態？</summary><p>先確認速率支援、控制對象與正常操作前提，再依 Link Control 的 Retrain Link（重新訓練控制）觸發訓練；此 bit 寫 1 觸發，讀取永遠為零。應觀察適用的 Link Training／Link Active，再讀 Current Link Speed 與寬度。Link Training 只涵蓋 Configuration／Recovery 及等待 Retrain 開始的情況，且在 Endpoint 為 Reserved，不能當成通用 LTSSM 編碼。（Tables 7-24、7-26，pp.972–973、978–979。）</p></details>
 <details class="source-note"><summary>從 Figure 到結論</summary><p>Maximum Link Width：Figure 7-27／Table 7-23（p.967）；Current 與狀態適用性：Figure 7-29／Table 7-26（pp.978–979）；Supported：Figure 7-38／Table 7-35（pp.998–1000）；Target：Figure 7-39／Table 7-36（pp.1001–1002）。這是一組作者假設的有效讀值，不是規格指定的預設設定。</p></details></section>
 <section id="credits"><h2>4. 依封包種類檢查接收空間</h2>
-<p>接收端透過 FC（流量控制）資訊告知可用額度，發送端依交易種類檢查 credit（接收緩衝額度）。Non-Flit Mode 下，每個 VC 分開記錄 Posted、Non-Posted、Completion 的 Header 與 Data，合計六類：PH／PD 是 Posted 的標頭／資料額度，NPH／NPD 是 Non-Posted 的標頭／資料額度，CplH／CplD 是完成回覆的標頭／資料額度。Data credit 的單位是 4 DW（每個 Doubleword 為 4 bytes），也就是 16 bytes；Header（標頭）額度則依封包標頭另計。</p>
+<p>接收端透過 FC（流量控制）資訊告知可用額度，發送端依交易種類檢查 credit（接收緩衝額度）。Non-Flit Mode 下，每個 VC 分開記錄 Posted、Non-Posted、Completion 的 Header 與 Data，合計六類：PH／PD 是 Posted 的標頭／資料額度，NPH／NPD 是 Non-Posted 的標頭／資料額度，CplH／CplD 是完成回覆的標頭／資料額度。Data credit 的單位是 4 DW（每個 Doubleword 為 4 bytes），也就是 16 bytes；Header（標頭）額度則依封包標頭另計。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>FC</dt><dd>Flow Control，流量控制</dd></div><div><dt>VC</dt><dd>Virtual Channel，虛擬通道</dd></div><div><dt>DW</dt><dd>Double Word，4 bytes的資料單位</dd></div></dl>
 <p>以下是<strong>作者建立的概念帳本</strong>：VC0（預設虛擬通道）、Non-Flit Mode、有限且未縮放的可用 credits，沒有其他封包競爭。數字不是軟體可直接讀到的標準 Register，也不是 InitFC 的最低宣告值。假設現在只剩 PH（Posted 標頭額度）=2、PD（Posted 資料額度）=5。先由 Table 2-44 辨認類別，再依 Table 2-45 讀每種封包的需求。表中 MWr 是 Memory Write（記憶體寫入），MRd 是 Memory Read（記憶體讀取）；NPH／NPD 是 Non-Posted 的標頭／資料額度。</p>
 <div class="table-wrap"><table><caption>有限 credit 的發送判斷</caption><thead><tr><th scope="col">候選封包</th><th scope="col">所需 credits</th><th scope="col">判斷</th></tr></thead><tbody>
 <tr><td>64-byte MWr（記憶體寫入）</td><td>1 PH、4 PD</td><td>可送；發送後剩 PH=1、PD=1。</td></tr>
@@ -420,13 +478,13 @@
 <section id="flit"><h2>6. PCIe 6.0 的 Flit 改變了什麼？</h2>
 <p>在 64 GT/s 運作時使用 Flit Mode（固定區塊傳遞模式），較低速率也可使用。當前模式需由本節稍後的模式欄位確認。Flit 是固定 256 bytes 的傳輸單位，TLP 可以跨越多個 Flit，一個 Flit 也不必只容納一個 TLP。</p>
 <div class="table-wrap"><table><caption>一個 Flit 的 256 bytes 分配</caption><thead><tr><th scope="col">Byte 範圍</th><th scope="col">大小</th><th scope="col">用途</th></tr></thead><tbody><tr><td>0–235</td><td>236 bytes</td><td>TLP 區，包含 TLP Header 等內容，不能全算成應用資料。</td></tr><tr><td>236–241</td><td>6 bytes</td><td>DLP（Data Link Layer Payload，資料連結層承載內容）。</td></tr><tr><td>242–249</td><td>8 bytes</td><td>CRC（Cyclic Redundancy Check，循環冗餘檢查碼），供錯誤檢查。</td></tr><tr><td>250–255</td><td>6 bytes</td><td>ECC（Error Correction Code，錯誤修正碼），支援 Forward Error Correction（FEC，前向錯誤更正）。</td></tr></tbody></table></div>
-<p>Flit Mode 的可靠傳遞以 Flit 為 replay 單位，配合 CRC（錯誤檢查碼）、FEC（前向錯誤更正）與序號機制。可更正的錯誤由更正機制處理，其餘情況仍可能需要重送；格式與前面的個別封包模式不同。</p>
+<p>Flit Mode 的可靠傳遞以 Flit 為 replay 單位，配合 CRC（錯誤檢查碼）、FEC（前向錯誤更正）與序號機制。可更正的錯誤由更正機制處理，其餘情況仍可能需要重送；格式與前面的個別封包模式不同。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>FEC</dt><dd>Forward Error Correction，前向錯誤更正</dd></div></dl>
 <p>要查目前模式，先確認 PCI Express Capabilities 的 Flit Mode Supported（Figure 7-23／Table 7-19 bit 15），再查 Downstream Port 的 Link Status 2。Flit Mode Status 在 bit 10，但只有 Downstream Component Presence 為 011b、100b 或 101b 時才有意義。若只擷取這兩個欄位得到 <code>0x4400</code>，則 Presence=100b、Flit=1：Link 已 up、尚未收到 DRS（Device Readiness Status，裝置就緒通知），模式為 Flit。若是 <code>0x3400</code>，Presence=011b，雖已協商 Flit，Data Link Layer 尚未 active。這兩個數字是<strong>欄位投影</strong>，不是完整 Register dump。</p>
 <details class="source-note"><summary>Flit 的版本邊界</summary><p>§4.2.3（p.340）；§4.2.3.3、Tables 4-10–4-14（pp.351–355）；§4.2.3.4.1（p.357）；重送見 §4.2.3.4.2.1／Figure 4-33（p.383），CRC／ECC 見 §4.2.3.4.3–§4.2.3.4.4（pp.384–390）。模式欄位見 Table 7-19（p.955）與 Figure 7-40／Table 7-37（pp.1004–1007）。本章採 Base 6.0 原版；後續 ECN（規格變更通知）不在本次引用範圍。</p></details></section>
 <section id="practice"><h2>7. 從一個待送封包串起整條路線</h2>
-<details class="question"><summary>裝置準備送出寫入時，依序看哪些機制？</summary><p>先沿 Figure 4-48 與 Figure 3-2 確認連線及資料連結初始化，再依 Tables 2-44／2-45 檢查 Posted 的標頭與資料額度。封包送出後，Figure 3-17 顯示序號與檢查碼，Figures 3-21／3-22 則串起兩端的接收與確認。本文的數字帳本只示範額度；實際排程仍受排序與仲裁規則約束。</p></details>
-<details class="question"><summary>接著換成讀取請求，沿哪一部分重新檢查？</summary><p>從 Table 2-45 更換交易種類即可：沒有資料 Payload 的讀取請求檢查 NPH。回覆則在反方向使用 Completion credits，接收端與發送端的角色也隨方向對調。</p></details>
-<details class="question"><summary>如果改用 Flit，哪部分要換讀另一組圖表？</summary><p>先依 Table 7-37 的 Presence 條件解讀模式，再讀 Tables 4-10–4-14 的區塊格式與 Figure 4-33 的重送。236 bytes 的交易區包含標頭，也可能有 NOP（空操作內容）；有效資料量要依實際封包配置計算。（§4.2.3.4.1，p.357。）</p></details>
+<details open class="question"><summary>裝置準備送出寫入時，依序看哪些機制？</summary><p>先沿 Figure 4-48 與 Figure 3-2 確認連線及資料連結初始化，再依 Tables 2-44／2-45 檢查 Posted 的標頭與資料額度。封包送出後，Figure 3-17 顯示序號與檢查碼，Figures 3-21／3-22 則串起兩端的接收與確認。本文的數字帳本只示範額度；實際排程仍受排序與仲裁規則約束。</p></details>
+<details open class="question"><summary>接著換成讀取請求，沿哪一部分重新檢查？</summary><p>從 Table 2-45 更換交易種類即可：沒有資料 Payload 的讀取請求檢查 NPH。回覆則在反方向使用 Completion credits，接收端與發送端的角色也隨方向對調。</p></details>
+<details open class="question"><summary>如果改用 Flit，哪部分要換讀另一組圖表？</summary><p>先依 Table 7-37 的 Presence 條件解讀模式，再讀 Tables 4-10–4-14 的區塊格式與 Figure 4-33 的重送。236 bytes 的交易區包含標頭，也可能有 NOP（空操作內容）；有效資料量要依實際封包配置計算。（§4.2.3.4.1，p.357。）</p></details>
 <p>下一章接著處理 <a href="chapter-9.html">Reset 的範圍與恢復條件</a>，沿同一拓樸查看 Function、連線與未完成交易的處理。</p></section>
         </article>
         <nav class="bottom-nav" aria-label="下一步"><a href="index.html">課程總覽</a><a href="chapter-7.html">← Chapter 7</a><a href="chapter-9.html">Chapter 9 →</a><a href="#content">回到本章開頭 ↑</a></nav>

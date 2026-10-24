@@ -28,7 +28,7 @@ FORMS = {
     'compare': [
         ('差別在哪裡', 'What differs', [2, 4]),
         ('如何選擇與確認', 'How to choose and verify', [3, 5, 6]),
-        ('哪些結論不能互相套用', 'Where the comparison stops', [7, 16]),
+        ('比較時要保留的條件', 'Conditions that shape the comparison', [7, 16]),
     ],
     'lookup': [
         ('要查哪個對象、哪份資料', 'Select the target and information', [2, 3, 4]),
@@ -53,7 +53,7 @@ FORMS = {
     'diagnose': [
         ('先保留哪些證據', 'Preserve the evidence first', [2, 3, 4]),
         ('依什麼順序排除原因', 'Work through the possible causes', [17, 5]),
-        ('什麼結果足以支持結論', 'Decide what the evidence supports', [6, 7, 16]),
+        ('把觀察結果接回規格條件', 'Connect observations to specification conditions', [6, 7, 16]),
     ],
     'lifecycle': [
         ('先界定觸發方式與影響對象', 'Identify the trigger and affected objects', [2, 3]),
@@ -151,7 +151,7 @@ PROMPTS = {
     'process': ('先排出操作順序，指出哪一步必須等待完成，才能進行下一步。', 'Order the actions and identify which completion must precede the next action.'),
     'concept': ('先用自己的話解釋機制，再舉一個常見誤解。', 'Explain the mechanism in your own words and identify a common misconception.'),
     'error': ('先區分失敗條件，再判斷是否有規範明定的回報結果。', 'Distinguish failure conditions before deciding whether a particular response is required.'),
-    'diagnose': ('先列出已知證據與仍缺少的資訊，再決定能不能判定韌體違規。', 'Separate available evidence from missing information before judging conformance.'),
+    'diagnose': ('先核對觀察結果是否符合條文的適用條件；資料不足時，說明還需要哪個欄位或事件記錄。', 'Separate available evidence from missing information before judging conformance.'),
     'lifecycle': ('先指明重設或中斷的方式，再分別判斷設定、進行中的操作與資料。', 'Name the reset or interruption, then assess settings, ongoing operations and data separately.'),
     'events': ('先說明事件成立的條件，再區分通知、事件確認與紀錄。', 'Establish the event condition, then distinguish notification, acknowledgment and recording.'),
 }

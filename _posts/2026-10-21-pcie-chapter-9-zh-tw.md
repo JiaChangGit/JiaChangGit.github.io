@@ -7,6 +7,9 @@ permalink: /pcie/chapter-9-zh-tw/
 categories: [PCIe]
 tags: [PCIe, Specification]
 lang: zh-TW
+spec_teaching: true
+spec_series: pcie
+description: "從單一 Function 的 FLR 查詢，判斷重設範圍、舊 Completion、就緒時間與設定恢復。"
 ---
 
 <style>
@@ -221,6 +224,64 @@ lang: zh-TW
 /* Self-contained teaching diagrams use the same theme in standalone pages and posts. */
 .pcie-article .course-diagram text { fill: var(--ink); font-family: inherit; font-size: 18px; }
 
+/* Applied only to explicitly authorized teaching roots. */
+html .spec-teaching[data-spec-series] .st-terms { margin:.35rem 0 1rem; padding:.5rem .8rem; border-inline-start:3px solid var(--st-accent); background:var(--st-soft); font-size:.88em; color:var(--st-muted); }
+html .spec-teaching[data-spec-series] .st-terms > div { display:flex; flex-wrap:wrap; gap:.2em .7em; }
+html .spec-teaching[data-spec-series] .st-terms dt { font-weight:650; }
+html .spec-teaching[data-spec-series] .st-terms dd { margin:0; flex:1 1 14em; }
+html .spec-teaching[data-spec-series] {
+ --st-diagram-width:900px;
+ --st-paper:#f2f6f8; --st-surface:#fff; --st-ink:#192d40; --st-muted:#4c6479;
+ --st-line:#cbd9e3; --st-accent:#145f9d; --st-soft:#edf5fc;
+ --paper:var(--st-paper); --surface:var(--st-surface); --surface-2:var(--st-soft); --surface-alt:var(--st-soft);
+ --ink:var(--st-ink); --muted:var(--st-muted); --line:var(--st-line);
+ --accent:var(--st-accent); --accent-2:var(--st-accent); --soft:var(--st-soft); --blue-soft:var(--st-soft); --teal-soft:var(--st-soft);
+ --qr-paper:var(--st-paper); --qr-surface:var(--st-surface); --qr-ink:var(--st-ink); --qr-muted:var(--st-muted);
+ --qr-line:var(--st-line); --qr-accent:var(--st-accent); --qr-soft:var(--st-soft);
+ color:var(--st-ink); background:var(--st-paper); font-size:17px; line-height:1.9;
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+}
+html .spec-teaching[data-spec-series="nvme"] { --st-accent:#086b56; --st-soft:#e7f4ee; }
+@media(prefers-color-scheme:dark) {
+ html:not([data-theme="light"]) .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+ html:not([data-theme="light"]) .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+}
+html[data-theme="dark"] .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+html[data-theme="dark"] .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+.spec-teaching * { box-sizing:border-box; }
+.spec-teaching :is(h1,h2,h3,h4,h5,p,li,td,th,summary,strong,figcaption) { color:var(--st-ink); }
+.spec-teaching svg text { font-family:inherit; }
+.spec-teaching h1 { font-size:clamp(1.8rem,3.2vw,2.65rem); line-height:1.4; }
+.spec-teaching h2 { font-size:clamp(1.3rem,2.5vw,1.7rem); line-height:1.55; }
+.spec-teaching h3 { font-size:1.15rem; line-height:1.65; }
+.spec-teaching h4 { font-size:1rem; line-height:1.7; }
+.spec-teaching :is(h1,h2,h3,h4) { overflow-wrap:anywhere; }
+.spec-teaching p { margin:.7rem 0 1.15rem; }
+.spec-teaching :is(a,summary) { text-underline-offset:.2em; }
+.spec-teaching :focus-visible { outline:3px solid var(--st-accent); outline-offset:4px; }
+.spec-teaching :is(.qa-takeaway,.qa-answer-lead,.st-takeaway) { color:var(--st-ink); font-weight:650; font-size:1.06rem; line-height:1.9; }
+.spec-teaching :is(.qa-question,.qr-card,.guided-walk) { border:1px solid var(--st-line); border-radius:12px; background:var(--st-surface); padding:clamp(18px,3vw,30px); margin:1.8rem 0; }
+.spec-teaching :is(.qa-flow,.qr-note,.qr-observations,.st-context,.st-route) { background:var(--st-soft); border-left:4px solid var(--st-accent); padding:1rem 1.2rem; margin:1.4rem 0; }
+.spec-teaching :is(.qr-step,.qa-qid,.st-label) { color:var(--st-accent); font-weight:700; }
+.spec-teaching :is(.qa-citations,.qa-source-links,.qr-case-sources,.walk-source,.st-source) { font-size:.84rem; line-height:1.75; color:var(--st-muted); overflow-wrap:anywhere; }
+.spec-teaching :is(.qr-table,.table-wrap) { overflow-x:auto; margin:1.4rem 0; border-radius:7px; }
+.spec-teaching :is(th,td) { line-height:1.8; vertical-align:top; min-width:120px; }
+.spec-teaching :is(table,td) { background:var(--st-surface); }
+.spec-teaching th { background:var(--st-soft); }
+.spec-teaching .st-step { border-left:3px solid var(--st-line); padding:.6rem 1rem; margin:1.2rem 0; }
+.spec-teaching .st-step:target { border-left-color:var(--st-accent); background:var(--st-soft); }
+.spec-teaching .st-glossary { border:1px solid var(--st-line); padding:.7rem 1rem; margin:1.4rem 0; border-radius:8px; }
+.spec-teaching .st-glossary > summary { min-height:44px; cursor:pointer; }
+.spec-teaching .st-specs { display:flex; flex-wrap:wrap; gap:.4rem 1rem; color:var(--st-muted); font-size:.8rem; line-height:1.8; margin:1rem 0; }
+.spec-teaching .st-specs span { border-bottom:2px solid var(--st-accent); padding:.2rem 0; }
+@media(max-width:620px) { .spec-teaching :is(.qa-question,.qr-card,.guided-walk) { padding:16px; } .spec-teaching .diagram svg { min-width:var(--st-diagram-width); } }
+@media print {
+ .spec-teaching { --st-paper:#fff!important; --st-surface:#fff!important; --st-ink:#000!important; --st-muted:#333!important; --st-line:#999!important; --st-accent:#000!important; --st-soft:#fff!important; }
+ .spec-teaching details > * { display:block!important; }
+ .spec-teaching details::details-content { content-visibility:visible!important; }
+ .spec-teaching .st-step { break-inside:avoid; }
+}
+
 /* Native reading guides: selection highlights; it never hides teaching content.
    build_pcie_course.py changes .pcie-article to .pcie-article for the posts. */
 .pcie-article .guided-walk { margin: 1.8rem 0; padding: 1.2rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); min-width: 0; }
@@ -286,7 +347,7 @@ lang: zh-TW
   .pcie-article .walk-steps { padding-left: 1.15rem; }
   .pcie-article .walk-step { padding: .5rem .6rem; }
   .pcie-article .walk-diagram { overflow-x: auto; }
-  .pcie-article .walk-diagram svg { min-width: 700px; }
+  .pcie-article .walk-diagram svg { min-width: var(--st-diagram-width, 700px); }
 }
 @media (forced-colors: active) {
   .pcie-article .walk-choice:checked + .walk-label { border-color: Highlight; }
@@ -314,7 +375,7 @@ html[data-theme="dark"] .pcie-article { color-scheme: dark; }
 .pcie-article { background: transparent; margin: 1.5rem 0; }
 .pcie-article .lesson { padding: 0; border: 0; background: transparent; }
 </style>
-<div class="pcie-article" lang="zh-Hant-TW">
+<div class="pcie-article spec-teaching" data-spec-series="pcie" lang="zh-Hant-TW">
 <nav class="bottom-nav" aria-label="課程與語言版本"><a href="/DOCS/pcie-course/index.html">課程總覽</a><a href="/DOCS/pcie-course/chapter-9.html">繁中完整教學</a><a href="/pcie/chapter-9-en/">English</a></nav>
 <article class="lesson">
 <figure class="diagram"><svg viewBox="0 0 900 640" role="img" aria-labelledby="flr-walk-title flr-walk-desc"><title id="flr-walk-title">保留其他功能的工作，只重設 03:00.0</title><desc id="flr-walk-desc">時間向下。軟體確認能力、停止新工作並處理舊交易，寫入重設控制，等待必要條件，再恢復設定。03:00.1 與共用連線不受此功能重設影響。</desc>
@@ -329,11 +390,11 @@ html[data-theme="dark"] .pcie-article { color-scheme: dark; }
 <p class="lead">只想重建 03:00.0 的工作環境時，先查它是否支援 FLR（Function Level Reset，以單一功能為範圍的重設）。軟體先停止新工作、處理舊交易，再觸發重設；等到設定就緒且舊交易的等待條件已滿足，才恢復設定並重新開放工作。</p>
 <p><a href="/DOCS/pcie-course/chapter-9.html">完整中文教學</a> · <a href="/pcie/chapter-9-en/">English</a> · <a href="/DOCS/pcie-course/index.html">課程路線</a></p>
 <aside class="note"><strong>版本與案例</strong><p>採 Base 6.0。03:00.0 與 03:00.1 是普通多 Function Endpoint，共用通往 02:01.0 的 Link，不含 SR-IOV（Single Root I/O Virtualization，單一根系統的 I/O 虛擬化）。讀值與時間點是作者假設；PCI Express Capability 在 0x70。</p></aside>
-<section id="walk"><h2>沿正常流程走一次</h2><p>Chapter 6–8 已建立記憶體存取、中斷與連線。本章保留這條連線，重新建立目標 Function（可獨立設定的功能單位）的工作環境。閱讀順序隨軟體的需求安排：Figure 7-24 查能力，Figure 7-26 查未完成交易，Figure 7-25 找觸發控制，再接到 §6.6.2 的等待與恢復。</p><ol><li>讀 Device Capabilities（裝置能力暫存器）bit 28，確認支援 FLR（單一功能重設）。</li><li>協調其他存取者，停止新工作並處理舊請求。p.727 的實作說明以清除 Command、查看 Transactions Pending（未完成交易指示）示範一種安排；此位只追蹤需要完成回覆的 Non-Posted Requests。</li><li>對 Device Control（裝置控制暫存器）的 Initiate FLR 寫 1。裝置先回覆這筆設定寫入，再開始重設。</li><li>本例先等 100 ms，再進行設定存取。若後續初始化仍需時間，RRS（Request Retry Status，要求稍後重試）會讓軟體繼續等待；恢復前也須滿足舊交易的等待條件。</li><li>按欄位屬性恢復設定，重建裝置工作與通知路徑，再開放新工作。</li></ol><p>接著沿這條流程讀欄位值，以及各步驟需要注意的例外。</p></section><section id="scope"><h2>想保留其他 Function 的工作，先避開過大的重設範圍</h2><div class="table-wrap"><table><caption>不同重設的責任範圍</caption><thead><tr><th scope="col">機制</th><th scope="col">意義與選擇限制</th></tr></thead><tbody><tr><td>Cold／Warm Fundamental Reset</td><td>Cold 隨供電發生；Warm 不移除再接回電源，Base 未指定通用觸發方法。範圍取決於硬體與平台，不能當成指定單一 Function。</td></tr><tr><td>Hot Reset</td><td>透過 Link 傳播 Conventional Reset；Downstream Port 的 Secondary Bus Reset 會發起它。Switch 可繼續向下游傳播。</td></tr><tr><td>FLR</td><td>重設指定普通 Endpoint Function，不得影響 Link 或其他普通 Function。</td></tr></tbody></table></div><p>若 03:00.1 必須繼續工作，就應先查 03:00.0 的 FLR 能力。對 02:01.0 發起 Secondary Bus Reset 會波及兩者；在 Switch 更上游操作，範圍還可能擴大。PERST# 的板級時序需要相應平台／form factor 規格。PF（Physical Function，管理虛擬功能的實體功能）的 FLR 會清 VF Enable（虛擬功能啟用位），使 VFs（Virtual Functions，虛擬功能）不再存在，不能套用普通 Function 的隔離結論。</p><details class="source-note"><summary>範圍來源</summary><p>§6.6.1–§6.6.2（pp.721–727）、§4.2.5.9（p.441）；PF／VF：Table 7-21（p.962）。</p></details></section>
+<section id="walk"><h2>沿正常流程走一次</h2><p>Chapter 6–8 已建立記憶體存取、中斷與連線。本章保留這條連線，重新建立目標 Function（可獨立設定的功能單位）的工作環境。閱讀順序隨軟體的需求安排：Figure 7-24 查能力，Figure 7-26 查未完成交易，Figure 7-25 找觸發控制，再接到 §6.6.2 的等待與恢復。</p><ol><li>讀 Device Capabilities（裝置能力暫存器）bit 28，確認支援 FLR（單一功能重設）。</li><li>協調其他存取者，停止新工作並處理舊請求。p.727 的實作說明以清除 Command、查看 Transactions Pending（未完成交易指示）示範一種安排；此位只追蹤需要完成回覆的 Non-Posted Requests。</li><li>對 Device Control（裝置控制暫存器）的 Initiate FLR 寫 1。裝置先回覆這筆設定寫入，再開始重設。</li><li>本例先等 100 ms，再進行設定存取。若後續初始化仍需時間，RRS（Request Retry Status，要求稍後重試）會讓軟體繼續等待；恢復前也須滿足舊交易的等待條件。</li><li>按欄位屬性恢復設定，重建裝置工作與通知路徑，再開放新工作。</li></ol><p>接著沿這條流程讀欄位值，以及各步驟需要注意的例外。</p></section><section id="scope"><h2>想保留其他 Function 的工作，先避開過大的重設範圍</h2><div class="table-wrap"><table><caption>不同重設的責任範圍</caption><thead><tr><th scope="col">機制</th><th scope="col">意義與選擇限制</th></tr></thead><tbody><tr><td>Cold／Warm Fundamental Reset</td><td>Cold 隨供電發生；Warm 不移除再接回電源，Base 未指定通用觸發方法。範圍取決於硬體與平台，不能當成指定單一 Function。</td></tr><tr><td>Hot Reset</td><td>透過 Link 傳播 Conventional Reset；Downstream Port 的 Secondary Bus Reset 會發起它。Switch 可繼續向下游傳播。</td></tr><tr><td>FLR</td><td>重設指定普通 Endpoint Function，不得影響 Link 或其他普通 Function。</td></tr></tbody></table><dl class="st-terms" aria-label="本段名詞"><div><dt>FLR</dt><dd>Function Level Reset，以功能為範圍的重設</dd></div></dl></div><p>若 03:00.1 必須繼續工作，就應先查 03:00.0 的 FLR 能力。對 02:01.0 發起 Secondary Bus Reset 會波及兩者；在 Switch 更上游操作，範圍還可能擴大。PERST# 的板級時序需要相應平台／form factor 規格。PF（Physical Function，管理虛擬功能的實體功能）的 FLR 會清 VF Enable（虛擬功能啟用位），使 VFs（Virtual Functions，虛擬功能）不再存在，不能套用普通 Function 的隔離結論。</p><details class="source-note"><summary>範圍來源</summary><p>§6.6.1–§6.6.2（pp.721–727）、§4.2.5.9（p.441）；PF／VF：Table 7-21（p.962）。</p></details></section>
 <section id="locate"><h2>先查能力，再處理 Pending，最後才觸發</h2><div class="table-wrap"><table><caption>作者假設的 FLR 讀值</caption><thead><tr><th scope="col">位址／寬度</th><th scope="col">值</th><th scope="col">判讀</th></tr></thead><tbody><tr><td>0x74／32 bits</td><td>0x10008000</td><td>Device Capabilities bit 28=1，支援 FLR。</td></tr><tr><td>0x7A／16 bits</td><td>0x0020</td><td>Device Status bit 5=1，有未完成 Non-Posted Requests。</td></tr><tr><td>0x78／16 bits</td><td>0x2810</td><td>Device Control 既有設定。</td></tr><tr><td>0x04／16 bits</td><td>0x0006</td><td>Command 的 MSE（Memory Space Enable，記憶體空間回應許可）、BME（Bus Master Enable，裝置發送許可）已開啟。</td></tr></tbody></table></div><p>依序讀 Figure 7-24／Table 7-20、Figure 7-26／Table 7-22、Figure 7-25／Table 7-21。完成停工與必要等待後，以 16-bit 寫入 <code>0x2810 | 0x8000 = 0xA810</code> 觸發 FLR，不連帶寫入相鄰的 RW1C（寫 1 清除）狀態。Initiate FLR 讀值永遠為零；同一 bit 在 PCIe-to-PCI/PCI-X Bridge 另有意義，因此必須先確認 Function 類型。</p><details class="source-note"><summary>欄位定位</summary><p>Figures 7-24–7-26、Tables 7-20–7-22（pp.955、958–959、962、965–966）。</p></details></section>
 <section id="pending"><h2>停止新 Request，不代表舊 Completion 已消失</h2><p>BME（裝置發送許可）=0 不會收回先前送出的 Request。Transactions Pending 只反映此 Function 發出的 Non-Posted Requests；它們可能已完成或被 timeout 終止，這個 bit 不涵蓋所有 Posted Writes、CPU 存取或外部工作，且 FLR 完成時本身就必須清零。</p><p>作者情境中，Tag（交易識別標記）=0x13 的舊 MRd（Memory Read，記憶體讀取） 尚未回覆便發生 FLR。若立即重新使用該 Tag，遲到的 Completion 可能被誤配給新交易。軟體應先協調其他存取者、停止裝置新工作及 DMA（Direct Memory Access，直接記憶體存取）／中斷，再處理未完成交易。p.727 的 Implementation Note 提供清 Command、輪詢 Pending 或等待足夠時間後才發 FLR 的範例演算法；它不能取代裝置特有的停工程序。</p><details class="source-note"><summary>Pending 與 stale Completion</summary><p>Table 7-22（p.966）；§6.6.2（pp.725–727）。</p></details></section>
 <section id="wait"><h2>FLR 完成、設定就緒與舊交易等待須分開確認</h2><p>觸發 FLR 的 Configuration Write 必須先取得 Completion，再開始 FLR。Function 必須在 100 ms 內完成 FLR，但特有的後續初始化可能更久；超過此時限仍需初始化時，必須以 RRS（要求稍後重試）回覆 Configuration Request。回過非 RRS Completion 後，下次 Reset 前不得再回 RRS。</p><p>若觸發時 Transactions Pending=1，初始化前仍須容許舊 Completion 到達，或合理確信不會再到達；規格建議依 FLR 前的 Completion Timeout 等待。若當時 timeout 停用，時間由系統決定但不得少於 100 ms。FRS（Function Readiness Status，功能就緒狀態通知）的 Configuration-Ready 可提早允許 Configuration 存取，仍不保證先前 Requests 全部完成。FLR 進行中 Request 可被靜默丟棄，不能任意用 MMIO（Memory-Mapped I/O，記憶體映射 I/O）輪詢當作完成通知。</p><p>Conventional Reset 的起點又不同。在無 DRS（Device Readiness Status，裝置就緒狀態通知）／其他提早就緒例外的分支，支援高於 5 GT/s 的 Downstream Port 要從 Link training 完成後等至少 100 ms。作者例：Reset 於 t=0 ms 結束，training 於 t=40 ms 完成，首次 Configuration Request 最早為 t=140 ms。只支援到 5 GT/s 的對應分支從 Reset 結束計時。未使用 Readiness Notifications 時，Conventional Reset 結束後至少容許 1 s，才可因尚無 Successful Completion 判定故障；這不是首次可存取時間。</p><details class="source-note"><summary>各種等待的依據</summary><p>FLR：§6.6.2（pp.725–727）；Conventional Reset、Immediate Readiness、DRS 與時間回報例外：§6.6.1（pp.722–723）。</p></details></section>
-<section id="restore"><h2>按欄位恢復，不整份寫回 dump</h2><p>FLR 清除 BME、MSI（Message Signaled Interrupts，訊息式中斷）Enable 等發送許可，但保留明列的 Max_Payload_Size（最大承載資料大小）、ASPM Control（連線自動省電控制）、RCB（Read Completion Boundary，讀取回覆邊界）、HwInit（硬體初始化）與 sticky（具狀態保留屬性）欄位；Link 狀態機與 VC0（預設虛擬通道）不被重設。完整例外見 §6.6.2，Flit-capable 實作另有要求。Sticky 也不代表所有斷電／Reset 都永久保留。</p><p>恢復時需分清 RO（唯讀）、RW1C（寫 1 清除）、觸發控制與可寫設定，重新建立必要的資源、裝置工作介面、中斷與 DMA 條件後才開放工作。FLR 不會替軟體清除主機 buffer，PCIe Base 也不定義每張卡的 queue 重建方式。</p><details class="source-note"><summary>保存與恢復來源</summary><p>§6.6.2（pp.724–726）；Table 7-2（pp.914–915）。</p></details></section>
+<section id="restore"><h2>按欄位恢復，不整份寫回 dump</h2><p>FLR 清除 BME、MSI（Message Signaled Interrupts，訊息式中斷）Enable 等發送許可，但保留明列的 Max_Payload_Size（最大承載資料大小）、ASPM Control（連線自動省電控制）、RCB（Read Completion Boundary，讀取回覆邊界）、HwInit（硬體初始化）與 sticky（具狀態保留屬性）欄位；Link 狀態機與 VC0（預設虛擬通道）不被重設。完整例外見 §6.6.2，Flit-capable 實作另有要求。Sticky 也不代表所有斷電／Reset 都永久保留。</p><p>恢復時需分清 RO（唯讀）、RW1C（寫 1 清除）、觸發控制與可寫設定，重新建立必要的資源、裝置工作介面、中斷與 DMA 條件後才開放工作。FLR 不會替軟體清除主機 buffer，PCIe Base 也不定義每張卡的 queue 重建方式。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>DMA</dt><dd>Direct Memory Access，裝置直接存取記憶體</dd></div></dl><details class="source-note"><summary>保存與恢復來源</summary><p>§6.6.2（pp.724–726）；Table 7-2（pp.914–915）。</p></details></section>
 <section id="questions"><h2>回到這次重設的範圍</h2><details class="question"><summary>FLR 沒有讓 Link 重訓，是否代表失敗？</summary><p>不是。FLR 不得影響 Link；應查 Function 的重設與恢復條件。</p></details><details class="question"><summary>FLR 後 Pending=0，就能回收所有 DMA buffer 嗎？</summary><p>不能。還需要舊交易等待、裝置停工、其他軟體存取協調及平台 DMA 生命週期條件。</p></details></section>
 </article>
 <nav class="bottom-nav" aria-label="課程與語言版本"><a href="/DOCS/pcie-course/index.html">課程總覽</a><a href="/DOCS/pcie-course/chapter-9.html">繁中完整教學</a><a href="/pcie/chapter-9-en/">English</a></nav>

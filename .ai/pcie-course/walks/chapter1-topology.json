@@ -1,0 +1,92 @@
+{
+  "walk_id": "ch1-topology",
+  "title": "在同一份快照中找到目標 Function",
+  "svg": "<svg viewBox=\"0 0 840 585\" class=\"course-diagram\" role=\"img\" aria-labelledby=\"ch1-topology-svg-title ch1-topology-svg-desc\"><title id=\"ch1-topology-svg-title\">沿拓樸找到 03:00.1</title><desc id=\"ch1-topology-svg-desc\">所有BDF皆在Segment 0000；實線是外部Link，虛線是內部邏輯連接；Endpoint A的兩個Function共用一條Link。</desc><g data-walk-target=\"rp\"><rect x=\"285\" y=\"20\" width=\"270\" height=\"80\" rx=\"10\" fill=\"var(--blue-soft)\" stroke=\"var(--line)\" stroke-width=\"2\"/><text x=\"420\" y=\"47\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"18\">Root Port</text><text x=\"420\" y=\"72\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"16\">00:01.0 · 01–04</text></g><g data-walk-target=\"up\"><rect x=\"285\" y=\"155\" width=\"270\" height=\"80\" rx=\"10\" fill=\"var(--blue-soft)\" stroke=\"var(--line)\" stroke-width=\"2\"/><text x=\"420\" y=\"182\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"18\">Switch Upstream Port</text><text x=\"420\" y=\"207\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"16\">01:00.0 · 02–04</text></g><g data-walk-target=\"a\"><rect x=\"35\" y=\"330\" width=\"300\" height=\"80\" rx=\"10\" fill=\"var(--blue-soft)\" stroke=\"var(--line)\" stroke-width=\"2\"/><text x=\"185\" y=\"357\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"18\">Downstream Port A</text><text x=\"185\" y=\"382\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"16\">02:01.0 · 03–03</text></g><g data-walk-target=\"b\"><rect x=\"505\" y=\"330\" width=\"300\" height=\"80\" rx=\"10\" fill=\"var(--blue-soft)\" stroke=\"var(--line)\" stroke-width=\"2\"/><text x=\"655\" y=\"357\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"18\">Downstream Port B</text><text x=\"655\" y=\"382\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"16\">02:02.0 · 04–04</text></g><g data-walk-target=\"ep-a\"><rect x=\"35\" y=\"475\" width=\"300\" height=\"80\" rx=\"10\" fill=\"var(--blue-soft)\" stroke=\"var(--line)\" stroke-width=\"2\"/><text x=\"185\" y=\"502\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"18\">Endpoint A</text><text x=\"185\" y=\"527\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"16\">03:00.0 / 03:00.1</text></g><g data-walk-target=\"ep-b\"><rect x=\"505\" y=\"475\" width=\"300\" height=\"80\" rx=\"10\" fill=\"var(--blue-soft)\" stroke=\"var(--line)\" stroke-width=\"2\"/><text x=\"655\" y=\"502\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"18\">Endpoint B</text><text x=\"655\" y=\"527\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"16\">04:00.0</text></g><g data-walk-target=\"link-rp\"><path d=\"M420 100 V155\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2.5\"/><text x=\"465\" y=\"132\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"15\">Link</text></g><g data-walk-target=\"internal\"><path d=\"M420 235 V280 H185 V330 M420 280 H655 V330\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2.5\" stroke-dasharray=\"6 5\"/><text x=\"420\" y=\"270\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"15\">內部 Bus 02（邏輯連接）</text></g><g data-walk-target=\"link-a\"><path d=\"M185 410 V475\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2.5\"/><text x=\"225\" y=\"450\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"15\">Link</text></g><g data-walk-target=\"link-b\"><path d=\"M655 410 V475\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2.5\"/><text x=\"695\" y=\"450\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"15\">Link</text></g></svg>",
+  "steps": [
+    {
+      "title": "先確認查詢範圍",
+      "html": "<p>圖中所有 BDF（Bus、Device、Function 識別號）均位於 Segment 0000。Root Port 是根部向外建立 Link 的介面；它的下游範圍涵蓋 01–04。</p>",
+      "targets": [
+        "rp",
+        "link-rp"
+      ],
+      "condition_html": "<p>所有 Function 已確認存在，設定讀取成功，拓樸在查詢期間保持不變。</p>",
+      "source_html": "<p>Base 6.0 §7.1／Figure 7-1，文件頁／PDF 頁 903–904；Firmware 3.3 §1.3，文件頁／PDF 頁 8–9。</p>",
+      "claim_ids": [
+        "PCIE-CH1-SEGMENT-001",
+        "PCIE-CH1-EXAMPLE-001"
+      ]
+    },
+    {
+      "title": "看懂交換器內部表示",
+      "html": "<p>Switch Upstream Port 是交換器朝向主機的一端。其下游的 Bus 02 連接兩個 Downstream Port，也就是交換器朝下游的連接埠；虛線只表示邏輯橋接關係。</p>",
+      "targets": [
+        "up",
+        "internal",
+        "a",
+        "b"
+      ],
+      "condition_html": "<p>本例沒有 FPB Routing ID；內部 Bus 只放代表 Downstream Port 的橋接功能。</p>",
+      "source_html": "<p>Base 6.0 §1.3.3／Figure 1-3、§7.1／Figure 7-2，文件頁／PDF 頁 107、903–904。</p>",
+      "claim_ids": [
+        "PCIE-CH1-SWITCH-001"
+      ]
+    },
+    {
+      "title": "用下游範圍選 A 分支",
+      "html": "<p>目標 Bus 03 落在 A 的 03–03 範圍。B 分支只涵蓋 04–04，因此圖中沿 A 的外部連線到裝置。這次是核對已知範圍，還沒有執行配置。</p>",
+      "targets": [
+        "a",
+        "link-a",
+        "ep-a",
+        "b",
+        "link-b",
+        "ep-b"
+      ],
+      "condition_html": "<p>Secondary 指下一層 Bus；Subordinate 指下游最高 Bus。範圍內的號碼不保證都有 Function。</p>",
+      "source_html": "<p>Base 6.0 Figure 7-14、§7.5.1.3.3–§7.5.1.3.4，文件頁／PDF 頁 936–937。</p>",
+      "claim_ids": [
+        "PCIE-CH1-BRIDGEBUS-001",
+        "PCIE-CH1-EXAMPLE-001"
+      ]
+    },
+    {
+      "title": "最後選定 Function 1",
+      "html": "<p>到達 Bus 03 後，完整 BDF 選出 Device 00 的 Function 1。Function 是軟體可個別設定的功能；卡 A 的兩個 Function 共用圖中的一條 Link。</p>",
+      "targets": [
+        "ep-a"
+      ],
+      "condition_html": "<p>Function 1 的存在是獨立發現結果；Header Type 的多功能位元只允許探查。</p>",
+      "source_html": "<p>Base 6.0 §7.5.1.1.9／Figure 7-8／Table 7-7，文件頁／PDF 頁 924–925。</p>",
+      "claim_ids": [
+        "PCIE-CH1-OBJECTS-001",
+        "PCIE-CH1-HEADER-001",
+        "PCIE-CH1-EXAMPLE-001"
+      ]
+    }
+  ],
+  "caption_html": "作者的已配置拓樸。實線：外部 Link；虛線：Switch 內部邏輯連接。框內第二行依序標示 BDF 與下游 Bus 範圍。",
+  "order_html": "<p>這是讀取快照的順序：先確認 Segment，再沿橋接範圍選分支，最後選 Function；不是枚舉或封包交換的時間線。</p>",
+  "components": [
+    {
+      "target": "rp",
+      "title": "Root Port：根部的對外介面",
+      "html": "<p>圖中的下游範圍 01–04 包含兩條分支。</p>",
+      "basic_html": "<p>本章 Root Port 在設定模型中呈現為 Type 1 橋接功能。</p>"
+    },
+    {
+      "target": "a",
+      "title": "Downstream Port A：通往 Bus 03",
+      "html": "<p>它的 Secondary 與 Subordinate 都為 03，目標從這一支到達。</p>",
+      "basic_html": "<p>Downstream 表示遠離 Root Complex、朝階層下游的方向。</p>"
+    },
+    {
+      "target": "ep-a",
+      "title": "Endpoint A：選出 Function 1",
+      "html": "<p>設定查詢使用 03:00.1，與同卡的 03:00.0 分別取得資料。</p>",
+      "basic_html": "<p>實體卡是組裝單位；Function 是軟體可個別辨識與設定的對象。</p>"
+    }
+  ],
+  "language": "zh",
+  "summary_html": "<p class=\"lead\">本章沿著一棵含交換器的 PCIe 拓樸，找到裝置上的一個可設定功能。先認識軟體看到的橋接關係，再用設定欄位辨認角色，最後把識別號放回正確的範圍與時間。</p>"
+}

@@ -11,6 +11,9 @@ from scripts.nvme_qa_model import load, LABELS, REFS, COMMON
 from scripts.nvme_qa_teaching import VOLUMES, INTRO, AIDS, LESSONS
 from scripts.nvme_qa_presentation import reading_plan
 from scripts.nvme_qa_visuals import VISUALS
+from scripts.spec_teaching import specification_badges
+from scripts.spec_terms import explain_terms
+from scripts.nvme_volume_context import volume_context
 
 ROOT=Path(__file__).resolve().parents[1]
 QUESTIONS=load()
@@ -61,7 +64,7 @@ GLOSSARY=[
 ]
 
 def glossary(lang):
-    return '<aside class="qa-glossary"><h2>'+tr('先認識本文使用的字詞','Terms used in this volume',lang)+'</h2><dl>'+''.join('<dt>'+E(k)+'</dt><dd>'+txt(v,lang)+'</dd>' for k,v in GLOSSARY)+'</dl></aside>'
+    return '<details class="qa-glossary st-glossary"><summary>'+tr('需要時回顧本篇名詞','Review the terminology when needed',lang)+'</summary><dl>'+''.join('<dt>'+E(k)+'</dt><dd>'+txt(v,lang)+'</dd>' for k,v in GLOSSARY)+'</dl></details>'
 
 def aid(slug,lang,standalone):
     a=AIDS[slug]
@@ -123,8 +126,8 @@ def question(q,lang,shared,standalone=False):
     replaced=set(visual['replaces']) if visual else set()
     rendered={1};seen={plan['lead']};flow_done=False
     out=[f'<article class="qa-question" id="{qid}" data-question="{q["id"]}" data-answer-kind="{plan["kind"]}"><h2><a class="qa-qid" href="#{qid}">Q{q["id"]:02d}</a> '+txt(q['title'],lang)+'</h2>',
-         '<p class="qa-prompt">'+txt(q.get('practice',plan['prompt']),lang)+'</p>',
-         f'<details class="qa-answer" id="{qid}-answer"><summary>'+tr('展開解答與推導','Reveal the explanation',lang)+'</summary>',
+         ('<p class="qa-prompt">'+txt(q['practice'],lang)+'</p>' if q.get('practice') else ''),
+         f'<details open class="qa-answer" id="{qid}-answer"><summary>'+tr('跟著解說理解','Follow the explanation',lang)+'</summary>',
          f'<p class="qa-answer-lead" id="{qid}-a-01">'+txt(plan['lead'],lang)+'</p><div class="qa-sections">']
     def paragraph(i):
         value=q['answers'][i];key=shared_key(value)
@@ -161,7 +164,7 @@ def question(q,lang,shared,standalone=False):
             out+=[visual_flow(q,lang)];flow_done=True
         out+=['</section>']
     if visual and not flow_done:raise ValueError(f'Missing visual position for {qid}')
-    out+=['</div>']
+    out+=['</div>',cite(q['refs'],lang)]
     # Keep previously shared deep links working, without retaining irrelevant
     # legacy paragraphs in the hidden DOM or search text.
     out+=[''.join(f'<span class="qa-anchor" id="{qid}-a-{i:02d}"></span>' for i in q['answers'] if i not in rendered)]
@@ -230,13 +233,13 @@ SCRIPT='''<script>
 </script>'''
 
 def body(slug,lang,standalone):
-    out=['<div class="nvme-quickref nvme-qa">',nav(slug,lang,standalone)]
+    out=['<div class="nvme-quickref nvme-qa spec-teaching" data-spec-series="nvme">',nav(slug,lang,standalone)]
     if standalone:out+=['<button class="qa-theme" type="button" data-theme-toggle>切換明／暗色</button>']
-    out+=['<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–328</p>']
+    out+=['<main id="content"><p class="qr-eyebrow">NVMe · Q1–328</p>',specification_badges()]
     if slug=='index':out+=[index_body(lang,standalone)]
     else:
         _,a,b,zh,en=next(v for v in VOLUMES if v[0]==slug)
-        out+=['<header><p class="qa-range">Q'+str(a)+'–Q'+str(b)+'</p><h1>'+tr(zh,en,lang)+'</h1><p class="qr-intro">'+txt(INTRO[slug],lang)+'</p><p>'+tr('先練習，再展開解答。各題依需要使用文字、欄位判讀、比較或流程說明，不要求相同的回答項目。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。','Practice first, then reveal the explanation. Each question uses the prose, field interpretation, comparison or flow that suits it. All numerical examples are hypothetical. Status is written SCT/SC; h indicates hexadecimal.',lang)+'</p></header>',glossary(lang),aid(slug,lang,standalone),controls(lang),'<section id="question-index"><h2>'+tr('本冊題目','Questions in this volume',lang)+'</h2><ol class="qa-index">']
+        out+=['<header><p class="qa-range">Q'+str(a)+'–Q'+str(b)+'</p><h1>'+tr(zh,en,lang)+'</h1>'+volume_context(slug,lang)+'<p class="qr-intro">'+txt(INTRO[slug],lang)+'</p><p>'+tr('每個問題都接著完整解說，依內容帶讀欄位、比較機制或追蹤流程。先看本冊總覽，再沿問題閱讀；必要條件與正常路徑直接顯示。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。','Each question is followed by its explanation. Start with the volume overview, then follow the field interpretations, comparisons or processes. Essential conditions and the normal path are visible from the start. All numerical examples are hypothetical. Status is written SCT/SC; h indicates hexadecimal.',lang)+'</p></header>',aid(slug,lang,standalone),glossary(lang),controls(lang),'<section id="question-index"><h2>'+tr('本冊題目','Questions in this volume',lang)+'</h2><ol class="qa-index">']
         qs=[q for q in QUESTIONS if a<=q['id']<=b]
         for q in qs:out+=[f'<li><a href="#q-{q["id"]:03d}">Q{q["id"]:02d} · '+txt(q['title'],lang)+'</a></li>']
         out+=['</ol></section>'];shared=set()
@@ -246,15 +249,15 @@ def body(slug,lang,standalone):
         if slug=='features':keys|={'powerstates','power','idctrl'}
         out+=[sources(keys,lang,standalone)]
     out+=['</main>',nav(slug,lang,standalone),'</div>',SCRIPT]
-    return '\n'.join(out)
+    return explain_terms('\n'.join(out),'nvme',lang)
 
 def artifacts():
     result={}
-    css=(ROOT/'assets/css/nvme-quickref.css').read_text()+'\n'+(ROOT/'assets/css/nvme-question-bank.css').read_text()
+    css=(ROOT/'assets/css/nvme-quickref.css').read_text()+'\n'+(ROOT/'assets/css/nvme-question-bank.css').read_text()+'\n'+(ROOT/'assets/css/spec-teaching.css').read_text()
     for slug in ['index']+[v[0] for v in VOLUMES]:
         for lang in ['zh','en']:
             title=tr('NVMe 自問自答題庫：','NVMe Self-Study Bank: ',lang)+(tr('總索引 · Q1–328','Index · Q1–328',lang) if slug=='index' else next(v[3 if lang=='zh' else 4] for v in VOLUMES if v[0]==slug))
-            front='---\nlayout: post\ntitle: '+json.dumps(title,ensure_ascii=False)+'\ndate: '+post_date(slug)+' 00:00:00 +0800\ncategories: [nvme]\npermalink: '+url(slug,lang)+'\nlang: '+tr('zh-TW','en',lang)+'\nnvme_quickref: true\nnvme_qa: true\n---\n\n'
+            front='---\nlayout: post\ntitle: '+json.dumps(title,ensure_ascii=False)+'\ndate: '+post_date(slug)+' 00:00:00 +0800\ncategories: [nvme]\npermalink: '+url(slug,lang)+'\nlang: '+tr('zh-TW','en',lang)+'\nnvme_quickref: true\nnvme_qa: true\nspec_teaching: true\nlast_modified_at: 2026-10-23\n---\n\n'
             result[ROOT/'_posts'/f'{post_date(slug)}-nvme-question-bank-{slug}-{tr("zh-tw","en",lang)}.md']=front+body(slug,lang,False)+'\n'
         title='NVMe 自問自答題庫：'+('總索引 · Q1–328' if slug=='index' else next(v[3] for v in VOLUMES if v[0]==slug))
         result[ROOT/'DOCS/nvme-question-bank'/f'{slug}.html']='<!doctype html>\n<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>'+E(title)+'</title><style>'+css+'</style></head><body class="qr-standalone">\n'+body(slug,'zh',True)+'\n</body></html>\n'

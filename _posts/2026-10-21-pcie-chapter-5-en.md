@@ -2,10 +2,14 @@
 layout: post
 title: "PCIe Chapter 5: From a Read or Write to a PCIe Transaction"
 date: 2026-10-21 00:00:00 +0800
+last_modified_at: 2026-10-23 00:00:00 +0800
 permalink: /pcie/chapter-5-en/
 categories: [PCIe]
 tags: [PCIe, Specification]
 lang: en
+spec_teaching: true
+spec_series: pcie
+description: "從一次 MMIO 讀取推演 Request、Completion、Byte Enable、分段回覆與 4 KiB 邊界。"
 ---
 
 <style>
@@ -220,36 +224,182 @@ lang: en
 /* Self-contained teaching diagrams use the same theme in standalone pages and posts. */
 .pcie-article .course-diagram text { fill: var(--ink); font-family: inherit; font-size: 18px; }
 
+/* Applied only to explicitly authorized teaching roots. */
+html .spec-teaching[data-spec-series] .st-terms { margin:.35rem 0 1rem; padding:.5rem .8rem; border-inline-start:3px solid var(--st-accent); background:var(--st-soft); font-size:.88em; color:var(--st-muted); }
+html .spec-teaching[data-spec-series] .st-terms > div { display:flex; flex-wrap:wrap; gap:.2em .7em; }
+html .spec-teaching[data-spec-series] .st-terms dt { font-weight:650; }
+html .spec-teaching[data-spec-series] .st-terms dd { margin:0; flex:1 1 14em; }
+html .spec-teaching[data-spec-series] {
+ --st-diagram-width:900px;
+ --st-paper:#f2f6f8; --st-surface:#fff; --st-ink:#192d40; --st-muted:#4c6479;
+ --st-line:#cbd9e3; --st-accent:#145f9d; --st-soft:#edf5fc;
+ --paper:var(--st-paper); --surface:var(--st-surface); --surface-2:var(--st-soft); --surface-alt:var(--st-soft);
+ --ink:var(--st-ink); --muted:var(--st-muted); --line:var(--st-line);
+ --accent:var(--st-accent); --accent-2:var(--st-accent); --soft:var(--st-soft); --blue-soft:var(--st-soft); --teal-soft:var(--st-soft);
+ --qr-paper:var(--st-paper); --qr-surface:var(--st-surface); --qr-ink:var(--st-ink); --qr-muted:var(--st-muted);
+ --qr-line:var(--st-line); --qr-accent:var(--st-accent); --qr-soft:var(--st-soft);
+ color:var(--st-ink); background:var(--st-paper); font-size:17px; line-height:1.9;
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+}
+html .spec-teaching[data-spec-series="nvme"] { --st-accent:#086b56; --st-soft:#e7f4ee; }
+@media(prefers-color-scheme:dark) {
+ html:not([data-theme="light"]) .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+ html:not([data-theme="light"]) .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+}
+html[data-theme="dark"] .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+html[data-theme="dark"] .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+.spec-teaching * { box-sizing:border-box; }
+.spec-teaching :is(h1,h2,h3,h4,h5,p,li,td,th,summary,strong,figcaption) { color:var(--st-ink); }
+.spec-teaching svg text { font-family:inherit; }
+.spec-teaching h1 { font-size:clamp(1.8rem,3.2vw,2.65rem); line-height:1.4; }
+.spec-teaching h2 { font-size:clamp(1.3rem,2.5vw,1.7rem); line-height:1.55; }
+.spec-teaching h3 { font-size:1.15rem; line-height:1.65; }
+.spec-teaching h4 { font-size:1rem; line-height:1.7; }
+.spec-teaching :is(h1,h2,h3,h4) { overflow-wrap:anywhere; }
+.spec-teaching p { margin:.7rem 0 1.15rem; }
+.spec-teaching :is(a,summary) { text-underline-offset:.2em; }
+.spec-teaching :focus-visible { outline:3px solid var(--st-accent); outline-offset:4px; }
+.spec-teaching :is(.qa-takeaway,.qa-answer-lead,.st-takeaway) { color:var(--st-ink); font-weight:650; font-size:1.06rem; line-height:1.9; }
+.spec-teaching :is(.qa-question,.qr-card,.guided-walk) { border:1px solid var(--st-line); border-radius:12px; background:var(--st-surface); padding:clamp(18px,3vw,30px); margin:1.8rem 0; }
+.spec-teaching :is(.qa-flow,.qr-note,.qr-observations,.st-context,.st-route) { background:var(--st-soft); border-left:4px solid var(--st-accent); padding:1rem 1.2rem; margin:1.4rem 0; }
+.spec-teaching :is(.qr-step,.qa-qid,.st-label) { color:var(--st-accent); font-weight:700; }
+.spec-teaching :is(.qa-citations,.qa-source-links,.qr-case-sources,.walk-source,.st-source) { font-size:.84rem; line-height:1.75; color:var(--st-muted); overflow-wrap:anywhere; }
+.spec-teaching :is(.qr-table,.table-wrap) { overflow-x:auto; margin:1.4rem 0; border-radius:7px; }
+.spec-teaching :is(th,td) { line-height:1.8; vertical-align:top; min-width:120px; }
+.spec-teaching :is(table,td) { background:var(--st-surface); }
+.spec-teaching th { background:var(--st-soft); }
+.spec-teaching .st-step { border-left:3px solid var(--st-line); padding:.6rem 1rem; margin:1.2rem 0; }
+.spec-teaching .st-step:target { border-left-color:var(--st-accent); background:var(--st-soft); }
+.spec-teaching .st-glossary { border:1px solid var(--st-line); padding:.7rem 1rem; margin:1.4rem 0; border-radius:8px; }
+.spec-teaching .st-glossary > summary { min-height:44px; cursor:pointer; }
+.spec-teaching .st-specs { display:flex; flex-wrap:wrap; gap:.4rem 1rem; color:var(--st-muted); font-size:.8rem; line-height:1.8; margin:1rem 0; }
+.spec-teaching .st-specs span { border-bottom:2px solid var(--st-accent); padding:.2rem 0; }
+@media(max-width:620px) { .spec-teaching :is(.qa-question,.qr-card,.guided-walk) { padding:16px; } .spec-teaching .diagram svg { min-width:var(--st-diagram-width); } }
+@media print {
+ .spec-teaching { --st-paper:#fff!important; --st-surface:#fff!important; --st-ink:#000!important; --st-muted:#333!important; --st-line:#999!important; --st-accent:#000!important; --st-soft:#fff!important; }
+ .spec-teaching details > * { display:block!important; }
+ .spec-teaching details::details-content { content-visibility:visible!important; }
+ .spec-teaching .st-step { break-inside:avoid; }
+}
+
+/* Native reading guides: selection highlights; it never hides teaching content.
+   build_pcie_course.py changes .pcie-article to .pcie-article for the posts. */
+.pcie-article .guided-walk { margin: 1.8rem 0; padding: 1.2rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); min-width: 0; }
+.pcie-article .guided-walk > h3 { margin-top: 0; }
+.pcie-article .walk-help { color: var(--muted); font-size: .85rem; }
+.pcie-article .walk-order { margin-bottom: 1.1rem; }
+/* Keep native radio semantics and keyboard handling; the associated label is
+   the visible control, so a radio cannot wrap away from its own label. */
+.pcie-article .walk-choice { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.pcie-article .walk-label { display: inline-flex; align-items: center; min-height: 44px; padding: .35rem .7rem; margin: .25rem .8rem .25rem 0; border: 2px solid var(--line); border-radius: 8px; cursor: pointer; font-size: .9rem; line-height: 1.5; color: var(--ink); background: var(--surface-alt); }
+.pcie-article .walk-choice:checked + .walk-label { border-color: var(--accent); background: var(--blue-soft); font-weight: 700; }
+.pcie-article .walk-choice:focus-visible + .walk-label { outline: 3px solid var(--focus); outline-offset: 3px; }
+.pcie-article .walk-view { margin-top: 1rem; min-width: 0; }
+.pcie-article .walk-diagram { margin: 0 0 1.2rem; }
+.pcie-article .walk-diagram svg { width: 100%; height: auto; display: block; }
+.pcie-article .walk-diagram svg a { cursor: pointer; }
+.pcie-article .walk-diagram svg a:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
+.pcie-article .walk-diagram figcaption { margin-top: .8rem; }
+.pcie-article .walk-steps { max-width: none; padding-left: 1.6rem; }
+.pcie-article .walk-step { padding: .6rem .9rem; margin: .7rem 0; border: 2px solid transparent; border-left: 5px solid var(--line); border-radius: 5px; background: var(--surface); }
+.pcie-article .walk-step h4 { margin: .2rem 0 .5rem; }
+.pcie-article .walk-condition { font-size: .9rem; color: var(--muted); }
+.pcie-article .walk-source { border-top: 1px solid var(--line); padding-top: .35rem; color: var(--muted); font-size: .85rem; }
+.pcie-article .walk-step p:last-child { margin-bottom: .3rem; }
+.pcie-article .walk-components { border-top: 1px solid var(--line); margin-top: 1.4rem; padding-top: .4rem; }
+.pcie-article .walk-component-links { display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; list-style: none; padding-left: 0; }
+.pcie-article .walk-component-links a { min-height: 44px; min-width: 44px; }
+.pcie-article .walk-component { padding: .7rem 1rem; margin: 1rem 0; border: 1px solid var(--line); border-radius: 8px; }
+.pcie-article .walk-component > h4 { margin-top: .2rem; }
+.pcie-article .walk-component:target { outline: 3px solid var(--accent-2); outline-offset: 3px; }
+.pcie-article .walk-component details { margin-bottom: .3rem; }
+
+.pcie-article .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-step[data-walk-step="1"],
+.pcie-article .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-step[data-walk-step="2"],
+.pcie-article .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-step[data-walk-step="3"],
+.pcie-article .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-step[data-walk-step="4"],
+.pcie-article .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-step[data-walk-step="5"],
+.pcie-article .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-step[data-walk-step="6"],
+.pcie-article .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-step[data-walk-step="7"],
+.pcie-article .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-step[data-walk-step="8"] { border-color: var(--accent); background: var(--blue-soft); }
+
+.pcie-article .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-node[data-walk-steps~="1"],
+.pcie-article .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-node[data-walk-steps~="2"],
+.pcie-article .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-node[data-walk-steps~="3"],
+.pcie-article .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-node[data-walk-steps~="4"],
+.pcie-article .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-node[data-walk-steps~="5"],
+.pcie-article .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-node[data-walk-steps~="6"],
+.pcie-article .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-node[data-walk-steps~="7"],
+.pcie-article .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-node[data-walk-steps~="8"] { --walk-active-weight: 750; }
+.pcie-article .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-node[data-walk-steps~="1"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-node[data-walk-steps~="2"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-node[data-walk-steps~="3"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-node[data-walk-steps~="4"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-node[data-walk-steps~="5"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-node[data-walk-steps~="6"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-node[data-walk-steps~="7"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-node[data-walk-steps~="8"] > :is(rect, circle, ellipse, polygon, path, line, polyline) { stroke: var(--accent); stroke-width: 3.5px; vector-effect: non-scaling-stroke; }
+.pcie-article .walk-node text { font-weight: var(--walk-active-weight, inherit); }
+
+@media (max-width: 620px) {
+  .pcie-article .guided-walk { padding: .8rem; }
+  .pcie-article .walk-label { margin-right: .45rem; padding-left: .45rem; padding-right: .45rem; }
+  .pcie-article .walk-steps { padding-left: 1.15rem; }
+  .pcie-article .walk-step { padding: .5rem .6rem; }
+  .pcie-article .walk-diagram { overflow-x: auto; }
+  .pcie-article .walk-diagram svg { min-width: var(--st-diagram-width, 700px); }
+}
+@media (forced-colors: active) {
+  .pcie-article .walk-choice:checked + .walk-label { border-color: Highlight; }
+  .pcie-article .walk-step { border-color: CanvasText; }
+}
+@media print {
+  .pcie-article .guided-walk { border: 1px solid #999; padding: .7rem; break-inside: auto; }
+  .pcie-article .walk-choice, .pcie-article .walk-label, .pcie-article .walk-help { display: none; }
+  .pcie-article .walk-step { display: list-item !important; border-color: #999 !important; background: transparent !important; }
+  .pcie-article .walk-node { --walk-active-weight: 500 !important; }
+  .pcie-article .walk-node > :is(rect, circle, ellipse, polygon, path, line, polyline) { stroke: #333 !important; stroke-width: 1.5px !important; }
+  .pcie-article .walk-diagram { overflow: visible; }
+  .pcie-article .walk-diagram svg { min-width: 0; }
+  .pcie-article .walk-component details > * { display: block !important; }
+  .pcie-article .walk-component details::details-content { content-visibility: visible !important; }
+}
+
+/* SVG text follows the selected reading theme. */
+.pcie-article svg text { fill: var(--ink); }
+.pcie-article .walk-summary { margin: 1rem 0 1.5rem; }
+
 html:not([data-theme="dark"]) .pcie-article { color-scheme: light; }
 html[data-theme="dark"] .pcie-article { color-scheme: dark; }
 
 .pcie-article { background: transparent; margin: 1.5rem 0; }
 .pcie-article .lesson { padding: 0; border: 0; background: transparent; }
 </style>
-<div class="pcie-article" lang="en">
+<div class="pcie-article spec-teaching" data-spec-series="pcie" lang="en">
 <nav class="bottom-nav" aria-label="Course and editions"><a href="/DOCS/pcie-course/index.html">Course overview</a><a href="/DOCS/pcie-course/chapter-5.html">Full Chinese tutorial</a><a href="/pcie/chapter-5-zh-tw/">繁體中文</a></nav>
 <article class="lesson">
-<p class="lead">After resource allocation, an access still has to become a Request and find its way back as a Completion. This chapter follows an MMIO read through routing, transaction identity, length, and byte selection, then explains why one Request may receive several Completions.</p>
+<section id="chapter-overview"><h2>Trace a read request and its completion</h2><figure class="diagram"><svg viewBox="0 0 900 480" role="img" aria-labelledby="ch5-guide-title ch5-guide-desc"><title id="ch5-guide-title">Intermediate ports are omitted. The request and completion follow their respective routing rules; later sections expand split completions and request boundaries.</title><desc id="ch5-guide-desc">Intermediate ports are omitted. The request and completion follow their respective routing rules; later sections expand split completions and request boundaries.</desc><g data-walk-target="requester"><rect x="60" y="20" width="310" height="60" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="215.0" y="45" text-anchor="middle" font-size="16">Host requester: issues the read</text></g><g data-walk-target="completer"><rect x="530" y="20" width="310" height="60" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="685.0" y="45" text-anchor="middle" font-size="16">Device completer: returns the data</text></g><g data-walk-target="host-line"><path d="M215 80 L215 460" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="6 5" /></g><g data-walk-target="device-line"><path d="M685 80 L685 460" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="6 5" /></g><g data-walk-target="request"><path d="M215 170 L685 170" fill="none" stroke="var(--accent)" stroke-width="2" /><polygon points="685.0,170.0 675.0,165.0 675.0,175.0" fill="var(--accent)" /><text x="450.0" y="161.0" text-anchor="middle" font-size="16">Memory Read Request →</text></g><g data-walk-target="completion"><path d="M685 300 L215 300" fill="none" stroke="var(--accent)" stroke-width="2" /><polygon points="215.0,300.0 225.0,305.0 225.0,295.0" fill="var(--accent)" /><text x="450.0" y="291.0" text-anchor="middle" font-size="16">← Completion with Data</text></g><g data-walk-target="match"><rect x="55" y="380" width="320" height="65" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="215.0" y="405" text-anchor="middle" font-size="16">Match Requester ID and Tag</text><text x="215.0" y="428" text-anchor="middle" font-size="16">Check status, bytes and address range</text></g></svg><figcaption>Intermediate ports are omitted. The request and completion follow their respective routing rules; later sections expand split completions and request boundaries.</figcaption></figure><p class="lead">An MMIO (Memory-Mapped I/O) read starts with a host request and returns device data. PCIe carries these exchanges in TLPs (Transaction Layer Packets). Chapter 4 supplies the configured address path; this example follows a four-byte read.</p><p><strong>Specification route:</strong> Transaction classes in Table 2-1 → request identity and Memory Request format → Completion format → fragmentation and boundaries.</p></section>
+<p class="lead">After resource allocation, an access still has to become a Request and find its way back as a Completion. This chapter follows an MMIO read through routing, transaction identity, length, and byte selection, then explains why one Request may receive several Completions.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>MMIO</dt><dd>Memory-Mapped I/O, mapped device-register access</dd></div></dl>
 <p><a href="/DOCS/pcie-course/chapter-5.html">Full Chinese tutorial</a> · <a href="/DOCS/pcie-course/index.html">Course roadmap</a> · <a href="/pcie/chapter-5-zh-tw/">繁體中文</a></p>
-<aside class="note"><strong>Version and assumptions</strong><p>Base 6.0, Non-Flit Mode, ordinary Endpoint 03:00.0 with BAR0=0x80004000. Resources, mappings, and Links are ready. Values are author-created. Examples use TC0 with RO, IDO, No Snoop, and TH clear, without ATS, PASID, IDE, AtomicOps, or DMWr. CPU access conversion is platform-specific; the example separately assumes one MRd for one 4-byte access.</p></aside>
+<aside class="note"><strong>Version and assumptions</strong><p>Base 6.0, Non-Flit Mode, ordinary Endpoint 03:00.0 with BAR0=0x80004000. Resources, mappings, and Links are ready. Values are author-created. Examples use TC0 with RO, IDO, No Snoop, and TH clear, without ATS, PASID, IDE, AtomicOps, or DMWr. CPU access conversion is platform-specific; the example separately assumes one MRd for one 4-byte access.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>ATS</dt><dd>Address Translation Services</dd></div><div><dt>PASID</dt><dd>Process Address Space ID</dd></div><div><dt>IDE</dt><dd>Integrity and Data Encryption</dd></div></dl></aside>
 <section id="types"><h2>Identify the transaction before expecting a response</h2>
 <p>A Transaction Layer Packet (TLP) carries a transaction. The Requester issues it and the Completer services its target; these roles change with the transaction. Memory Requests route by address, while Completions return by the original Requester ID. Requester ID and Tag identify an outstanding transaction. One Requester must not reuse a Tag across simultaneous outstanding Requests requiring Completion. Base 6.0 also defines larger-Tag capabilities and enables, so Tags are not universally eight bits.</p>
 <div class="table-wrap"><table><caption>Common transactions and successful responses</caption><thead><tr><th scope="col">Transaction</th><th scope="col">Request class</th><th scope="col">Successful response</th></tr></thead><tbody><tr><td>Memory Read</td><td>Non-Posted</td><td>One or more CplD packets.</td></tr><tr><td>Ordinary Memory Write</td><td>Posted</td><td>No ordinary Completion.</td></tr><tr><td>Configuration / I/O Read</td><td>Non-Posted</td><td>CplD.</td></tr><tr><td>Configuration / I/O Write</td><td>Non-Posted</td><td>Cpl.</td></tr><tr><td>Message Request</td><td>Posted</td><td>No Transaction Layer Completion; a higher protocol may define a response.</td></tr></tbody></table></div>
 <p>Configuration routes by ID, I/O by I/O address, and Messages use their specified address, ID, or implicit routing. Absence of a Completion for ordinary MWr does not justify retrying it or prove device work has completed. Work results follow the device interface.</p>
 <details class="source-note"><summary>Sources and reading order</summary><p>Base 6.0 Table 2-1 (pp.116–117), Table 2-3 (pp.120–122), Figures 2-27/2-28 (pp.152–154); §2.2.7.1 (pp.162–165), §2.2.8 (pp.170–171), and Table 2-42 (pp.222–223).</p></details></section>
 <section id="read"><h2>Translate a 4-byte read into packet fields</h2>
-<p>Assume a platform Requester ID of 0x0000 and Tag 0x12 for a 4-byte read at 0x80004120. This ID is a platform assumption, not something inferred directly from the Root Port BDF. MRd uses Fmt=000b, Type=00000b, Length=1 DW, First BE=1111b, and Last BE=0000b, without a Request data payload. The 3 DW header follows the 32-bit target address format, not the width of the data being read.</p>
+<p>Assume a platform Requester ID of 0x0000 and Tag 0x12 for a 4-byte read at 0x80004120. This ID is a platform assumption, not something inferred directly from the Root Port BDF. MRd uses Fmt=000b, Type=00000b, Length=1 DW, First BE=1111b, and Last BE=0000b, without a Request data payload. The 3 DW header follows the 32-bit target address format, not the width of the data being read.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>BDF</dt><dd>Bus/Device/Function</dd></div><div><dt>DW</dt><dd>Double Word, a four-byte unit</dd></div></dl>
 <p>The successful CplD uses Fmt=010b and Type=01010b, preserves Requester ID/Tag, and supplies Completer ID=0x0300. Length=1 DW, Status=SC, Byte Count=4, and Lower Address=0x20. If the four valid bytes are 78 56 34 12 and the example Register is defined as little-endian, the value is 0x12345678.</p>
 <p>A separate legal 6-byte read of 0x80004121–0x80004126 uses aligned address 0x80004120, Length=2, First BE=1110b, and Last BE=0111b. The successful response occupies 2 DW but contains six valid bytes: Byte Count=6 and Lower Address=0x21. Disabled non-Prefetchable bytes must not be read at the Completer. The device interface must permit this access.</p>
 <details class="source-note"><summary>Field lookup</summary><p>Figure 2-31 (p.163) → Figure 2-26/Table 2-10 (pp.150–151) → Figure 2-73 (p.196) → Tables 2-37, 2-40, and 2-41 (pp.197, 217–218). Table 2-4 (p.122) defines Length units and the zero encoding: for applicable data transactions, zero means 1024 DW.</p></details></section>
 <section id="split"><h2>Byte Count need not equal this packet's payload size</h2>
-<p>Now assume the Endpoint reads 256 bytes from valid DMA address 0x40001000, using Requester ID=0x0300 and Tag=0x13, with BME and mappings ready. Its maximum read request is 512 bytes; the Completer's effective payload limit and RCB are 128 bytes, with compatible path receive limits. The Length=64 DW Request can receive:</p>
+<p>Now assume the Endpoint reads 256 bytes from valid DMA address 0x40001000, using Requester ID=0x0300 and Tag=0x13, with BME and mappings ready. Its maximum read request is 512 bytes; the Completer's effective payload limit and RCB are 128 bytes, with compatible path receive limits. The Length=64 DW Request can receive:</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>DMA</dt><dd>Direct Memory Access, device access to memory</dd></div></dl>
 <div class="table-wrap"><table><caption>Author-created split successful response</caption><thead><tr><th scope="col">Data range</th><th scope="col">Length</th><th scope="col">Byte Count</th><th scope="col">Lower Address</th></tr></thead><tbody><tr><td>0x40001000–0x4000107F</td><td>32 DW</td><td>256 bytes</td><td>0x00</td></tr><tr><td>0x40001080–0x400010FF</td><td>32 DW</td><td>128 bytes</td><td>0x00</td></tr></tbody></table></div>
 <p>Both responses have SC, BCM=0, and the same Requester ID/Tag. Byte Count includes the current fragment and the data still to follow. One Request's responses stay in increasing address order; responses for different Transaction IDs may pass each other and must not be combined into one Completion.</p>
 <p>A separate restriction prohibits a Request from crossing 4 KiB. Reading 32 bytes at 0x40001FF0 reaches 0x4000200F and requires two 16-byte Requests. An unsuccessful read Completion carries no valid read data and terminates the Request. UR/CA are not zero data, and RRS is not a general MMIO retry status.</p>
 <details class="source-note"><summary>Splitting and boundaries</summary><p>§2.2.7.1 (pp.162–163); §2.3.1.1 (pp.214–218); §2.4.1 D5a/D5b (p.224) and §2.4.2 (p.228). RCB constrains Completion splitting, while the 4 KiB rule constrains Requests.</p></details></section>
 <section id="checks"><h2>Check the distinction</h2><details class="question"><summary>Is a 128-byte first response with Byte Count=256 incorrect?</summary><p>No. The count includes the next 128 bytes still needed for the Request. Length describes this fragment's payload.</p></details><details class="question"><summary>Does “Base 6.0” alone justify decoding every packet with Figure 2-31?</summary><p>No. This chapter selects Non-Flit Mode. Flit Mode uses the different header definitions in §2.2.1.2.</p></details></section>
-<p>The next chapter examines DMA addresses and visibility beyond packet validity. All cited pages use Base 6.0 document/PDF numbering. Verified 2026-10-21.</p>
+<p>The next chapter examines DMA addresses and visibility beyond packet validity. All cited pages use Base 6.0 document/PDF numbering. Verified 2026-10-21.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>DMA</dt><dd>Direct Memory Access, device access to memory</dd></div></dl>
 </article>
 <nav class="bottom-nav" aria-label="Course and editions"><a href="/DOCS/pcie-course/index.html">Course overview</a><a href="/DOCS/pcie-course/chapter-5.html">Full Chinese tutorial</a><a href="/pcie/chapter-5-zh-tw/">繁體中文</a></nav>
 </div>

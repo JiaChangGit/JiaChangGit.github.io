@@ -2,10 +2,14 @@
 layout: post
 title: "PCIe Chapter 5：一次讀寫如何變成 PCIe 交易"
 date: 2026-10-21 00:00:00 +0800
+last_modified_at: 2026-10-23 00:00:00 +0800
 permalink: /pcie/chapter-5-zh-tw/
 categories: [PCIe]
 tags: [PCIe, Specification]
 lang: zh-TW
+spec_teaching: true
+spec_series: pcie
+description: "從一次 MMIO 讀取推演 Request、Completion、Byte Enable、分段回覆與 4 KiB 邊界。"
 ---
 
 <style>
@@ -220,36 +224,182 @@ lang: zh-TW
 /* Self-contained teaching diagrams use the same theme in standalone pages and posts. */
 .pcie-article .course-diagram text { fill: var(--ink); font-family: inherit; font-size: 18px; }
 
+/* Applied only to explicitly authorized teaching roots. */
+html .spec-teaching[data-spec-series] .st-terms { margin:.35rem 0 1rem; padding:.5rem .8rem; border-inline-start:3px solid var(--st-accent); background:var(--st-soft); font-size:.88em; color:var(--st-muted); }
+html .spec-teaching[data-spec-series] .st-terms > div { display:flex; flex-wrap:wrap; gap:.2em .7em; }
+html .spec-teaching[data-spec-series] .st-terms dt { font-weight:650; }
+html .spec-teaching[data-spec-series] .st-terms dd { margin:0; flex:1 1 14em; }
+html .spec-teaching[data-spec-series] {
+ --st-diagram-width:900px;
+ --st-paper:#f2f6f8; --st-surface:#fff; --st-ink:#192d40; --st-muted:#4c6479;
+ --st-line:#cbd9e3; --st-accent:#145f9d; --st-soft:#edf5fc;
+ --paper:var(--st-paper); --surface:var(--st-surface); --surface-2:var(--st-soft); --surface-alt:var(--st-soft);
+ --ink:var(--st-ink); --muted:var(--st-muted); --line:var(--st-line);
+ --accent:var(--st-accent); --accent-2:var(--st-accent); --soft:var(--st-soft); --blue-soft:var(--st-soft); --teal-soft:var(--st-soft);
+ --qr-paper:var(--st-paper); --qr-surface:var(--st-surface); --qr-ink:var(--st-ink); --qr-muted:var(--st-muted);
+ --qr-line:var(--st-line); --qr-accent:var(--st-accent); --qr-soft:var(--st-soft);
+ color:var(--st-ink); background:var(--st-paper); font-size:17px; line-height:1.9;
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+}
+html .spec-teaching[data-spec-series="nvme"] { --st-accent:#086b56; --st-soft:#e7f4ee; }
+@media(prefers-color-scheme:dark) {
+ html:not([data-theme="light"]) .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+ html:not([data-theme="light"]) .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+}
+html[data-theme="dark"] .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+html[data-theme="dark"] .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+.spec-teaching * { box-sizing:border-box; }
+.spec-teaching :is(h1,h2,h3,h4,h5,p,li,td,th,summary,strong,figcaption) { color:var(--st-ink); }
+.spec-teaching svg text { font-family:inherit; }
+.spec-teaching h1 { font-size:clamp(1.8rem,3.2vw,2.65rem); line-height:1.4; }
+.spec-teaching h2 { font-size:clamp(1.3rem,2.5vw,1.7rem); line-height:1.55; }
+.spec-teaching h3 { font-size:1.15rem; line-height:1.65; }
+.spec-teaching h4 { font-size:1rem; line-height:1.7; }
+.spec-teaching :is(h1,h2,h3,h4) { overflow-wrap:anywhere; }
+.spec-teaching p { margin:.7rem 0 1.15rem; }
+.spec-teaching :is(a,summary) { text-underline-offset:.2em; }
+.spec-teaching :focus-visible { outline:3px solid var(--st-accent); outline-offset:4px; }
+.spec-teaching :is(.qa-takeaway,.qa-answer-lead,.st-takeaway) { color:var(--st-ink); font-weight:650; font-size:1.06rem; line-height:1.9; }
+.spec-teaching :is(.qa-question,.qr-card,.guided-walk) { border:1px solid var(--st-line); border-radius:12px; background:var(--st-surface); padding:clamp(18px,3vw,30px); margin:1.8rem 0; }
+.spec-teaching :is(.qa-flow,.qr-note,.qr-observations,.st-context,.st-route) { background:var(--st-soft); border-left:4px solid var(--st-accent); padding:1rem 1.2rem; margin:1.4rem 0; }
+.spec-teaching :is(.qr-step,.qa-qid,.st-label) { color:var(--st-accent); font-weight:700; }
+.spec-teaching :is(.qa-citations,.qa-source-links,.qr-case-sources,.walk-source,.st-source) { font-size:.84rem; line-height:1.75; color:var(--st-muted); overflow-wrap:anywhere; }
+.spec-teaching :is(.qr-table,.table-wrap) { overflow-x:auto; margin:1.4rem 0; border-radius:7px; }
+.spec-teaching :is(th,td) { line-height:1.8; vertical-align:top; min-width:120px; }
+.spec-teaching :is(table,td) { background:var(--st-surface); }
+.spec-teaching th { background:var(--st-soft); }
+.spec-teaching .st-step { border-left:3px solid var(--st-line); padding:.6rem 1rem; margin:1.2rem 0; }
+.spec-teaching .st-step:target { border-left-color:var(--st-accent); background:var(--st-soft); }
+.spec-teaching .st-glossary { border:1px solid var(--st-line); padding:.7rem 1rem; margin:1.4rem 0; border-radius:8px; }
+.spec-teaching .st-glossary > summary { min-height:44px; cursor:pointer; }
+.spec-teaching .st-specs { display:flex; flex-wrap:wrap; gap:.4rem 1rem; color:var(--st-muted); font-size:.8rem; line-height:1.8; margin:1rem 0; }
+.spec-teaching .st-specs span { border-bottom:2px solid var(--st-accent); padding:.2rem 0; }
+@media(max-width:620px) { .spec-teaching :is(.qa-question,.qr-card,.guided-walk) { padding:16px; } .spec-teaching .diagram svg { min-width:var(--st-diagram-width); } }
+@media print {
+ .spec-teaching { --st-paper:#fff!important; --st-surface:#fff!important; --st-ink:#000!important; --st-muted:#333!important; --st-line:#999!important; --st-accent:#000!important; --st-soft:#fff!important; }
+ .spec-teaching details > * { display:block!important; }
+ .spec-teaching details::details-content { content-visibility:visible!important; }
+ .spec-teaching .st-step { break-inside:avoid; }
+}
+
+/* Native reading guides: selection highlights; it never hides teaching content.
+   build_pcie_course.py changes .pcie-article to .pcie-article for the posts. */
+.pcie-article .guided-walk { margin: 1.8rem 0; padding: 1.2rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); min-width: 0; }
+.pcie-article .guided-walk > h3 { margin-top: 0; }
+.pcie-article .walk-help { color: var(--muted); font-size: .85rem; }
+.pcie-article .walk-order { margin-bottom: 1.1rem; }
+/* Keep native radio semantics and keyboard handling; the associated label is
+   the visible control, so a radio cannot wrap away from its own label. */
+.pcie-article .walk-choice { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.pcie-article .walk-label { display: inline-flex; align-items: center; min-height: 44px; padding: .35rem .7rem; margin: .25rem .8rem .25rem 0; border: 2px solid var(--line); border-radius: 8px; cursor: pointer; font-size: .9rem; line-height: 1.5; color: var(--ink); background: var(--surface-alt); }
+.pcie-article .walk-choice:checked + .walk-label { border-color: var(--accent); background: var(--blue-soft); font-weight: 700; }
+.pcie-article .walk-choice:focus-visible + .walk-label { outline: 3px solid var(--focus); outline-offset: 3px; }
+.pcie-article .walk-view { margin-top: 1rem; min-width: 0; }
+.pcie-article .walk-diagram { margin: 0 0 1.2rem; }
+.pcie-article .walk-diagram svg { width: 100%; height: auto; display: block; }
+.pcie-article .walk-diagram svg a { cursor: pointer; }
+.pcie-article .walk-diagram svg a:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
+.pcie-article .walk-diagram figcaption { margin-top: .8rem; }
+.pcie-article .walk-steps { max-width: none; padding-left: 1.6rem; }
+.pcie-article .walk-step { padding: .6rem .9rem; margin: .7rem 0; border: 2px solid transparent; border-left: 5px solid var(--line); border-radius: 5px; background: var(--surface); }
+.pcie-article .walk-step h4 { margin: .2rem 0 .5rem; }
+.pcie-article .walk-condition { font-size: .9rem; color: var(--muted); }
+.pcie-article .walk-source { border-top: 1px solid var(--line); padding-top: .35rem; color: var(--muted); font-size: .85rem; }
+.pcie-article .walk-step p:last-child { margin-bottom: .3rem; }
+.pcie-article .walk-components { border-top: 1px solid var(--line); margin-top: 1.4rem; padding-top: .4rem; }
+.pcie-article .walk-component-links { display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; list-style: none; padding-left: 0; }
+.pcie-article .walk-component-links a { min-height: 44px; min-width: 44px; }
+.pcie-article .walk-component { padding: .7rem 1rem; margin: 1rem 0; border: 1px solid var(--line); border-radius: 8px; }
+.pcie-article .walk-component > h4 { margin-top: .2rem; }
+.pcie-article .walk-component:target { outline: 3px solid var(--accent-2); outline-offset: 3px; }
+.pcie-article .walk-component details { margin-bottom: .3rem; }
+
+.pcie-article .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-step[data-walk-step="1"],
+.pcie-article .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-step[data-walk-step="2"],
+.pcie-article .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-step[data-walk-step="3"],
+.pcie-article .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-step[data-walk-step="4"],
+.pcie-article .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-step[data-walk-step="5"],
+.pcie-article .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-step[data-walk-step="6"],
+.pcie-article .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-step[data-walk-step="7"],
+.pcie-article .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-step[data-walk-step="8"] { border-color: var(--accent); background: var(--blue-soft); }
+
+.pcie-article .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-node[data-walk-steps~="1"],
+.pcie-article .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-node[data-walk-steps~="2"],
+.pcie-article .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-node[data-walk-steps~="3"],
+.pcie-article .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-node[data-walk-steps~="4"],
+.pcie-article .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-node[data-walk-steps~="5"],
+.pcie-article .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-node[data-walk-steps~="6"],
+.pcie-article .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-node[data-walk-steps~="7"],
+.pcie-article .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-node[data-walk-steps~="8"] { --walk-active-weight: 750; }
+.pcie-article .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-node[data-walk-steps~="1"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-node[data-walk-steps~="2"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-node[data-walk-steps~="3"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-node[data-walk-steps~="4"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-node[data-walk-steps~="5"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-node[data-walk-steps~="6"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-node[data-walk-steps~="7"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-node[data-walk-steps~="8"] > :is(rect, circle, ellipse, polygon, path, line, polyline) { stroke: var(--accent); stroke-width: 3.5px; vector-effect: non-scaling-stroke; }
+.pcie-article .walk-node text { font-weight: var(--walk-active-weight, inherit); }
+
+@media (max-width: 620px) {
+  .pcie-article .guided-walk { padding: .8rem; }
+  .pcie-article .walk-label { margin-right: .45rem; padding-left: .45rem; padding-right: .45rem; }
+  .pcie-article .walk-steps { padding-left: 1.15rem; }
+  .pcie-article .walk-step { padding: .5rem .6rem; }
+  .pcie-article .walk-diagram { overflow-x: auto; }
+  .pcie-article .walk-diagram svg { min-width: var(--st-diagram-width, 700px); }
+}
+@media (forced-colors: active) {
+  .pcie-article .walk-choice:checked + .walk-label { border-color: Highlight; }
+  .pcie-article .walk-step { border-color: CanvasText; }
+}
+@media print {
+  .pcie-article .guided-walk { border: 1px solid #999; padding: .7rem; break-inside: auto; }
+  .pcie-article .walk-choice, .pcie-article .walk-label, .pcie-article .walk-help { display: none; }
+  .pcie-article .walk-step { display: list-item !important; border-color: #999 !important; background: transparent !important; }
+  .pcie-article .walk-node { --walk-active-weight: 500 !important; }
+  .pcie-article .walk-node > :is(rect, circle, ellipse, polygon, path, line, polyline) { stroke: #333 !important; stroke-width: 1.5px !important; }
+  .pcie-article .walk-diagram { overflow: visible; }
+  .pcie-article .walk-diagram svg { min-width: 0; }
+  .pcie-article .walk-component details > * { display: block !important; }
+  .pcie-article .walk-component details::details-content { content-visibility: visible !important; }
+}
+
+/* SVG text follows the selected reading theme. */
+.pcie-article svg text { fill: var(--ink); }
+.pcie-article .walk-summary { margin: 1rem 0 1.5rem; }
+
 html:not([data-theme="dark"]) .pcie-article { color-scheme: light; }
 html[data-theme="dark"] .pcie-article { color-scheme: dark; }
 
 .pcie-article { background: transparent; margin: 1.5rem 0; }
 .pcie-article .lesson { padding: 0; border: 0; background: transparent; }
 </style>
-<div class="pcie-article" lang="zh-Hant-TW">
+<div class="pcie-article spec-teaching" data-spec-series="pcie" lang="zh-Hant-TW">
 <nav class="bottom-nav" aria-label="課程與語言版本"><a href="/DOCS/pcie-course/index.html">課程總覽</a><a href="/DOCS/pcie-course/chapter-5.html">繁中完整教學</a><a href="/pcie/chapter-5-en/">English</a></nav>
 <article class="lesson">
-<p class="lead">位址配置完成後，還要理解一次存取如何形成 Request，以及 Completion 如何回到要求者。本章以一筆 MMIO 讀取串起路由、交易配對、長度與位元組範圍，接著用分段回覆說明「一筆要求」為何不一定只有一個回覆。</p>
+<section id="chapter-overview"><h2>先看本章的角色與路徑</h2><figure class="diagram"><svg viewBox="0 0 900 480" role="img" aria-labelledby="ch5-guide-title ch5-guide-desc"><title id="ch5-guide-title">主機端提出讀取，裝置端回覆資料，主機端再依交易識別與完成資訊配對。</title><desc id="ch5-guide-desc">主機端提出讀取，裝置端回覆資料，主機端再依交易識別與完成資訊配對。</desc><g data-walk-target="requester"><rect x="60" y="20" width="310" height="60" rx="9" fill="var(--surface-alt)" stroke="var(--line)"/><text x="215.0" y="45" text-anchor="middle" font-size="15">主機端 Requester：提出讀取</text></g><g data-walk-target="completer"><rect x="530" y="20" width="310" height="60" rx="9" fill="var(--surface-alt)" stroke="var(--line)"/><text x="685.0" y="45" text-anchor="middle" font-size="15">裝置端 Completer：提供資料</text></g><g data-walk-target="host-line"><path d="M215 80 L215 460" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="6 5"/></g><g data-walk-target="device-line"><path d="M685 80 L685 460" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="6 5"/></g><g data-walk-target="request"><path d="M215 170 L685 170" fill="none" stroke="var(--accent)" stroke-width="2"/><polygon points="685.0,170.0 675.0,165.0 675.0,175.0" fill="var(--accent)"/><text x="450.0" y="161.0" text-anchor="middle" font-size="13">Memory Read Request →</text></g><g data-walk-target="completion"><path d="M685 300 L215 300" fill="none" stroke="var(--accent)" stroke-width="2"/><polygon points="215.0,300.0 225.0,305.0 225.0,295.0" fill="var(--accent)"/><text x="450.0" y="291.0" text-anchor="middle" font-size="13">← Completion with Data</text></g><g data-walk-target="match"><rect x="55" y="380" width="320" height="65" rx="9" fill="var(--surface-alt)" stroke="var(--line)"/><text x="215.0" y="405" text-anchor="middle" font-size="15">依 Requester ID／Tag 配對</text><text x="215.0" y="428" text-anchor="middle" font-size="15">檢查狀態、資料量及位址範圍</text></g></svg><figcaption><p>作者依 Base 6.0 的 Request／Completion 規則繪製的交換示意；分段回覆在正文另行放大。</p></figcaption></figure><p class="lead">一次 MMIO（Memory-Mapped I/O，記憶體映射輸入輸出）讀取，會由主機端提出要求，再由目標端回覆資料。PCIe 用 TLP（Transaction Layer Packet，交易層封包）承載這些交換。</p><p>前情提要：Chapter 4 已完成本例的 BAR、Bridge Window 與解碼配置。現在沿同一路徑觀察一筆 4-byte 讀取。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>BAR</dt><dd>Base Address Register，基底位址暫存器</dd></div></dl><p><strong>規格路線：</strong>交易類別 Table 2-1 → Request 的 ID／Tag 與 Memory Request 格式 → Completion 格式 → 分段與邊界條件。</p></section>
+<p class="lead">位址配置完成後，還要理解一次存取如何形成 Request，以及 Completion 如何回到要求者。本章以一筆 MMIO 讀取串起路由、交易配對、長度與位元組範圍，接著用分段回覆說明「一筆要求」為何不一定只有一個回覆。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>MMIO</dt><dd>Memory-Mapped I/O，記憶體映射輸入輸出</dd></div></dl>
 <p><a href="/DOCS/pcie-course/chapter-5.html">完整中文教學</a> · <a href="/DOCS/pcie-course/index.html">課程路線</a> · <a href="/pcie/chapter-5-en/">English</a></p>
-<aside class="note"><strong>版本與假設</strong><p>依 Base 6.0 的 Non-Flit Mode。沿用普通 Endpoint 03:00.0、BAR0=0x80004000；資源、映射與 Link 均已就緒。數值為作者推演。案例為 TC0、RO／IDO／No Snoop／TH 均為零，不使用 ATS、PASID、IDE、AtomicOp 或 DMWr。CPU 存取如何轉成 TLP 由平台決定，本例另假設一筆 4-byte 存取產生一個 MRd。</p></aside>
+<aside class="note"><strong>版本與假設</strong><p>依 Base 6.0 的 Non-Flit Mode。沿用普通 Endpoint 03:00.0、BAR0=0x80004000；資源、映射與 Link 均已就緒。數值為作者推演。案例為 TC0、RO／IDO／No Snoop／TH 均為零，不使用 ATS、PASID、IDE、AtomicOp 或 DMWr。CPU 存取如何轉成 TLP 由平台決定，本例另假設一筆 4-byte 存取產生一個 MRd。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>ATS</dt><dd>Address Translation Services，位址轉譯服務</dd></div><div><dt>PASID</dt><dd>Process Address Space ID，程序位址空間識別碼</dd></div><div><dt>IDE</dt><dd>Integrity and Data Encryption，完整性與資料加密</dd></div><div><dt>TLP</dt><dd>Transaction Layer Packet，交易層封包</dd></div></dl></aside>
 <section id="types"><h2>先辨認交易，再決定要等待什麼</h2>
 <p>Transaction Layer Packet（TLP）承載交易。Requester 提出要求，Completer 服務目標；這些角色隨交易改變。Memory Request 依位址送往目標，Completion 則依原 Requester ID 回送。Requester ID 與 Tag 配對尚待完成的交易，同一 Requester 不得讓兩筆同時未完成、需要 Completion 的要求共用 Tag。Base 6.0 另有較大 Tag 的能力與啟用條件，不能把它永遠視為 8 bits。</p>
 <div class="table-wrap"><table><caption>常見交易與成功回覆</caption><thead><tr><th scope="col">交易</th><th scope="col">要求分類</th><th scope="col">成功回覆</th></tr></thead><tbody><tr><td>Memory Read</td><td>Non-Posted</td><td>一個或多個 CplD。</td></tr><tr><td>一般 Memory Write</td><td>Posted</td><td>沒有普通 Completion。</td></tr><tr><td>Configuration／I/O Read</td><td>Non-Posted</td><td>CplD。</td></tr><tr><td>Configuration／I/O Write</td><td>Non-Posted</td><td>Cpl。</td></tr><tr><td>Message Request</td><td>Posted</td><td>沒有交易層 Completion；上層可能另定回應。</td></tr></tbody></table></div>
 <p>Configuration 依 ID 路由；I/O 依 I/O 位址；Message 依其規定採位址、ID 或隱含路由。普通 MWr 沒收到 Completion 不構成重送理由，也不代表裝置工作已完成；工作結果仍依裝置介面判斷。</p>
 <details class="source-note"><summary>來源與閱讀順序</summary><p>Base 6.0 Table 2-1（pp.116–117）、Table 2-3（pp.120–122）、Figures 2-27／2-28（pp.152–154）；§2.2.7.1（pp.162–165）、§2.2.8（pp.170–171）與 Table 2-42（pp.222–223）。</p></details></section>
 <section id="read"><h2>把 4-byte 讀取對到封包欄位</h2>
-<p>假設平台以 Requester ID=0x0000、Tag=0x12，讀取裝置 0x80004120 的 4 bytes。這個 Requester ID 是平台假設，不能由 Root Port BDF 直接推定。MRd 使用 Fmt=000b、Type=00000b、Length=1 DW、First BE=1111b、Last BE=0000b；Request 本身沒有資料 Payload。3 DW Header 的選擇來自本例的 32-bit 目標位址格式，不是因為資料剛好是 32 bits。</p>
+<p>假設平台以 Requester ID=0x0000、Tag=0x12，讀取裝置 0x80004120 的 4 bytes。這個 Requester ID 是平台假設，不能由 Root Port BDF 直接推定。MRd 使用 Fmt=000b、Type=00000b、Length=1 DW、First BE=1111b、Last BE=0000b；Request 本身沒有資料 Payload。3 DW Header 的選擇來自本例的 32-bit 目標位址格式，不是因為資料剛好是 32 bits。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>BDF</dt><dd>Bus／Device／Function，匯流排、裝置與功能識別</dd></div><div><dt>DW</dt><dd>Double Word，4 bytes的資料單位</dd></div></dl>
 <p>成功 CplD 使用 Fmt=010b、Type=01010b，保留原 Requester ID／Tag，Completer ID=0x0300。Length=1 DW、Status=SC、Byte Count=4，Lower Address=0x20。若四個有效 bytes 為 78 56 34 12，且本例 Register 定義為 little-endian，值為 0x12345678。</p>
 <p>若另讀取 0x80004121–0x80004126 的 6 bytes，並假設裝置允許該存取，Request 要用對齊位址 0x80004120、Length=2、First BE=1110b、Last BE=0111b。成功回覆 Payload 占 2 DW，但有效資料只有 6 bytes；Byte Count=6、Lower Address=0x21。未啟用的 non-Prefetchable bytes 不得在 Completer 被讀取。</p>
 <details class="source-note"><summary>欄位定位</summary><p>Figure 2-31（p.163）→ Figure 2-26／Table 2-10（pp.150–151）→ Figure 2-73（p.196）→ Tables 2-37、2-40、2-41（pp.197、217–218）。Length 的單位與零編碼見 Table 2-4（p.122）：適用的資料交易中，0 表示 1024 DW。</p></details></section>
 <section id="split"><h2>Byte Count 不一定等於這個回覆的 Payload</h2>
-<p>另假設 Endpoint 從有效 DMA 位址 0x40001000 讀 256 bytes，Requester ID=0x0300、Tag=0x13，BME 與映射都已準備好。Requester 的最大讀取要求為 512 bytes；Completer 的有效 Payload 上限及 RCB 都為 128 bytes，路徑接收能力相容。這筆 Length=64 DW 的要求，可按下表回覆：</p>
+<p>另假設 Endpoint 從有效 DMA 位址 0x40001000 讀 256 bytes，Requester ID=0x0300、Tag=0x13，BME 與映射都已準備好。Requester 的最大讀取要求為 512 bytes；Completer 的有效 Payload 上限及 RCB 都為 128 bytes，路徑接收能力相容。這筆 Length=64 DW 的要求，可按下表回覆：</p><dl class="st-terms" aria-label="本段名詞"><div><dt>DMA</dt><dd>Direct Memory Access，裝置直接存取記憶體</dd></div></dl>
 <div class="table-wrap"><table><caption>作者推演的兩段成功回覆</caption><thead><tr><th scope="col">資料範圍</th><th scope="col">Length</th><th scope="col">Byte Count</th><th scope="col">Lower Address</th></tr></thead><tbody><tr><td>0x40001000–0x4000107F</td><td>32 DW</td><td>256 bytes</td><td>0x00</td></tr><tr><td>0x40001080–0x400010FF</td><td>32 DW</td><td>128 bytes</td><td>0x00</td></tr></tbody></table></div>
 <p>兩個回覆皆為 SC、BCM=0，並保留相同的 Requester ID／Tag。Byte Count 包含目前片段及後續尚待回傳的資料。同一要求的回覆按位址遞增；不同 Transaction ID 的回覆可交換順序，也不得合併成一個 Completion。</p>
 <p>另一項獨立限制是 Request 不得跨 4 KiB：從 0x40001FF0 讀 32 bytes 會到 0x4000200F，必須拆成兩筆各 16 bytes 的要求。若讀取回覆失敗，Cpl 不帶有效讀取資料並終止該要求；UR／CA 不能當成讀到零，RRS 也不是 MMIO 的通用重試結果。</p>
 <details class="source-note"><summary>切分與邊界來源</summary><p>§2.2.7.1（pp.162–163）；§2.3.1.1（pp.214–218）；§2.4.1 D5a／D5b（p.224）與 §2.4.2（p.228）。RCB 限制回覆切分位置，4 KiB 規則限制 Request，兩者不同。</p></details></section>
 <section id="checks"><h2>用兩個問題確認理解</h2><details class="question"><summary>第一個回覆帶 128 bytes，Byte Count=256，是錯誤嗎？</summary><p>不是。它還包含這筆要求後續的 128 bytes；本片段大小另由 Length 表示。</p></details><details class="question"><summary>只看到 Base 6.0，就能套 Figure 2-31 解所有封包嗎？</summary><p>不能。本章選用 Non-Flit Mode；Flit Mode 的 Header 定義在 §2.2.1.2，布局不同。</p></details></section>
-<p>下一章將從合法交易進一步檢查 DMA 位址與資料可見性。所有來源頁碼均為 Base 6.0 的文件／PDF 頁碼，查核日期為 2026-10-21。</p>
+<p>下一章將從合法交易進一步檢查 DMA 位址與資料可見性。所有來源頁碼均為 Base 6.0 的文件／PDF 頁碼，查核日期為 2026-10-21。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>DMA</dt><dd>Direct Memory Access，裝置直接存取記憶體</dd></div></dl>
 </article>
 <nav class="bottom-nav" aria-label="課程與語言版本"><a href="/DOCS/pcie-course/index.html">課程總覽</a><a href="/DOCS/pcie-course/chapter-5.html">繁中完整教學</a><a href="/pcie/chapter-5-en/">English</a></nav>
 </div>

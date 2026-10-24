@@ -7,6 +7,9 @@ permalink: /pcie/chapter-8-en/
 categories: [PCIe]
 tags: [PCIe, Specification]
 lang: en
+spec_teaching: true
+spec_series: pcie
+description: "從雙端速率證據、有限 credit 帳本與 replay，釐清連線訓練、流量控制及 Flit 模式的責任。"
 ---
 
 <style>
@@ -221,6 +224,64 @@ lang: en
 /* Self-contained teaching diagrams use the same theme in standalone pages and posts. */
 .pcie-article .course-diagram text { fill: var(--ink); font-family: inherit; font-size: 18px; }
 
+/* Applied only to explicitly authorized teaching roots. */
+html .spec-teaching[data-spec-series] .st-terms { margin:.35rem 0 1rem; padding:.5rem .8rem; border-inline-start:3px solid var(--st-accent); background:var(--st-soft); font-size:.88em; color:var(--st-muted); }
+html .spec-teaching[data-spec-series] .st-terms > div { display:flex; flex-wrap:wrap; gap:.2em .7em; }
+html .spec-teaching[data-spec-series] .st-terms dt { font-weight:650; }
+html .spec-teaching[data-spec-series] .st-terms dd { margin:0; flex:1 1 14em; }
+html .spec-teaching[data-spec-series] {
+ --st-diagram-width:900px;
+ --st-paper:#f2f6f8; --st-surface:#fff; --st-ink:#192d40; --st-muted:#4c6479;
+ --st-line:#cbd9e3; --st-accent:#145f9d; --st-soft:#edf5fc;
+ --paper:var(--st-paper); --surface:var(--st-surface); --surface-2:var(--st-soft); --surface-alt:var(--st-soft);
+ --ink:var(--st-ink); --muted:var(--st-muted); --line:var(--st-line);
+ --accent:var(--st-accent); --accent-2:var(--st-accent); --soft:var(--st-soft); --blue-soft:var(--st-soft); --teal-soft:var(--st-soft);
+ --qr-paper:var(--st-paper); --qr-surface:var(--st-surface); --qr-ink:var(--st-ink); --qr-muted:var(--st-muted);
+ --qr-line:var(--st-line); --qr-accent:var(--st-accent); --qr-soft:var(--st-soft);
+ color:var(--st-ink); background:var(--st-paper); font-size:17px; line-height:1.9;
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+}
+html .spec-teaching[data-spec-series="nvme"] { --st-accent:#086b56; --st-soft:#e7f4ee; }
+@media(prefers-color-scheme:dark) {
+ html:not([data-theme="light"]) .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+ html:not([data-theme="light"]) .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+}
+html[data-theme="dark"] .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+html[data-theme="dark"] .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+.spec-teaching * { box-sizing:border-box; }
+.spec-teaching :is(h1,h2,h3,h4,h5,p,li,td,th,summary,strong,figcaption) { color:var(--st-ink); }
+.spec-teaching svg text { font-family:inherit; }
+.spec-teaching h1 { font-size:clamp(1.8rem,3.2vw,2.65rem); line-height:1.4; }
+.spec-teaching h2 { font-size:clamp(1.3rem,2.5vw,1.7rem); line-height:1.55; }
+.spec-teaching h3 { font-size:1.15rem; line-height:1.65; }
+.spec-teaching h4 { font-size:1rem; line-height:1.7; }
+.spec-teaching :is(h1,h2,h3,h4) { overflow-wrap:anywhere; }
+.spec-teaching p { margin:.7rem 0 1.15rem; }
+.spec-teaching :is(a,summary) { text-underline-offset:.2em; }
+.spec-teaching :focus-visible { outline:3px solid var(--st-accent); outline-offset:4px; }
+.spec-teaching :is(.qa-takeaway,.qa-answer-lead,.st-takeaway) { color:var(--st-ink); font-weight:650; font-size:1.06rem; line-height:1.9; }
+.spec-teaching :is(.qa-question,.qr-card,.guided-walk) { border:1px solid var(--st-line); border-radius:12px; background:var(--st-surface); padding:clamp(18px,3vw,30px); margin:1.8rem 0; }
+.spec-teaching :is(.qa-flow,.qr-note,.qr-observations,.st-context,.st-route) { background:var(--st-soft); border-left:4px solid var(--st-accent); padding:1rem 1.2rem; margin:1.4rem 0; }
+.spec-teaching :is(.qr-step,.qa-qid,.st-label) { color:var(--st-accent); font-weight:700; }
+.spec-teaching :is(.qa-citations,.qa-source-links,.qr-case-sources,.walk-source,.st-source) { font-size:.84rem; line-height:1.75; color:var(--st-muted); overflow-wrap:anywhere; }
+.spec-teaching :is(.qr-table,.table-wrap) { overflow-x:auto; margin:1.4rem 0; border-radius:7px; }
+.spec-teaching :is(th,td) { line-height:1.8; vertical-align:top; min-width:120px; }
+.spec-teaching :is(table,td) { background:var(--st-surface); }
+.spec-teaching th { background:var(--st-soft); }
+.spec-teaching .st-step { border-left:3px solid var(--st-line); padding:.6rem 1rem; margin:1.2rem 0; }
+.spec-teaching .st-step:target { border-left-color:var(--st-accent); background:var(--st-soft); }
+.spec-teaching .st-glossary { border:1px solid var(--st-line); padding:.7rem 1rem; margin:1.4rem 0; border-radius:8px; }
+.spec-teaching .st-glossary > summary { min-height:44px; cursor:pointer; }
+.spec-teaching .st-specs { display:flex; flex-wrap:wrap; gap:.4rem 1rem; color:var(--st-muted); font-size:.8rem; line-height:1.8; margin:1rem 0; }
+.spec-teaching .st-specs span { border-bottom:2px solid var(--st-accent); padding:.2rem 0; }
+@media(max-width:620px) { .spec-teaching :is(.qa-question,.qr-card,.guided-walk) { padding:16px; } .spec-teaching .diagram svg { min-width:var(--st-diagram-width); } }
+@media print {
+ .spec-teaching { --st-paper:#fff!important; --st-surface:#fff!important; --st-ink:#000!important; --st-muted:#333!important; --st-line:#999!important; --st-accent:#000!important; --st-soft:#fff!important; }
+ .spec-teaching details > * { display:block!important; }
+ .spec-teaching details::details-content { content-visibility:visible!important; }
+ .spec-teaching .st-step { break-inside:avoid; }
+}
+
 /* Native reading guides: selection highlights; it never hides teaching content.
    build_pcie_course.py changes .pcie-article to .pcie-article for the posts. */
 .pcie-article .guided-walk { margin: 1.8rem 0; padding: 1.2rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); min-width: 0; }
@@ -286,7 +347,7 @@ lang: en
   .pcie-article .walk-steps { padding-left: 1.15rem; }
   .pcie-article .walk-step { padding: .5rem .6rem; }
   .pcie-article .walk-diagram { overflow-x: auto; }
-  .pcie-article .walk-diagram svg { min-width: 700px; }
+  .pcie-article .walk-diagram svg { min-width: var(--st-diagram-width, 700px); }
 }
 @media (forced-colors: active) {
   .pcie-article .walk-choice:checked + .walk-label { border-color: Highlight; }
@@ -314,7 +375,7 @@ html[data-theme="dark"] .pcie-article { color-scheme: dark; }
 .pcie-article { background: transparent; margin: 1.5rem 0; }
 .pcie-article .lesson { padding: 0; border: 0; background: transparent; }
 </style>
-<div class="pcie-article" lang="en">
+<div class="pcie-article spec-teaching" data-spec-series="pcie" lang="en">
 <nav class="bottom-nav" aria-label="Course and editions"><a href="/DOCS/pcie-course/index.html">Course overview</a><a href="/DOCS/pcie-course/chapter-8.html">Full Chinese tutorial</a><a href="/pcie/chapter-8-zh-tw/">繁體中文</a></nav>
 <article class="lesson">
 <figure class="diagram"><svg viewBox="0 0 900 500" role="img" aria-labelledby="hop-title hop-desc"><title id="hop-title">One adjacent Link</title><desc id="hop-desc">Time runs downwards. Training and credit checks precede transmission. Acknowledgement and receive-space updates serve separate purposes; their illustrated order is an example.</desc><g><rect x="20" y="20" width="310" height="65" rx="12" fill="var(--blue-soft)" stroke="var(--line)"/><text x="175" y="60" text-anchor="middle">Endpoint 03:00.0</text><path d="M175 85 V480" stroke="var(--line)" stroke-dasharray="5 5"/></g><g><rect x="570" y="20" width="310" height="65" rx="12" fill="var(--blue-soft)" stroke="var(--line)"/><text x="725" y="60" text-anchor="middle">Switch port 02:01.0</text><path d="M725 85 V480" stroke="var(--line)" stroke-dasharray="5 5"/></g><g><text x="450" y="125" text-anchor="middle">Train and initialize this Link</text><path d="M175 140 H725 M715 134 L725 140 L715 146 M185 134 L175 140 L185 146" fill="none" stroke="var(--accent)" stroke-width="2.5"/></g><g><rect x="35" y="175" width="280" height="58" rx="10" fill="var(--blue-soft)" stroke="var(--line)"/><text x="175" y="209" text-anchor="middle">Check receive-buffer credits</text></g><g><text x="450" y="275" text-anchor="middle">Send packet; keep replay copy</text><path d="M175 290 H725 M715 284 L725 290 L715 296" fill="none" stroke="var(--accent)" stroke-width="2.5"/></g><g><text x="450" y="350" text-anchor="middle">Check packet; acknowledge reception</text><path d="M725 365 H175 M185 359 L175 365 L185 371" fill="none" stroke="var(--accent)" stroke-width="2.5"/></g><g><text x="450" y="435" text-anchor="middle">Later in this example: advertise released space</text><path d="M725 450 H175 M185 444 L175 450 L185 456" fill="none" stroke="var(--accent)" stroke-width="2.5"/></g></svg><figcaption>Authored normal-flow example for Base 6.0 Non-Flit Mode, which provides reliable delivery of individual transaction packets. Acknowledgement and credit updates have separate purposes; their illustrated relative order is not a protocol requirement.</figcaption></figure>
@@ -322,10 +383,10 @@ html[data-theme="dark"] .pcie-article { color-scheme: dark; }
 <p><a href="/DOCS/pcie-course/chapter-8.html">Full Chinese tutorial</a> · <a href="/pcie/chapter-8-zh-tw/">繁體中文</a> · <a href="/DOCS/pcie-course/index.html">Course roadmap</a></p>
 <aside class="note"><strong>Version and assumptions</strong><p>Base 6.0. The authored example connects Switch Downstream Port 02:01.0 to Endpoint 03:00.0, with PCI Express Capability at 0x70, version 2, at both ends. It uses Non-Flit Mode (individual-packet delivery); Flit Mode groups content into fixed blocks and is compared separately.</p></aside>
 <p><strong>Reading route:</strong> Figure 4-48 for training → Figure 3-2 for data-link initialization → Figures 7-38, 7-39, and 7-29 for speed → Tables 2-44/2-45 for buffer credits → Figures 3-17, 3-21, and 3-22 for delivery and acknowledgement.</p>
-<section id="layers"><h2>Link training and Function readiness are separate stages</h2><p>The Physical Layer Link Training and Status State Machine (LTSSM) establishes receive synchronization, Lane relationships, and Link width. The main initial path is Detect, Polling, Configuration, and L0. Configuration here is a training state, not Base Address Register (BAR) programming. Recovery restores synchronization or changes speed. Its entry reason and subsequent state explain which operation is taking place.</p><p>Once the Physical Layer is operational, the Data Link Layer still completes applicable Feature Exchange and Virtual Channel 0 (VC0, the default transmission resource group) Flow Control initialization before DL_Active (the active data-link state). Configuration readiness, BAR (device-resource base address) setup, and Direct Memory Access (DMA) preparation are separate conditions. Data Link Layer Packets (DLLPs) remain between adjacent Link partners; Transaction Layer Packets (TLPs) can traverse Switches to another component.</p><details class="source-note"><summary>State-machine reading route</summary><p>§3.1–§3.4, Figures 3-1/3-2 (pp.263–276); §4.2.6.1–§4.2.6.5 (pp.444–445), Figure 4-48 (p.454), Table 4-48 (p.453); §6.6.1 (p.721).</p></details></section>
+<section id="layers"><h2>Link training and Function readiness are separate stages</h2><p>The Physical Layer Link Training and Status State Machine (LTSSM) establishes receive synchronization, Lane relationships, and Link width. The main initial path is Detect, Polling, Configuration, and L0. Configuration here is a training state, not Base Address Register (BAR) programming. Recovery restores synchronization or changes speed. Its entry reason and subsequent state explain which operation is taking place.</p><p>Once the Physical Layer is operational, the Data Link Layer still completes applicable Feature Exchange and Virtual Channel 0 (VC0, the default transmission resource group) Flow Control initialization before DL_Active (the active data-link state). Configuration readiness, BAR (device-resource base address) setup, and Direct Memory Access (DMA) preparation are separate conditions. Data Link Layer Packets (DLLPs) remain between adjacent Link partners; Transaction Layer Packets (TLPs) can traverse Switches to another component.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>BAR</dt><dd>Base Address Register</dd></div></dl><details class="source-note"><summary>State-machine reading route</summary><p>§3.1–§3.4, Figures 3-1/3-2 (pp.263–276); §4.2.6.1–§4.2.6.5 (pp.444–445), Figure 4-48 (p.454), Table 4-48 (p.453); §6.6.1 (p.721).</p></details></section>
 <section id="speed"><h2>Read supported speeds, the target, and current speed</h2><div class="table-wrap"><table><caption>Evidence from both ends of one Link</caption><thead><tr><th scope="col">Field</th><th scope="col">Downstream Port</th><th scope="col">Endpoint</th></tr></thead><tbody><tr><td>Link Capabilities 2, 0x9C</td><td>0x0180001E</td><td>0x0180001E</td></tr><tr><td>Maximum Link Width, decoded</td><td>8 lanes</td><td>4 lanes</td></tr><tr><td>Link Control 2, 0xA0</td><td>0x0003</td><td>Its Target is not used here for normal speed control</td></tr><tr><td>Link Status, 0x82</td><td>0x2043</td><td>0x0043</td></tr></tbody></table></div><p>Figure 7-38/Table 7-35: <code>(0x0180001E &amp; 0xFE) &gt;&gt; 1 = 0x0F</code>, so both ends support 2.5, 5, 8, and 16 GT/s. Figure 7-39/Table 7-36: Downstream Port Target=3 limits normal operation to 8 GT/s. Figure 7-29/Table 7-26: Current=3 and Width=4 give 8 GT/s ×4, consistent with that limit and the Endpoint width. Maximum implemented width also need not equal physically wired width.</p><p>The example Downstream Port supports Link Active reporting, making Status bit 13=1 evidence of DL_Active (the active data-link state). The Endpoint does not implement that reporting; its zero is not evidence of disconnection. Current Speed/Width are undefined when the Link is not up. Retrain Link triggers on a write of 1 and always reads zero; inspect applicable Training/Active status and final Speed/Width instead. Link Training is Reserved in Endpoints.</p><details class="source-note"><summary>Fields and applicability</summary><p>Figure 7-27/Table 7-23 (p.967); Figure 7-29/Table 7-26 (pp.978–979); Figures 7-38/7-39, Tables 7-35/7-36 (pp.998–1002); Retrain Link: Table 7-24 (pp.972–973).</p></details></section>
 <section id="credits"><h2>Credits manage space; replay protects this hop</h2><p>In Non-Flit Mode, each Virtual Channel separately tracks Header and Data credits for Posted, Non-Posted, and Completion traffic: six classes. One Data credit represents 16 bytes; Headers are accounted separately. An authored VC0 (default Virtual Channel) example starts with finite, unscaled available Posted Header (PH)=2 and Posted Data (PD)=5, without competing traffic. A 64-byte Memory Write (MWr) consumes 1 PH (Posted Header) and 4 PD (Posted Data), leaving 1/1. A following 32-byte MWr (Memory Write) requires 1/2 and waits until available PD increases by 1. This is an available-credit ledger, not a standard software-readable Register or a minimum initial advertisement.</p><p>A 256-byte Memory Read (MRd) request has no data Payload and needs only one Non-Posted Header (NPH) credit; its return traffic consumes Completion credits in the opposite direction. Sufficient credits do not guarantee immediate scheduling: ordering and arbitration still apply.</p><p>Non-Flit sequence numbers, LCRC (Link Cyclic Redundancy Check, the error-checking code), ACK/NAK (positive/negative acknowledgement), and replay provide adjacent-Link reliability. The transmitter retains copies; a NAK (negative acknowledgement) or acknowledgement timeout can cause replay. The receiver handles duplicate copies, and the Transaction Layer does not charge new credits again for the same TLP (Transaction Layer Packet). An ACK (positive acknowledgement) on one hop is neither a transaction Completion nor device-work completion. Posted MWr has no ordinary Completion but still receives Link-level protection.</p><details class="source-note"><summary>FC and replay sources</summary><p>§2.6.1, Tables 2-44/2-45 (pp.236–237); Figures 3-9–3-11 (pp.283–284); §3.1 (p.264), Figure 3-17 (p.288), Figures 3-21/3-22 (pp.299, 303).</p></details></section>
-<section id="flit"><h2>Flit Mode uses a fixed transport unit</h2><p>64 GT/s uses Flit Mode, which can also operate at lower rates. A 256-byte Flit contains 236 bytes for TLPs, 6 for Data Link Layer Payload (DLP), 8 for Cyclic Redundancy Check (CRC), and 6 for Error Correction Code (ECC). TLPs can span Flits, and multiple TLPs can share one Flit; the TLP region is not all application data. Replay operates at Flit granularity. Forward Error Correction (FEC) neither eliminates replay nor corrects every possible error.</p><p>Check Flit Mode Supported in PCI Express Capabilities before interpreting Downstream Port Link Status 2. A projection containing only Presence and the Flit bit of 0x4400 means Presence=100b and Flit=1: Link up, with no Device Readiness Status (DRS) received yet. A projection of 0x3400 means negotiation has completed but the Data Link Layer is not active. These are field projections, not full dumps; the Flit bit is meaningful only for Presence=011b, 100b, or 101b.</p><details class="source-note"><summary>Flit sources</summary><p>§4.2.3 (p.340), §4.2.3.3–§4.2.3.4 (pp.351–390), Figure 4-33 (p.383); Table 7-19 (p.955), Figure 7-40/Table 7-37 (pp.1004–1007). This chapter uses Base 6.0 without silently incorporating later Engineering Change Notices (ECNs).</p></details></section>
+<section id="flit"><h2>Flit Mode uses a fixed transport unit</h2><p>64 GT/s uses Flit Mode, which can also operate at lower rates. A 256-byte Flit contains 236 bytes for TLPs, 6 for Data Link Layer Payload (DLP), 8 for Cyclic Redundancy Check (CRC), and 6 for Error Correction Code (ECC). TLPs can span Flits, and multiple TLPs can share one Flit; the TLP region is not all application data. Replay operates at Flit granularity. Forward Error Correction (FEC) neither eliminates replay nor corrects every possible error.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>TLP</dt><dd>Transaction Layer Packet</dd></div></dl><p>Check Flit Mode Supported in PCI Express Capabilities before interpreting Downstream Port Link Status 2. A projection containing only Presence and the Flit bit of 0x4400 means Presence=100b and Flit=1: Link up, with no Device Readiness Status (DRS) received yet. A projection of 0x3400 means negotiation has completed but the Data Link Layer is not active. These are field projections, not full dumps; the Flit bit is meaningful only for Presence=011b, 100b, or 101b.</p><details class="source-note"><summary>Flit sources</summary><p>§4.2.3 (p.340), §4.2.3.3–§4.2.3.4 (pp.351–390), Figure 4-33 (p.383); Table 7-19 (p.955), Figure 7-40/Table 7-37 (pp.1004–1007). This chapter uses Base 6.0 without silently incorporating later Engineering Change Notices (ECNs).</p></details></section>
 <section id="questions"><h2>Follow a different packet through the same Link</h2><details class="question"><summary>Which credits does a read request use?</summary><p>MRd (Memory Read) checks NPH (Non-Posted Header credit); other transmission conditions still apply. (Table 2-45, p.237.)</p></details><details class="question"><summary>Where does this Link’s acknowledgement fit in the full path?</summary><p>ACK (positive acknowledgement) covers adjacent-Link delivery. Final visibility, ownership, and work completion depend on their respective interfaces.</p></details></section>
 </article>
 <nav class="bottom-nav" aria-label="Course and editions"><a href="/DOCS/pcie-course/index.html">Course overview</a><a href="/DOCS/pcie-course/chapter-8.html">Full Chinese tutorial</a><a href="/pcie/chapter-8-zh-tw/">繁體中文</a></nav>

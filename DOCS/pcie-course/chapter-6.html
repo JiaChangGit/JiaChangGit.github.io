@@ -222,9 +222,154 @@
 
 /* Self-contained teaching diagrams use the same theme in standalone pages and posts. */
 .pcie-surface .course-diagram text { fill: var(--ink); font-family: inherit; font-size: 18px; }
+
+/* Applied only to explicitly authorized teaching roots. */
+html .spec-teaching[data-spec-series] .st-terms { margin:.35rem 0 1rem; padding:.5rem .8rem; border-inline-start:3px solid var(--st-accent); background:var(--st-soft); font-size:.88em; color:var(--st-muted); }
+html .spec-teaching[data-spec-series] .st-terms > div { display:flex; flex-wrap:wrap; gap:.2em .7em; }
+html .spec-teaching[data-spec-series] .st-terms dt { font-weight:650; }
+html .spec-teaching[data-spec-series] .st-terms dd { margin:0; flex:1 1 14em; }
+html .spec-teaching[data-spec-series] {
+ --st-diagram-width:900px;
+ --st-paper:#f2f6f8; --st-surface:#fff; --st-ink:#192d40; --st-muted:#4c6479;
+ --st-line:#cbd9e3; --st-accent:#145f9d; --st-soft:#edf5fc;
+ --paper:var(--st-paper); --surface:var(--st-surface); --surface-2:var(--st-soft); --surface-alt:var(--st-soft);
+ --ink:var(--st-ink); --muted:var(--st-muted); --line:var(--st-line);
+ --accent:var(--st-accent); --accent-2:var(--st-accent); --soft:var(--st-soft); --blue-soft:var(--st-soft); --teal-soft:var(--st-soft);
+ --qr-paper:var(--st-paper); --qr-surface:var(--st-surface); --qr-ink:var(--st-ink); --qr-muted:var(--st-muted);
+ --qr-line:var(--st-line); --qr-accent:var(--st-accent); --qr-soft:var(--st-soft);
+ color:var(--st-ink); background:var(--st-paper); font-size:17px; line-height:1.9;
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+}
+html .spec-teaching[data-spec-series="nvme"] { --st-accent:#086b56; --st-soft:#e7f4ee; }
+@media(prefers-color-scheme:dark) {
+ html:not([data-theme="light"]) .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+ html:not([data-theme="light"]) .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+}
+html[data-theme="dark"] .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+html[data-theme="dark"] .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+.spec-teaching * { box-sizing:border-box; }
+.spec-teaching :is(h1,h2,h3,h4,h5,p,li,td,th,summary,strong,figcaption) { color:var(--st-ink); }
+.spec-teaching svg text { font-family:inherit; }
+.spec-teaching h1 { font-size:clamp(1.8rem,3.2vw,2.65rem); line-height:1.4; }
+.spec-teaching h2 { font-size:clamp(1.3rem,2.5vw,1.7rem); line-height:1.55; }
+.spec-teaching h3 { font-size:1.15rem; line-height:1.65; }
+.spec-teaching h4 { font-size:1rem; line-height:1.7; }
+.spec-teaching :is(h1,h2,h3,h4) { overflow-wrap:anywhere; }
+.spec-teaching p { margin:.7rem 0 1.15rem; }
+.spec-teaching :is(a,summary) { text-underline-offset:.2em; }
+.spec-teaching :focus-visible { outline:3px solid var(--st-accent); outline-offset:4px; }
+.spec-teaching :is(.qa-takeaway,.qa-answer-lead,.st-takeaway) { color:var(--st-ink); font-weight:650; font-size:1.06rem; line-height:1.9; }
+.spec-teaching :is(.qa-question,.qr-card,.guided-walk) { border:1px solid var(--st-line); border-radius:12px; background:var(--st-surface); padding:clamp(18px,3vw,30px); margin:1.8rem 0; }
+.spec-teaching :is(.qa-flow,.qr-note,.qr-observations,.st-context,.st-route) { background:var(--st-soft); border-left:4px solid var(--st-accent); padding:1rem 1.2rem; margin:1.4rem 0; }
+.spec-teaching :is(.qr-step,.qa-qid,.st-label) { color:var(--st-accent); font-weight:700; }
+.spec-teaching :is(.qa-citations,.qa-source-links,.qr-case-sources,.walk-source,.st-source) { font-size:.84rem; line-height:1.75; color:var(--st-muted); overflow-wrap:anywhere; }
+.spec-teaching :is(.qr-table,.table-wrap) { overflow-x:auto; margin:1.4rem 0; border-radius:7px; }
+.spec-teaching :is(th,td) { line-height:1.8; vertical-align:top; min-width:120px; }
+.spec-teaching :is(table,td) { background:var(--st-surface); }
+.spec-teaching th { background:var(--st-soft); }
+.spec-teaching .st-step { border-left:3px solid var(--st-line); padding:.6rem 1rem; margin:1.2rem 0; }
+.spec-teaching .st-step:target { border-left-color:var(--st-accent); background:var(--st-soft); }
+.spec-teaching .st-glossary { border:1px solid var(--st-line); padding:.7rem 1rem; margin:1.4rem 0; border-radius:8px; }
+.spec-teaching .st-glossary > summary { min-height:44px; cursor:pointer; }
+.spec-teaching .st-specs { display:flex; flex-wrap:wrap; gap:.4rem 1rem; color:var(--st-muted); font-size:.8rem; line-height:1.8; margin:1rem 0; }
+.spec-teaching .st-specs span { border-bottom:2px solid var(--st-accent); padding:.2rem 0; }
+@media(max-width:620px) { .spec-teaching :is(.qa-question,.qr-card,.guided-walk) { padding:16px; } .spec-teaching .diagram svg { min-width:var(--st-diagram-width); } }
+@media print {
+ .spec-teaching { --st-paper:#fff!important; --st-surface:#fff!important; --st-ink:#000!important; --st-muted:#333!important; --st-line:#999!important; --st-accent:#000!important; --st-soft:#fff!important; }
+ .spec-teaching details > * { display:block!important; }
+ .spec-teaching details::details-content { content-visibility:visible!important; }
+ .spec-teaching .st-step { break-inside:avoid; }
+}
+
+/* Native reading guides: selection highlights; it never hides teaching content.
+   build_pcie_course.py changes .pcie-surface to .pcie-article for the posts. */
+.pcie-surface .guided-walk { margin: 1.8rem 0; padding: 1.2rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); min-width: 0; }
+.pcie-surface .guided-walk > h3 { margin-top: 0; }
+.pcie-surface .walk-help { color: var(--muted); font-size: .85rem; }
+.pcie-surface .walk-order { margin-bottom: 1.1rem; }
+/* Keep native radio semantics and keyboard handling; the associated label is
+   the visible control, so a radio cannot wrap away from its own label. */
+.pcie-surface .walk-choice { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.pcie-surface .walk-label { display: inline-flex; align-items: center; min-height: 44px; padding: .35rem .7rem; margin: .25rem .8rem .25rem 0; border: 2px solid var(--line); border-radius: 8px; cursor: pointer; font-size: .9rem; line-height: 1.5; color: var(--ink); background: var(--surface-alt); }
+.pcie-surface .walk-choice:checked + .walk-label { border-color: var(--accent); background: var(--blue-soft); font-weight: 700; }
+.pcie-surface .walk-choice:focus-visible + .walk-label { outline: 3px solid var(--focus); outline-offset: 3px; }
+.pcie-surface .walk-view { margin-top: 1rem; min-width: 0; }
+.pcie-surface .walk-diagram { margin: 0 0 1.2rem; }
+.pcie-surface .walk-diagram svg { width: 100%; height: auto; display: block; }
+.pcie-surface .walk-diagram svg a { cursor: pointer; }
+.pcie-surface .walk-diagram svg a:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
+.pcie-surface .walk-diagram figcaption { margin-top: .8rem; }
+.pcie-surface .walk-steps { max-width: none; padding-left: 1.6rem; }
+.pcie-surface .walk-step { padding: .6rem .9rem; margin: .7rem 0; border: 2px solid transparent; border-left: 5px solid var(--line); border-radius: 5px; background: var(--surface); }
+.pcie-surface .walk-step h4 { margin: .2rem 0 .5rem; }
+.pcie-surface .walk-condition { font-size: .9rem; color: var(--muted); }
+.pcie-surface .walk-source { border-top: 1px solid var(--line); padding-top: .35rem; color: var(--muted); font-size: .85rem; }
+.pcie-surface .walk-step p:last-child { margin-bottom: .3rem; }
+.pcie-surface .walk-components { border-top: 1px solid var(--line); margin-top: 1.4rem; padding-top: .4rem; }
+.pcie-surface .walk-component-links { display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; list-style: none; padding-left: 0; }
+.pcie-surface .walk-component-links a { min-height: 44px; min-width: 44px; }
+.pcie-surface .walk-component { padding: .7rem 1rem; margin: 1rem 0; border: 1px solid var(--line); border-radius: 8px; }
+.pcie-surface .walk-component > h4 { margin-top: .2rem; }
+.pcie-surface .walk-component:target { outline: 3px solid var(--accent-2); outline-offset: 3px; }
+.pcie-surface .walk-component details { margin-bottom: .3rem; }
+
+.pcie-surface .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-step[data-walk-step="1"],
+.pcie-surface .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-step[data-walk-step="2"],
+.pcie-surface .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-step[data-walk-step="3"],
+.pcie-surface .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-step[data-walk-step="4"],
+.pcie-surface .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-step[data-walk-step="5"],
+.pcie-surface .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-step[data-walk-step="6"],
+.pcie-surface .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-step[data-walk-step="7"],
+.pcie-surface .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-step[data-walk-step="8"] { border-color: var(--accent); background: var(--blue-soft); }
+
+.pcie-surface .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-node[data-walk-steps~="1"],
+.pcie-surface .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-node[data-walk-steps~="2"],
+.pcie-surface .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-node[data-walk-steps~="3"],
+.pcie-surface .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-node[data-walk-steps~="4"],
+.pcie-surface .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-node[data-walk-steps~="5"],
+.pcie-surface .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-node[data-walk-steps~="6"],
+.pcie-surface .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-node[data-walk-steps~="7"],
+.pcie-surface .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-node[data-walk-steps~="8"] { --walk-active-weight: 750; }
+.pcie-surface .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-node[data-walk-steps~="1"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-node[data-walk-steps~="2"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-node[data-walk-steps~="3"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-node[data-walk-steps~="4"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-node[data-walk-steps~="5"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-node[data-walk-steps~="6"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-node[data-walk-steps~="7"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-node[data-walk-steps~="8"] > :is(rect, circle, ellipse, polygon, path, line, polyline) { stroke: var(--accent); stroke-width: 3.5px; vector-effect: non-scaling-stroke; }
+.pcie-surface .walk-node text { font-weight: var(--walk-active-weight, inherit); }
+
+@media (max-width: 620px) {
+  .pcie-surface .guided-walk { padding: .8rem; }
+  .pcie-surface .walk-label { margin-right: .45rem; padding-left: .45rem; padding-right: .45rem; }
+  .pcie-surface .walk-steps { padding-left: 1.15rem; }
+  .pcie-surface .walk-step { padding: .5rem .6rem; }
+  .pcie-surface .walk-diagram { overflow-x: auto; }
+  .pcie-surface .walk-diagram svg { min-width: var(--st-diagram-width, 700px); }
+}
+@media (forced-colors: active) {
+  .pcie-surface .walk-choice:checked + .walk-label { border-color: Highlight; }
+  .pcie-surface .walk-step { border-color: CanvasText; }
+}
+@media print {
+  .pcie-surface .guided-walk { border: 1px solid #999; padding: .7rem; break-inside: auto; }
+  .pcie-surface .walk-choice, .pcie-surface .walk-label, .pcie-surface .walk-help { display: none; }
+  .pcie-surface .walk-step { display: list-item !important; border-color: #999 !important; background: transparent !important; }
+  .pcie-surface .walk-node { --walk-active-weight: 500 !important; }
+  .pcie-surface .walk-node > :is(rect, circle, ellipse, polygon, path, line, polyline) { stroke: #333 !important; stroke-width: 1.5px !important; }
+  .pcie-surface .walk-diagram { overflow: visible; }
+  .pcie-surface .walk-diagram svg { min-width: 0; }
+  .pcie-surface .walk-component details > * { display: block !important; }
+  .pcie-surface .walk-component details::details-content { content-visibility: visible !important; }
+}
+
+/* SVG text follows the selected reading theme. */
+.pcie-surface svg text { fill: var(--ink); }
+.pcie-surface .walk-summary { margin: 1rem 0 1.5rem; }
   </style>
 </head>
-<body class="pcie-surface">
+<body class="pcie-surface spec-teaching" data-spec-series="pcie">
   <a class="skip-link" href="#content">跳到正文</a>
   <div class="site-shell">
     <nav class="topbar" aria-label="課程導覽">
@@ -235,17 +380,47 @@
       <p class="eyebrow">PCIe · 系統與規格閱讀 / CHAPTER 6</p>
       <h1>DMA、可見性與交易順序</h1>
       <p class="header-description">分清 DMA 位址、所有權交接與 PCIe 排序，再以資料和旗標判讀 RO、No Snoop 及其限制。</p>
-      <div class="edition"><span>繁體中文 · 規格與情境推演</span><span>2026-10-21</span></div>
+      <div class="edition"><span>繁體中文 · 規格與情境推演</span><span>2026-10-23</span></div>
     </header>
     <div class="reading-layout">
       <aside class="toc-panel" aria-label="本頁目錄">
         <p class="toc-label">本章閱讀路徑</p>
-        <nav aria-label="章節段落"><ol><li><a href="#roles">1. DMA 是另一種特殊的 PCIe 封包嗎？</a></li><li><a href="#addresses">2. CPU 手上的指標，可以直接寫進 DMA 描述項嗎？</a></li><li><a href="#publish">3. 描述項先寫好，再寫「可以開始」，為什麼仍要同步？</a></li><li><a href="#ordering">4. 資料寫入後再寫完成旗標，兩筆 TLP 能互換順序嗎？</a></li><li><a href="#attributes">5. 設定欄位允許 RO，是否代表每個封包都用了 RO？</a></li><li><a href="#practice">6. 用反例檢查自己是否混用了保證</a></li><li><a href="#next">7. 接著讓軟體知道有工作完成</a></li><li><a href="#sources">版本與來源</a></li></ol></nav>
+        <nav aria-label="章節段落"><ol><li><a href="#roles">1. DMA 是另一種特殊的 PCIe 封包嗎？</a></li><li><a href="#addresses">2. CPU 手上的指標，可以直接寫進 DMA 描述項嗎？</a></li><li><a href="#publish">3. 描述項先寫好，再寫「可以開始」，為什麼仍要同步？</a></li><li><a href="#ordering">4. 資料寫入後再寫完成旗標，兩筆 TLP 能互換順序嗎？</a></li><li><a href="#attributes">5. 設定欄位允許 RO，是否代表每個封包都用了 RO？</a></li><li><a href="#practice">6. 把排序與平台同步放回同一案例</a></li><li><a href="#next">7. 接著讓軟體知道有工作完成</a></li><li><a href="#sources">版本與來源</a></li></ol></nav>
       </aside>
       <main id="content" tabindex="-1">
         <article class="lesson">
-<p class="lead">裝置可以主動讀寫主記憶體，但「裝置已經送出寫入」與「CPU 現在能安全使用資料」之間，還隔著位址映射、交易排序與軟體同步。本章把這些責任分開，再用資料與完成旗標的先後關係，說明每一項證據能支持什麼結論。</p>
-<aside class="note"><strong>版本與範圍</strong><p>PCIe 交易依 Base 6.0，案例沿用 Non-Flit Mode、普通 Endpoint <code>03:00.0</code>。不使用 ATS、PASID、SR-IOV、Peer-to-Peer 或 IDE；除非題目另行更改，所有案例均為同一 Function、同一方向、TC0、RO=0、IDO=0、No Snoop=0。DMA 映射與記憶體同步只用 Linux 6.12 官方文件補充必要背景，不宣稱它們是 PCIe Register 定義，也不在本章展開某一款 IOMMU 的頁表格式。</p><p>位址、描述項、完成旗標與工作流程都是作者設計的抽象裝置介面。它們不是 PCIe 統一規定的 Register 或命令。</p></aside>
+<!-- pcie-walk: walks/chapter6-overview.json -->
+<div class="guided-walk" id="ch6-overview" role="group" aria-labelledby="ch6-overview-title" data-walk-version="1">
+<h3 id="ch6-overview-title">把描述項、DMA 資料與完成通知接起來</h3><dl class="st-terms" aria-label="本段名詞"><div><dt>DMA</dt><dd>Direct Memory Access，裝置直接存取記憶體</dd></div></dl>
+<p class="walk-help" id="ch6-overview-help">選擇步驟後，圖中對應的元件與下方解說會加上重點標示。完整圖與所有解說會持續顯示；也可用方向鍵切換步驟。</p>
+<div class="walk-order"><p>由上往下看本例的所有權交接。同步動作依平台及 DMA API 決定；圖中的先後關係不替平台補出額外的快取保證。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>DMA</dt><dd>Direct Memory Access，裝置直接存取記憶體</dd></div></dl></div>
+<input class="walk-choice" type="radio" name="ch6-overview-step" id="ch6-overview-choice-1" value="1" data-walk-step="1" aria-describedby="ch6-overview-help" aria-controls="ch6-overview-view ch6-overview-step-1" checked="checked">
+<label class="walk-label" for="ch6-overview-choice-1">1. 先取得裝置可用的位址</label>
+<input class="walk-choice" type="radio" name="ch6-overview-step" id="ch6-overview-choice-2" value="2" data-walk-step="2" aria-describedby="ch6-overview-help" aria-controls="ch6-overview-view ch6-overview-step-2">
+<label class="walk-label" for="ch6-overview-choice-2">2. 發布描述項，再交給裝置</label>
+<input class="walk-choice" type="radio" name="ch6-overview-step" id="ch6-overview-choice-3" value="3" data-walk-step="3" aria-describedby="ch6-overview-help" aria-controls="ch6-overview-view ch6-overview-step-3">
+<label class="walk-label" for="ch6-overview-choice-3">3. 依適用交易排序寫資料與旗標</label>
+<input class="walk-choice" type="radio" name="ch6-overview-step" id="ch6-overview-choice-4" value="4" data-walk-step="4" aria-describedby="ch6-overview-help" aria-controls="ch6-overview-view ch6-overview-step-4">
+<label class="walk-label" for="ch6-overview-choice-4">4. 主機取得所有權後讀取結果</label>
+<div class="walk-view" id="ch6-overview-view">
+<figure class="diagram walk-diagram">
+<svg viewBox="0 0 900 565" role="img" aria-labelledby="ch6-guide-title ch6-guide-desc"><title id="ch6-guide-title">軟體發布描述項，裝置寫入資料與旗標，再由主機依平台同步條件接手。</title><desc id="ch6-guide-desc">軟體發布描述項，裝置寫入資料與旗標，再由主機依平台同步條件接手。</desc><g data-walk-target="software" class="walk-node" data-walk-steps="1 4"><rect x="20" y="15" width="250" height="60" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="145.0" y="40" text-anchor="middle" font-size="15">驅動程式／主機端</text></g><a href="#ch6-overview-component-device" aria-label="裝置端的 DMA"><g data-walk-target="device" class="walk-node" data-walk-steps="2"><rect x="325" y="15" width="250" height="60" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="450.0" y="40" text-anchor="middle" font-size="15">裝置：執行工作</text></g></a><g data-walk-target="memory" class="walk-node" data-walk-steps="1 4"><rect x="630" y="15" width="250" height="60" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="755.0" y="40" text-anchor="middle" font-size="15">平台可供 DMA 的記憶體</text></g><g data-walk-target="s-line" class="walk-node" data-walk-steps="1"><path d="M145 75 L145 540" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="6 5" /></g><g data-walk-target="d-line" class="walk-node" data-walk-steps="2"><path d="M450 75 L450 540" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="6 5" /></g><g data-walk-target="m-line" class="walk-node" data-walk-steps="1"><path d="M755 75 L755 540" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="6 5" /></g><g data-walk-target="descriptor" class="walk-node" data-walk-steps="2"><path d="M145 145 L755 145" fill="none" stroke="var(--accent)" stroke-width="2" /><polygon points="755.0,145.0 745.0,140.0 745.0,150.0" fill="var(--accent)" /><text x="450.0" y="136.0" text-anchor="middle" font-size="13">寫入描述項及資料</text></g><g data-walk-target="notify" class="walk-node" data-walk-steps="2"><path d="M145 235 L450 235" fill="none" stroke="var(--accent)" stroke-width="2" /><polygon points="450.0,235.0 440.0,230.0 440.0,240.0" fill="var(--accent)" /><text x="297.5" y="226.0" text-anchor="middle" font-size="13">依平台規則發布後通知裝置</text></g><g data-walk-target="data" class="walk-node" data-walk-steps="3"><path d="M450 335 L755 335" fill="none" stroke="var(--accent)" stroke-width="2" /><polygon points="755.0,335.0 745.0,330.0 745.0,340.0" fill="var(--accent)" /><text x="602.5" y="326.0" text-anchor="middle" font-size="13">裝置寫入結果資料</text></g><g data-walk-target="flag" class="walk-node" data-walk-steps="3"><path d="M450 425 L755 425" fill="none" stroke="var(--accent)" stroke-width="2" /><polygon points="755.0,425.0 745.0,420.0 745.0,430.0" fill="var(--accent)" /><text x="602.5" y="416.0" text-anchor="middle" font-size="13">依適用排序寫完成旗標</text></g><g data-walk-target="consume" class="walk-node" data-walk-steps="4"><path d="M755 515 L145 515" fill="none" stroke="var(--accent)" stroke-width="2" /><polygon points="145.0,515.0 155.0,520.0 155.0,510.0" fill="var(--accent)" /><text x="450.0" y="506.0" text-anchor="middle" font-size="13">主機依平台同步條件接手結果</text></g></svg>
+<figcaption><p>作者的簡化工作週期。PCIe 交易排序與 CPU／快取同步各有責任，兩者共同決定資料何時可用。</p></figcaption></figure>
+<div class="walk-summary"><p class="lead">DMA（Direct Memory Access，直接記憶體存取）讓裝置發起記憶體交易。要讓一次工作正確完成，軟體還需交接緩衝區所有權，並處理平台要求的同步。</p><p>前情提要：Chapter 5 已建立 Request／Completion 的概念。本章沿著軟體準備工作、裝置寫入資料、軟體接手結果的過程，區分 PCIe 排序與 CPU／快取同步的責任。</p><p><strong>閱讀路線：</strong>DMA 位址與映射背景 → 描述項發布 → Base Table 2-42 的交易排序 → 封包屬性與主機接手條件。</p></div>
+<ol class="walk-steps">
+<li class="walk-step" id="ch6-overview-step-1" data-walk-step="1" data-walk-targets="software memory s-line m-line"><h4>先取得裝置可用的位址</h4><div class="walk-condition"><p>本例已具備適用的映射及裝置位址範圍；CPU 指標與 DMA 位址依平台規則處理。</p></div><div class="walk-explanation"><p>由平台的 DMA 映射機制取得裝置可使用的位址，確認方向、範圍與緩衝區生命週期。</p></div><div class="walk-source" data-source-claims="PCIE-CH6-MAPPING-001 PCIE-CH6-EXAMPLE-001"><p>Linux 6.12 DMA API HOWTO：CPU and DMA addresses、Types of DMA mappings。</p></div></li>
+<li class="walk-step" id="ch6-overview-step-2" data-walk-step="2" data-walk-targets="descriptor notify d-line device"><h4>發布描述項，再交給裝置</h4><div class="walk-condition"><p>此處的同步須使用平台與作業系統定義的介面；PCIe 排序表本身不定義 CPU 的全部記憶體模型。</p></div><div class="walk-explanation"><p>先準備描述項與資料，再依平台要求執行記憶體及 I/O 同步，最後通知裝置有新工作。</p></div><div class="walk-source" data-source-claims="PCIE-CH6-BARRIER-001"><p>Linux 6.12 memory barriers：dma_wmb／dma_rmb／dma_mb、Kernel I/O barrier effects。</p></div></li>
+<li class="walk-step" id="ch6-overview-step-3" data-walk-step="3" data-walk-targets="data flag"><h4>依適用交易排序寫資料與旗標</h4><div class="walk-condition"><p>RO 是 Relaxed Ordering，允許在規定條件下放寬排序。能力允許與這兩筆封包是否實際使用 RO，需分別查明。</p></div><div class="walk-explanation"><p>裝置先寫結果資料，再以另一筆交易寫完成旗標；判讀這兩筆交易時，保留 TC、Requester ID 與 RO 等適用條件。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>TC</dt><dd>Traffic Class，流量類別</dd></div></dl></div><div class="walk-source" data-source-claims="PCIE-CH6-ORDER-001 PCIE-CH6-ATTR-001"><p>Base 6.0 §2.4.1／Table 2-42，pp.222–224；§2.2.6.4–§2.2.6.5，pp.160–161。</p></div></li>
+<li class="walk-step" id="ch6-overview-step-4" data-walk-step="4" data-walk-targets="consume software memory"><h4>主機取得所有權後讀取結果</h4><div class="walk-condition"><p>No Snoop 是封包的快取窺探屬性，不能單靠它指定平台的快取一致性行為。</p></div><div class="walk-explanation"><p>主機確認完成條件，再依 DMA 映射與快取規則同步並讀取資料。封包已發出、旗標已被觀察與 CPU 可用資料，是同一工作週期中的不同階段。</p></div><div class="walk-source" data-source-claims="PCIE-CH6-ATTR-001 PCIE-CH6-MAPPING-001 PCIE-CH6-BARRIER-001"><p>Base 6.0 §2.2.6.5，p.161；Linux 6.12 DMA API 與 memory barriers 的相關段落。</p></div></li>
+</ol></div>
+<div class="walk-components"><h4>圖中元件</h4><ul class="walk-component-links">
+<li><a href="#ch6-overview-component-device">裝置端的 DMA</a></li>
+</ul>
+<section class="walk-component" id="ch6-overview-component-device" data-component-target="device"><h4>裝置端的 DMA</h4><div class="walk-component-action"><p>本圖由裝置把結果寫到平台提供的 DMA 緩衝區。</p></div><details><summary>基本責任</summary><p>DMA 描述誰發起資料搬移；實際 PCIe 仍使用適用的 Memory Request 等交易。</p></details></section>
+</div>
+</div>
+<!-- /pcie-walk -->
+<aside class="note"><strong>版本與範圍</strong><p>PCIe 交易依 Base 6.0，案例沿用 Non-Flit Mode、普通 Endpoint <code>03:00.0</code>。不使用 ATS、PASID、SR-IOV、Peer-to-Peer 或 IDE；除非題目另行更改，所有案例均為同一 Function、同一方向、TC0、RO=0、IDO=0、No Snoop=0。DMA 映射與記憶體同步只用 Linux 6.12 官方文件補充必要背景，不宣稱它們是 PCIe Register 定義，也不在本章展開某一款 IOMMU 的頁表格式。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>ATS</dt><dd>Address Translation Services，位址轉譯服務</dd></div><div><dt>PASID</dt><dd>Process Address Space ID，程序位址空間識別碼</dd></div><div><dt>SR-IOV</dt><dd>Single Root I/O Virtualization，單根I/O虛擬化</dd></div><div><dt>IDE</dt><dd>Integrity and Data Encryption，完整性與資料加密</dd></div></dl><p>位址、描述項、完成旗標與工作流程都是作者設計的抽象裝置介面。它們不是 PCIe 統一規定的 Register 或命令。</p></aside>
 
 <section id="roles"><h2>1. DMA 是另一種特殊的 PCIe 封包嗎？</h2>
 <p><strong>Direct Memory Access（DMA，直接記憶體存取）</strong>描述的是裝置搬移資料的方式。放到本章的 PCIe 案例裡，裝置讀主記憶體會發出 MRd，裝置寫主記憶體會發出一般 MWr；封包仍使用 <a href="chapter-5.html#types">Chapter 5 的交易種類</a>。CPU 先準備工作，再由裝置發出交易，不需要 CPU 逐筆把 Payload 搬進裝置 Register。</p>
@@ -253,7 +428,7 @@
 <tr><td>裝置取得主記憶體中的輸入資料</td><td>發出 MRd，保留 Requester ID 與 Tag。</td><td>平台以 CplD 把資料回傳給裝置。</td></tr>
 <tr><td>裝置把結果放回主記憶體</td><td>發出帶 Payload 的 MWr。</td><td>資料隨 Posted Request 向平台移動，沒有普通 Write Completion。</td></tr>
 <tr><td>CPU 要求裝置開始處理</td><td>CPU 經平台寫裝置的通知 Register。</td><td>這筆 MMIO 寫入是通知，不等於結果資料已搬完。</td></tr>
-</tbody></table></div>
+</tbody></table><dl class="st-terms" aria-label="本段名詞"><div><dt>MMIO</dt><dd>Memory-Mapped I/O，記憶體映射輸入輸出</dd></div></dl></div>
 <p>Endpoint 與沿途 Port 的 BME 必須允許相應的上游要求，這是 <a href="chapter-4.html#enable">Chapter 4 的啟用條件</a>。但 BME=1 不會替驅動程式配置緩衝區、不會驗證描述項，也不等於取得任意主記憶體的存取權。</p>
 <details class="source-note"><summary>PCIe 與 DMA 背景來源</summary><p>Base 6.0 §2.1.1.1（p.116）、§2.2.7.1（pp.162–164）及 Table 7-4 的 BME 定義（p.919）。DMA 位址觀點另見 <a href="https://docs.kernel.org/6.12/core-api/dma-api-howto.html#cpu-and-dma-addresses">Linux 6.12：CPU and DMA addresses</a>。</p></details></section>
 
@@ -266,7 +441,7 @@
 <tr><td>裝置 BAR0</td><td>0x80004000–0x80007FFF</td><td>CPU 存取裝置介面用；不是這個主記憶體緩衝區。</td></tr>
 </tbody></table></div>
 <p>例如，裝置讀 DMA 位址 <code>0x40001080</code>，本例平台會轉到 CPU 實體位址 <code>0x90001080</code>。兩個基底相差多少只是這個案例的配置，不能推成通用的加減公式。更不能因為 BAR0 已正確配置，就認為主記憶體 DMA 映射也已存在。</p>
-<p>案例中的映射在交易期間保持有效，裝置可表示這段位址，且沒有其他工作重複使用同一緩衝區。若這些前提改變，單看合法的 TLP Header 也無法證明存取一定成功。</p>
+<p>案例中的映射在交易期間保持有效，裝置可表示這段位址，且沒有其他工作重複使用同一緩衝區。若這些前提改變，單看合法的 TLP Header 也無法證明存取一定成功。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>TLP</dt><dd>Transaction Layer Packet，交易層封包</dd></div></dl>
 <details class="source-note"><summary>來源與推演界線</summary><p><a href="https://docs.kernel.org/6.12/core-api/dma-api-howto.html#cpu-and-dma-addresses">Linux 6.12 Dynamic DMA mapping Guide</a> 用於區分三種位址。Base 6.0 §2.2.7.1 的 64-bit 位址產生說明（p.164）要求驅動程式確保目標落在裝置可到達的範圍。表內數值、映射範圍與存取權限全部是作者假設，未引用某款 IOMMU 的暫存器編碼。</p></details></section>
 
 <section id="publish"><h2>3. 描述項先寫好，再寫「可以開始」，為什麼仍要同步？</h2>
@@ -277,13 +452,13 @@
 <tr><td>CPU 通知</td><td>描述項發布後，才讓裝置收到工作通知。</td><td>適用的 MMIO 存取與順序規則。</td></tr>
 <tr><td>裝置執行</td><td>依約取得所有權後讀取欄位，完成前不讓 CPU 重用緩衝區。</td><td>本例的裝置介面與工作協定。</td></tr>
 <tr><td>CPU 收回</td><td>確認裝置交還所有權，完成必要同步後，才讀取或重用結果。</td><td>裝置狀態定義與平台同步介面。</td></tr>
-</tbody></table></div>
+</tbody></table><dl class="st-terms" aria-label="本段名詞"><div><dt>MMIO</dt><dd>Memory-Mapped I/O，記憶體映射輸入輸出</dd></div></dl></div>
 <p>以 Linux 6.12 的 consistent memory 為例，<code>dma_wmb()</code>／<code>dma_rmb()</code> 用來建立 CPU 與 DMA 裝置之間共享記憶體存取的順序；這些 barrier 本身不提供 MMIO 順序保證。Coherent allocation 也不能省略必要的 memory barrier。若使用 streaming mapping，則還要依 DMA API 處理 CPU 與裝置之間的同步。這些介面各有適用前提，不應濃縮成「加一個 barrier 就全部解決」。</p>
 <details class="source-note"><summary>同步規則的閱讀入口</summary><p>Base 6.0 §2.4.2（p.228）說明 PCIe 不保證的更新順序與粒度。平台補充採 <a href="https://docs.kernel.org/6.12/core-api/wrappers/memory-barriers.html">Linux 6.12 memory barriers</a> 的 dma_* barrier 與 Kernel I/O barrier effects 段落，以及 <a href="https://docs.kernel.org/6.12/core-api/dma-api-howto.html">DMA mapping Guide</a> 的 Types of DMA mappings、Using Streaming DMA mappings。此處是責任對照，不是可直接套到任意驅動程式的初始化程式碼。</p></details></section>
 
-<section id="ordering"><h2>4. 資料寫入後再寫完成旗標，兩筆 TLP 能互換順序嗎？</h2>
+<section id="ordering"><h2>4. 資料寫入後再寫完成旗標，兩筆 TLP 能互換順序嗎？</h2><dl class="st-terms" aria-label="本段名詞"><div><dt>TLP</dt><dd>Transaction Layer Packet，交易層封包</dd></div></dl>
 <p>換成裝置產生結果。假設同一 Function 先以一筆 MWr 寫入 64 bytes 的資料 D，再以另一筆 MWr 把完成旗標 F 設為 1。D 位於 <code>0x40001000</code>，F 位於 <code>0x40001FF0</code>；兩者都在本例有效的 DMA 映射內。此時問題是：後送出的 F 能不能越過先送出的 D？</p>
-<p>查 Table 2-42 時，<strong>欄代表先發出的交易，列代表後發出的交易</strong>。D 與 F 都是 Posted Request，因此看 A2。相同 TC、沒有適用的放寬條件時，A2a 規定後面的 Posted Request 不得越過前面的 Posted Request。本例便不能讓 F 在 PCIe 路徑中越過 D。</p>
+<p>查 Table 2-42 時，<strong>欄代表先發出的交易，列代表後發出的交易</strong>。D 與 F 都是 Posted Request，因此看 A2。相同 TC、沒有適用的放寬條件時，A2a 規定後面的 Posted Request 不得越過前面的 Posted Request。本例便不能讓 F 在 PCIe 路徑中越過 D。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>TC</dt><dd>Traffic Class，流量類別</dd></div></dl>
 <div class="table-wrap"><table><caption>改變條件後，能對交易順序下什麼結論？</caption><thead><tr><th scope="col">D 與 F 的條件</th><th scope="col">適用規則</th><th scope="col">判讀</th></tr></thead><tbody>
 <tr><td>同一 Function、TC0；F 的 RO=0、IDO=0</td><td>A2a</td><td>F 不得越過 D。</td></tr>
 <tr><td>同一 TC；F 的 RO=1，且路徑允許這種放寬</td><td>A2b 及相關限制</td><td>允許越過，不表示一定會越過；不能再用 A2a 證明 D 在前。</td></tr>
@@ -303,15 +478,15 @@
 </tbody></table></div>
 <p>接著看 Figure 2-29：Attr[1] 是 RO、Attr[0] 是 No Snoop、Attr[2] 是 ID-Based Ordering（IDO）。它們在 Non-Flit Header 裡並不全部相鄰，必須再對 Figure 2-5 的實際位置；不可直接把這三個 bits 當成連續的欄位取值。</p>
 <p>RO=1 表示適用的順序限制可以放寬，不是「這筆資料比較不重要」。No Snoop=1 表示該交易不期待硬體強制快取一致性；Device Control 的許可還要求發送端能保證目標位址沒有存在系統任何 cache 中。它不是清除 CPU cache 的命令。反過來，No Snoop=0 也不會替軟體完成描述項所有權交接。</p>
-<p>IDO 另有獨立的 Request／Completion 啟用控制及身分條件；本章固定為零，避免把不同 Requester 或 PASID 的例外混入同一 Function 的基本案例。到了中斷章，還會看到 MSI/MSI-X 的 RO 與 No Snoop 必須為零，因此「Enable=1」也不能凌駕特定交易的禁止條件。</p>
+<p>IDO 另有獨立的 Request／Completion 啟用控制及身分條件；本章固定為零，避免把不同 Requester 或 PASID 的例外混入同一 Function 的基本案例。到了中斷章，還會看到 MSI/MSI-X 的 RO 與 No Snoop 必須為零，因此「Enable=1」也不能凌駕特定交易的禁止條件。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>PASID</dt><dd>Process Address Space ID，程序位址空間識別碼</dd></div><div><dt>MSI</dt><dd>Message Signaled Interrupt，訊息中斷</dd></div><div><dt>MSI-X</dt><dd>Message Signaled Interrupts Extension，表格式訊息中斷</dd></div></dl>
 <details class="source-note"><summary>從設定到封包的查詢順序</summary><p>先依 Chapter 2 找到 PCIe Capability，再看 Figure 7-25（p.959）、Table 7-21 的 bits 4、11、14:12（pp.960–962）。封包屬性看 Figure 2-29／Table 2-12（p.160）、Table 2-13（p.161），最後回到 Figure 2-5（p.120）。IDO 控制與限制見 §2.2.6.4（p.160）；MSI 屬性限制見 §6.1.4（p.661）。</p></details></section>
 
-<section id="practice"><h2>6. 用反例檢查自己是否混用了保證</h2>
-<details class="question"><summary>裝置以一筆 MRd 讀完整描述項，是否保證所有欄位來自同一個更新時間點？</summary><p>沒有。單一 TLP 不會自動把正在變動的資料變成原子快照。Base 6.0 §2.4.2（p.228）甚至說明可能觀察到部分更新；需要裝置介面與平台共同建立有效的所有權及同步方式。</p></details>
-<details class="question"><summary>在同一 TC 中，先寫 D，再以 RO=1 寫 F；觀察到 D 在前，就能證明所有實作都必須如此嗎？</summary><p>不能。容許重排並不要求每次重排。這次觀察只能說明這次的結果，不能把「允許」改寫成「禁止」。要證明保序，應檢查適用的欄位與路徑限制。（A2b，p.223。）</p></details>
-<details class="question"><summary>Device Control 的 Enable No Snoop=1，可以省掉所有 cache 與 barrier 的考量嗎？</summary><p>不行。它只提供有條件的發送許可，而且 No Snoop 不改變交易順序。軟體仍須遵循平台的記憶體介面；欄位含義見 Table 7-21（p.961）。</p></details>
-<details class="question"><summary>BAR0 與 BME 都正確，裝置仍把 CPU 指標 p 當成 DMA 位址使用，問題解決了嗎？</summary><p>沒有。BAR0 解決裝置資源的存取，BME 控制要求的發送許可；兩者都不負責把 p 轉成這個裝置可用的 DMA 位址。請回到 <a href="#addresses">位址對照表</a> 確認描述項實際交給裝置的是哪一種值。</p></details></section>
-<section id="next"><h2>7. 接著讓軟體知道有工作完成</h2><p>資料與狀態已按介面約定交接後，裝置還需要通知軟體處理。<a href="chapter-7.html">Chapter 7</a> 會從 Capability 找到 MSI-X Table，設定一個 entry，並追蹤遮罩、Pending 與中斷寫入。</p></section>
+<section id="practice"><h2>6. 把排序與平台同步放回同一案例</h2>
+<details open class="question"><summary>裝置以一筆 MRd 讀完整描述項，是否保證所有欄位來自同一個更新時間點？</summary><p>沒有。單一 TLP 不會自動把正在變動的資料變成原子快照。Base 6.0 §2.4.2（p.228）甚至說明可能觀察到部分更新；需要裝置介面與平台共同建立有效的所有權及同步方式。</p></details>
+<details open class="question"><summary>在同一 TC 中，先寫 D，再以 RO=1 寫 F；觀察到 D 在前，就能證明所有實作都必須如此嗎？</summary><p>不能。容許重排並不要求每次重排。這次觀察只能說明這次的結果，不能把「允許」改寫成「禁止」。要證明保序，應檢查適用的欄位與路徑限制。（A2b，p.223。）</p></details>
+<details open class="question"><summary>Device Control 的 Enable No Snoop=1，可以省掉所有 cache 與 barrier 的考量嗎？</summary><p>不行。它只提供有條件的發送許可，而且 No Snoop 不改變交易順序。軟體仍須遵循平台的記憶體介面；欄位含義見 Table 7-21（p.961）。</p></details>
+<details open class="question"><summary>BAR0 與 BME 都正確，裝置仍把 CPU 指標 p 當成 DMA 位址使用，問題解決了嗎？</summary><p>沒有。BAR0 解決裝置資源的存取，BME 控制要求的發送許可；兩者都不負責把 p 轉成這個裝置可用的 DMA 位址。請回到 <a href="#addresses">位址對照表</a> 確認描述項實際交給裝置的是哪一種值。</p></details></section>
+<section id="next"><h2>7. 接著讓軟體知道有工作完成</h2><p>資料與狀態已按介面約定交接後，裝置還需要通知軟體處理。<a href="chapter-7.html">Chapter 7</a> 會從 Capability 找到 MSI-X Table，設定一個 entry，並追蹤遮罩、Pending 與中斷寫入。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>MSI-X</dt><dd>Message Signaled Interrupts Extension，表格式訊息中斷</dd></div></dl></section>
 <section id="sources"><h2>版本與來源</h2><p>PCIe 規則以 Base 6.0 為準；平台背景固定使用 Linux 6.12 的 <a href="https://docs.kernel.org/6.12/core-api/dma-api-howto.html">DMA mapping Guide</a> 與 <a href="https://docs.kernel.org/6.12/core-api/wrappers/memory-barriers.html">memory barriers 文件</a>。這些補充文件不是 IOMMU 硬體規格，也不使本章案例成為 Linux 驅動程式範本。查核日期：2026-10-21。</p></section>
         </article>
         <nav class="bottom-nav" aria-label="下一步"><a href="index.html">課程總覽</a><a href="chapter-5.html">← Chapter 5</a><a href="chapter-7.html">Chapter 7 →</a><a href="#content">回到本章開頭 ↑</a></nav>

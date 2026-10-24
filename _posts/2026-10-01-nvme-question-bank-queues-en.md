@@ -7,18 +7,21 @@ permalink: /nvme/question-bank/queues/en/
 lang: en
 nvme_quickref: true
 nvme_qa: true
+spec_teaching: true
+last_modified_at: 2026-10-23
 ---
 
-<div class="nvme-quickref nvme-qa">
+<div class="nvme-quickref nvme-qa spec-teaching" data-spec-series="nvme">
 <nav class="qr-top" aria-label="Bank and editions"><a href="#content">Skip to content</a><a href="/nvme/question-bank/en/">Question index</a><a href="/nvme/question-bank/queues/zh-tw/">繁體中文</a><a href="/DOCS/nvme-question-bank/queues.html">Chinese tutorial HTML</a></nav>
-<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–328</p>
-<header><p class="qa-range">Q10–Q21</p><h1>Admin and I/O queues</h1><p class="qr-intro">Queue memory, allocated queue counts and successfully created queues are distinct. Learn SQ/CQ dependencies before size, identifiers, deletion and reset so memory can be reclaimed at the right time.</p><p>Practice first, then reveal the explanation. Each question uses the prose, field interpretation, comparison or flow that suits it. All numerical examples are hypothetical. Status is written SCT/SC; h indicates hexadecimal.</p></header>
-<aside class="qa-glossary"><h2>Terms used in this volume</h2><dl><dt>Controller / namespace</dt><dd>A controller receives commands and manages access. A namespace is a logical storage space that commands can address. An NVM subsystem contains controllers and nonvolatile storage resources.</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission and Completion Queues carry command entries (SQEs) and completion entries (CQEs). QID identifies a queue, CID distinguishes outstanding commands in one SQ, and NSID identifies a namespace.</dd><dt>Register / Identify / Feature / Log</dt><dd>A register exposes control or state. Identify queries capabilities and attributes; features query or configure operation; log pages report specific state or records. FID, LID, CNS and CSI select features, logs, Identify structures and command sets.</dd><dt>index / offset / zero-based</dt><dd>An index selects an entry, usually starting at 0; an offset measures distance from an origin in specified units. A zero-based count encodes count−1, but not every zero-valued field is a count. A Dword is 4 bytes; a byte is 8 bits.</dd><dt>Scope / reset / retention</dt><dd>Scope names the affected objects; retention means preserving state. Controller Reset (clearing CC.EN) is one form of Controller Level Reset, or CLR. Different CLR triggers can retain different registers.</dd></dl></aside>
+<main id="content"><p class="qr-eyebrow">NVMe · Q1–328</p>
+<div class="st-specs" aria-label="Specification editions"><span>NVM Express Base 2.4</span><span>NVM Command Set 1.3</span><span>NVMe over PCIe Transport 1.4</span></div>
+<header><p class="qa-range">Q10–Q21</p><h1>Admin and I/O queues</h1><aside class="st-context"><p>An SQ (Submission Queue) holds commands; a CQ (Completion Queue) holds their completion entries. The host prepares and submits work, and the controller processes it. Start with an SQ and its associated CQ before creation and reclamation.</p></aside><p class="qr-intro">Queue memory, allocated queue counts and successfully created queues are distinct. Learn SQ/CQ dependencies before size, identifiers, deletion and reset so memory can be reclaimed at the right time.</p><p>Each question is followed by its explanation. Start with the volume overview, then follow the field interpretations, comparisons or processes. Essential conditions and the normal path are visible from the start. All numerical examples are hypothetical. Status is written SCT/SC; h indicates hexadecimal.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>SCT</dt><dd>Status Code Type</dd></div></dl></header>
 <section id="overview" class="qa-overview"><h2>One CQ and two SQs: creation and reclamation run in opposite directions</h2><p class="qa-takeaway">The CQ is the completion destination for its SQs; it cannot be deleted while an SQ still depends on it.</p>
-<div class="qr-table" tabindex="0" role="region" aria-label="Horizontally scrollable comparison table"><table><thead><tr><th scope="col">Observation</th><th scope="col">Hypothetical value</th><th scope="col">What it establishes</th></tr></thead><tbody><tr><td>Count allocation</td><td>FID 07h returns NSQA=3, NCQA=1</td><td>4 I/O SQs and 2 I/O CQs allocated, not created</td></tr><tr><td>Queue depth</td><td>Create CQ: QID=1, QSIZE=7</td><td>8 entries; the ring reserves one slot to distinguish full</td></tr><tr><td>Dependencies</td><td>SQ1.CQID=1; SQ2.CQID=1</td><td>Create CQ1 before SQ1 and SQ2</td></tr><tr><td>Reclamation</td><td>Delete SQ1/SQ2 and wait for their successful completions</td><td>Delete CQ1 next; reclaim memory after the relevant lifetime ends</td></tr></tbody></table></div>
+<div class="qr-table" tabindex="0" role="region" aria-label="Horizontally scrollable comparison table"><table><thead><tr><th scope="col">Observation</th><th scope="col">Hypothetical value</th><th scope="col">What it establishes</th></tr></thead><tbody><tr><td>Count allocation</td><td>FID 07h returns NSQA=3, NCQA=1</td><td>4 I/O SQs and 2 I/O CQs allocated, not created</td></tr><tr><td>Queue depth</td><td>Create CQ: QID=1, QSIZE=7</td><td>8 entries; the ring reserves one slot to distinguish full</td></tr><tr><td>Dependencies</td><td>SQ1.CQID=1; SQ2.CQID=1</td><td>Create CQ1 before SQ1 and SQ2</td></tr><tr><td>Reclamation</td><td>Delete SQ1/SQ2 and wait for their successful completions</td><td>Delete CQ1 next; reclaim memory after the relevant lifetime ends</td></tr></tbody></table><dl class="st-terms" aria-label="Terms in this passage"><div><dt>FID</dt><dd>Feature Identifier</dd></div><div><dt>CQID</dt><dd>Completion Queue Identifier</dd></div></dl></div>
 <p><strong>Worked interpretation: </strong>If SQ1 is deleted but SQ2 remains, deleting CQ1 is still an invalid sequence: SQ2 still uses it. SQ1 deletion also does not authorize reclaiming SQ2 data buffers.</p>
 <p class="qa-citations">Sources: <a href="#ref-number">Base 2.4 §5.2.30.1.5</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-queue">Base 2.4 §3.3.1</a></p>
 </section>
+<details class="qa-glossary st-glossary"><summary>Review the terminology when needed</summary><dl><dt>Controller / namespace</dt><dd>A controller receives commands and manages access. A namespace is a logical storage space that commands can address. An NVM subsystem contains controllers and nonvolatile storage resources.</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission and Completion Queues carry command entries (SQEs) and completion entries (CQEs). QID identifies a queue, CID distinguishes outstanding commands in one SQ, and NSID identifies a namespace.</dd><dt>Register / Identify / Feature / Log</dt><dd>A register exposes control or state. Identify queries capabilities and attributes; features query or configure operation; log pages report specific state or records. FID, LID, CNS and CSI select features, logs, Identify structures and command sets.</dd><dt>index / offset / zero-based</dt><dd>An index selects an entry, usually starting at 0; an offset measures distance from an origin in specified units. A zero-based count encodes count−1, but not every zero-valued field is a count. A Dword is 4 bytes; a byte is 8 bits.</dd><dt>Scope / reset / retention</dt><dd>Scope names the affected objects; retention means preserving state. Controller Reset (clearing CC.EN) is one form of Controller Level Reset, or CLR. Different CLR triggers can retain different registers.</dd></dl></details>
 <div class="qa-controls" hidden><label>Search this page <input type="search" id="qa-search" placeholder="Question number, field or keyword"></label><button type="button" data-expand="true">Expand all answers</button><button type="button" data-expand="false">Collapse all answers</button><output id="qa-count" aria-live="polite"></output></div>
 <section id="question-index"><h2>Questions in this volume</h2><ol class="qa-index">
 <li><a href="#q-010">Q10 · How are the Admin Submission and Completion Queues established through AQA, ASQ and ACQ?</a></li>
@@ -35,37 +38,38 @@ nvme_qa: true
 <li><a href="#q-021">Q21 · Are old I/O queues valid after Controller Reset, and what must the host do again?</a></li>
 </ol></section>
 <article class="qa-question" id="q-010" data-question="10" data-answer-kind="process"><h2><a class="qa-qid" href="#q-010">Q10</a> How are the Admin Submission and Completion Queues established through AQA, ASQ and ACQ?</h2>
-<p class="qa-prompt">Order the actions and identify which completion must precede the next action.</p>
-<details class="qa-answer" id="q-010-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-010-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-010-a-01">Establish the management channel before using Create I/O Queue. An absent Admin queue cannot create itself through a command.</p><div class="qa-sections">
 <section class="qa-section" id="q-010-s-01" data-answer-section="1"><h3><span>1.</span> Prepare the operation</h3>
 <span class="qa-anchor" id="q-010-a-02"></span><p>Each controller has an Admin SQ/CQ with QID=0, separate from I/O queue identifiers.</p>
-<span class="qa-anchor" id="q-010-a-03"></span><p>AQA gives both lengths; ASQ/ACQ give their physical bases. Admin queues require physical contiguity and are not created with a PC=0 Create Queue PRP list.</p>
+<span class="qa-anchor" id="q-010-a-03"></span><p>AQA gives both lengths; ASQ/ACQ give their physical bases. Admin queues require physical contiguity and are not created with a PC=0 Create Queue PRP list.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>PRP</dt><dd>Physical Region Page, a data-page pointer</dd></div></dl>
 <span class="qa-anchor" id="q-010-a-04"></span><p>ASQS/ACQS are zero-based: 64 entries encode as 63. Admin SQEs are 64 bytes and CQEs 16 bytes; the two queues need not have equal lengths.</p>
 </section>
 <section class="qa-section" id="q-010-s-02" data-answer-section="2"><h3><span>2.</span> Sequence and completion conditions</h3>
 <span class="qa-anchor" id="q-010-a-05"></span><p>Allocate and initialize memory, write the three registers with EN=0 and clear Admin CQ phases. Configure CC, enable, wait for RDY=1, then submit the first Admin command.</p>
-<span class="qa-anchor" id="q-010-a-06"></span><p>Identify can be submitted and matched by CID in Admin CQ. ACQ is associated with interrupt vector 0, while the host can also poll phase tags.</p>
+<span class="qa-anchor" id="q-010-a-06"></span><p>Identify can be submitted and matched by CID in Admin CQ. ACQ is associated with interrupt vector 0, while the host can also poll phase tags.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>CID</dt><dd>Command Identifier, unique among outstanding commands in one SQ</dd></div></dl>
 </section>
 <section class="qa-section" id="q-010-s-03" data-answer-section="3"><h3><span>3.</span> Handle unmet conditions</h3>
 <span class="qa-anchor" id="q-010-a-07"></span><p>Size=0 encodes one slot and is not a legal way to disable an Admin queue; enabling in that configuration is undefined. Delete I/O Queue cannot delete Admin queues.</p>
-<span class="qa-anchor" id="q-010-a-16"></span><p>Compare AQA, allocated memory and the first CQE. Correct register readback does not establish device access to the supplied memory.</p>
+<span class="qa-anchor" id="q-010-a-16"></span><p>Compare AQA, allocated memory and the first CQE. Correct register readback does not establish device access to the supplied memory.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>CQE</dt><dd>Completion Queue Entry</dd></div></dl>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-adminreg">Base 2.4 §3.1.4 (AQA, ASQ, ACQ, CMBLOC)</a> · <a href="#ref-init">Base 2.4 §3.5.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a></p>
 <span class="qa-anchor" id="q-010-a-17"></span><span class="qa-anchor" id="q-010-a-08"></span><span class="qa-anchor" id="q-010-a-09"></span><span class="qa-anchor" id="q-010-a-10"></span><span class="qa-anchor" id="q-010-a-11"></span><span class="qa-anchor" id="q-010-a-12"></span><span class="qa-anchor" id="q-010-a-13"></span><span class="qa-anchor" id="q-010-a-14"></span><span class="qa-anchor" id="q-010-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-adminreg">Base 2.4 §3.1.4 (AQA, ASQ, ACQ, CMBLOC)</a> · <a href="#ref-init">Base 2.4 §3.5.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-011" data-question="11" data-answer-kind="fields"><h2><a class="qa-qid" href="#q-011">Q11</a> What are the size, base-address and page-alignment requirements for Admin and I/O queues?</h2>
-<p class="qa-prompt">Explain the units and encoding, then work through one set of values.</p>
-<details class="qa-answer" id="q-011-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-011-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-011-a-01">Keep entry counts, byte sizes and memory pages distinct, and prevent a queue from exceeding allocated memory.</p><div class="qa-sections">
 <section class="qa-section" id="q-011-s-01" data-answer-section="1"><h3><span>1.</span> Establish the source and scope</h3>
-<span class="qa-anchor" id="q-011-a-02"></span><p>Distinguish Admin/I/O and host-memory/CMB configurations. A rule for one is not automatically universal.</p>
-<span class="qa-anchor" id="q-011-a-03"></span><p>Check AQA for Admin, and CAP.MQES/CQR and CC.IOSQES/IOCQES for I/O. CMB exceptions depend on CMBLOC.CQDA/CQPDS and CMBSZ queue support.</p>
+<span class="qa-anchor" id="q-011-a-02"></span><p>Distinguish Admin/I/O and host-memory/CMB configurations. A rule for one is not automatically universal.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>CMB</dt><dd>Controller Memory Buffer</dd></div></dl>
+<span class="qa-anchor" id="q-011-a-03"></span><p>Check AQA for Admin, and CAP.MQES/CQR and CC.IOSQES/IOCQES for I/O. CMB exceptions depend on CMBLOC.CQDA/CQPDS and CMBSZ queue support.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>CMB</dt><dd>Controller Memory Buffer</dd></div></dl>
 </section>
 <section class="qa-section" id="q-011-s-02" data-answer-section="2"><h3><span>2.</span> Fields, units and worked interpretation</h3>
-<span class="qa-anchor" id="q-011-a-04"></span><p>Length fields encode entries−1. Ordinary bases and each PRP page of a discontiguous queue align to CC.MPS; PRP1 has offset zero.</p>
+<span class="qa-anchor" id="q-011-a-04"></span><p>Length fields encode entries−1. Ordinary bases and each PRP page of a discontiguous queue align to CC.MPS; PRP1 has offset zero.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>PRP</dt><dd>Physical Region Page, a data-page pointer</dd></div></dl>
 <span class="qa-anchor" id="q-011-a-05"></span><p>Choose slots and entry size, calculate bytes, allocate pages and a PRP list if supported, then Create. Do not alter a queue&#x27;s live PRP list.</p>
 <span class="qa-anchor" id="q-011-a-06"></span><p>Minimum size is two slots; Admin maximum is 4096 and I/O maximum min(65536, MQES+1). One slot remains unavailable to distinguish full from empty.</p>
 </section>
@@ -74,13 +78,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-011-a-16"></span><p>A 128-slot NVM SQ needs 8192 bytes, its CQ 2048 bytes. Equal QSIZE=127 does not imply equal byte allocations.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-adminreg">Base 2.4 §3.1.4 (AQA, ASQ, ACQ, CMBLOC)</a> · <a href="#ref-cap">Base 2.4 §3.1.4 (CAP, VS)</a> · <a href="#ref-qattr">Base 2.4 §3.3.3–3.4.1</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-011-a-17"></span><span class="qa-anchor" id="q-011-a-08"></span><span class="qa-anchor" id="q-011-a-09"></span><span class="qa-anchor" id="q-011-a-10"></span><span class="qa-anchor" id="q-011-a-11"></span><span class="qa-anchor" id="q-011-a-12"></span><span class="qa-anchor" id="q-011-a-13"></span><span class="qa-anchor" id="q-011-a-14"></span><span class="qa-anchor" id="q-011-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-adminreg">Base 2.4 §3.1.4 (AQA, ASQ, ACQ, CMBLOC)</a> · <a href="#ref-cap">Base 2.4 §3.1.4 (CAP, VS)</a> · <a href="#ref-qattr">Base 2.4 §3.3.3–3.4.1</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-012" data-question="12" data-answer-kind="process"><h2><a class="qa-qid" href="#q-012">Q12</a> How are I/O CQs and SQs created, and why must the CQ be created first?</h2>
-<p class="qa-prompt">Order the actions and identify which completion must precede the next action.</p>
-<details class="qa-answer" id="q-012-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-012-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-012-a-01">Every I/O needs a valid completion destination. Create the CQ before its SQ: this is an ordering requirement, not merely a performance recommendation.</p><div class="qa-sections">
 <section class="qa-section" id="q-012-s-01" data-answer-section="1"><h3><span>1.</span> Prepare the operation</h3>
 <span class="qa-anchor" id="q-012-a-02"></span><p>An SQ selects its CQ at creation; several SQs may use one existing CQ.</p>
@@ -97,42 +102,44 @@ nvme_qa: true
 <li class="qa-flow-step"><span class="qa-flow-arrow" aria-hidden="true">↓</span><strong>Create I/O CQ → await success on the Admin CQ</strong><p>This Create completes on the Admin CQ, not on the new I/O CQ.</p></li>
 <li class="qa-flow-step"><span class="qa-flow-arrow" aria-hidden="true">↓</span><strong>Create I/O SQ → await success on the Admin CQ</strong><p>CQID refers to the successfully created CQ. Both successful Creates report SCT=0, SC=00h.</p></li>
 <li class="qa-flow-step"><span class="qa-flow-arrow" aria-hidden="true">↓</span><strong>Start I/O</strong><p>Only after both steps succeed, populate I/O SQEs and update the SQ Tail Doorbell.</p></li>
-</ol><p class="qa-flow-conclusion">If CQ creation fails, that CQ is not available to the SQ. Resolve the failure; submitted is not the same as successfully created.</p></figure>
+</ol><p class="qa-flow-conclusion">If CQ creation fails, that CQ is not available to the SQ. Resolve the failure; submitted is not the same as successfully created.</p></figure><dl class="st-terms" aria-label="Terms in this passage"><div><dt>CQE</dt><dd>Completion Queue Entry</dd></div><div><dt>SCT</dt><dd>Status Code Type</dd></div></dl>
 </section>
 <section class="qa-section" id="q-012-s-03" data-answer-section="3"><h3><span>3.</span> Handle unmet conditions</h3>
 <span class="qa-anchor" id="q-012-a-07"></span><p>An in-range CQID that has not been created returns Completion Queue Invalid (1/00h); CQID=0 or out of range returns Invalid Queue Identifier (1/01h).</p>
 <span class="qa-anchor" id="q-012-a-16"></span><p>Match CQID against the host&#x27;s SQ-to-CQ map. Creating a CQ does not automatically associate every SQ with it.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-number">Base 2.4 §5.2.30.1.5</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-012-a-08"></span><span class="qa-anchor" id="q-012-a-09"></span><span class="qa-anchor" id="q-012-a-10"></span><span class="qa-anchor" id="q-012-a-11"></span><span class="qa-anchor" id="q-012-a-12"></span><span class="qa-anchor" id="q-012-a-13"></span><span class="qa-anchor" id="q-012-a-14"></span><span class="qa-anchor" id="q-012-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-number">Base 2.4 §5.2.30.1.5</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-013" data-question="13" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-013">Q13</a> How does sharing a CQ differ from giving every SQ its own CQ?</h2>
-<p class="qa-prompt">Identify the key difference and one case where the alternatives are not interchangeable.</p>
-<details class="qa-answer" id="q-013-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-013-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-013-a-01">Trade resource usage against completion-path isolation. Shared CQs reduce CQ resources but concentrate completion traffic.</p><div class="qa-sections">
 <section class="qa-section" id="q-013-s-01" data-answer-section="1"><h3><span>1.</span> What differs</h3>
-<span class="qa-anchor" id="q-013-a-02"></span><p>Completion slots and CQ notification are shared; the SQs do not become one CID namespace.</p>
-<span class="qa-anchor" id="q-013-a-04"></span><p>CQE.SQID+CID identifies the original command; SQHD updates consumption for that SQ.</p>
+<span class="qa-anchor" id="q-013-a-02"></span><p>Completion slots and CQ notification are shared; the SQs do not become one CID namespace.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>CID</dt><dd>Command Identifier, unique among outstanding commands in one SQ</dd></div></dl>
+<span class="qa-anchor" id="q-013-a-04"></span><p>CQE.SQID+CID identifies the original command; SQHD updates consumption for that SQ.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>SQID</dt><dd>Submission Queue Identifier</dd></div></dl>
 </section>
 <section class="qa-section" id="q-013-s-02" data-answer-section="2"><h3><span>2.</span> How to choose and verify</h3>
 <span class="qa-anchor" id="q-013-a-03"></span><p>Number of Queues returns separate SQ/CQ allocations. Create SQ.CQID selects the mapping; CQ.IEN/IV configures notification.</p>
-<span class="qa-anchor" id="q-013-a-05"></span><p>Create the CQ and multiple SQs referencing it. Dispatch each CQE by SQID, then advance the shared CQ head.</p>
+<span class="qa-anchor" id="q-013-a-05"></span><p>Create the CQ and multiple SQs referencing it. Dispatch each CQE by SQID, then advance the shared CQ head.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>SQID</dt><dd>Submission Queue Identifier</dd></div></dl>
 <span class="qa-anchor" id="q-013-a-06"></span><p>SQ1/CID 7 and SQ2/CID 7 may coexist and must be matched separately, unlike reusing an outstanding CID within one SQ.</p>
 </section>
-<section class="qa-section" id="q-013-s-03" data-answer-section="3"><h3><span>3.</span> Where the comparison stops</h3>
+<section class="qa-section" id="q-013-s-03" data-answer-section="3"><h3><span>3.</span> Conditions that shape the comparison</h3>
 <span class="qa-anchor" id="q-013-a-07"></span><p>Valid sharing is not an error. Missing CQIDs follow Create SQ status rules; a full shared CQ does not automatically produce Invalid Queue Size for each SQ.</p>
 <span class="qa-anchor" id="q-013-a-16"></span><p>Compare completion capacity, submission traffic and host consumption rate; SQ count alone does not establish freedom from bottlenecks.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-013-a-17"></span><span class="qa-anchor" id="q-013-a-08"></span><span class="qa-anchor" id="q-013-a-09"></span><span class="qa-anchor" id="q-013-a-10"></span><span class="qa-anchor" id="q-013-a-11"></span><span class="qa-anchor" id="q-013-a-12"></span><span class="qa-anchor" id="q-013-a-13"></span><span class="qa-anchor" id="q-013-a-14"></span><span class="qa-anchor" id="q-013-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-014" data-question="14" data-answer-kind="lookup"><h2><a class="qa-qid" href="#q-014">Q14</a> How does the host determine supported queue memory layouts?</h2>
-<p class="qa-prompt">Choose the interface and target, then identify the returned field that supports your conclusion.</p>
-<details class="qa-answer" id="q-014-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-014-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-014-a-01">Describe queue memory in a layout the controller supports. Virtual contiguity does not establish physical contiguity.</p><div class="qa-sections">
 <section class="qa-section" id="q-014-s-01" data-answer-section="1"><h3><span>1.</span> Select the target and information</h3>
 <span class="qa-anchor" id="q-014-a-02"></span><p>Admin queues require physical contiguity. Discontiguous I/O queues depend on CAP.CQR and memory location.</p>
@@ -149,13 +156,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-014-a-17"></span><p>First ask whether PRP1 addresses queue storage or its page list. Confusing them breaks the layout even with valid addresses.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-cap">Base 2.4 §3.1.4 (CAP, VS)</a> · <a href="#ref-adminreg">Base 2.4 §3.1.4 (AQA, ASQ, ACQ, CMBLOC)</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-014-a-08"></span><span class="qa-anchor" id="q-014-a-09"></span><span class="qa-anchor" id="q-014-a-10"></span><span class="qa-anchor" id="q-014-a-11"></span><span class="qa-anchor" id="q-014-a-12"></span><span class="qa-anchor" id="q-014-a-13"></span><span class="qa-anchor" id="q-014-a-14"></span><span class="qa-anchor" id="q-014-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-cap">Base 2.4 §3.1.4 (CAP, VS)</a> · <a href="#ref-adminreg">Base 2.4 §3.1.4 (AQA, ASQ, ACQ, CMBLOC)</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-015" data-question="15" data-answer-kind="error"><h2><a class="qa-qid" href="#q-015">Q15</a> Which statuses apply to duplicate/zero QIDs, missing CQIDs, oversized queues and invalid vectors?</h2>
-<p class="qa-prompt">Distinguish failure conditions before deciding whether a particular response is required.</p>
-<details class="qa-answer" id="q-015-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-015-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-015-a-01">Match distinct parameter errors to their defined statuses instead of flattening them into Invalid Field.</p><div class="qa-sections">
 <section class="qa-section" id="q-015-s-01" data-answer-section="1"><h3><span>1.</span> Distinguish the failure conditions</h3>
 <span class="qa-anchor" id="q-015-a-02"></span><p>This concerns Create I/O Queue Admin commands. Duplicate QIDs are checked within the SQ or CQ identifier space respectively.</p>
@@ -172,16 +180,17 @@ nvme_qa: true
 <span class="qa-anchor" id="q-015-a-17"></span><p>First check that only one field is invalid and the expected SCT is 1, rather than comparing SC alone.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-irq">PCIe Transport 1.4 §3.5</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-015-a-08"></span><span class="qa-anchor" id="q-015-a-09"></span><span class="qa-anchor" id="q-015-a-10"></span><span class="qa-anchor" id="q-015-a-11"></span><span class="qa-anchor" id="q-015-a-12"></span><span class="qa-anchor" id="q-015-a-13"></span><span class="qa-anchor" id="q-015-a-14"></span><span class="qa-anchor" id="q-015-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-irq">PCIe Transport 1.4 §3.5</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-016" data-question="16" data-answer-kind="fields"><h2><a class="qa-qid" href="#q-016">Q16</a> How do Number of Queues results relate to queues that can actually be created?</h2>
-<p class="qa-prompt">Explain the units and encoding, then work through one set of values.</p>
-<details class="qa-answer" id="q-016-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-016-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-016-a-01">Obtain SQ/CQ allocations before creating queues. Allocation is neither an instantiated queue nor queue depth.</p><div class="qa-sections">
 <section class="qa-section" id="q-016-s-01" data-answer-section="1"><h3><span>1.</span> Establish the source and scope</h3>
-<span class="qa-anchor" id="q-016-a-02"></span><p>FID 07h has controller scope and excludes Admin SQ/CQ.</p>
+<span class="qa-anchor" id="q-016-a-02"></span><p>FID 07h has controller scope and excludes Admin SQ/CQ.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>FID</dt><dd>Feature Identifier</dd></div></dl>
 <span class="qa-anchor" id="q-016-a-03"></span><p>Use Set Features FID 07h CQE DW0 for actual allocations, with Get Features readback. CAP.MQES separately limits per-queue depth.</p>
 </section>
 <section class="qa-section" id="q-016-s-02" data-answer-section="2"><h3><span>2.</span> Fields, units and worked interpretation</h3>
@@ -198,13 +207,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-016-a-16"></span><p>Compare allocations, the actual created-queue list and MQES. Allocated counts are not current existence counts.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-number">Base 2.4 §5.2.30.1.5</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 <span class="qa-anchor" id="q-016-a-17"></span><span class="qa-anchor" id="q-016-a-08"></span><span class="qa-anchor" id="q-016-a-09"></span><span class="qa-anchor" id="q-016-a-10"></span><span class="qa-anchor" id="q-016-a-11"></span><span class="qa-anchor" id="q-016-a-13"></span><span class="qa-anchor" id="q-016-a-14"></span><span class="qa-anchor" id="q-016-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-number">Base 2.4 §5.2.30.1.5</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-017" data-question="17" data-answer-kind="process"><h2><a class="qa-qid" href="#q-017">Q17</a> Why must associated SQs be deleted before their CQ?</h2>
-<p class="qa-prompt">Order the actions and identify which completion must precede the next action.</p>
-<details class="qa-answer" id="q-017-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-017-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-017-a-01">Prevent active SQs from losing their completion destination. For associated queues this is a required host deletion order.</p><div class="qa-sections">
 <section class="qa-section" id="q-017-s-01" data-answer-section="1"><h3><span>1.</span> Prepare the operation</h3>
 <span class="qa-anchor" id="q-017-a-02"></span><p>A CQ may serve multiple SQs. Delete every associated SQ, not only an SQ with the same numeric QID.</p>
@@ -217,16 +227,17 @@ nvme_qa: true
 </section>
 <section class="qa-section" id="q-017-s-03" data-answer-section="3"><h3><span>3.</span> Handle unmet conditions</h3>
 <span class="qa-anchor" id="q-017-a-07"></span><p>Delete CQ with associated SQs shall return Invalid Queue Deletion (1/0Ch); zero or invalid QID returns Invalid Queue Identifier (1/01h).</p>
-<span class="qa-anchor" id="q-017-a-16"></span><p>Correlate successful deletion with memory reclamation. Merely submitting Delete does not authorize early reclamation of DMA memory.</p>
+<span class="qa-anchor" id="q-017-a-16"></span><p>Correlate successful deletion with memory reclamation. Merely submitting Delete does not authorize early reclamation of DMA memory.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>DMA</dt><dd>Direct Memory Access, device access to memory</dd></div></dl>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-017-a-17"></span><span class="qa-anchor" id="q-017-a-08"></span><span class="qa-anchor" id="q-017-a-09"></span><span class="qa-anchor" id="q-017-a-10"></span><span class="qa-anchor" id="q-017-a-11"></span><span class="qa-anchor" id="q-017-a-12"></span><span class="qa-anchor" id="q-017-a-13"></span><span class="qa-anchor" id="q-017-a-14"></span><span class="qa-anchor" id="q-017-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-018" data-question="18" data-answer-kind="error"><h2><a class="qa-qid" href="#q-018">Q18</a> What happens when deleting a missing queue, a referenced CQ or an SQ with outstanding commands?</h2>
-<p class="qa-prompt">Distinguish failure conditions before deciding whether a particular response is required.</p>
-<details class="qa-answer" id="q-018-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-018-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-018-a-01">Distinguish an invalid deletion request from valid deletion terminating commands. Outstanding work does not itself make Delete SQ illegal.</p><div class="qa-sections">
 <section class="qa-section" id="q-018-s-01" data-answer-section="1"><h3><span>1.</span> Distinguish the failure conditions</h3>
 <span class="qa-anchor" id="q-018-a-02"></span><p>SQ deletion affects its outstanding I/O; CQ deletion depends on the existence of every associated SQ.</p>
@@ -243,13 +254,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-018-a-17"></span><p>First check whether Delete SQ itself completed successfully. Its outstanding state does not establish that all original work stopped.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-018-a-08"></span><span class="qa-anchor" id="q-018-a-09"></span><span class="qa-anchor" id="q-018-a-10"></span><span class="qa-anchor" id="q-018-a-11"></span><span class="qa-anchor" id="q-018-a-12"></span><span class="qa-anchor" id="q-018-a-13"></span><span class="qa-anchor" id="q-018-a-14"></span><span class="qa-anchor" id="q-018-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-019" data-question="19" data-answer-kind="concept"><h2><a class="qa-qid" href="#q-019">Q19</a> May the controller access deleted queue memory or post completions for its old commands?</h2>
-<p class="qa-prompt">Explain the mechanism in your own words and identify a common misconception.</p>
-<details class="qa-answer" id="q-019-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-019-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-019-a-01">Establish the memory-reclamation boundary and distinguish an earlier write observed late from a new write after successful deletion.</p><div class="qa-sections">
 <section class="qa-section" id="q-019-s-01" data-answer-section="1"><h3><span>1.</span> Mechanism and scope</h3>
 <span class="qa-anchor" id="q-019-a-02"></span><p>Deleting an SQ does not delete its shared CQ; already posted completions may remain for host consumption.</p>
@@ -258,20 +270,21 @@ nvme_qa: true
 <section class="qa-section" id="q-019-s-02" data-answer-section="2"><h3><span>2.</span> Understand it through actions and results</h3>
 <span class="qa-anchor" id="q-019-a-03"></span><p>Use successful Delete completion on Admin CQ as the boundary, not submission time or a host timeout.</p>
 <span class="qa-anchor" id="q-019-a-05"></span><p>Stop submissions, successfully delete, then reclaim the corresponding queue/list memory. With SQ-only deletion, handle existing posted entries in the surviving CQ.</p>
-<span class="qa-anchor" id="q-019-a-06"></span><p>After successful Delete SQ, no new completions for its old commands may be posted. Successful Delete CQ permits releasing its list; a deleted queue is no longer a valid DMA target.</p>
+<span class="qa-anchor" id="q-019-a-06"></span><p>After successful Delete SQ, no new completions for its old commands may be posted. Successful Delete CQ permits releasing its list; a deleted queue is no longer a valid DMA target.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>DMA</dt><dd>Direct Memory Access, device access to memory</dd></div></dl>
 </section>
 <section class="qa-section" id="q-019-s-03" data-answer-section="3"><h3><span>3.</span> Avoid a misleading conclusion</h3>
 <span class="qa-anchor" id="q-019-a-07"></span><p>Failure or absence of Delete completion does not authorize memory reclamation. Timeout is not a substitute for success.</p>
 <span class="qa-anchor" id="q-019-a-16"></span><p>Correlate write time, phase, Delete completion and host consumption. Late consumption of an old CQE is not necessarily a prohibited late write.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-019-a-17"></span><span class="qa-anchor" id="q-019-a-08"></span><span class="qa-anchor" id="q-019-a-09"></span><span class="qa-anchor" id="q-019-a-10"></span><span class="qa-anchor" id="q-019-a-11"></span><span class="qa-anchor" id="q-019-a-12"></span><span class="qa-anchor" id="q-019-a-13"></span><span class="qa-anchor" id="q-019-a-14"></span><span class="qa-anchor" id="q-019-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-020" data-question="20" data-answer-kind="process"><h2><a class="qa-qid" href="#q-020">Q20</a> What is the scope of Queue Level Reset, and how is outstanding work handled?</h2>
-<p class="qa-prompt">Order the actions and identify which completion must precede the next action.</p>
-<details class="qa-answer" id="q-020-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-020-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-020-a-01">Rebuild I/O queues without resetting the whole controller. PCIe Queue Level Reset means deletion and recreation, not a separate reset opcode.</p><div class="qa-sections">
 <section class="qa-section" id="q-020-s-01" data-answer-section="1"><h3><span>1.</span> Prepare the operation</h3>
 <span class="qa-anchor" id="q-020-a-02"></span><p>Reset the target and its necessary dependencies. Rebuilding a CQ requires deleting its SQs first and recreating them afterward.</p>
@@ -287,13 +300,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-020-a-16"></span><p>Check teardown/recreation ordering, command-lifetime tracking and continued operation of independent queues.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-020-a-17"></span><span class="qa-anchor" id="q-020-a-08"></span><span class="qa-anchor" id="q-020-a-09"></span><span class="qa-anchor" id="q-020-a-10"></span><span class="qa-anchor" id="q-020-a-11"></span><span class="qa-anchor" id="q-020-a-12"></span><span class="qa-anchor" id="q-020-a-13"></span><span class="qa-anchor" id="q-020-a-14"></span><span class="qa-anchor" id="q-020-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-021" data-question="21" data-answer-kind="process"><h2><a class="qa-qid" href="#q-021">Q21</a> Are old I/O queues valid after Controller Reset, and what must the host do again?</h2>
-<p class="qa-prompt">Order the actions and identify which completion must precede the next action.</p>
-<details class="qa-answer" id="q-021-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-021-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-021-a-01">Separate pre-failure commands from new work after recovery to avoid accepting stale completions.</p><div class="qa-sections">
 <section class="qa-section" id="q-021-s-01" data-answer-section="1"><h3><span>1.</span> Prepare the operation</h3>
 <span class="qa-anchor" id="q-021-a-02"></span><p>Controller Level Reset deletes all I/O SQs/CQs of that controller, unlike deleting only one SQ.</p>
@@ -309,6 +323,7 @@ nvme_qa: true
 <span class="qa-anchor" id="q-021-a-16"></span><p>Track queue lifetimes and command mappings across reset in host software; this is not a new NVMe wire field.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-init">Base 2.4 §3.5.1</a> · <a href="#ref-number">Base 2.4 §5.2.30.1.5</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-021-a-17"></span><span class="qa-anchor" id="q-021-a-08"></span><span class="qa-anchor" id="q-021-a-09"></span><span class="qa-anchor" id="q-021-a-10"></span><span class="qa-anchor" id="q-021-a-11"></span><span class="qa-anchor" id="q-021-a-12"></span><span class="qa-anchor" id="q-021-a-13"></span><span class="qa-anchor" id="q-021-a-14"></span><span class="qa-anchor" id="q-021-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-init">Base 2.4 §3.5.1</a> · <a href="#ref-number">Base 2.4 §5.2.30.1.5</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>

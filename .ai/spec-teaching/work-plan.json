@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "phase": "release_prepared",
+  "completed": [
+    "skill_review",
+    "source_paths_confirmed",
+    "shared_style_and_scoped_renderers",
+    "existing_approved_article_revision",
+    "PCIe Chapter 14–37 topic lessons in three editions",
+    "eight new arithmetic models reconciled in three editions",
+    "160 local unit tests",
+    "local Jekyll output and publication boundaries",
+    "608 PCIe and 237 NVMe browser cases",
+    "manual representative diagram and phone screenshots",
+    "skill schema validation and installed skill synchronization"
+  ],
+  "active": [
+    "implementation toolkit packaging and release verification"
+  ],
+  "pending": [
+    "publish and verify same commit CI",
+    "Base 6.0 detailed subsection coverage audit: 1166 unreviewed locators remain"
+  ],
+  "coverage_note": "38 ready topic lessons do not establish complete teaching of every Base 6.0 subsection; 158 guided locators and 1166 unreviewed locators are retained separately."
+}

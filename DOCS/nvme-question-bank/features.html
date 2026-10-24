@@ -119,28 +119,87 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 .nvme-qa :focus-visible {outline:3px solid var(--qr-accent);outline-offset:3px;}
 @media(max-width:600px){.nvme-qa .qa-question{padding:1rem}.nvme-qa .qa-glossary{padding:1rem}.nvme-qa .qa-state{flex-direction:column}.nvme-qa .qa-flow{padding:.8rem}.nvme-qa .qa-flow-steps>li.qa-flow-branch{margin-left:.3rem}}
 @media print{.nvme-qa .qa-controls,.nvme-qa .qa-theme,.nvme-qa .qa-back{display:none}.nvme-qa details::details-content{display:block}.nvme-qa details>*{display:block!important}.nvme-qa .qa-question{break-inside:auto}.nvme-qa .qa-flow-steps>li{break-inside:avoid}}
+
+/* Applied only to explicitly authorized teaching roots. */
+html .spec-teaching[data-spec-series] .st-terms { margin:.35rem 0 1rem; padding:.5rem .8rem; border-inline-start:3px solid var(--st-accent); background:var(--st-soft); font-size:.88em; color:var(--st-muted); }
+html .spec-teaching[data-spec-series] .st-terms > div { display:flex; flex-wrap:wrap; gap:.2em .7em; }
+html .spec-teaching[data-spec-series] .st-terms dt { font-weight:650; }
+html .spec-teaching[data-spec-series] .st-terms dd { margin:0; flex:1 1 14em; }
+html .spec-teaching[data-spec-series] {
+ --st-diagram-width:900px;
+ --st-paper:#f2f6f8; --st-surface:#fff; --st-ink:#192d40; --st-muted:#4c6479;
+ --st-line:#cbd9e3; --st-accent:#145f9d; --st-soft:#edf5fc;
+ --paper:var(--st-paper); --surface:var(--st-surface); --surface-2:var(--st-soft); --surface-alt:var(--st-soft);
+ --ink:var(--st-ink); --muted:var(--st-muted); --line:var(--st-line);
+ --accent:var(--st-accent); --accent-2:var(--st-accent); --soft:var(--st-soft); --blue-soft:var(--st-soft); --teal-soft:var(--st-soft);
+ --qr-paper:var(--st-paper); --qr-surface:var(--st-surface); --qr-ink:var(--st-ink); --qr-muted:var(--st-muted);
+ --qr-line:var(--st-line); --qr-accent:var(--st-accent); --qr-soft:var(--st-soft);
+ color:var(--st-ink); background:var(--st-paper); font-size:17px; line-height:1.9;
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+}
+html .spec-teaching[data-spec-series="nvme"] { --st-accent:#086b56; --st-soft:#e7f4ee; }
+@media(prefers-color-scheme:dark) {
+ html:not([data-theme="light"]) .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+ html:not([data-theme="light"]) .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+}
+html[data-theme="dark"] .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+html[data-theme="dark"] .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+.spec-teaching * { box-sizing:border-box; }
+.spec-teaching :is(h1,h2,h3,h4,h5,p,li,td,th,summary,strong,figcaption) { color:var(--st-ink); }
+.spec-teaching svg text { font-family:inherit; }
+.spec-teaching h1 { font-size:clamp(1.8rem,3.2vw,2.65rem); line-height:1.4; }
+.spec-teaching h2 { font-size:clamp(1.3rem,2.5vw,1.7rem); line-height:1.55; }
+.spec-teaching h3 { font-size:1.15rem; line-height:1.65; }
+.spec-teaching h4 { font-size:1rem; line-height:1.7; }
+.spec-teaching :is(h1,h2,h3,h4) { overflow-wrap:anywhere; }
+.spec-teaching p { margin:.7rem 0 1.15rem; }
+.spec-teaching :is(a,summary) { text-underline-offset:.2em; }
+.spec-teaching :focus-visible { outline:3px solid var(--st-accent); outline-offset:4px; }
+.spec-teaching :is(.qa-takeaway,.qa-answer-lead,.st-takeaway) { color:var(--st-ink); font-weight:650; font-size:1.06rem; line-height:1.9; }
+.spec-teaching :is(.qa-question,.qr-card,.guided-walk) { border:1px solid var(--st-line); border-radius:12px; background:var(--st-surface); padding:clamp(18px,3vw,30px); margin:1.8rem 0; }
+.spec-teaching :is(.qa-flow,.qr-note,.qr-observations,.st-context,.st-route) { background:var(--st-soft); border-left:4px solid var(--st-accent); padding:1rem 1.2rem; margin:1.4rem 0; }
+.spec-teaching :is(.qr-step,.qa-qid,.st-label) { color:var(--st-accent); font-weight:700; }
+.spec-teaching :is(.qa-citations,.qa-source-links,.qr-case-sources,.walk-source,.st-source) { font-size:.84rem; line-height:1.75; color:var(--st-muted); overflow-wrap:anywhere; }
+.spec-teaching :is(.qr-table,.table-wrap) { overflow-x:auto; margin:1.4rem 0; border-radius:7px; }
+.spec-teaching :is(th,td) { line-height:1.8; vertical-align:top; min-width:120px; }
+.spec-teaching :is(table,td) { background:var(--st-surface); }
+.spec-teaching th { background:var(--st-soft); }
+.spec-teaching .st-step { border-left:3px solid var(--st-line); padding:.6rem 1rem; margin:1.2rem 0; }
+.spec-teaching .st-step:target { border-left-color:var(--st-accent); background:var(--st-soft); }
+.spec-teaching .st-glossary { border:1px solid var(--st-line); padding:.7rem 1rem; margin:1.4rem 0; border-radius:8px; }
+.spec-teaching .st-glossary > summary { min-height:44px; cursor:pointer; }
+.spec-teaching .st-specs { display:flex; flex-wrap:wrap; gap:.4rem 1rem; color:var(--st-muted); font-size:.8rem; line-height:1.8; margin:1rem 0; }
+.spec-teaching .st-specs span { border-bottom:2px solid var(--st-accent); padding:.2rem 0; }
+@media(max-width:620px) { .spec-teaching :is(.qa-question,.qr-card,.guided-walk) { padding:16px; } .spec-teaching .diagram svg { min-width:var(--st-diagram-width); } }
+@media print {
+ .spec-teaching { --st-paper:#fff!important; --st-surface:#fff!important; --st-ink:#000!important; --st-muted:#333!important; --st-line:#999!important; --st-accent:#000!important; --st-soft:#fff!important; }
+ .spec-teaching details > * { display:block!important; }
+ .spec-teaching details::details-content { content-visibility:visible!important; }
+ .spec-teaching .st-step { break-inside:avoid; }
+}
 </style></head><body class="qr-standalone">
-<div class="nvme-quickref nvme-qa">
+<div class="nvme-quickref nvme-qa spec-teaching" data-spec-series="nvme">
 <nav class="qr-top" aria-label="題庫與版本"><a href="#content">跳到內容</a><a href="index.html">題庫總索引</a><a href="/nvme/question-bank/features/zh-tw/">Pages 中文</a><a href="/nvme/question-bank/features/en/">English</a></nav>
 <button class="qa-theme" type="button" data-theme-toggle>切換明／暗色</button>
-<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–328</p>
-<header><p class="qa-range">Q54–Q68</p><h1>Get Features 與 Set Features</h1><p class="qr-intro">設定 Feature 前，先確認它影響哪個物件、是否可變更，以及是否可保存。設定後，再分別確認命令成功、Current 讀回值、實際行為與重設後的恢復結果。本冊依這些步驟說明如何驗證設定，避免只看成功 CQE 就跳到功能一定正確的結論。</p><p>先練習，再展開解答。各題依需要使用文字、欄位判讀、比較或流程說明，不要求相同的回答項目。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p></header>
-<aside class="qa-glossary"><h2>先認識本文使用的字詞</h2><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></aside>
+<main id="content"><p class="qr-eyebrow">NVMe · Q1–328</p>
+<div class="st-specs" aria-label="Specification editions"><span>NVM Express Base 2.4</span><span>NVM Command Set 1.3</span><span>NVMe over PCIe Transport 1.4</span></div>
+<header><p class="qa-range">Q54–Q68</p><h1>Get Features 與 Set Features</h1><aside class="st-context"><p>Feature 是可查詢或設定的功能項目；FID（Feature Identifier）選哪一項，SEL（Select）決定要讀目前值、預設值、保存值或支援能力。CQE（Completion Queue Entry）是完成項目，DW0（Dword 0）是其中第一個四位元組欄位；它的意義要連同本次查詢一起讀。</p></aside><p class="qr-intro">設定 Feature 前，先確認它影響哪個物件、是否可變更，以及是否可保存。設定後，再分別確認命令成功、Current 讀回值、實際行為與重設後的恢復結果。本冊依這些步驟說明如何驗證設定，避免只看成功 CQE 就跳到功能一定正確的結論。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry，佇列中的完成項目</dd></div></dl><p>每個問題都接著完整解說，依內容帶讀欄位、比較機制或追蹤流程。先看本冊總覽，再沿問題閱讀；必要條件與正常路徑直接顯示。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SCT</dt><dd>Status Code Type，完成狀態代碼類型</dd></div></dl></header>
 <section id="overview" class="qa-overview"><h2>Current 與 Saved：兩條不同的設定路徑</h2><p class="qa-takeaway">SV=0 只變更目前值；SV=1 才同時要求保存。重設後如何恢復，還要看 Feature 的作用範圍、保存能力及個別例外。</p>
 <div class="qr-table" tabindex="0" role="region" aria-label="可橫向捲動的比較表"><table><thead><tr><th scope="col">動作</th><th scope="col">Current</th><th scope="col">Saved／下一次恢復</th></tr></thead><tbody><tr><td>教學起點：可保存的 Feature</td><td>A</td><td>Saved=A</td></tr><tr><td>Set B，SV=0，成功</td><td>B</td><td>仍是 A</td></tr><tr><td>發生會恢復 Saved 的重設</td><td>回到 A</td><td>A</td></tr><tr><td>Set C，SV=1，成功</td><td>C</td><td>更新成 C</td></tr><tr><td>再次發生相同重設</td><td>回到 C</td><td>C</td></tr></tbody></table></div>
 <p><strong>舉例看懂：</strong>這張表假設 Feature 可保存，而且所執行的重設會從 Saved 恢復 Current。若前提不同，就不能直接套用。例如 FID84h 不可保存，也沒有 Default，但 WPS=1 的基本保護仍會跨越 Power Cycle 保留；WPS=2 則在 Power Cycle 後解除。它們的持續性由保護模式本身決定。</p>
 <p class="qa-citations">來源：<a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-getfeat">Base 2.4 §5.2.12</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-nwp">Base 2.4 §5.2.30.1.38, 8.1.18</a></p>
 </section>
 <section class="qa-lesson"><h2>先把觀念接起來</h2>
-<article><h3>教學 1 · 先問能不能，再問目前是多少</h3><p>Get Features.SEL=3 回傳的是能力，例如是否可變更及是否可保存，而不是目前正在使用的設定。假設 DW0=5，表示能力欄位的 bit2 與 bit0 為 1，不能直接拿來和 Current=5 比較。比較兩次 Get 的結果前，先確認 FID、SEL 及作用對象一致，才能知道它們是否描述同一件事。</p>
+<article><h3>教學 1 · 先查變更與保存能力，再讀目前設定</h3><p>Get Features.SEL=3 回傳的是能力，例如是否可變更及是否可保存，而不是目前正在使用的設定。假設 DW0=5，表示能力欄位的 bit2 與 bit0 為 1，不能直接拿來和 Current=5 比較。比較兩次 Get 的結果前，先確認 FID、SEL 及作用對象一致，才能知道它們是否描述同一件事。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>FID</dt><dd>Feature Identifier，功能識別碼</dd></div></dl>
 </article>
-<article><h3>教學 2 · APST 的狀態轉移該怎麼讀</h3><p>假設目前處於 PS0，APSTE=1，PS0 entry 的 ITPT=2000 ms、ITPS=3，而且 PS3 是受支援的非工作狀態。controller 在 PS0 持續閒置超過 2000 ms 後，會轉入 PS3；之後若有工作需要離開 PS3，恢復處理時就要考慮 PS3.EXLAT 所描述的退出延遲。ITPT 是進入前的閒置門檻，EXLAT 是離開時的延遲，兩者發生在不同階段，不能相加後宣稱每筆命令都固定等待這麼久。</p>
+<article><h3>教學 2 · APST 的狀態轉移該怎麼讀</h3><dl class="st-terms" aria-label="本段名詞"><div><dt>APST</dt><dd>Autonomous Power State Transition，自主電源狀態轉換</dd></div></dl><p>假設目前處於 PS0，APSTE=1，PS0 entry 的 ITPT=2000 ms、ITPS=3，而且 PS3 是受支援的非工作狀態。controller 在 PS0 持續閒置超過 2000 ms 後，會轉入 PS3；之後若有工作需要離開 PS3，恢復處理時就要考慮 PS3.EXLAT 所描述的退出延遲。ITPT 是進入前的閒置門檻，EXLAT 是離開時的延遲，兩者發生在不同階段，不能相加後宣稱每筆命令都固定等待這麼久。</p>
 </article>
 <article><h3>教學 3 · 持久性與原子性要各做一個判斷</h3><p>持久性問的是已完成資料在斷電後是否仍存在；原子性問的是一次更新是否可能留下部分新資料、部分舊資料。WCE、FUA 與 Flush 處理持久性；原子單位及邊界則限制哪些寫入具有原子性。即使資料已持久保存，超出原子保證範圍的多 block 操作，也不會因此自動取得整筆不可分割的保證。</p>
 </article>
-<div class="qa-state" role="img" aria-label="APST 教學假設：PS0 閒置超過 2000 ms 後進入 PS3；需要處理命令時離開 PS3，並考慮退出延遲"><span>PS0<br>可處理命令</span><span class="qa-arrow">idle &gt; ITPT<br>↓</span><span>PS3<br>非工作狀態</span><span class="qa-arrow">需要處理命令<br>↓</span><span>離開 PS3<br>考慮 EXLAT</span></div><p>這張圖使用教學假設的狀態路徑，不表示每個 SSD 都支援 PS3。實際判讀時，先查 Power State Descriptor 的 NOPS、ENLAT、EXLAT，確認狀態類型及進出延遲，再看 APST 的 ITPS 與 ITPT 如何設定。圖中只呈現已啟用 APST 的這條路徑，沒有列出其他狀態選擇。ITPT 指定轉入目標狀態前，需要閒置多久；ENLAT 與 EXLAT 則分別描述進入及離開狀態所需的延遲，三者發生的階段不同。</p>
+<div class="qa-state" role="img" aria-label="APST 教學假設：PS0 閒置超過 2000 ms 後進入 PS3；需要處理命令時離開 PS3，並考慮退出延遲"><span>PS0<br>可處理命令</span><span class="qa-arrow">idle &gt; ITPT<br>↓</span><span>PS3<br>非工作狀態</span><span class="qa-arrow">需要處理命令<br>↓</span><span>離開 PS3<br>考慮 EXLAT</span></div><p>這張圖使用教學假設的狀態路徑，不表示每個 SSD 都支援 PS3。實際判讀時，先查 Power State Descriptor 的 NOPS、ENLAT、EXLAT，確認狀態類型及進出延遲，再看 APST 的 ITPS 與 ITPT 如何設定。圖中只呈現已啟用 APST 的這條路徑，沒有列出其他狀態選擇。ITPT 指定轉入目標狀態前，需要閒置多久；ENLAT 與 EXLAT 則分別描述進入及離開狀態所需的延遲，三者發生的階段不同。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>APST</dt><dd>Autonomous Power State Transition，自主電源狀態轉換</dd></div></dl>
 <p class="qa-citations">來源：<a href="#ref-power">Base 2.4 §5.2.30.1.2, 5.2.30.1.7</a> · <a href="#ref-powerstates">Base 2.4 §8.1.19</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a></p>
 </section>
+<details class="qa-glossary st-glossary"><summary>需要時回顧本篇名詞</summary><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></details>
 <div class="qa-controls" hidden><label>搜尋本頁 <input type="search" id="qa-search" placeholder="題號、欄位或關鍵字"></label><button type="button" data-expand="true">展開全部解答</button><button type="button" data-expand="false">收合全部解答</button><output id="qa-count" aria-live="polite"></output></div>
 <section id="question-index"><h2>本冊題目</h2><ol class="qa-index">
 <li><a href="#q-054">Q54 · Feature 的 Current、Default、Saved Value 及 Supported Capabilities 分別代表什麼？</a></li>
@@ -160,8 +219,8 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <li><a href="#q-068">Q68 · Feature 宣告支援但 Get、Set 或實際功能行為不一致時，應如何驗證？</a></li>
 </ol></section>
 <article class="qa-question" id="q-054" data-question="54" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-054">Q54</a> Feature 的 Current、Default、Saved Value 及 Supported Capabilities 分別代表什麼？</h2>
-<p class="qa-prompt">需求：確認 Volatile Write Cache Feature 是否提供、能否保存，以及目前有沒有啟用。這三個答案分別在哪一份回覆？先想好查詢順序，再展開解答。</p>
-<details class="qa-answer" id="q-054-answer"><summary>展開解答與推導</summary>
+<p class="qa-prompt">需求：確認 Volatile Write Cache Feature 是否提供、能否保存，以及目前有沒有啟用。以下依序查詢功能支援、保存能力與目前設定，並對照各次回覆的格式。</p>
+<details open class="qa-answer" id="q-054-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-054-a-01">Current 是目前使用的值，Default 是預設值，Saved 是已保存的值；Supported Capabilities 則說明這項 Feature 能否變更或保存。前三者描述設定內容，最後一項描述能力，不能當成四份相同設定。</p><div class="qa-sections">
 <section class="qa-section" id="q-054-s-01" data-answer-section="1"><h3><span>1.</span> 差別在哪裡</h3>
 <span class="qa-anchor" id="q-054-a-02"></span><p>比較這些回覆時，必須使用相同 FID、相同作用範圍及對應的選擇欄位。例如，兩個不同 namespace 的 Current 值，本來就可能不同。</p>
@@ -171,26 +230,27 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-054-a-03"></span><p>先分開查「這個 FID 是否提供」與「提供後有哪些設定能力」。Feature Identifiers Supported and Effects（LID12h）的 FSUPP 回答前者；Identify.ONCS.SSFS 表示是否支援 Save／Select 機制，支援時再用 Get Features.SEL=3 查 CHANG、NSSPEC 及 SVBL。SEL=3 的 DW0 bit0 是 SVBL，不是 FSUPP。</p>
 <section class="qa-lookup" id="q-054-lookup"><h4>查詢範例：FSUPP、SVBL 與 Current.WCE 分別回答什麼？</h4>
 <p>教學假設：CC.CSS=000b、UUID Index=0；Identify 顯示 LPA.MLPS=1、ONCS.SSFS=1、VWC.VWCP=1。本例只做 Get，不執行 Set Features 或改動快取。</p>
-<div class="qr-table" tabindex="0" role="region" aria-label="可橫向捲動的比較表"><table><thead><tr><th scope="col">查詢步驟與原文位置</th><th scope="col">要取出的資訊</th><th scope="col">這一步能判斷什麼</th></tr></thead><tbody><tr><td>1 · Figure 200，文件頁 211／PDF 237</td><td>Volatile Write Cache 對應 FID06h；MLPS=1 也保證 LID12h 可讀。</td><td>找到 Feature 識別碼及查詢入口。VWCP=1 表示有快取，不等於快取目前已啟用。</td></tr><tr><td>2 · Figures 270～271，文件頁 276～278／PDF 302～304</td><td>讀 LID12h 完整 1024 bytes（NUMD=255）；FID06h 位於 4×6=24=18h，取該 entry bit0 FSUPP，假設為 1。</td><td>controller 宣告提供 FID06h。這裡尚未回答是否可保存，也還沒有讀到 WCE。</td></tr><tr><td>3 · Figures 198、201，文件頁 210、212／PDF 236、238</td><td>Get Features：Opcode0Ah、FID06h、SEL=3、NSID=0。假設成功 CQE 的 DW0=00000005h。</td><td>bit2 CHANG=1、bit1 NSSPEC=0、bit0 SVBL=1：可變更且可保存。這個 5 是能力 bitmap，不能解成快取工作值。</td></tr><tr><td>4 · Figure 471，文件頁 464～465／PDF 490～491</td><td>再送相同 FID 的 Get Features，但 SEL=0。假設 DW0=0，依 VWC 格式讀 bit0 WCE=0。</td><td>Feature 受支援、可保存，但快取目前未啟用。不能因 Current=0，就改判成 Feature 不支援；也不能拿它和 SEL=3 的 5 直接比較是否相等。</td></tr></tbody></table></div>
-<p>三種 bit0 的名字與用途不同：LID12h entry 是 FSUPP，SEL=3 的 CQE 是 SVBL，本例 SEL=0 的 CQE 則是 WCE。判讀前必須連同 LID 或 FID、SEL 及回覆格式一起保存；只留下數字會失去意義。</p>
+<div class="qr-table" tabindex="0" role="region" aria-label="可橫向捲動的比較表"><table><thead><tr><th scope="col">查詢步驟與原文位置</th><th scope="col">要取出的資訊</th><th scope="col">這一步能判斷什麼</th></tr></thead><tbody><tr><td>1 · Figure 200，文件頁 211／PDF 237</td><td>Volatile Write Cache 對應 FID06h；MLPS=1 也保證 LID12h 可讀。</td><td>找到 Feature 識別碼及查詢入口。VWCP=1 表示有快取，不等於快取目前已啟用。</td></tr><tr><td>2 · Figures 270～271，文件頁 276～278／PDF 302～304</td><td>讀 LID12h 完整 1024 bytes（NUMD=255）；FID06h 位於 4×6=24=18h，取該 entry bit0 FSUPP，假設為 1。</td><td>controller 宣告提供 FID06h。這裡尚未回答是否可保存，也還沒有讀到 WCE。</td></tr><tr><td>3 · Figures 198、201，文件頁 210、212／PDF 236、238</td><td>Get Features：Opcode0Ah、FID06h、SEL=3、NSID=0。假設成功 CQE 的 DW0=00000005h。</td><td>bit2 CHANG=1、bit1 NSSPEC=0、bit0 SVBL=1：可變更且可保存。這個 5 是能力 bitmap，不能解成快取工作值。</td></tr><tr><td>4 · Figure 471，文件頁 464～465／PDF 490～491</td><td>再送相同 FID 的 Get Features，但 SEL=0。假設 DW0=0，依 VWC 格式讀 bit0 WCE=0。</td><td>Feature 受支援、可保存，但快取目前未啟用。不能因 Current=0，就改判成 Feature 不支援；也不能拿它和 SEL=3 的 5 直接比較是否相等。</td></tr></tbody></table><dl class="st-terms" aria-label="本段名詞"><div><dt>NSID</dt><dd>Namespace Identifier，邏輯儲存空間識別碼</dd></div></dl></div>
+<p>三種 bit0 的名字與用途不同：LID12h entry 是 FSUPP，SEL=3 的 CQE 是 SVBL，本例 SEL=0 的 CQE 則是 WCE。判讀前必須連同 LID 或 FID、SEL 及回覆格式一起保存；只留下數字會失去意義。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>LID</dt><dd>Log Page Identifier，紀錄頁識別碼</dd></div></dl>
 <p class="qa-citations">來源：<a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a> · <a href="#ref-getfeat">Base 2.4 §5.2.12</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-vwc">Base 2.4 §5.2.30.1.4</a></p>
 </section>
 <span class="qa-anchor" id="q-054-a-05"></span><p>先查能力，再讀 Current。若要判斷重設後應使用哪個值，才進一步查 Saved 與 Default。Feature 不可保存或尚未有 Saved 值時，SEL=2 回傳 Default；若個別 Feature 本身沒有 Default，則依它的例外規則處理。</p>
 <span class="qa-anchor" id="q-054-a-06"></span><p>例如 SEL=3 回傳 DW0=5，表示 CHANG=1、SVBL=1、NSSPEC=0，也就是可變更、可保存。NSSPEC=0 表示這個位元沒有指出 scope，仍需查該 FID 的 FSP 或規範定義；不能直接推成 controller scope。這個 5 也不是 Current 的工作值。</p>
 </section>
-<section class="qa-section" id="q-054-s-03" data-answer-section="3"><h3><span>3.</span> 哪些結論不能互相套用</h3>
+<section class="qa-section" id="q-054-s-03" data-answer-section="3"><h3><span>3.</span> 比較時要保留的條件</h3>
 <span class="qa-anchor" id="q-054-a-07"></span><p>不支援 FID 時，回報 Invalid Field（0/02h）；SEL=4～7 則是保留編碼。若 controller 不支援所要求的 SEL，不能將回傳內容當成有效的 CHANG 或 SVBL 來解讀。</p>
 <span class="qa-anchor" id="q-054-a-16"></span><p>比較結果時，同時保留 FID、SEL 與回傳值。若只留下 DW0 的數字，之後就無法確認它是工作設定值，還是 Supported Capabilities 的能力 bitmap。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-getfeat">Base 2.4 §5.2.12</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a> · <a href="#ref-vwc">Base 2.4 §5.2.30.1.4</a></p>
 <span class="qa-anchor" id="q-054-a-17"></span><span class="qa-anchor" id="q-054-a-08"></span><span class="qa-anchor" id="q-054-a-09"></span><span class="qa-anchor" id="q-054-a-10"></span><span class="qa-anchor" id="q-054-a-11"></span><span class="qa-anchor" id="q-054-a-12"></span><span class="qa-anchor" id="q-054-a-13"></span><span class="qa-anchor" id="q-054-a-14"></span><span class="qa-anchor" id="q-054-a-15"></span>
 <p class="qa-related">相關機制：<a href="logs.html#q-069">Q69</a> · <a href="logs.html#q-081">Q81</a> · <a href="features.html#q-055">Q55</a> · <a href="features.html#q-060">Q60</a></p>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-getfeat">Base 2.4 §5.2.12</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a> · <a href="#ref-vwc">Base 2.4 §5.2.30.1.4</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-055" data-question="55" data-answer-kind="lifecycle"><h2><a class="qa-qid" href="#q-055">Q55</a> Set Features 的 Save 位元如何影響 Controller Reset 與 Power Cycle 後的 Feature 值？</h2>
-<p class="qa-prompt">先指明重設或中斷的方式，再分別判斷設定、進行中的操作與資料。</p>
-<details class="qa-answer" id="q-055-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-055-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-055-a-01">Save 位元讓 Host 選擇：只改變目前使用的值，或同時更新日後恢復設定時使用的保存值。</p><div class="qa-sections">
 <section class="qa-section" id="q-055-s-01" data-answer-section="1"><h3><span>1.</span> 先界定觸發方式與影響對象</h3>
 <span class="qa-anchor" id="q-055-a-02"></span><p>保存的作用範圍由各 Feature 決定。針對 namespace 保存的設定，與針對 controller 保存的設定，不能當成同一份全域資料。</p>
@@ -202,22 +262,23 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-055-a-06"></span><p>例如原本 Saved=A，Host 以 SV=0 將 Current 改為 B，此時功能使用 B。之後若發生會從 Saved 恢復設定的重設，Current 應回到 A，而不是保留 B。</p>
 </section>
 <section class="qa-section" id="q-055-s-03" data-answer-section="3"><h3><span>3.</span> 如何驗證保留或恢復結果</h3>
-<span class="qa-anchor" id="q-055-a-07"></span><p>Feature 不可保存，Host 卻使用 SV=1 時，必須回報 Feature Identifier Not Saveable（SCT=1, SC=0Dh）。controller 不能先回報保存成功，之後卻因原本不支援保存而遺失設定。</p>
+<span class="qa-anchor" id="q-055-a-07"></span><p>Feature 不可保存，Host 卻使用 SV=1 時，必須回報 Feature Identifier Not Saveable（SCT=1, SC=0Dh）。controller 不能先回報保存成功，之後卻因原本不支援保存而遺失設定。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SCT</dt><dd>Status Code Type，完成狀態代碼類型</dd></div></dl>
 <span class="qa-anchor" id="q-055-a-16"></span><p>目前是否生效、Saved 是否更新，以及重設後是否正確恢復，是三個不同驗證點。只讀到 Current=B，不能證明 Saved 也已變成 B。</p>
 <span class="qa-anchor" id="q-055-a-17"></span><p>先核對原 Set 命令的 SV 及該 FID 的 SVBL，再確認發生的是哪一種重設，以及重設涵蓋哪些物件。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-getfeat">Base 2.4 §5.2.12</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 <span class="qa-anchor" id="q-055-a-08"></span><span class="qa-anchor" id="q-055-a-09"></span><span class="qa-anchor" id="q-055-a-10"></span><span class="qa-anchor" id="q-055-a-11"></span><span class="qa-anchor" id="q-055-a-12"></span><span class="qa-anchor" id="q-055-a-13"></span><span class="qa-anchor" id="q-055-a-14"></span><span class="qa-anchor" id="q-055-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-getfeat">Base 2.4 §5.2.12</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-056" data-question="56" data-answer-kind="error"><h2><a class="qa-qid" href="#q-056">Q56</a> 不支援的 Feature、不合法 Feature 值或 Controller 不支援 Save 時，應如何回應？</h2>
-<p class="qa-prompt">先區分失敗條件，再判斷是否有規範明定的回報結果。</p>
-<details class="qa-answer" id="q-056-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-056-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-056-a-01">不支援 Feature、Feature 目前不可變更、不可保存，以及設定值非法，是不同失敗原因。先分清楚是哪一種，才能選擇正確的 Status 與修正方法。</p><div class="qa-sections">
 <section class="qa-section" id="q-056-s-01" data-answer-section="1"><h3><span>1.</span> 先區分是哪一種失敗</h3>
 <span class="qa-anchor" id="q-056-a-02"></span><p>判斷時要看這次 Set 或 Get 使用的 FID、目標範圍及目前狀態，不能只根據 controller 型號就推論命令應成功。</p>
-<span class="qa-anchor" id="q-056-a-04"></span><p>一起檢查 FID、SV、NSID、CDW11 及資料 buffer。有些 Feature 還需要額外的選擇欄位，因此只看 CQE DW0，無法確認原命令的全部參數是否合法。</p>
+<span class="qa-anchor" id="q-056-a-04"></span><p>一起檢查 FID、SV、NSID、CDW11 及資料 buffer。有些 Feature 還需要額外的選擇欄位，因此只看 CQE DW0，無法確認原命令的全部參數是否合法。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>NSID</dt><dd>Namespace Identifier，邏輯儲存空間識別碼</dd></div></dl>
 <span class="qa-anchor" id="q-056-a-07"></span><p>不支援的 FID 或已定義欄位的非法值，一般回報 0/02h；不可保存回報 1/0Dh；不可變更回報 1/0Eh。若對 controller scope 的 Feature 執行 Set，卻指定有效 NSID，則回報 1/0Fh。個別 FID 若對操作順序或狀態另有規定，優先依專用規則判斷。</p>
 </section>
 <section class="qa-section" id="q-056-s-02" data-answer-section="2"><h3><span>2.</span> 用哪些資料確認原因</h3>
@@ -230,13 +291,14 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-056-a-17"></span><p>先確認測試命令是否同時包含多個非法條件。如果是，controller 可能合法地選擇其中一個錯誤回報，不能只因它沒回預想的那個 Status 就判錯。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-getfeat">Base 2.4 §5.2.12</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 <span class="qa-anchor" id="q-056-a-08"></span><span class="qa-anchor" id="q-056-a-09"></span><span class="qa-anchor" id="q-056-a-10"></span><span class="qa-anchor" id="q-056-a-11"></span><span class="qa-anchor" id="q-056-a-12"></span><span class="qa-anchor" id="q-056-a-13"></span><span class="qa-anchor" id="q-056-a-14"></span><span class="qa-anchor" id="q-056-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-getfeat">Base 2.4 §5.2.12</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-057" data-question="57" data-answer-kind="lookup"><h2><a class="qa-qid" href="#q-057">Q57</a> Host 如何判斷某個 Feature 是否需要指定 NSID？</h2>
-<p class="qa-prompt">先選查詢介面與目標，再說明哪個回傳欄位能支持你的結論。</p>
-<details class="qa-answer" id="q-057-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-057-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-057-a-01">設定 Feature 前，必須先確認它作用於哪個物件，才能正確填寫 NSID 及其他選擇欄位。</p><div class="qa-sections">
 <section class="qa-section" id="q-057-s-01" data-answer-section="1"><h3><span>1.</span> 要查哪個對象、哪份資料</h3>
 <span class="qa-anchor" id="q-057-a-02"></span><p>Feature 的作用範圍可能是 controller、namespace、NVM subsystem、NVM Set、Endurance Group 或其他管理物件，並非只有 controller 與 namespace 兩種。</p>
@@ -253,13 +315,14 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-057-a-17"></span><p>先讀取 Feature 的作用範圍定義，再檢查原命令的 NSID。若作用對象選錯，失敗不一定與 namespace 本身的狀態有關。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-getfeat">Base 2.4 §5.2.12</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-nvmfeat">NVM Command Set 1.3 §4.1.3.1–4.1.3.7</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 <span class="qa-anchor" id="q-057-a-08"></span><span class="qa-anchor" id="q-057-a-09"></span><span class="qa-anchor" id="q-057-a-10"></span><span class="qa-anchor" id="q-057-a-11"></span><span class="qa-anchor" id="q-057-a-12"></span><span class="qa-anchor" id="q-057-a-13"></span><span class="qa-anchor" id="q-057-a-14"></span><span class="qa-anchor" id="q-057-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-getfeat">Base 2.4 §5.2.12</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-nvmfeat">NVM Command Set 1.3 §4.1.3.1–4.1.3.7</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-058" data-question="58" data-answer-kind="process"><h2><a class="qa-qid" href="#q-058">Q58</a> Arbitration、Number of Queues 及 I/O Command Set Profile Feature 如何設定與驗證？</h2>
-<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
-<details class="qa-answer" id="q-058-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-058-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-058-a-01">Arbitration 控制排程參數，Number of Queues 協商 queue 配額，I/O Command Set Profile 則選擇可使用的命令集組合。三者用途不同，也各有合適的初始化時機。</p><div class="qa-sections">
 <section class="qa-section" id="q-058-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
 <span class="qa-anchor" id="q-058-a-02"></span><p>這三種 Feature 都透過 controller 設定；不過，改變 Command Set Profile 還會影響 namespace 及命令集的可用性。</p>
@@ -267,7 +330,7 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-058-a-04"></span><p>FID01h 使用 AB、HPW、MPW、LPW 設定仲裁；FID07h 由 NSQR、NCQR 提出 queue 數量要求，再以 NSQA、NCQA 回報實際配置。FID19h 的 IOCSCI 則是命令集組合的索引，三者的數值不能使用相同方式解讀。</p>
 </section>
 <section class="qa-section" id="q-058-s-02" data-answer-section="2"><h3><span>2.</span> 先後順序與完成條件</h3>
-<span class="qa-anchor" id="q-058-a-05"></span><p>依初始化流程，先選擇 Command Set Profile 並確認 namespace，再設定 Number of Queues，之後才建立 CQ 與 SQ。Arbitration 的參數則必須與 CC.AMS 及各 SQ 的 QPRIO 一起驗證。</p>
+<span class="qa-anchor" id="q-058-a-05"></span><p>依初始化流程，先選擇 Command Set Profile 並確認 namespace，再設定 Number of Queues，之後才建立 CQ 與 SQ。Arbitration 的參數則必須與 CC.AMS 及各 SQ 的 QPRIO 一起驗證。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CQ</dt><dd>Completion Queue，完成佇列</dd></div><div><dt>SQ</dt><dd>Submission Queue，提交佇列</dd></div></dl>
 <span class="qa-anchor" id="q-058-a-06"></span><p>讀回設定時，使用相同 FID 及對應的選擇欄位。CC.CSS≠110b 時，Set FID19h 會成功，但不產生作用；CC.CSS=110b 時，才使用所選命令集組合。Profile index=0 表示第 0 組，不表示停用命令集。FID07h 回傳的配額也不等於已建立的 queue 數量。</p>
 </section>
 <section class="qa-section" id="q-058-s-03" data-answer-section="3"><h3><span>3.</span> 未符合條件時如何處理</h3>
@@ -275,16 +338,17 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-058-a-16"></span><p>同時驗證設定值、實際可建立的 queue 範圍，以及可使用的命令集。三個 Feature 各自提供不同證據，不能用其中一項的 Get 結果代替另外兩項。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-arbit">Base 2.4 §5.2.30.1.1</a> · <a href="#ref-number">Base 2.4 §5.2.30.1.5</a> · <a href="#ref-profile">Base 2.4 §5.2.30.1.18</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-setcomplete">Base 2.4 §5.2.30 (Command Completion)</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 <span class="qa-anchor" id="q-058-a-17"></span><span class="qa-anchor" id="q-058-a-08"></span><span class="qa-anchor" id="q-058-a-09"></span><span class="qa-anchor" id="q-058-a-10"></span><span class="qa-anchor" id="q-058-a-11"></span><span class="qa-anchor" id="q-058-a-12"></span><span class="qa-anchor" id="q-058-a-13"></span><span class="qa-anchor" id="q-058-a-14"></span><span class="qa-anchor" id="q-058-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-arbit">Base 2.4 §5.2.30.1.1</a> · <a href="#ref-number">Base 2.4 §5.2.30.1.5</a> · <a href="#ref-profile">Base 2.4 §5.2.30.1.18</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-setcomplete">Base 2.4 §5.2.30 (Command Completion)</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-059" data-question="59" data-answer-kind="process"><h2><a class="qa-qid" href="#q-059">Q59</a> Interrupt Coalescing 與 Interrupt Vector Configuration 如何設定與驗證？</h2>
-<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
-<details class="qa-answer" id="q-059-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-059-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-059-a-01">Interrupt Coalescing 讓 controller 合併中斷通知，在通知延遲與 Host 處理負擔之間取捨。CQE 已寫入的時間，與中斷實際產生的時間，因而不一定相同。</p><div class="qa-sections">
 <section class="qa-section" id="q-059-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
-<span class="qa-anchor" id="q-059-a-02"></span><p>FID08h 控制 I/O interrupt coalescing；FID09h 則指定某個 vector 是否使用 coalescing。Admin CQ 不支援 coalescing，不能拿它套用相同的聚合預期。</p>
+<span class="qa-anchor" id="q-059-a-02"></span><p>FID08h 控制 I/O interrupt coalescing；FID09h 則指定某個 vector 是否使用 coalescing。Admin CQ 不支援 coalescing，不能拿它套用相同的聚合預期。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CQ</dt><dd>Completion Queue，完成佇列</dd></div></dl>
 <span class="qa-anchor" id="q-059-a-03"></span><p>一起檢查 Create CQ 的 IEN／IV、PCIe 中斷模式及 mask。PCIe 規範要求支援這些 Feature，但實際如何合併通知，允許存在實作差異。</p>
 <span class="qa-anchor" id="q-059-a-04"></span><p>FID08h 的 TIME 以 100 μs 為單位，THR 使用 zero-based 編碼；任一欄位為 0，都會隱含停用 coalescing。FID09h 透過 IV 指定 vector，CD=1 表示不對該 vector 聚合通知，不是遮蔽中斷。</p>
 </section>
@@ -294,16 +358,17 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 </section>
 <section class="qa-section" id="q-059-s-03" data-answer-section="3"><h3><span>3.</span> 未符合條件時如何處理</h3>
 <span class="qa-anchor" id="q-059-a-07"></span><p>FID09h 指定的 IV 非法，或未關聯到既有 I/O CQ 時，應回報 Invalid Field（0/02h）。這與 Create CQ 所使用的 Invalid Interrupt Vector（1/08h）不同，要依失敗的是哪一條命令判斷。</p>
-<span class="qa-anchor" id="q-059-a-16"></span><p>將 Get 值、CQ 配置、mask 與通知行為一起比對。即使 CD=1 已停用聚合，MSI-X mask 仍可能遮蔽中斷；沒有收到中斷，不一定表示 CD 設定失敗。</p>
+<span class="qa-anchor" id="q-059-a-16"></span><p>將 Get 值、CQ 配置、mask 與通知行為一起比對。即使 CD=1 已停用聚合，MSI-X mask 仍可能遮蔽中斷；沒有收到中斷，不一定表示 CD 設定失敗。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>MSI-X</dt><dd>Message Signaled Interrupts Extension，表格式訊息中斷</dd></div></dl>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-irqfeat">Base 2.4 §5.2.30.2.1–5.2.30.2.2</a> · <a href="#ref-irq">PCIe Transport 1.4 §3.5</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 <span class="qa-anchor" id="q-059-a-17"></span><span class="qa-anchor" id="q-059-a-08"></span><span class="qa-anchor" id="q-059-a-09"></span><span class="qa-anchor" id="q-059-a-10"></span><span class="qa-anchor" id="q-059-a-11"></span><span class="qa-anchor" id="q-059-a-12"></span><span class="qa-anchor" id="q-059-a-13"></span><span class="qa-anchor" id="q-059-a-14"></span><span class="qa-anchor" id="q-059-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-irqfeat">Base 2.4 §5.2.30.2.1–5.2.30.2.2</a> · <a href="#ref-irq">PCIe Transport 1.4 §3.5</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-060" data-question="60" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-060">Q60</a> Volatile Write Cache 與 Write Atomicity Normal 控制什麼行為？</h2>
-<p class="qa-prompt">先說出比較對象最重要的差別，並舉一個不能互相代用的例子。</p>
-<details class="qa-answer" id="q-060-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-060-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-060-a-01">持久性問的是資料是否已進入非揮發儲存；原子性問的是一組 logical blocks 是否依規定單位完整更新。這是兩種不同保證，必須分開判斷。</p><div class="qa-sections">
 <section class="qa-section" id="q-060-s-01" data-answer-section="1"><h3><span>1.</span> 差別在哪裡</h3>
 <span class="qa-anchor" id="q-060-a-02"></span><p>FID06h 控制 controller 的揮發性寫入快取；FID0Ah 控制正常情況下的寫入原子性要求。設定 FID0Ah 不會直接改寫 namespace 宣告的原子寫入單位。</p>
@@ -314,23 +379,24 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-060-a-05"></span><p>先讀取能力與 namespace 格式，Set 成功後再 Get 確認。接著以符合原子單位及邊界的 Write 情境，比較規範允許的結果。若要明確區分新舊設定，應先等既有命令完成，再變更 Feature。</p>
 <span class="qa-anchor" id="q-060-a-06"></span><p>WCE=0 不會讓任意大小的 Write 都具備原子性；DN=1 也不會自動讓已完成的資料具有持久性。兩個設定控制不同性質，不能互相替代。</p>
 </section>
-<section class="qa-section" id="q-060-s-03" data-answer-section="3"><h3><span>3.</span> 哪些結論不能互相套用</h3>
+<section class="qa-section" id="q-060-s-03" data-answer-section="3"><h3><span>3.</span> 比較時要保留的條件</h3>
 <span class="qa-anchor" id="q-060-a-07"></span><p>controller 沒有揮發性寫入快取，Host 卻 Get 或 Set FID06h 時，必須回報 Invalid Field（0/02h）。其他參數及 namespace 原子性條件，則依適用命令的規則判斷。</p>
 <span class="qa-anchor" id="q-060-a-16"></span><p>一起查看 Current.WCE、Current.DN，以及 Identify 中對此 namespace 有效的原子單位。FUA 是個別命令的持久性要求，不會擴大原子寫入單位。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-vwc">Base 2.4 §5.2.30.1.4</a> · <a href="#ref-nvmfeat">NVM Command Set 1.3 §4.1.3.1–4.1.3.7</a> · <a href="#ref-nvmatomic">NVM Command Set 1.3 §2.1.2–2.1.4</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 <span class="qa-anchor" id="q-060-a-17"></span><span class="qa-anchor" id="q-060-a-08"></span><span class="qa-anchor" id="q-060-a-09"></span><span class="qa-anchor" id="q-060-a-10"></span><span class="qa-anchor" id="q-060-a-11"></span><span class="qa-anchor" id="q-060-a-12"></span><span class="qa-anchor" id="q-060-a-13"></span><span class="qa-anchor" id="q-060-a-14"></span><span class="qa-anchor" id="q-060-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-vwc">Base 2.4 §5.2.30.1.4</a> · <a href="#ref-nvmfeat">NVM Command Set 1.3 §4.1.3.1–4.1.3.7</a> · <a href="#ref-nvmatomic">NVM Command Set 1.3 §2.1.2–2.1.4</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-061" data-question="61" data-answer-kind="process"><h2><a class="qa-qid" href="#q-061">Q61</a> Asynchronous Event Configuration 如何決定哪些事件需要回報？</h2>
-<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
-<details class="qa-answer" id="q-061-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-061-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-061-a-01">Asynchronous Event Configuration 讓 Host 選擇要接收哪些狀態變更通知。不過，設定通知種類後，Host 仍須自行提交 Asynchronous Event Request，等待 controller 回報事件。</p><div class="qa-sections">
 <section class="qa-section" id="q-061-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
 <span class="qa-anchor" id="q-061-a-02"></span><p>FID0Bh 設定的是此 controller 的通知行為。各種通知所描述的狀態，則可能屬於 SMART、namespace 或其他不同範圍的物件。</p>
 <span class="qa-anchor" id="q-061-a-03"></span><p>OAES 表示選配事件支援，SMART 的警告也有相應能力；NVM 特定 bit 另見 NVM 規格。</p>
-<span class="qa-anchor" id="q-061-a-04"></span><p>CDW11 的啟用位決定要接收哪些通知；AER completion 中的 AET、AEI、LID 則描述實際發生的事件。兩者用途及編碼不同，不能當成同一份 bitmap 解讀。</p>
+<span class="qa-anchor" id="q-061-a-04"></span><p>CDW11 的啟用位決定要接收哪些通知；AER completion 中的 AET、AEI、LID 則描述實際發生的事件。兩者用途及編碼不同，不能當成同一份 bitmap 解讀。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>LID</dt><dd>Log Page Identifier，紀錄頁識別碼</dd></div></dl>
 </section>
 <section class="qa-section" id="q-061-s-02" data-answer-section="2"><h3><span>2.</span> 先後順序與完成條件</h3>
 <span class="qa-anchor" id="q-061-a-05"></span><p>先確認事件支援能力，設定合法的通知 mask，再提交 AER。事件條件成立並收到回報後，讀取事件資訊及對應 Log，依該事件的規則完成確認，並補送新的 AER，繼續接收後續通知。</p>
@@ -344,13 +410,14 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-061-a-09"></span><p>FID0Bh 用來設定通知，但每種事件仍有各自的發生條件與清除規則。它不是所有 Error 類型事件的總開關；讀取 Get Features，也不能代替提交新的 AER 來接收通知。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-aec">Base 2.4 §5.2.30.1.6</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-nvmfeat">NVM Command Set 1.3 §4.1.3.1–4.1.3.7</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 <span class="qa-anchor" id="q-061-a-17"></span><span class="qa-anchor" id="q-061-a-08"></span><span class="qa-anchor" id="q-061-a-10"></span><span class="qa-anchor" id="q-061-a-11"></span><span class="qa-anchor" id="q-061-a-12"></span><span class="qa-anchor" id="q-061-a-13"></span><span class="qa-anchor" id="q-061-a-14"></span><span class="qa-anchor" id="q-061-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-aec">Base 2.4 §5.2.30.1.6</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-nvmfeat">NVM Command Set 1.3 §4.1.3.1–4.1.3.7</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-062" data-question="62" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-062">Q62</a> Power Management、Autonomous Power State Transition 及 Host Controlled Thermal Management 有何差異？</h2>
-<p class="qa-prompt">先說出比較對象最重要的差別，並舉一個不能互相代用的例子。</p>
-<details class="qa-answer" id="q-062-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-062-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-062-a-01">Power Management 讓 Host 直接選擇 power state；APST 依閒置條件自動轉換狀態；HCTM 則依溫度進行熱管理。三者可能都影響功耗與效能，但觸發原因不同。</p><div class="qa-sections">
 <section class="qa-section" id="q-062-s-01" data-answer-section="1"><h3><span>1.</span> 差別在哪裡</h3>
 <span class="qa-anchor" id="q-062-a-02"></span><p>這些設定透過 controller 操作。多個 controller 共用同一 domain 時，功耗狀態可能互相影響，因此不能只觀察單一路徑就解釋全部變化。</p>
@@ -366,21 +433,22 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-062-a-14"></span>
 <div class="qr-table" tabindex="0" role="region" aria-label="可橫向捲動的比較表"><table><thead><tr><th scope="col">觸發方式</th><th scope="col">這項操作或狀態會如何變化</th></tr></thead><tbody><tr><td>Controller Reset 後是否保留或繼續？</td><td>Power Management 與 APST 若不可保存，重設後依 Figure 466 回到預設；HCTM 即使不可保存，仍規定具有持續性。若 Feature 可保存，則改依 Saved 恢復規則判斷。同一 domain 有多個 controller 時，還要協調它們的控制設定。</td></tr><tr><td>Power Cycle 後是否保留或繼續？</td><td>不能假設這三個 FID 都會在斷電後清除。在不可保存的情況下，HCTM 具有持續性，Power Management 與 APST 則不持續；若 Feature 可保存，就依 Saved 恢復規則處理。</td></tr></tbody></table></div>
 </section>
-<section class="qa-section" id="q-062-s-04" data-answer-section="4"><h3><span>4.</span> 哪些結論不能互相套用</h3>
+<section class="qa-section" id="q-062-s-04" data-answer-section="4"><h3><span>4.</span> 比較時要保留的條件</h3>
 <span class="qa-anchor" id="q-062-a-07"></span><p>不支援的 power state、非法 APST 目標，以及不符合範圍或順序的溫度門檻，依各欄位規則判定 Invalid Field（0/02h）。設定看似比較省電，也不能使非法參數變成合法。</p>
 <span class="qa-anchor" id="q-062-a-16"></span><p>分別比對 Get Features 的設定、目前操作狀態、SMART 溫度與 HCTM 計數。單憑功耗下降，無法確定是 APST、Host 指定狀態，還是熱管理造成。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-power">Base 2.4 §5.2.30.1.2, 5.2.30.1.7</a> · <a href="#ref-thermal">Base 2.4 §5.2.30.1.10</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a> · <a href="#ref-powerstates">Base 2.4 §8.1.19</a> · <a href="#ref-thermalpel">Base 2.4 §5.2.13.1.14.2.13</a></p>
 <span class="qa-anchor" id="q-062-a-17"></span><span class="qa-anchor" id="q-062-a-08"></span><span class="qa-anchor" id="q-062-a-09"></span><span class="qa-anchor" id="q-062-a-10"></span><span class="qa-anchor" id="q-062-a-11"></span><span class="qa-anchor" id="q-062-a-13"></span><span class="qa-anchor" id="q-062-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-power">Base 2.4 §5.2.30.1.2, 5.2.30.1.7</a> · <a href="#ref-thermal">Base 2.4 §5.2.30.1.10</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a> · <a href="#ref-powerstates">Base 2.4 §8.1.19</a> · <a href="#ref-thermalpel">Base 2.4 §5.2.13.1.14.2.13</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-063" data-question="63" data-answer-kind="process"><h2><a class="qa-qid" href="#q-063">Q63</a> Timestamp、Keep Alive Timer 及 Host Memory Buffer 如何設定與驗證？</h2>
-<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
-<details class="qa-answer" id="q-063-answer"><summary>展開解答與推導</summary>
-<p class="qa-answer-lead" id="q-063-a-01">Timestamp 提供事件的時間基準，Keep Alive Timer 監測通訊是否持續，HMB 則提供 controller 可專用的 Host 記憶體。三者解決的問題不同，需要各自的驗證方法。</p><div class="qa-sections">
+
+<details open class="qa-answer" id="q-063-answer"><summary>跟著解說理解</summary>
+<p class="qa-answer-lead" id="q-063-a-01">Timestamp 提供事件的時間基準，Keep Alive Timer 監測通訊是否持續，HMB 則提供 controller 可專用的 Host 記憶體。三者解決的問題不同，需要各自的驗證方法。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>HMB</dt><dd>Host Memory Buffer，主機記憶體緩衝</dd></div></dl><div class="qa-sections">
 <section class="qa-section" id="q-063-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
-<span class="qa-anchor" id="q-063-a-02"></span><p>Timestamp 與 Keep Alive 管理 controller 的時間相關狀態；HMB 還涉及 Host 記憶體的使用權，以及何時能安全回收記憶體。</p>
+<span class="qa-anchor" id="q-063-a-02"></span><p>Timestamp 與 Keep Alive 管理 controller 的時間相關狀態；HMB 還涉及 Host 記憶體的使用權，以及何時能安全回收記憶體。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>HMB</dt><dd>Host Memory Buffer，主機記憶體緩衝</dd></div></dl>
 <span class="qa-anchor" id="q-063-a-03"></span><p>Timestamp 看 ONCS；Keep Alive 看 KAS 與 CTRATT.TBKAS；HMB 看 HMPRE、HMMIN、HMMINDS、HMMAXD。</p>
 <span class="qa-anchor" id="q-063-a-04"></span><p>FID0Eh 使用 8-byte buffer 設定 48-bit Timestamp，單位為 ms。FID0Fh 的 KATO 也以 ms 表示，並依 KAS×100 ms 的單位向上取整。FID0Dh 則設定 EHM、MR、HSIZE，以及 descriptor 的位址與數量。</p>
 </section>
@@ -393,14 +461,15 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-063-a-16"></span><p>Timestamp 要搭配 Origin 與 Synch 判讀，不能直接當成已同步的絕對時鐘。KATO 要比較取整後的 Current；HMB 則需一起確認能力、配置、EHM 狀態，以及 Host 是否仍保留原記憶體。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-timestamp">Base 2.4 §5.2.30.1.8</a> · <a href="#ref-keepalive">Base 2.4 §3.9 (common and PCIe rules), 5.2.30.1.9</a> · <a href="#ref-hmb">Base 2.4 §5.2.30.2.3, 8.2.4</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 <span class="qa-anchor" id="q-063-a-17"></span><span class="qa-anchor" id="q-063-a-08"></span><span class="qa-anchor" id="q-063-a-09"></span><span class="qa-anchor" id="q-063-a-10"></span><span class="qa-anchor" id="q-063-a-11"></span><span class="qa-anchor" id="q-063-a-12"></span><span class="qa-anchor" id="q-063-a-13"></span><span class="qa-anchor" id="q-063-a-14"></span><span class="qa-anchor" id="q-063-a-15"></span>
 <p class="qa-related">相關機制：<a href="persistent-events.html#q-216">Q216</a> · <a href="keep-alive.html#q-221">Q221</a> · <a href="memory.html#q-226">Q226</a></p>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-timestamp">Base 2.4 §5.2.30.1.8</a> · <a href="#ref-keepalive">Base 2.4 §3.9 (common and PCIe rules), 5.2.30.1.9</a> · <a href="#ref-hmb">Base 2.4 §5.2.30.2.3, 8.2.4</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-064" data-question="64" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-064">Q64</a> Host Behavior Support、Error Recovery 及 Read Recovery Level 有什麼用途？</h2>
-<p class="qa-prompt">先說出比較對象最重要的差別，並舉一個不能互相代用的例子。</p>
-<details class="qa-answer" id="q-064-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-064-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-064-a-01">Host Behavior Support 告訴 controller，Host 能處理哪些擴充行為；Error Recovery 設定指定 namespace 的錯誤恢復屬性；Read Recovery Level 則選擇讀取錯誤的恢復策略。</p><div class="qa-sections">
 <section class="qa-section" id="q-064-s-01" data-answer-section="1"><h3><span>1.</span> 差別在哪裡</h3>
 <span class="qa-anchor" id="q-064-a-02"></span><p>FID16h 以 controller 為範圍，FID05h 以 namespace 為範圍。FID12h 則依支援的 NVM Set 模型，以 NVM Set 或 NVM subsystem 為範圍。</p>
@@ -416,18 +485,19 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-064-a-14"></span>
 <div class="qr-table" tabindex="0" role="region" aria-label="可橫向捲動的比較表"><table><thead><tr><th scope="col">觸發方式</th><th scope="col">這項操作或狀態會如何變化</th></tr></thead><tbody><tr><td>Controller Reset 後是否保留或繼續？</td><td>在不可保存的情況下，Host Behavior Support 與 Error Recovery 不具持續性，Read Recovery Level 則持續保留。若 Feature 可保存，就改依 Saved 及作用範圍對應的重設規則處理。</td></tr><tr><td>Power Cycle 後是否保留或繼續？</td><td>Power Cycle 後，重新讀取各 FID 的 Current。Read Recovery Level 即使不可保存，仍具有持續性，不能因為沒有 Saved 就要求它回到 0。Host Behavior Support 與 Error Recovery 則各依自己的恢復規則處理。</td></tr></tbody></table></div>
 </section>
-<section class="qa-section" id="q-064-s-04" data-answer-section="4"><h3><span>4.</span> 哪些結論不能互相套用</h3>
-<span class="qa-anchor" id="q-064-a-07"></span><p>不支援的等級或非法設定，依對應規則回報 Invalid Field（0/02h）等 Status。Command Interrupted（0/21h）只有在 ACRE=1 時才能回報，而且 DNR 必須為 0。</p>
-<span class="qa-anchor" id="q-064-a-16"></span><p>LBAFEE 會影響擴充 LBA 格式如何呈現及使用。因此，controller 能力、Host 宣告支援的行為，以及 namespace 的實際格式，必須放在一起判讀。</p>
+<section class="qa-section" id="q-064-s-04" data-answer-section="4"><h3><span>4.</span> 比較時要保留的條件</h3>
+<span class="qa-anchor" id="q-064-a-07"></span><p>不支援的等級或非法設定，依對應規則回報 Invalid Field（0/02h）等 Status。Command Interrupted（0/21h）只有在 ACRE=1 時才能回報，而且 DNR 必須為 0。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>DNR</dt><dd>Do Not Retry，命令重試的狀態提示</dd></div></dl>
+<span class="qa-anchor" id="q-064-a-16"></span><p>LBAFEE 會影響擴充 LBA 格式如何呈現及使用。因此，controller 能力、Host 宣告支援的行為，以及 namespace 的實際格式，必須放在一起判讀。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>LBA</dt><dd>Logical Block Address，邏輯區塊位址</dd></div></dl>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-behavior">Base 2.4 §5.2.30.1.15</a> · <a href="#ref-nvmfeat">NVM Command Set 1.3 §4.1.3.1–4.1.3.7</a> · <a href="#ref-rrl">Base 2.4 §5.2.30.1.12, 8.1.23</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 <span class="qa-anchor" id="q-064-a-17"></span><span class="qa-anchor" id="q-064-a-08"></span><span class="qa-anchor" id="q-064-a-09"></span><span class="qa-anchor" id="q-064-a-10"></span><span class="qa-anchor" id="q-064-a-11"></span><span class="qa-anchor" id="q-064-a-13"></span><span class="qa-anchor" id="q-064-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-behavior">Base 2.4 §5.2.30.1.15</a> · <a href="#ref-nvmfeat">NVM Command Set 1.3 §4.1.3.1–4.1.3.7</a> · <a href="#ref-rrl">Base 2.4 §5.2.30.1.12, 8.1.23</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-065" data-question="65" data-answer-kind="process"><h2><a class="qa-qid" href="#q-065">Q65</a> Namespace Write Protection 如何設定？不同保護模式在 Reset 與 Power Cycle 後是否保留？</h2>
-<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
-<details class="qa-answer" id="q-065-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-065-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-065-a-01">Namespace Write Protection 用來防止 namespace 被修改。不同模式分別提供可解除、直到 Power Cycle 才解除，以及永久的保護，必須分清楚它們的有效期間。</p><div class="qa-sections">
 <section class="qa-section" id="q-065-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
 <span class="qa-anchor" id="q-065-a-02"></span><p>保護狀態屬於 namespace；其他可存取同一 namespace 的 controller 也必須遵守。它不是只影響某條 queue 的 Host 軟體旗標。</p>
@@ -449,13 +519,14 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-065-a-16"></span><p>CHANG=1 不表示 namespace 進入永久保護後仍可解除。另外，WPC 控制位在重設後的變化，與 namespace 已經具有的 WPS 狀態，是不同規則，不能互相推論。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-nwp">Base 2.4 §5.2.30.1.38, 8.1.18</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 <span class="qa-anchor" id="q-065-a-17"></span><span class="qa-anchor" id="q-065-a-08"></span><span class="qa-anchor" id="q-065-a-09"></span><span class="qa-anchor" id="q-065-a-10"></span><span class="qa-anchor" id="q-065-a-11"></span><span class="qa-anchor" id="q-065-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-nwp">Base 2.4 §5.2.30.1.38, 8.1.18</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-066" data-question="66" data-answer-kind="process"><h2><a class="qa-qid" href="#q-066">Q66</a> Set Features 成功後，為什麼還應使用 Get Features 確認？</h2>
-<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
-<details class="qa-answer" id="q-066-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-066-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-066-a-01">Set 成功後再 Get，可以確認 controller 實際使用的值，以及它與 Host 要求值之間是否存在規範允許的換算。只看成功 Status，無法取得這些資訊。</p><div class="qa-sections">
 <section class="qa-section" id="q-066-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
 <span class="qa-anchor" id="q-066-a-02"></span><p>Set 與 Get 必須針對相同 FID、相同作用範圍及對應的選擇欄位，而且中間沒有其他配置變更，才適合直接比較。Get Supported Capabilities 也不能拿來代替 Get Current。</p>
@@ -471,13 +542,14 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-066-a-16"></span><p>Get 能確認 Host 讀到的設定值；實際行為驗證則確認 controller 是否採用該設定。兩者提供不同證據，應互相配合，而不是反覆讀同一數值就當成已驗證全部功能。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-getfeat">Base 2.4 §5.2.12</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-setcomplete">Base 2.4 §5.2.30 (Command Completion)</a> · <a href="#ref-keepalive">Base 2.4 §3.9 (common and PCIe rules), 5.2.30.1.9</a> · <a href="#ref-number">Base 2.4 §5.2.30.1.5</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 <span class="qa-anchor" id="q-066-a-17"></span><span class="qa-anchor" id="q-066-a-08"></span><span class="qa-anchor" id="q-066-a-09"></span><span class="qa-anchor" id="q-066-a-10"></span><span class="qa-anchor" id="q-066-a-11"></span><span class="qa-anchor" id="q-066-a-12"></span><span class="qa-anchor" id="q-066-a-13"></span><span class="qa-anchor" id="q-066-a-14"></span><span class="qa-anchor" id="q-066-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-getfeat">Base 2.4 §5.2.12</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-setcomplete">Base 2.4 §5.2.30 (Command Completion)</a> · <a href="#ref-keepalive">Base 2.4 §3.9 (common and PCIe rules), 5.2.30.1.9</a> · <a href="#ref-number">Base 2.4 §5.2.30.1.5</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-067" data-question="67" data-answer-kind="lifecycle"><h2><a class="qa-qid" href="#q-067">Q67</a> Firmware Activation、Namespace 刪除、Controller Reset 及 Power Cycle 後，Feature 應如何變化？</h2>
-<p class="qa-prompt">先指明重設或中斷的方式，再分別判斷設定、進行中的操作與資料。</p>
-<details class="qa-answer" id="q-067-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-067-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-067-a-01">Feature 在事件之後應保留或恢復成什麼值，要依事件種類與個別 Feature 規則判斷。不能一律假設全部清除，也不能一律假設全部保留。</p><div class="qa-sections">
 <section class="qa-section" id="q-067-s-01" data-answer-section="1"><h3><span>1.</span> 先界定觸發方式與影響對象</h3>
 <span class="qa-anchor" id="q-067-a-02"></span><p>先確認設定屬於 controller、namespace，還是其他共用管理物件，再分別追蹤 Current、Saved 與 Default。作用範圍不同，事件造成的影響也可能不同。</p>
@@ -494,13 +566,14 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-067-a-17"></span><p>先確認前後查詢的是同一物件，再確認事件實際造成的重設範圍，是否就是測試預期的範圍。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-timestamp">Base 2.4 §5.2.30.1.8</a> · <a href="#ref-hmb">Base 2.4 §5.2.30.2.3, 8.2.4</a> · <a href="#ref-nwp">Base 2.4 §5.2.30.1.38, 8.1.18</a> · <a href="#ref-nsmanage">Base 2.4 §5.2.24–5.2.25, 8.1.17</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 <span class="qa-anchor" id="q-067-a-08"></span><span class="qa-anchor" id="q-067-a-09"></span><span class="qa-anchor" id="q-067-a-10"></span><span class="qa-anchor" id="q-067-a-11"></span><span class="qa-anchor" id="q-067-a-12"></span><span class="qa-anchor" id="q-067-a-13"></span><span class="qa-anchor" id="q-067-a-14"></span><span class="qa-anchor" id="q-067-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-timestamp">Base 2.4 §5.2.30.1.8</a> · <a href="#ref-hmb">Base 2.4 §5.2.30.2.3, 8.2.4</a> · <a href="#ref-nwp">Base 2.4 §5.2.30.1.38, 8.1.18</a> · <a href="#ref-nsmanage">Base 2.4 §5.2.24–5.2.25, 8.1.17</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-068" data-question="68" data-answer-kind="diagnose"><h2><a class="qa-qid" href="#q-068">Q68</a> Feature 宣告支援但 Get、Set 或實際功能行為不一致時，應如何驗證？</h2>
-<p class="qa-prompt">先列出已知證據與仍缺少的資訊，再決定能不能判定韌體違規。</p>
-<details class="qa-answer" id="q-068-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-068-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-068-a-01">用可重現且條件明確的情境，分辨矛盾來自能力宣告、設定方式、觀察方法，還是 controller 的實際行為。</p><div class="qa-sections">
 <section class="qa-section" id="q-068-s-01" data-answer-section="1"><h3><span>1.</span> 先保留哪些證據</h3>
 <span class="qa-anchor" id="q-068-a-02"></span><p>固定 controller、FID、NSID 或其他選擇欄位，並確認配置在比較期間沒有改變，避免把不同作用範圍的值混在一起。</p>
@@ -511,12 +584,13 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-068-a-17"></span><p>先確認 Get 沒有使用錯誤的 SEL 或 NSID，再確認拿來驗證行為的命令，確實是在 Set 成功後才提交。</p>
 <span class="qa-anchor" id="q-068-a-05"></span><p>先查能力，再送出合法 Set，等待成功後讀取 Current，最後提交新命令驗證效果。Saved 及重設後的行為則另外驗證，每次只改一項條件，讓差異有明確原因。</p>
 </section>
-<section class="qa-section" id="q-068-s-03" data-answer-section="3"><h3><span>3.</span> 什麼結果足以支持結論</h3>
+<section class="qa-section" id="q-068-s-03" data-answer-section="3"><h3><span>3.</span> 把觀察結果接回規格條件</h3>
 <span class="qa-anchor" id="q-068-a-06"></span><p>判斷一致性時，應接受規範允許的結果範圍。例如 KATO 可以取整、Timestamp 會隨時間改變，中斷聚合也允許實作差異；不能只因結果不等於原請求，就直接判錯。</p>
 <span class="qa-anchor" id="q-068-a-07"></span><p>先分別排除不支援 FID（0/02h）、非法保存要求（1/0Dh）、不可變更（1/0Eh）及作用範圍錯誤（1/0Fh）。若同時存在多項錯誤，也要保留規範允許 controller 選擇其中一項回報的空間。</p>
 <span class="qa-anchor" id="q-068-a-16"></span><p>提出不符合規範的結論時，應附上明確要求、已成立的前提、原始命令與回覆，以及能排除選擇欄位或先後順序誤用的證據。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-getfeat">Base 2.4 §5.2.12</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-setcomplete">Base 2.4 §5.2.30 (Command Completion)</a> · <a href="#ref-irqfeat">Base 2.4 §5.2.30.2.1–5.2.30.2.2</a> · <a href="#ref-effects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 <span class="qa-anchor" id="q-068-a-08"></span><span class="qa-anchor" id="q-068-a-09"></span><span class="qa-anchor" id="q-068-a-10"></span><span class="qa-anchor" id="q-068-a-11"></span><span class="qa-anchor" id="q-068-a-12"></span><span class="qa-anchor" id="q-068-a-13"></span><span class="qa-anchor" id="q-068-a-14"></span><span class="qa-anchor" id="q-068-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-getfeat">Base 2.4 §5.2.12</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-setcomplete">Base 2.4 §5.2.30 (Command Completion)</a> · <a href="#ref-irqfeat">Base 2.4 §5.2.30.2.1–5.2.30.2.2</a> · <a href="#ref-effects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>

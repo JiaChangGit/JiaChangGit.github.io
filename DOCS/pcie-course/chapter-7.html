@@ -223,6 +223,64 @@
 /* Self-contained teaching diagrams use the same theme in standalone pages and posts. */
 .pcie-surface .course-diagram text { fill: var(--ink); font-family: inherit; font-size: 18px; }
 
+/* Applied only to explicitly authorized teaching roots. */
+html .spec-teaching[data-spec-series] .st-terms { margin:.35rem 0 1rem; padding:.5rem .8rem; border-inline-start:3px solid var(--st-accent); background:var(--st-soft); font-size:.88em; color:var(--st-muted); }
+html .spec-teaching[data-spec-series] .st-terms > div { display:flex; flex-wrap:wrap; gap:.2em .7em; }
+html .spec-teaching[data-spec-series] .st-terms dt { font-weight:650; }
+html .spec-teaching[data-spec-series] .st-terms dd { margin:0; flex:1 1 14em; }
+html .spec-teaching[data-spec-series] {
+ --st-diagram-width:900px;
+ --st-paper:#f2f6f8; --st-surface:#fff; --st-ink:#192d40; --st-muted:#4c6479;
+ --st-line:#cbd9e3; --st-accent:#145f9d; --st-soft:#edf5fc;
+ --paper:var(--st-paper); --surface:var(--st-surface); --surface-2:var(--st-soft); --surface-alt:var(--st-soft);
+ --ink:var(--st-ink); --muted:var(--st-muted); --line:var(--st-line);
+ --accent:var(--st-accent); --accent-2:var(--st-accent); --soft:var(--st-soft); --blue-soft:var(--st-soft); --teal-soft:var(--st-soft);
+ --qr-paper:var(--st-paper); --qr-surface:var(--st-surface); --qr-ink:var(--st-ink); --qr-muted:var(--st-muted);
+ --qr-line:var(--st-line); --qr-accent:var(--st-accent); --qr-soft:var(--st-soft);
+ color:var(--st-ink); background:var(--st-paper); font-size:17px; line-height:1.9;
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+}
+html .spec-teaching[data-spec-series="nvme"] { --st-accent:#086b56; --st-soft:#e7f4ee; }
+@media(prefers-color-scheme:dark) {
+ html:not([data-theme="light"]) .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+ html:not([data-theme="light"]) .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+}
+html[data-theme="dark"] .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+html[data-theme="dark"] .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+.spec-teaching * { box-sizing:border-box; }
+.spec-teaching :is(h1,h2,h3,h4,h5,p,li,td,th,summary,strong,figcaption) { color:var(--st-ink); }
+.spec-teaching svg text { font-family:inherit; }
+.spec-teaching h1 { font-size:clamp(1.8rem,3.2vw,2.65rem); line-height:1.4; }
+.spec-teaching h2 { font-size:clamp(1.3rem,2.5vw,1.7rem); line-height:1.55; }
+.spec-teaching h3 { font-size:1.15rem; line-height:1.65; }
+.spec-teaching h4 { font-size:1rem; line-height:1.7; }
+.spec-teaching :is(h1,h2,h3,h4) { overflow-wrap:anywhere; }
+.spec-teaching p { margin:.7rem 0 1.15rem; }
+.spec-teaching :is(a,summary) { text-underline-offset:.2em; }
+.spec-teaching :focus-visible { outline:3px solid var(--st-accent); outline-offset:4px; }
+.spec-teaching :is(.qa-takeaway,.qa-answer-lead,.st-takeaway) { color:var(--st-ink); font-weight:650; font-size:1.06rem; line-height:1.9; }
+.spec-teaching :is(.qa-question,.qr-card,.guided-walk) { border:1px solid var(--st-line); border-radius:12px; background:var(--st-surface); padding:clamp(18px,3vw,30px); margin:1.8rem 0; }
+.spec-teaching :is(.qa-flow,.qr-note,.qr-observations,.st-context,.st-route) { background:var(--st-soft); border-left:4px solid var(--st-accent); padding:1rem 1.2rem; margin:1.4rem 0; }
+.spec-teaching :is(.qr-step,.qa-qid,.st-label) { color:var(--st-accent); font-weight:700; }
+.spec-teaching :is(.qa-citations,.qa-source-links,.qr-case-sources,.walk-source,.st-source) { font-size:.84rem; line-height:1.75; color:var(--st-muted); overflow-wrap:anywhere; }
+.spec-teaching :is(.qr-table,.table-wrap) { overflow-x:auto; margin:1.4rem 0; border-radius:7px; }
+.spec-teaching :is(th,td) { line-height:1.8; vertical-align:top; min-width:120px; }
+.spec-teaching :is(table,td) { background:var(--st-surface); }
+.spec-teaching th { background:var(--st-soft); }
+.spec-teaching .st-step { border-left:3px solid var(--st-line); padding:.6rem 1rem; margin:1.2rem 0; }
+.spec-teaching .st-step:target { border-left-color:var(--st-accent); background:var(--st-soft); }
+.spec-teaching .st-glossary { border:1px solid var(--st-line); padding:.7rem 1rem; margin:1.4rem 0; border-radius:8px; }
+.spec-teaching .st-glossary > summary { min-height:44px; cursor:pointer; }
+.spec-teaching .st-specs { display:flex; flex-wrap:wrap; gap:.4rem 1rem; color:var(--st-muted); font-size:.8rem; line-height:1.8; margin:1rem 0; }
+.spec-teaching .st-specs span { border-bottom:2px solid var(--st-accent); padding:.2rem 0; }
+@media(max-width:620px) { .spec-teaching :is(.qa-question,.qr-card,.guided-walk) { padding:16px; } .spec-teaching .diagram svg { min-width:var(--st-diagram-width); } }
+@media print {
+ .spec-teaching { --st-paper:#fff!important; --st-surface:#fff!important; --st-ink:#000!important; --st-muted:#333!important; --st-line:#999!important; --st-accent:#000!important; --st-soft:#fff!important; }
+ .spec-teaching details > * { display:block!important; }
+ .spec-teaching details::details-content { content-visibility:visible!important; }
+ .spec-teaching .st-step { break-inside:avoid; }
+}
+
 /* Native reading guides: selection highlights; it never hides teaching content.
    build_pcie_course.py changes .pcie-surface to .pcie-article for the posts. */
 .pcie-surface .guided-walk { margin: 1.8rem 0; padding: 1.2rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); min-width: 0; }
@@ -288,7 +346,7 @@
   .pcie-surface .walk-steps { padding-left: 1.15rem; }
   .pcie-surface .walk-step { padding: .5rem .6rem; }
   .pcie-surface .walk-diagram { overflow-x: auto; }
-  .pcie-surface .walk-diagram svg { min-width: 700px; }
+  .pcie-surface .walk-diagram svg { min-width: var(--st-diagram-width, 700px); }
 }
 @media (forced-colors: active) {
   .pcie-surface .walk-choice:checked + .walk-label { border-color: Highlight; }
@@ -311,7 +369,7 @@
 .pcie-surface .walk-summary { margin: 1rem 0 1.5rem; }
   </style>
 </head>
-<body class="pcie-surface">
+<body class="pcie-surface spec-teaching" data-spec-series="pcie">
   <a class="skip-link" href="#content">跳到正文</a>
   <div class="site-shell">
     <nav class="topbar" aria-label="課程導覽">
@@ -347,13 +405,13 @@
 <div class="walk-view" id="interrupt-walk-view">
 <figure class="diagram walk-diagram">
 <svg viewBox="0 0 900 390" role="img" aria-labelledby="notify-title notify-desc"><title id="notify-title">中斷設定與通知時序</title><desc id="notify-desc">時間由上往下。系統軟體找到設定表、在遮罩下填寫項目，再啟用通知；事件發生後，裝置向平台指定的目標寫入資料。</desc><a href="#interrupt-walk-component-software" aria-label="系統軟體"><g data-walk-target="software" class="walk-node" data-walk-steps="1 2 3"><rect x="20" y="20" width="260" height="64" rx="12" fill="var(--blue-soft)" stroke="var(--line)" /><text x="150" y="59" text-anchor="middle">系統軟體</text><path d="M150 84 V365" stroke="var(--line)" stroke-dasharray="5 5" /></g></a><a href="#interrupt-walk-component-device" aria-label="裝置 03:00.0"><g data-walk-target="device" class="walk-node" data-walk-steps="1 2 3 4"><rect x="320" y="20" width="260" height="64" rx="12" fill="var(--blue-soft)" stroke="var(--line)" /><text x="450" y="59" text-anchor="middle">裝置 03:00.0</text><path d="M450 84 V365" stroke="var(--line)" stroke-dasharray="5 5" /></g></a><a href="#interrupt-walk-component-receiver" aria-label="平台中斷接收端"><g data-walk-target="receiver" class="walk-node" data-walk-steps="4"><rect x="620" y="20" width="260" height="64" rx="12" fill="var(--blue-soft)" stroke="var(--line)" /><text x="750" y="59" text-anchor="middle">平台中斷接收端</text><path d="M750 84 V365" stroke="var(--line)" stroke-dasharray="5 5" /></g></a><g data-walk-target="locate" class="walk-node" data-walk-steps="1"><text x="300" y="125" text-anchor="middle">找到中斷設定表</text><path d="M150 140 H450 M441 134 L450 140 L441 146" fill="none" stroke="var(--accent)" stroke-width="2.5" /></g><g data-walk-target="fill" class="walk-node" data-walk-steps="2"><text x="300" y="195" text-anchor="middle">在遮罩下填好項目</text><path d="M150 210 H450 M441 204 L450 210 L441 216" fill="none" stroke="var(--accent)" stroke-width="2.5" /></g><g data-walk-target="open" class="walk-node" data-walk-steps="3"><text x="300" y="265" text-anchor="middle">啟用並解除遮罩</text><path d="M150 280 H450 M441 274 L450 280 L441 286" fill="none" stroke="var(--accent)" stroke-width="2.5" /></g><g data-walk-target="notify" class="walk-node" data-walk-steps="4"><text x="600" y="335" text-anchor="middle">事件發生：寫入指定目標</text><path d="M450 350 H750 M741 344 L750 350 L741 356" fill="none" stroke="var(--accent)" stroke-width="2.5" /></g></svg>
-<figcaption>作者依 Base 6.0 §6.1.4 與 §7.7.2 繪製。主線使用 MSI-X（Message Signaled Interrupts — Extension，以設定表分別配置中斷通知）。</figcaption></figure>
-<div class="walk-summary"><p class="lead">本章使用 MSI-X 中斷通知機制，把裝置的事件送到系統軟體。主線是找到設定表、填入通知目標、開放通知，再追蹤事件發生後的傳送。遮罩期間的待送通知與資料順序，會在主線之後說明。</p>
+<figcaption>作者依 Base 6.0 §6.1.4 與 §7.7.2 繪製。主線使用 MSI-X（Message Signaled Interrupts — Extension，以設定表分別配置中斷通知）。</figcaption></figure><dl class="st-terms" aria-label="本段名詞"><div><dt>MSI-X</dt><dd>Message Signaled Interrupts Extension，表格式訊息中斷</dd></div></dl>
+<div class="walk-summary"><p class="lead">本章使用 MSI-X 中斷通知機制，把裝置的事件送到系統軟體。主線是找到設定表、填入通知目標、開放通知，再追蹤事件發生後的傳送。遮罩期間的待送通知與資料順序，會在主線之後說明。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>MSI-X</dt><dd>Message Signaled Interrupts Extension，表格式訊息中斷</dd></div></dl>
 <p>必要前情：Chapter 2 已找到本例的 Capability（能力與控制結構），Chapter 4 已配置 BAR0（描述裝置記憶體區域的基底位址暫存器）。本章接著使用這兩個位置，建立中斷路徑。</p>
 <aside class="note"><strong>版本與案例前提</strong><p>來源為 PCI Express Base Specification Revision 6.0。沿用普通 Endpoint（階層末端裝置）<code>03:00.0</code>、MSI-X Capability（中斷能力結構）基底 <code>0xD0</code>，以及 16 KiB BAR0（裝置記憶體區域），基底 <code>0x80004000</code>。平台已完成資源映射，Memory Space Enable（MSE，允許記憶體空間回應）與 Bus Master Enable（BME，允許裝置發出適用 Request）均正確。</p><p>所有欄位讀值、事件與中斷目標皆為作者假設。案例採 Non-Flit Mode（以個別交易封包進行本章傳輸的模式）；資料與中斷使用同一 Traffic Class（TC，流量類別）0，ID-Based Ordering（IDO，依識別碼放寬排序）設為零。</p><details><summary>本例未使用的延伸功能</summary><p>本例不使用 SR-IOV（單一裝置虛擬化）、Enhanced Allocation（延伸資源配置）或 TPH（交易處理提示）。這些功能不參與以下流程。</p></details></aside>
 <p><strong>規格閱讀路線：</strong>Figure 7-56 找結構 → Figures 7-60–7-62 看容量、控制與表格位置 → Figure 7-57 看通知項目 → §6.1.4.5 看遮罩與待送事件。下文會在每一步指出本次使用的欄位。</p></div>
 <ol class="walk-steps">
-<li class="walk-step" id="interrupt-walk-step-1" data-walk-step="1" data-walk-targets="software device locate"><h4>找到設定表</h4><div class="walk-condition"><p>沿用 Chapter 2 已找到的能力結構，以及 Chapter 4 已配置的裝置記憶體範圍。</p></div><div class="walk-explanation"><p>系統從 MSI-X的能力結構找到中斷設定表。先讀 Figure 7-56 的 Table 欄位，再以 Figures 7-61／7-62 的 BAR（基底位址暫存器）的選擇值與位移，定位裝置記憶體中的設定表和待送通知位元。</p></div><div class="walk-source" data-source-claims="PCIE-CH7-LOCATE-001"><p>Base 6.0 Figure 7-56（p.1018）、Tables 7-50／7-51（pp.1023–1024）。</p></div></li>
+<li class="walk-step" id="interrupt-walk-step-1" data-walk-step="1" data-walk-targets="software device locate"><h4>找到設定表</h4><div class="walk-condition"><p>沿用 Chapter 2 已找到的能力結構，以及 Chapter 4 已配置的裝置記憶體範圍。</p></div><div class="walk-explanation"><p>系統從 MSI-X的能力結構找到中斷設定表。先讀 Figure 7-56 的 Table 欄位，再以 Figures 7-61／7-62 的 BAR（基底位址暫存器）的選擇值與位移，定位裝置記憶體中的設定表和待送通知位元。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>BAR</dt><dd>Base Address Register，基底位址暫存器</dd></div></dl></div><div class="walk-source" data-source-claims="PCIE-CH7-LOCATE-001"><p>Base 6.0 Figure 7-56（p.1018）、Tables 7-50／7-51（pp.1023–1024）。</p></div></li>
 <li class="walk-step" id="interrupt-walk-step-2" data-walk-step="2" data-walk-targets="software device fill"><h4>在遮罩下填入目標</h4><div class="walk-condition"><p>本例事件來源尚未啟動；通知接收資源已配置，其他項目維持遮罩。</p></div><div class="walk-explanation"><p>系統軟體保持通知遮罩，再依 Figure 7-57 填入第 3 號項目的目的位址與資料。平台會提供這組值，裝置稍後用它發出通知。</p></div><div class="walk-source" data-source-claims="PCIE-CH7-ENTRY-001 PCIE-CH7-CONFIG-001"><p>Base 6.0 Figure 7-57（p.1019）、§6.1.4.2（pp.662–663）。</p></div></li>
 <li class="walk-step" id="interrupt-walk-step-3" data-walk-step="3" data-walk-targets="software device open"><h4>啟用通知路徑</h4><div class="walk-condition"><p>所有必要設定就緒後，才依裝置介面啟動工作。</p></div><div class="walk-explanation"><p>系統確認設定已依平台規則生效，啟用中斷機制，再解除第 3 號項目與整個 Function（可獨立設定的功能單位）的遮罩。Table 7-49 說明全域控制，Table 7-55 說明單一項目的遮罩。</p></div><div class="walk-source" data-source-claims="PCIE-CH7-CONFIG-001"><p>Base 6.0 Tables 7-49／7-55（pp.1022、1026）、§6.1.4.5（pp.664–665）。</p></div></li>
 <li class="walk-step" id="interrupt-walk-step-4" data-walk-step="4" data-walk-targets="device receiver notify"><h4>由裝置發出通知</h4><div class="walk-condition"><p>本例已啟用中斷，兩層遮罩都已解除，裝置與平台間的通知路徑可用。</p></div><div class="walk-explanation"><p>事件發生後，裝置讀取設定表中的位址與資料，發出記憶體寫入。中斷處理常式接著依裝置介面找出待處理工作；裝置介面也負責提供事件內容與數量。</p></div><div class="walk-source" data-source-claims="PCIE-CH7-MECHANISMS-001 PCIE-CH7-ORDER-001"><p>Base 6.0 §6.1.4.4、§6.1.4.6–§6.1.4.7（pp.664–667）。</p></div></li>
@@ -374,7 +432,7 @@
 <tr><td>INTx emulation（電位式中斷模擬）</td><td>使用 Assert_INTx／Deassert_INTx Message 模擬電位式中斷。</td><td>PCI 相容機制；不是 PCIe Link 上另外拉一條傳統 INTx 訊號線。</td></tr>
 <tr><td>MSI（訊息式中斷）</td><td>將系統指定的資料寫到指定的位址。</td><td>Capability ID=0x05；Address／Data 與控制欄位位於設定空間。</td></tr>
 <tr><td>MSI-X</td><td>同樣發出 DWORD（4 bytes）的記憶體寫入。</td><td>Capability ID=0x11；每個 entry 的 Address／Data 位於 Memory Space 的 Table。</td></tr>
-</tbody></table></div>
+</tbody></table><dl class="st-terms" aria-label="本段名詞"><div><dt>MSI</dt><dd>Message Signaled Interrupt，訊息中斷</dd></div></dl></div>
 <p>MSI/MSI-X 使用 Memory Write（MWr，記憶體寫入）這一種 TLP（Transaction Layer Packet，交易層封包），依位址路由，並受 BME（裝置發送許可）控制。它屬於 Posted Request（發出後沒有一般交易回覆的請求），因此沒有對應的 Completion（完成回覆）。INTx 的有效與解除通知則使用 Message TLP（訊息類交易封包），對應表中的 Assert_INTx／Deassert_INTx。</p>
 <p>如果 Function 能產生中斷，Base 6.0 要求支援 MSI、MSI-X 或兩者；INTx 相容機制可以不實作。一個 Function 可以同時具有 MSI 與 MSI-X Capability，但系統不得同時啟用兩者；啟用 MSI 或 MSI-X 時，也不得改用 INTx 要求服務。運作中任意切換機制可能遺失或重複事件。</p>
 <details class="source-note"><summary>機制與互斥條件來源</summary><p>§6.1–§6.1.4（pp.659–661）、§6.1.4.3–§6.1.4.4（pp.663–664）。Capability ID 見 Table 7-40（p.1013）、Table 7-48（p.1022）。MSI/MSI-X 的 Memory Write 格式也見 §2.2.7.1.1 前的說明（p.166）。</p></details></section>
@@ -398,7 +456,7 @@
 <tr><td>0xD2</td><td>16 bits</td><td>0x0007</td><td>Table Size（設定表容量）編碼 7；MSI-X Enable 與 Function Mask 都為 0。</td></tr>
 <tr><td>0xD4</td><td>32 bits</td><td>0x00002000</td><td>Table Offset／Table BIR（BAR 選擇值）。</td></tr>
 <tr><td>0xD8</td><td>32 bits</td><td>0x00003000</td><td>PBA（待送通知位元陣列）Offset／PBA BIR（BAR 選擇值）。</td></tr>
-</tbody></table></div>
+</tbody></table><dl class="st-terms" aria-label="本段名詞"><div><dt>BAR</dt><dd>Base Address Register，基底位址暫存器</dd></div></dl></div>
 <p>先看 Tables 7-50／7-51：<strong>BAR Indicator Register（BIR，BAR 選擇值）</strong>占低 3 bits，其餘 bits 保存 byte 位移。本例兩個 BIR（BAR 選擇值）都是零，因此都選 BAR0。遮掉低 3 bits 後，將位移直接加到 BAR0 基底，就得到表格位置。</p>
 <pre><code>N = (0x0007 &amp; 0x07FF) + 1 = 8
 Table BIR = 0x00002000 &amp; 0x7 = 0
@@ -420,7 +478,7 @@ PBA base = 0x80004000 + (0x00003000 &amp; 0xFFFFFFF8) = 0x80007000</code></pre>
 <tr><td>0x8000603C</td><td>+0x0C，Vector Control</td><td>初始讀回 0x00000001；保留其他 bits，只在適當時機清除 bit 0。</td></tr>
 </tbody></table></div>
 <p>這組 Message Address／Data 假設由平台中斷配置機制提供，且已能正確導向接收端。<code>0x45</code> 是本例寫入的 Message Data（訊息資料），其平台編碼須查平台規格；Table 中的項目編號仍是 3。</p>
-<p>發送時，裝置向 <code>0xFEE01000</code> 送出 1 DW（4 bytes）的 MWr（記憶體寫入），Payload（承載資料）為 <code>0x00000045</code>，四個 bytes 都啟用。MSI-X 不會自行修改 Message Data 的低位元。此例的 Upper Address 為零，因此使用 32-bit 目的位址格式；Relaxed Ordering（RO，放寬排序）與 No Snoop（免除一致性窺探提示）必須為零，IDO（依識別碼放寬排序）本例也設為零。</p>
+<p>發送時，裝置向 <code>0xFEE01000</code> 送出 1 DW（4 bytes）的 MWr（記憶體寫入），Payload（承載資料）為 <code>0x00000045</code>，四個 bytes 都啟用。MSI-X 不會自行修改 Message Data 的低位元。此例的 Upper Address 為零，因此使用 32-bit 目的位址格式；Relaxed Ordering（RO，放寬排序）與 No Snoop（免除一致性窺探提示）必須為零，IDO（依識別碼放寬排序）本例也設為零。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>DW</dt><dd>Double Word，4 bytes的資料單位</dd></div></dl>
 <details class="source-note"><summary>Entry 與訊息欄位來源</summary><p>Figure 7-57（p.1019）、Equation 7-1（p.1021）；Figures 7-63–7-66／Tables 7-52–7-55（pp.1024–1026）。Message Address 低 2 bits 必須寫零。傳送方式見 §6.1.4.4（p.664）；RO／No Snoop 與 TC 條件見 §6.1.4（p.661）。MSI-X Message Address 的讀取結果未定義，不能把它當作一般可讀 Register（p.1019）。</p></details></section>
 
 <section id="configure"><h2>5. 先準備通知目標，再開放事件</h2>
@@ -448,14 +506,14 @@ PBA base = 0x80004000 + (0x00003000 &amp; 0xFFFFFFF8) = 0x80007000</code></pre>
 
 <section id="ordering"><h2>7. 資料寫入如何接上中斷通知？</h2>
 <p>本例讓同一 Function 的資料寫入與 MSI-X 都使用 TC0（同一流量類別）。中斷寫入是 Posted Request（沒有一般完成回覆的請求），且 RO（放寬排序）必須為零；適用的排序規則不允許它越過該 Function 先前送出的 Posted 寫入。§6.1.4.7 進一步要求系統保證：由該訊息引發的中斷處理常式，能觀察到先於該訊息到達的 Posted 更新。因此，不必為了沖出這些先前寫入，額外讀一次裝置 Register。</p>
-<p>使用資料時仍須滿足 <a href="chapter-6.html#publish">Chapter 6 的映射與同步前提</a>。處理常式依裝置介面找出完成項目，再存取對應資料。若資料與中斷使用不同 TC，裝置必須另外確保同步。</p>
+<p>使用資料時仍須滿足 <a href="chapter-6.html#publish">Chapter 6 的映射與同步前提</a>。處理常式依裝置介面找出完成項目，再存取對應資料。若資料與中斷使用不同 TC，裝置必須另外確保同步。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>TC</dt><dd>Traffic Class，流量類別</dd></div></dl>
 <p>訊息接收順序也不保證處理常式的執行順序。若裝置一定要先服務事件 A 才能服務 B，就需要相應交握，不能只以先送 A、後送 B 達成。MSI/MSI-X 本身也不保證固定的中斷延遲。</p>
 <details class="source-note"><summary>通知與資料順序的適用範圍</summary><p>§6.1.4 的跨 TC 同步說明與屬性限制（p.661）；§6.1.4.7（p.667）規定資料可見性、接收端獨立處理與服務順序；延遲不保證見 §6.1.4（p.660）。若多個 entries 共用同一向量，仍可能需要讀裝置狀態辨識事件來源；那是辨識用途，不是前述資料一致性的 flush。</p></details></section>
 
 <section id="practice"><h2>8. 沿同一個事件再走一次</h2>
-<details class="question"><summary>第 3 號項目要發出通知，系統先準備哪些內容？</summary><p>先由 Figure 7-56 找設定表，再按 Figure 7-57 填入平台指定的 Address／Data。系統確認兩層遮罩、啟用控制、裝置發送許可與平台接收資源都已就緒，最後開放事件來源。Table Size=7 表示共有 8 個項目；實際向量配置由系統決定，多個項目也可能共用向量。</p></details>
-<details class="question"><summary>通知暫時被遮罩時，沿哪些欄位追蹤事件？</summary><p>先看 Table 7-49 的 Function Mask，再看 Table 7-55 的 entry Mask。任一層遮罩有效，裝置就按 §6.1.4.5 將通知留待處理，以 Table 7-56 的 Pending bit 表示。事件仍待處理而遮罩解除後，裝置安排送出通知，送出後清除 Pending。</p></details>
-<details class="question"><summary>之後要更改通知目標，如何接回設定流程？</summary><p>先依規定遮罩，確認更新順序，再改 Address／Data，完成後解除遮罩。對原本未遮罩的項目，先以 DWORD 更新 Mask，避免用同一次 QWORD 寫入同時更動 Data 與遮罩；未遮罩時更改目的資料的結果未定義。（§6.1.4.2、§6.1.4.5，pp.662–665。）</p></details></section>
+<details open class="question"><summary>第 3 號項目要發出通知，系統先準備哪些內容？</summary><p>先由 Figure 7-56 找設定表，再按 Figure 7-57 填入平台指定的 Address／Data。系統確認兩層遮罩、啟用控制、裝置發送許可與平台接收資源都已就緒，最後開放事件來源。Table Size=7 表示共有 8 個項目；實際向量配置由系統決定，多個項目也可能共用向量。</p></details>
+<details open class="question"><summary>通知暫時被遮罩時，沿哪些欄位追蹤事件？</summary><p>先看 Table 7-49 的 Function Mask，再看 Table 7-55 的 entry Mask。任一層遮罩有效，裝置就按 §6.1.4.5 將通知留待處理，以 Table 7-56 的 Pending bit 表示。事件仍待處理而遮罩解除後，裝置安排送出通知，送出後清除 Pending。</p></details>
+<details open class="question"><summary>之後要更改通知目標，如何接回設定流程？</summary><p>先依規定遮罩，確認更新順序，再改 Address／Data，完成後解除遮罩。對原本未遮罩的項目，先以 DWORD 更新 Mask，避免用同一次 QWORD 寫入同時更動 Data 與遮罩；未遮罩時更改目的資料的結果未定義。（§6.1.4.2、§6.1.4.5，pp.662–665。）</p></details></section>
 <section id="next"><h2>9. 下一步：這些封包如何可靠地通過 Link？</h2><p>到這裡，已能從設定空間走到資料搬移與通知。<a href="chapter-8.html">Chapter 8</a> 回到 Link，說明訓練、流量控制與重送的責任；Chapter 9–10 接續 Reset 與電源管理，可由 <a href="index.html">課程路線</a> 查看安排。</p></section>
 <section id="sources"><h2>版本與來源</h2><p>本章以 PCI Express Base Specification Revision 6.0 的 §6.1、§7.7.1–§7.7.2 為準；文件頁碼與 PDF 頁碼一致。查核日期：2026-10-21。未把其他版本的中斷欄位或特定 CPU 的中斷編碼混入通用規則；數值案例與初始化安排均已標示為作者推演。</p></section>
         </article>

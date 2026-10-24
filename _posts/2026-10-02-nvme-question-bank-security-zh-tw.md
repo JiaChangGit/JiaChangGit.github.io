@@ -7,18 +7,21 @@ permalink: /nvme/question-bank/security/zh-tw/
 lang: zh-TW
 nvme_quickref: true
 nvme_qa: true
+spec_teaching: true
+last_modified_at: 2026-10-23
 ---
 
-<div class="nvme-quickref nvme-qa">
+<div class="nvme-quickref nvme-qa spec-teaching" data-spec-series="nvme">
 <nav class="qr-top" aria-label="題庫與版本"><a href="#content">跳到內容</a><a href="/nvme/question-bank/zh-tw/">題庫總索引</a><a href="/nvme/question-bank/security/en/">English</a><a href="/DOCS/nvme-question-bank/security.html">繁中教學 HTML</a></nav>
-<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–328</p>
-<header><p class="qa-range">Q237–Q245</p><h1>Security 與 Lockdown</h1><p class="qr-intro">Security Send／Receive 承載協定資料；Lockdown 限制命令或 Feature。先分清資料交換結果與禁止範圍，再討論 reset 及斷電持續性。</p><p>先練習，再展開解答。各題依需要使用文字、欄位判讀、比較或流程說明，不要求相同的回答項目。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p></header>
-<aside class="qa-glossary"><h2>先認識本文使用的字詞</h2><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></aside>
+<main id="content"><p class="qr-eyebrow">NVMe · Q1–328</p>
+<div class="st-specs" aria-label="Specification editions"><span>NVM Express Base 2.4</span><span>NVM Command Set 1.3</span><span>NVMe over PCIe Transport 1.4</span></div>
+<header><p class="qa-range">Q237–Q245</p><h1>Security 與 Lockdown</h1><aside class="st-context"><p>Security Send／Receive 傳送安全協定資料；Command and Feature Lockdown 管理特定命令及功能的禁止條件。FID（Feature Identifier）識別功能，LID（Log Page Identifier）選擇相關能力或狀態紀錄。先辨認本次使用的機制，再讀其範圍與控制。</p></aside><p class="qr-intro">Security Send／Receive 承載協定資料；Lockdown 限制命令或 Feature。先分清資料交換結果與禁止範圍，再討論 reset 及斷電持續性。</p><p>每個問題都接著完整解說，依內容帶讀欄位、比較機制或追蹤流程。先看本冊總覽，再沿問題閱讀；必要條件與正常路徑直接顯示。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SCT</dt><dd>Status Code Type，完成狀態代碼類型</dd></div></dl></header>
 <section id="overview" class="qa-overview"><h2>傳輸成功、協定成功與允許執行</h2><p class="qa-takeaway">NVMe Success 不自動等於認證成功；被鎖定 Feature 的 Get 也不自動被禁止。</p>
-<div class="qr-table" tabindex="0" role="region" aria-label="可橫向捲動的比較表"><table><thead><tr><th scope="col">問題</th><th scope="col">需要的資訊</th><th scope="col">結果所在位置</th></tr></thead><tbody><tr><td>資料有沒有交換</td><td>Security CQE</td><td>NVMe 命令結果</td></tr><tr><td>安全操作是否成功</td><td>SECP、SPSP、payload</td><td>所選協定定義</td></tr><tr><td>命令是否被禁止</td><td>IFC、CSEL、SCP、清單</td><td>Lockdown 及目標 CQE</td></tr><tr><td>斷電後是否保留</td><td>CSEL 與 LDPE</td><td>範圍專屬規則</td></tr></tbody></table></div>
+<div class="qr-table" tabindex="0" role="region" aria-label="可橫向捲動的比較表"><table><thead><tr><th scope="col">問題</th><th scope="col">需要的資訊</th><th scope="col">結果所在位置</th></tr></thead><tbody><tr><td>資料有沒有交換</td><td>Security CQE</td><td>NVMe 命令結果</td></tr><tr><td>安全操作是否成功</td><td>SECP、SPSP、payload</td><td>所選協定定義</td></tr><tr><td>命令是否被禁止</td><td>IFC、CSEL、SCP、清單</td><td>Lockdown 及目標 CQE</td></tr><tr><td>斷電後是否保留</td><td>CSEL 與 LDPE</td><td>範圍專屬規則</td></tr></tbody></table><dl class="st-terms" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry，佇列中的完成項目</dd></div></dl></div>
 <p><strong>舉例看懂：</strong>CSEL=0、LDPE=1 的禁止可跨 Power Cycle 保留；CSEL=1／2 不能只因 LDPE=1 就取得同樣持續性。</p>
 <p class="qa-citations">來源：<a href="#ref-security">Base 2.4 §5.2.28–5.2.29</a> · <a href="#ref-lockdown">Base 2.4 §5.2.16, 8.1.5</a> · <a href="#ref-locklog">Base 2.4 §5.2.13.1.20</a> · <a href="#ref-lockpersist">Base 2.4 §5.2.30.1.25.4–5.2.30.1.25.4.1</a></p>
 </section>
+<details class="qa-glossary st-glossary"><summary>需要時回顧本篇名詞</summary><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></details>
 <div class="qa-controls" hidden><label>搜尋本頁 <input type="search" id="qa-search" placeholder="題號、欄位或關鍵字"></label><button type="button" data-expand="true">展開全部解答</button><button type="button" data-expand="false">收合全部解答</button><output id="qa-count" aria-live="polite"></output></div>
 <section id="question-index"><h2>本冊題目</h2><ol class="qa-index">
 <li><a href="#q-237">Q237 · 如何確認 Security Send／Receive 與實際協定支援？</a></li>
@@ -32,8 +35,8 @@ nvme_qa: true
 <li><a href="#q-245">Q245 · Reset 與 Power Cycle 後 Lockdown 是否保留？</a></li>
 </ol></section>
 <article class="qa-question" id="q-237" data-question="237" data-answer-kind="lookup"><h2><a class="qa-qid" href="#q-237">Q237</a> 如何確認 Security Send／Receive 與實際協定支援？</h2>
-<p class="qa-prompt">先選查詢介面與目標，再說明哪個回傳欄位能支持你的結論。</p>
-<details class="qa-answer" id="q-237-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-237-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-237-a-01">NVMe 命令支援與特定安全協定支援是兩層能力，先確認前者，才能安全解讀後者的回覆。</p><div class="qa-sections">
 <section class="qa-section" id="q-237-s-01" data-answer-section="1"><h3><span>1.</span> 要查哪個對象、哪份資料</h3>
 <span class="qa-anchor" id="q-237-a-02"></span><p>OACS 描述 controller 的命令能力；協定探索回覆才說明它能處理哪些 SECP。</p>
@@ -50,13 +53,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-237-a-17"></span><p>先檢查失敗出在 NVMe 命令層，還是選到未支援的安全協定。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-security">Base 2.4 §5.2.28–5.2.29</a> · <a href="#ref-lockdown">Base 2.4 §5.2.16, 8.1.5</a> · <a href="#ref-locklog">Base 2.4 §5.2.13.1.20</a> · <a href="#ref-lockpersist">Base 2.4 §5.2.30.1.25.4–5.2.30.1.25.4.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-237-a-08"></span><span class="qa-anchor" id="q-237-a-09"></span><span class="qa-anchor" id="q-237-a-10"></span><span class="qa-anchor" id="q-237-a-11"></span><span class="qa-anchor" id="q-237-a-12"></span><span class="qa-anchor" id="q-237-a-13"></span><span class="qa-anchor" id="q-237-a-14"></span><span class="qa-anchor" id="q-237-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-security">Base 2.4 §5.2.28–5.2.29</a> · <a href="#ref-lockdown">Base 2.4 §5.2.16, 8.1.5</a> · <a href="#ref-locklog">Base 2.4 §5.2.13.1.20</a> · <a href="#ref-lockpersist">Base 2.4 §5.2.30.1.25.4–5.2.30.1.25.4.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-238" data-question="238" data-answer-kind="error"><h2><a class="qa-qid" href="#q-238">Q238</a> Security Protocol、欄位或資料長度不合法時如何處理？</h2>
-<p class="qa-prompt">先區分失敗條件，再判斷是否有規範明定的回報結果。</p>
-<details class="qa-answer" id="q-238-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-238-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-238-a-01">必須分清外層 NVMe 欄位與內層安全資料，否則容易期待錯的 Status。</p><div class="qa-sections">
 <section class="qa-section" id="q-238-s-01" data-answer-section="1"><h3><span>1.</span> 先區分是哪一種失敗</h3>
 <span class="qa-anchor" id="q-238-a-02"></span><p>SECP、SPSP、NSSF 與 DPTR／長度都屬查證範圍，但 payload 格式由協定定義。</p>
@@ -70,16 +74,17 @@ nvme_qa: true
 <section class="qa-section" id="q-238-s-03" data-answer-section="3"><h3><span>3.</span> 結果與後續驗證</h3>
 <span class="qa-anchor" id="q-238-a-06"></span><p>合法傳輸取得對應資料或協定回覆；應按協定結果決定認證或安全操作是否成功。</p>
 <span class="qa-anchor" id="q-238-a-16"></span><p>對同一測試記錄外層 CQE 與內層 result，避免把兩者混為一個錯誤碼。</p>
-<span class="qa-anchor" id="q-238-a-17"></span><p>先檢查 AL／TL 單位與實際 buffer 是否足夠，而不是直接猜密碼錯誤。</p>
+<span class="qa-anchor" id="q-238-a-17"></span><p>先按 AL／TL 的單位核對傳輸長度與 buffer 容量，確認資料已完整送達後，再依安全協定的回覆檢查認證資料。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-security">Base 2.4 §5.2.28–5.2.29</a> · <a href="#ref-lockdown">Base 2.4 §5.2.16, 8.1.5</a> · <a href="#ref-locklog">Base 2.4 §5.2.13.1.20</a> · <a href="#ref-lockpersist">Base 2.4 §5.2.30.1.25.4–5.2.30.1.25.4.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-238-a-08"></span><span class="qa-anchor" id="q-238-a-09"></span><span class="qa-anchor" id="q-238-a-10"></span><span class="qa-anchor" id="q-238-a-11"></span><span class="qa-anchor" id="q-238-a-12"></span><span class="qa-anchor" id="q-238-a-13"></span><span class="qa-anchor" id="q-238-a-14"></span><span class="qa-anchor" id="q-238-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-security">Base 2.4 §5.2.28–5.2.29</a> · <a href="#ref-lockdown">Base 2.4 §5.2.16, 8.1.5</a> · <a href="#ref-locklog">Base 2.4 §5.2.13.1.20</a> · <a href="#ref-lockpersist">Base 2.4 §5.2.30.1.25.4–5.2.30.1.25.4.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-239" data-question="239" data-answer-kind="error"><h2><a class="qa-qid" href="#q-239">Q239</a> Security 資料傳輸失敗應如何區分 Status 與協定錯誤？</h2>
-<p class="qa-prompt">先區分失敗條件，再判斷是否有規範明定的回報結果。</p>
-<details class="qa-answer" id="q-239-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-239-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-239-a-01">資料根本沒有正確傳送，與資料送到後協定拒絕，是不同故障階段。</p><div class="qa-sections">
 <section class="qa-section" id="q-239-s-01" data-answer-section="1"><h3><span>1.</span> 先區分是哪一種失敗</h3>
 <span class="qa-anchor" id="q-239-a-02"></span><p>先看 NVMe 命令，再看所選安全協定；同一個安全動作可能涉及多筆 Send／Receive。</p>
@@ -87,22 +92,23 @@ nvme_qa: true
 <span class="qa-anchor" id="q-239-a-07"></span><p>未支援欄位、傳輸錯誤、內部錯誤與認證拒絕各有不同前提；沒有「所有安全失敗都回同一 Status」的規則。</p>
 </section>
 <section class="qa-section" id="q-239-s-02" data-answer-section="2"><h3><span>2.</span> 用哪些資料確認原因</h3>
-<span class="qa-anchor" id="q-239-a-03"></span><p>保存完整 SQE、DPTR、長度、CQE 與有效的 Receive payload。</p>
+<span class="qa-anchor" id="q-239-a-03"></span><p>保存完整 SQE、DPTR、長度、CQE 與有效的 Receive payload。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SQE</dt><dd>Submission Queue Entry，佇列中的命令項目</dd></div></dl>
 <span class="qa-anchor" id="q-239-a-05"></span><p>先檢查 CQE 是否允許信任回傳資料，再依協定解碼；失敗傳輸的舊 buffer 內容不能當新回覆。</p>
 </section>
 <section class="qa-section" id="q-239-s-03" data-answer-section="3"><h3><span>3.</span> 結果與後續驗證</h3>
 <span class="qa-anchor" id="q-239-a-06"></span><p>成功 CQE 只證明該 NVMe 命令成功完成，還需讀協定結果才知道操作是否獲准。</p>
 <span class="qa-anchor" id="q-239-a-16"></span><p>將兩層結果與先後順序對回原始 request，避免讀到上一個 exchange 的結果。</p>
-<span class="qa-anchor" id="q-239-a-17"></span><p>先檢查是不是把成功傳輸的「協定拒絕」誤認成 DMA 失敗。</p>
+<span class="qa-anchor" id="q-239-a-17"></span><p>先檢查是不是把成功傳輸的「協定拒絕」誤認成 DMA 失敗。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>DMA</dt><dd>Direct Memory Access，裝置直接存取記憶體</dd></div></dl>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-security">Base 2.4 §5.2.28–5.2.29</a> · <a href="#ref-lockdown">Base 2.4 §5.2.16, 8.1.5</a> · <a href="#ref-locklog">Base 2.4 §5.2.13.1.20</a> · <a href="#ref-lockpersist">Base 2.4 §5.2.30.1.25.4–5.2.30.1.25.4.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-239-a-08"></span><span class="qa-anchor" id="q-239-a-09"></span><span class="qa-anchor" id="q-239-a-10"></span><span class="qa-anchor" id="q-239-a-11"></span><span class="qa-anchor" id="q-239-a-12"></span><span class="qa-anchor" id="q-239-a-13"></span><span class="qa-anchor" id="q-239-a-14"></span><span class="qa-anchor" id="q-239-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-security">Base 2.4 §5.2.28–5.2.29</a> · <a href="#ref-lockdown">Base 2.4 §5.2.16, 8.1.5</a> · <a href="#ref-locklog">Base 2.4 §5.2.13.1.20</a> · <a href="#ref-lockpersist">Base 2.4 §5.2.30.1.25.4–5.2.30.1.25.4.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-240" data-question="240" data-answer-kind="concept"><h2><a class="qa-qid" href="#q-240">Q240</a> Security 狀態如何影響其他 Admin Command？</h2>
-<p class="qa-prompt">先用自己的話解釋機制，再舉一個常見誤解。</p>
-<details class="qa-answer" id="q-240-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-240-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-240-a-01">安全協定可能限制其他操作，但不能用一個抽象的「Locked」推論所有 Admin 都被禁止。</p><div class="qa-sections">
 <section class="qa-section" id="q-240-s-01" data-answer-section="1"><h3><span>1.</span> 機制與適用範圍</h3>
 <span class="qa-anchor" id="q-240-a-02"></span><p>影響範圍由協定、保護對象與 NVMe 明定互動共同決定。</p>
@@ -118,13 +124,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-240-a-16"></span><p>原始協定回覆、Lockdown 清單與命令行為要分層吻合，不能混用安全狀態名稱。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-security">Base 2.4 §5.2.28–5.2.29</a> · <a href="#ref-lockdown">Base 2.4 §5.2.16, 8.1.5</a> · <a href="#ref-locklog">Base 2.4 §5.2.13.1.20</a> · <a href="#ref-lockpersist">Base 2.4 §5.2.30.1.25.4–5.2.30.1.25.4.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-240-a-17"></span><span class="qa-anchor" id="q-240-a-08"></span><span class="qa-anchor" id="q-240-a-09"></span><span class="qa-anchor" id="q-240-a-10"></span><span class="qa-anchor" id="q-240-a-11"></span><span class="qa-anchor" id="q-240-a-12"></span><span class="qa-anchor" id="q-240-a-13"></span><span class="qa-anchor" id="q-240-a-14"></span><span class="qa-anchor" id="q-240-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-security">Base 2.4 §5.2.28–5.2.29</a> · <a href="#ref-lockdown">Base 2.4 §5.2.16, 8.1.5</a> · <a href="#ref-locklog">Base 2.4 §5.2.13.1.20</a> · <a href="#ref-lockpersist">Base 2.4 §5.2.30.1.25.4–5.2.30.1.25.4.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-241" data-question="241" data-answer-kind="lifecycle"><h2><a class="qa-qid" href="#q-241">Q241</a> Reset 與 Power Cycle 後 Security 狀態是否保留？</h2>
-<p class="qa-prompt">先指明重設或中斷的方式，再分別判斷設定、進行中的操作與資料。</p>
-<details class="qa-answer" id="q-241-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-241-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-241-a-01">原問題必須指定「哪個安全協定的哪個狀態」，才會有可驗證的保留答案。</p><div class="qa-sections">
 <section class="qa-section" id="q-241-s-01" data-answer-section="1"><h3><span>1.</span> 先界定觸發方式與影響對象</h3>
 <span class="qa-anchor" id="q-241-a-02"></span><p>長期金鑰、持久鎖定設定、暫時 session 與待取的 Receive 資料，不是同一種狀態。</p>
@@ -147,17 +154,18 @@ nvme_qa: true
 <span class="qa-anchor" id="q-241-a-17"></span><p>先檢查題目中的「Security 狀態」究竟指哪個欄位或協定物件。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-security">Base 2.4 §5.2.28–5.2.29</a> · <a href="#ref-lockdown">Base 2.4 §5.2.16, 8.1.5</a> · <a href="#ref-locklog">Base 2.4 §5.2.13.1.20</a> · <a href="#ref-lockpersist">Base 2.4 §5.2.30.1.25.4–5.2.30.1.25.4.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-241-a-08"></span><span class="qa-anchor" id="q-241-a-09"></span><span class="qa-anchor" id="q-241-a-10"></span><span class="qa-anchor" id="q-241-a-11"></span><span class="qa-anchor" id="q-241-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-security">Base 2.4 §5.2.28–5.2.29</a> · <a href="#ref-lockdown">Base 2.4 §5.2.16, 8.1.5</a> · <a href="#ref-locklog">Base 2.4 §5.2.13.1.20</a> · <a href="#ref-lockpersist">Base 2.4 §5.2.30.1.25.4–5.2.30.1.25.4.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-242" data-question="242" data-answer-kind="process"><h2><a class="qa-qid" href="#q-242">Q242</a> Lockdown 如何限制指定 Command 或 Feature？</h2>
-<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
-<details class="qa-answer" id="q-242-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-242-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-242-a-01">Lockdown 限制命令在選定介面與 controller 執行，用來控制管理入口；它不是加密資料或設定 namespace 唯讀。</p><div class="qa-sections">
 <section class="qa-section" id="q-242-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
 <span class="qa-anchor" id="q-242-a-02"></span><p>CSEL=0 選 subsystem，1 選指定 controller，2 選指定 primary 的 secondary 群組；IFC 另選收命令的介面。</p>
-<span class="qa-anchor" id="q-242-a-03"></span><p>查 OACS.CFLS／CCFLS 與 LID14h 的可禁止清單；哪些 Opcode／FID 可禁止由實作宣告。</p>
+<span class="qa-anchor" id="q-242-a-03"></span><p>查 OACS.CFLS／CCFLS 與 LID14h 的可禁止清單；哪些 Opcode／FID 可禁止由實作宣告。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>FID</dt><dd>Feature Identifier，功能識別碼</dd></div></dl>
 <span class="qa-anchor" id="q-242-a-04"></span><p>CDW10.SCP 選 Admin Opcode 或 Set Features FID，OFI 指目標，PRHBT=1 禁止、0 允許；CDW14.CSS 選 controller，必要時 UIDX 選定義。</p>
 </section>
 <section class="qa-section" id="q-242-s-02" data-answer-section="2"><h3><span>2.</span> 先後順序與完成條件</h3>
@@ -169,17 +177,18 @@ nvme_qa: true
 <span class="qa-anchor" id="q-242-a-16"></span><p>一個 FID 被禁止是阻止 Set，不是同時禁止 Get；也不等於 Set Features 全部 Opcode 被禁止。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-security">Base 2.4 §5.2.28–5.2.29</a> · <a href="#ref-lockdown">Base 2.4 §5.2.16, 8.1.5</a> · <a href="#ref-locklog">Base 2.4 §5.2.13.1.20</a> · <a href="#ref-lockpersist">Base 2.4 §5.2.30.1.25.4–5.2.30.1.25.4.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-242-a-17"></span><span class="qa-anchor" id="q-242-a-08"></span><span class="qa-anchor" id="q-242-a-09"></span><span class="qa-anchor" id="q-242-a-10"></span><span class="qa-anchor" id="q-242-a-11"></span><span class="qa-anchor" id="q-242-a-12"></span><span class="qa-anchor" id="q-242-a-13"></span><span class="qa-anchor" id="q-242-a-14"></span><span class="qa-anchor" id="q-242-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-security">Base 2.4 §5.2.28–5.2.29</a> · <a href="#ref-lockdown">Base 2.4 §5.2.16, 8.1.5</a> · <a href="#ref-locklog">Base 2.4 §5.2.13.1.20</a> · <a href="#ref-lockpersist">Base 2.4 §5.2.30.1.25.4–5.2.30.1.25.4.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-243" data-question="243" data-answer-kind="error"><h2><a class="qa-qid" href="#q-243">Q243</a> 執行被 Lockdown 禁止的命令或 Feature 應如何回應？</h2>
-<p class="qa-prompt">先區分失敗條件，再判斷是否有規範明定的回報結果。</p>
-<details class="qa-answer" id="q-243-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-243-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-243-a-01">成功設下禁止後，還要驗證目標操作真的被阻擋，不能只看到設定命令成功就結束。</p><div class="qa-sections">
 <section class="qa-section" id="q-243-s-01" data-answer-section="1"><h3><span>1.</span> 先區分是哪一種失敗</h3>
 <span class="qa-anchor" id="q-243-a-02"></span><p>條件包含目標 controller、收到命令的介面、Opcode 或 Set FID，以及適用 UUID。</p>
-<span class="qa-anchor" id="q-243-a-04"></span><p>Admin SQ 上收到符合禁止條件的命令，必須中止並回 Command Prohibited by Command and Feature Lockdown，SCT=0、SC=23h。</p>
+<span class="qa-anchor" id="q-243-a-04"></span><p>Admin SQ 上收到符合禁止條件的命令，必須中止並回 Command Prohibited by Command and Feature Lockdown，SCT=0、SC=23h。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SQ</dt><dd>Submission Queue，提交佇列</dd></div><div><dt>SCT</dt><dd>Status Code Type，完成狀態代碼類型</dd></div></dl>
 <span class="qa-anchor" id="q-243-a-07"></span><p>Lockdown 命令自己不被支援或參數非法，與已禁止的目標命令被拒絕，是不同 Status。Personality 的 CDP Authentication 明定例外也要保留。</p>
 </section>
 <section class="qa-section" id="q-243-s-02" data-answer-section="2"><h3><span>2.</span> 用哪些資料確認原因</h3>
@@ -192,13 +201,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-243-a-17"></span><p>先檢查是否測到錯誤介面、錯誤 controller，或規範明定的允許例外。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-security">Base 2.4 §5.2.28–5.2.29</a> · <a href="#ref-lockdown">Base 2.4 §5.2.16, 8.1.5</a> · <a href="#ref-locklog">Base 2.4 §5.2.13.1.20</a> · <a href="#ref-lockpersist">Base 2.4 §5.2.30.1.25.4–5.2.30.1.25.4.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-243-a-08"></span><span class="qa-anchor" id="q-243-a-09"></span><span class="qa-anchor" id="q-243-a-10"></span><span class="qa-anchor" id="q-243-a-11"></span><span class="qa-anchor" id="q-243-a-12"></span><span class="qa-anchor" id="q-243-a-13"></span><span class="qa-anchor" id="q-243-a-14"></span><span class="qa-anchor" id="q-243-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-security">Base 2.4 §5.2.28–5.2.29</a> · <a href="#ref-lockdown">Base 2.4 §5.2.16, 8.1.5</a> · <a href="#ref-locklog">Base 2.4 §5.2.13.1.20</a> · <a href="#ref-lockpersist">Base 2.4 §5.2.30.1.25.4–5.2.30.1.25.4.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-244" data-question="244" data-answer-kind="fields"><h2><a class="qa-qid" href="#q-244">Q244</a> Lockdown Log 的一般與增強格式如何解讀？</h2>
-<p class="qa-prompt">先試著說明欄位的單位與編碼，再用一組數值推導結果。</p>
-<details class="qa-answer" id="q-244-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-244-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-244-a-01">Log 分開回報「可以禁止」與「目前禁止」，這兩份清單不能互換。</p><div class="qa-sections">
 <section class="qa-section" id="q-244-s-01" data-answer-section="1"><h3><span>1.</span> 先確認資料的來源與範圍</h3>
 <span class="qa-anchor" id="q-244-a-02"></span><p>一般格式的部分清單描述全體 controller；增強格式可指定單台或以 FFFFh 彙整至少一台回報的項目。</p>
@@ -214,13 +224,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-244-a-16"></span><p>以特定 controller 查詢驗證彙整清單，再比較實際命令，避免把聯集誤看成交集。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-security">Base 2.4 §5.2.28–5.2.29</a> · <a href="#ref-lockdown">Base 2.4 §5.2.16, 8.1.5</a> · <a href="#ref-locklog">Base 2.4 §5.2.13.1.20</a> · <a href="#ref-lockpersist">Base 2.4 §5.2.30.1.25.4–5.2.30.1.25.4.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-244-a-17"></span><span class="qa-anchor" id="q-244-a-08"></span><span class="qa-anchor" id="q-244-a-09"></span><span class="qa-anchor" id="q-244-a-10"></span><span class="qa-anchor" id="q-244-a-11"></span><span class="qa-anchor" id="q-244-a-12"></span><span class="qa-anchor" id="q-244-a-13"></span><span class="qa-anchor" id="q-244-a-14"></span><span class="qa-anchor" id="q-244-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-security">Base 2.4 §5.2.28–5.2.29</a> · <a href="#ref-lockdown">Base 2.4 §5.2.16, 8.1.5</a> · <a href="#ref-locklog">Base 2.4 §5.2.13.1.20</a> · <a href="#ref-lockpersist">Base 2.4 §5.2.30.1.25.4–5.2.30.1.25.4.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-245" data-question="245" data-answer-kind="lifecycle"><h2><a class="qa-qid" href="#q-245">Q245</a> Reset 與 Power Cycle 後 Lockdown 是否保留？</h2>
-<p class="qa-prompt">先指明重設或中斷的方式，再分別判斷設定、進行中的操作與資料。</p>
-<details class="qa-answer" id="q-245-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-245-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-245-a-01">持續性取決於 CSEL 與 Lockdown Persistence，不能只用「Lockdown 已啟用」一個布林值判斷。</p><div class="qa-sections">
 <section class="qa-section" id="q-245-s-01" data-answer-section="1"><h3><span>1.</span> 先界定觸發方式與影響對象</h3>
 <span class="qa-anchor" id="q-245-a-02"></span><p>先區分 subsystem 禁止與指定 controller／secondary 群組禁止。</p>
@@ -243,6 +254,7 @@ nvme_qa: true
 <span class="qa-anchor" id="q-245-a-17"></span><p>先檢查是否把 Controller Reset、Subsystem Reset 與真的斷電混稱為 Reset。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-security">Base 2.4 §5.2.28–5.2.29</a> · <a href="#ref-lockdown">Base 2.4 §5.2.16, 8.1.5</a> · <a href="#ref-locklog">Base 2.4 §5.2.13.1.20</a> · <a href="#ref-lockpersist">Base 2.4 §5.2.30.1.25.4–5.2.30.1.25.4.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-245-a-08"></span><span class="qa-anchor" id="q-245-a-09"></span><span class="qa-anchor" id="q-245-a-10"></span><span class="qa-anchor" id="q-245-a-11"></span><span class="qa-anchor" id="q-245-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-security">Base 2.4 §5.2.28–5.2.29</a> · <a href="#ref-lockdown">Base 2.4 §5.2.16, 8.1.5</a> · <a href="#ref-locklog">Base 2.4 §5.2.13.1.20</a> · <a href="#ref-lockpersist">Base 2.4 §5.2.30.1.25.4–5.2.30.1.25.4.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>

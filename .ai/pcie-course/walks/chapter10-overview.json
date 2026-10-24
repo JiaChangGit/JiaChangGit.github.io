@@ -1,0 +1,82 @@
+{
+  "title": "分開看 Function 與 Link，再設定省電路徑",
+  "summary_html": "<p class=\"lead\">Function 電源狀態與 Link 電源狀態描述不同對象。D0 表示 Function 的工作電源狀態；在符合條件時，它使用的 Link 仍可透過 ASPM（Active State Power Management，主動狀態電源管理）進入省電狀態。</p><p>前情提要：Chapter 8 已建立相鄰兩端的 Link；本章再把這兩端的省電能力、控制與退出條件接起來。</p><p><strong>規格路線：</strong>Tables 5-1／5-2 → PM Capability 與 Link 欄位 → Figures 7-146–7-150 的 L1 Substates → LTR 與退出時間條件。</p>",
+  "svg": "<svg viewBox=\"0 0 900 440\" role=\"img\" aria-labelledby=\"ch10-guide-title ch10-guide-desc\"><title id=\"ch10-guide-title\">上下兩列分別是 Function 與 Link 的狀態；虛線指向 L1 子狀態的額外條件。</title><desc id=\"ch10-guide-desc\">上下兩列分別是 Function 與 Link 的狀態；虛線指向 L1 子狀態的額外條件。</desc><g data-walk-target=\"function-label\"><rect x=\"30\" y=\"15\" width=\"230\" height=\"55\" rx=\"9\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"145.0\" y=\"40\" text-anchor=\"middle\" font-size=\"15\">Function 的電源狀態</text></g><g data-walk-target=\"d0\"><rect x=\"325\" y=\"15\" width=\"200\" height=\"65\" rx=\"9\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"425.0\" y=\"40\" text-anchor=\"middle\" font-size=\"15\">D0</text></g><g data-walk-target=\"d3\"><rect x=\"650\" y=\"15\" width=\"200\" height=\"65\" rx=\"9\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"750.0\" y=\"40\" text-anchor=\"middle\" font-size=\"15\">D3hot</text></g><g data-walk-target=\"d-transition\"><path d=\"M525 45 L650 45\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2\"/><polygon points=\"650.0,45.0 640.0,40.0 640.0,50.0\" fill=\"var(--accent)\"/><text x=\"587.5\" y=\"36.0\" text-anchor=\"middle\" font-size=\"13\">依 PM 規則</text></g><g data-walk-target=\"link-label\"><rect x=\"30\" y=\"170\" width=\"230\" height=\"55\" rx=\"9\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"145.0\" y=\"195\" text-anchor=\"middle\" font-size=\"15\">Link 的電源狀態</text></g><g data-walk-target=\"l0\"><rect x=\"325\" y=\"170\" width=\"200\" height=\"65\" rx=\"9\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"425.0\" y=\"195\" text-anchor=\"middle\" font-size=\"15\">L0</text></g><g data-walk-target=\"l1\"><rect x=\"650\" y=\"170\" width=\"200\" height=\"65\" rx=\"9\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"750.0\" y=\"195\" text-anchor=\"middle\" font-size=\"15\">L1</text></g><g data-walk-target=\"link-transition\"><path d=\"M525 200 L650 200\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2\"/><polygon points=\"650.0,200.0 640.0,195.0 640.0,205.0\" fill=\"var(--accent)\"/><text x=\"587.5\" y=\"191.0\" text-anchor=\"middle\" font-size=\"13\">依 ASPM 條件</text></g><g data-walk-target=\"substates\"><rect x=\"550\" y=\"325\" width=\"300\" height=\"75\" rx=\"9\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"700.0\" y=\"350\" text-anchor=\"middle\" font-size=\"15\">L1.1／L1.2</text><text x=\"700.0\" y=\"373\" text-anchor=\"middle\" font-size=\"15\">另查兩端能力、控制與時間</text></g><g data-walk-target=\"substate-condition\"><path d=\"M750 235 L750 325\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2\" stroke-dasharray=\"6 5\"/></g></svg>",
+  "order_html": "<p>先區分上下兩列的對象，再讀各自控制。橫線表示各列有自己的轉換規則，不把 D-state 與 L-state 畫成同一條狀態鏈。</p>",
+  "caption_html": "<p>作者的分層狀態示意，未列出全部狀態與雙向轉換；本章以適用的 L1.2 設定案例放大說明。</p>",
+  "steps": [
+    {
+      "title": "先確定想省的是哪一部分",
+      "html": "<p>分清 Function 的 D-state 與 Link 的 L-state，再選 PMCSR 或 Link 控制。</p>",
+      "targets": [
+        "function-label",
+        "d0",
+        "d3",
+        "link-label",
+        "l0",
+        "l1",
+        "d-transition"
+      ],
+      "condition_html": "<p>本章分開說明不同 Mode 的支援條件；Flit Mode 不支援 L0s，不能照搬舊模式的狀態集合。</p>",
+      "source_html": "<p>Base 6.0 §5.2–§5.3.1／Tables 5-1–5-2，pp.600–609。</p>",
+      "claim_ids": [
+        "PCIE-CH10-STATES-001"
+      ]
+    },
+    {
+      "title": "取得兩端的能力與控制",
+      "html": "<p>讀 PM Capability、Link Capabilities／Control；需要 L1 子狀態時，再找到 L1 PM Substates Extended Capability。</p>",
+      "targets": [
+        "d0",
+        "l1",
+        "substates"
+      ],
+      "condition_html": "<p>ASPM 控制 Link；PMCSR 控制 Function。L1 子狀態的支援與 Enable 必須依兩端條件安排。</p>",
+      "source_html": "<p>Base 6.0 Figures 7-17–7-19、7-24、7-27–7-28、7-146–7-150，pp.944–949、956–957、967–972、1103–1108。</p>",
+      "claim_ids": [
+        "PCIE-CH10-PMCSR-001",
+        "PCIE-CH10-ASPM-001",
+        "PCIE-CH10-L1SS-FIELDS-001"
+      ]
+    },
+    {
+      "title": "依規則建立設定與時間參數",
+      "html": "<p>沿正文的設定順序處理 Enable 與退出時間，確認目前狀態允許修改相關欄位。</p>",
+      "targets": [
+        "substates",
+        "substate-condition"
+      ],
+      "condition_html": "<p>本章逐項說明 Control 1／Control 2 的適用狀態及兩端先後；圖不省略這些設定前提。</p>",
+      "source_html": "<p>Base 6.0 §5.5.4–§5.5.5、§7.8.3.3–§7.8.3.4，pp.650–651、1106–1108。</p>",
+      "claim_ids": [
+        "PCIE-CH10-L1SS-ORDER-001",
+        "PCIE-CH10-EXAMPLE-001"
+      ]
+    },
+    {
+      "title": "檢查進入及退出所需條件",
+      "html": "<p>Enable 設定完成後，仍依 LTR（Latency Tolerance Reporting，延遲容忍回報）與相關時間要求判斷是否可進入 L1.2；退出後再依狀態確認可用性。</p>",
+      "targets": [
+        "link-transition",
+        "l1",
+        "substates"
+      ],
+      "condition_html": "<p>已支援、已啟用與當下允許進入省電狀態是相連的檢查步驟；喚醒另依電源與 PME 路徑處理。</p>",
+      "source_html": "<p>Base 6.0 §5.5.1、§6.18／Figure 6-15，pp.644、781–782；§5.8–§5.9，pp.654–655。</p>",
+      "claim_ids": [
+        "PCIE-CH10-LTR-001",
+        "PCIE-CH10-RESUME-001",
+        "PCIE-CH10-WAKE-001"
+      ]
+    }
+  ],
+  "components": [
+    {
+      "target": "substates",
+      "title": "L1 子狀態",
+      "html": "<p>本章用同一條 Link 的兩端設定說明 L1.1／L1.2。</p>",
+      "basic_html": "<p>子狀態屬於 Link 省電機制，不是 Function 的另一個 D-state。</p>"
+    }
+  ],
+  "walk_id": "ch10-overview"
+}

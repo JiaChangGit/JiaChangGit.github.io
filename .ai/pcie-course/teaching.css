@@ -63,7 +63,7 @@
   .pcie-surface .walk-steps { padding-left: 1.15rem; }
   .pcie-surface .walk-step { padding: .5rem .6rem; }
   .pcie-surface .walk-diagram { overflow-x: auto; }
-  .pcie-surface .walk-diagram svg { min-width: 700px; }
+  .pcie-surface .walk-diagram svg { min-width: var(--st-diagram-width, 700px); }
 }
 @media (forced-colors: active) {
   .pcie-surface .walk-choice:checked + .walk-label { border-color: Highlight; }

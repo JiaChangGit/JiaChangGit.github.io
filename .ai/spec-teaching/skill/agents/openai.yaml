@@ -1,0 +1,4 @@
+interface:
+  display_name: "PCIe／NVMe 規格教學"
+  short_description: "串起規格圖表、流程與情境，以自然繁中統一 PCIe 與指定 NVMe 教材"
+  default_prompt: "使用 $spec-teaching 修訂指定教材，先用總覽定位，再完整帶讀情境與規格圖表，依核准範圍處理三版本。"

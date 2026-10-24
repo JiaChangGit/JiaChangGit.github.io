@@ -222,9 +222,154 @@
 
 /* Self-contained teaching diagrams use the same theme in standalone pages and posts. */
 .pcie-surface .course-diagram text { fill: var(--ink); font-family: inherit; font-size: 18px; }
+
+/* Applied only to explicitly authorized teaching roots. */
+html .spec-teaching[data-spec-series] .st-terms { margin:.35rem 0 1rem; padding:.5rem .8rem; border-inline-start:3px solid var(--st-accent); background:var(--st-soft); font-size:.88em; color:var(--st-muted); }
+html .spec-teaching[data-spec-series] .st-terms > div { display:flex; flex-wrap:wrap; gap:.2em .7em; }
+html .spec-teaching[data-spec-series] .st-terms dt { font-weight:650; }
+html .spec-teaching[data-spec-series] .st-terms dd { margin:0; flex:1 1 14em; }
+html .spec-teaching[data-spec-series] {
+ --st-diagram-width:900px;
+ --st-paper:#f2f6f8; --st-surface:#fff; --st-ink:#192d40; --st-muted:#4c6479;
+ --st-line:#cbd9e3; --st-accent:#145f9d; --st-soft:#edf5fc;
+ --paper:var(--st-paper); --surface:var(--st-surface); --surface-2:var(--st-soft); --surface-alt:var(--st-soft);
+ --ink:var(--st-ink); --muted:var(--st-muted); --line:var(--st-line);
+ --accent:var(--st-accent); --accent-2:var(--st-accent); --soft:var(--st-soft); --blue-soft:var(--st-soft); --teal-soft:var(--st-soft);
+ --qr-paper:var(--st-paper); --qr-surface:var(--st-surface); --qr-ink:var(--st-ink); --qr-muted:var(--st-muted);
+ --qr-line:var(--st-line); --qr-accent:var(--st-accent); --qr-soft:var(--st-soft);
+ color:var(--st-ink); background:var(--st-paper); font-size:17px; line-height:1.9;
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+}
+html .spec-teaching[data-spec-series="nvme"] { --st-accent:#086b56; --st-soft:#e7f4ee; }
+@media(prefers-color-scheme:dark) {
+ html:not([data-theme="light"]) .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+ html:not([data-theme="light"]) .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+}
+html[data-theme="dark"] .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+html[data-theme="dark"] .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+.spec-teaching * { box-sizing:border-box; }
+.spec-teaching :is(h1,h2,h3,h4,h5,p,li,td,th,summary,strong,figcaption) { color:var(--st-ink); }
+.spec-teaching svg text { font-family:inherit; }
+.spec-teaching h1 { font-size:clamp(1.8rem,3.2vw,2.65rem); line-height:1.4; }
+.spec-teaching h2 { font-size:clamp(1.3rem,2.5vw,1.7rem); line-height:1.55; }
+.spec-teaching h3 { font-size:1.15rem; line-height:1.65; }
+.spec-teaching h4 { font-size:1rem; line-height:1.7; }
+.spec-teaching :is(h1,h2,h3,h4) { overflow-wrap:anywhere; }
+.spec-teaching p { margin:.7rem 0 1.15rem; }
+.spec-teaching :is(a,summary) { text-underline-offset:.2em; }
+.spec-teaching :focus-visible { outline:3px solid var(--st-accent); outline-offset:4px; }
+.spec-teaching :is(.qa-takeaway,.qa-answer-lead,.st-takeaway) { color:var(--st-ink); font-weight:650; font-size:1.06rem; line-height:1.9; }
+.spec-teaching :is(.qa-question,.qr-card,.guided-walk) { border:1px solid var(--st-line); border-radius:12px; background:var(--st-surface); padding:clamp(18px,3vw,30px); margin:1.8rem 0; }
+.spec-teaching :is(.qa-flow,.qr-note,.qr-observations,.st-context,.st-route) { background:var(--st-soft); border-left:4px solid var(--st-accent); padding:1rem 1.2rem; margin:1.4rem 0; }
+.spec-teaching :is(.qr-step,.qa-qid,.st-label) { color:var(--st-accent); font-weight:700; }
+.spec-teaching :is(.qa-citations,.qa-source-links,.qr-case-sources,.walk-source,.st-source) { font-size:.84rem; line-height:1.75; color:var(--st-muted); overflow-wrap:anywhere; }
+.spec-teaching :is(.qr-table,.table-wrap) { overflow-x:auto; margin:1.4rem 0; border-radius:7px; }
+.spec-teaching :is(th,td) { line-height:1.8; vertical-align:top; min-width:120px; }
+.spec-teaching :is(table,td) { background:var(--st-surface); }
+.spec-teaching th { background:var(--st-soft); }
+.spec-teaching .st-step { border-left:3px solid var(--st-line); padding:.6rem 1rem; margin:1.2rem 0; }
+.spec-teaching .st-step:target { border-left-color:var(--st-accent); background:var(--st-soft); }
+.spec-teaching .st-glossary { border:1px solid var(--st-line); padding:.7rem 1rem; margin:1.4rem 0; border-radius:8px; }
+.spec-teaching .st-glossary > summary { min-height:44px; cursor:pointer; }
+.spec-teaching .st-specs { display:flex; flex-wrap:wrap; gap:.4rem 1rem; color:var(--st-muted); font-size:.8rem; line-height:1.8; margin:1rem 0; }
+.spec-teaching .st-specs span { border-bottom:2px solid var(--st-accent); padding:.2rem 0; }
+@media(max-width:620px) { .spec-teaching :is(.qa-question,.qr-card,.guided-walk) { padding:16px; } .spec-teaching .diagram svg { min-width:var(--st-diagram-width); } }
+@media print {
+ .spec-teaching { --st-paper:#fff!important; --st-surface:#fff!important; --st-ink:#000!important; --st-muted:#333!important; --st-line:#999!important; --st-accent:#000!important; --st-soft:#fff!important; }
+ .spec-teaching details > * { display:block!important; }
+ .spec-teaching details::details-content { content-visibility:visible!important; }
+ .spec-teaching .st-step { break-inside:avoid; }
+}
+
+/* Native reading guides: selection highlights; it never hides teaching content.
+   build_pcie_course.py changes .pcie-surface to .pcie-article for the posts. */
+.pcie-surface .guided-walk { margin: 1.8rem 0; padding: 1.2rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); min-width: 0; }
+.pcie-surface .guided-walk > h3 { margin-top: 0; }
+.pcie-surface .walk-help { color: var(--muted); font-size: .85rem; }
+.pcie-surface .walk-order { margin-bottom: 1.1rem; }
+/* Keep native radio semantics and keyboard handling; the associated label is
+   the visible control, so a radio cannot wrap away from its own label. */
+.pcie-surface .walk-choice { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.pcie-surface .walk-label { display: inline-flex; align-items: center; min-height: 44px; padding: .35rem .7rem; margin: .25rem .8rem .25rem 0; border: 2px solid var(--line); border-radius: 8px; cursor: pointer; font-size: .9rem; line-height: 1.5; color: var(--ink); background: var(--surface-alt); }
+.pcie-surface .walk-choice:checked + .walk-label { border-color: var(--accent); background: var(--blue-soft); font-weight: 700; }
+.pcie-surface .walk-choice:focus-visible + .walk-label { outline: 3px solid var(--focus); outline-offset: 3px; }
+.pcie-surface .walk-view { margin-top: 1rem; min-width: 0; }
+.pcie-surface .walk-diagram { margin: 0 0 1.2rem; }
+.pcie-surface .walk-diagram svg { width: 100%; height: auto; display: block; }
+.pcie-surface .walk-diagram svg a { cursor: pointer; }
+.pcie-surface .walk-diagram svg a:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
+.pcie-surface .walk-diagram figcaption { margin-top: .8rem; }
+.pcie-surface .walk-steps { max-width: none; padding-left: 1.6rem; }
+.pcie-surface .walk-step { padding: .6rem .9rem; margin: .7rem 0; border: 2px solid transparent; border-left: 5px solid var(--line); border-radius: 5px; background: var(--surface); }
+.pcie-surface .walk-step h4 { margin: .2rem 0 .5rem; }
+.pcie-surface .walk-condition { font-size: .9rem; color: var(--muted); }
+.pcie-surface .walk-source { border-top: 1px solid var(--line); padding-top: .35rem; color: var(--muted); font-size: .85rem; }
+.pcie-surface .walk-step p:last-child { margin-bottom: .3rem; }
+.pcie-surface .walk-components { border-top: 1px solid var(--line); margin-top: 1.4rem; padding-top: .4rem; }
+.pcie-surface .walk-component-links { display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; list-style: none; padding-left: 0; }
+.pcie-surface .walk-component-links a { min-height: 44px; min-width: 44px; }
+.pcie-surface .walk-component { padding: .7rem 1rem; margin: 1rem 0; border: 1px solid var(--line); border-radius: 8px; }
+.pcie-surface .walk-component > h4 { margin-top: .2rem; }
+.pcie-surface .walk-component:target { outline: 3px solid var(--accent-2); outline-offset: 3px; }
+.pcie-surface .walk-component details { margin-bottom: .3rem; }
+
+.pcie-surface .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-step[data-walk-step="1"],
+.pcie-surface .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-step[data-walk-step="2"],
+.pcie-surface .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-step[data-walk-step="3"],
+.pcie-surface .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-step[data-walk-step="4"],
+.pcie-surface .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-step[data-walk-step="5"],
+.pcie-surface .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-step[data-walk-step="6"],
+.pcie-surface .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-step[data-walk-step="7"],
+.pcie-surface .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-step[data-walk-step="8"] { border-color: var(--accent); background: var(--blue-soft); }
+
+.pcie-surface .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-node[data-walk-steps~="1"],
+.pcie-surface .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-node[data-walk-steps~="2"],
+.pcie-surface .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-node[data-walk-steps~="3"],
+.pcie-surface .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-node[data-walk-steps~="4"],
+.pcie-surface .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-node[data-walk-steps~="5"],
+.pcie-surface .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-node[data-walk-steps~="6"],
+.pcie-surface .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-node[data-walk-steps~="7"],
+.pcie-surface .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-node[data-walk-steps~="8"] { --walk-active-weight: 750; }
+.pcie-surface .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-node[data-walk-steps~="1"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-node[data-walk-steps~="2"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-node[data-walk-steps~="3"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-node[data-walk-steps~="4"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-node[data-walk-steps~="5"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-node[data-walk-steps~="6"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-node[data-walk-steps~="7"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-node[data-walk-steps~="8"] > :is(rect, circle, ellipse, polygon, path, line, polyline) { stroke: var(--accent); stroke-width: 3.5px; vector-effect: non-scaling-stroke; }
+.pcie-surface .walk-node text { font-weight: var(--walk-active-weight, inherit); }
+
+@media (max-width: 620px) {
+  .pcie-surface .guided-walk { padding: .8rem; }
+  .pcie-surface .walk-label { margin-right: .45rem; padding-left: .45rem; padding-right: .45rem; }
+  .pcie-surface .walk-steps { padding-left: 1.15rem; }
+  .pcie-surface .walk-step { padding: .5rem .6rem; }
+  .pcie-surface .walk-diagram { overflow-x: auto; }
+  .pcie-surface .walk-diagram svg { min-width: var(--st-diagram-width, 700px); }
+}
+@media (forced-colors: active) {
+  .pcie-surface .walk-choice:checked + .walk-label { border-color: Highlight; }
+  .pcie-surface .walk-step { border-color: CanvasText; }
+}
+@media print {
+  .pcie-surface .guided-walk { border: 1px solid #999; padding: .7rem; break-inside: auto; }
+  .pcie-surface .walk-choice, .pcie-surface .walk-label, .pcie-surface .walk-help { display: none; }
+  .pcie-surface .walk-step { display: list-item !important; border-color: #999 !important; background: transparent !important; }
+  .pcie-surface .walk-node { --walk-active-weight: 500 !important; }
+  .pcie-surface .walk-node > :is(rect, circle, ellipse, polygon, path, line, polyline) { stroke: #333 !important; stroke-width: 1.5px !important; }
+  .pcie-surface .walk-diagram { overflow: visible; }
+  .pcie-surface .walk-diagram svg { min-width: 0; }
+  .pcie-surface .walk-component details > * { display: block !important; }
+  .pcie-surface .walk-component details::details-content { content-visibility: visible !important; }
+}
+
+/* SVG text follows the selected reading theme. */
+.pcie-surface svg text { fill: var(--ink); }
+.pcie-surface .walk-summary { margin: 1rem 0 1.5rem; }
   </style>
 </head>
-<body class="pcie-surface">
+<body class="pcie-surface spec-teaching" data-spec-series="pcie">
   <a class="skip-link" href="#content">跳到正文</a>
   <div class="site-shell">
     <nav class="topbar" aria-label="課程導覽">
@@ -235,22 +380,54 @@
       <p class="eyebrow">PCIe · 系統與規格閱讀 / CHAPTER 5</p>
       <h1>一次讀寫如何變成 PCIe 交易</h1>
       <p class="header-description">從一次 MMIO 讀取推演 Request、Completion、Byte Enable、分段回覆與 4 KiB 邊界。</p>
-      <div class="edition"><span>繁體中文 · 規格與情境推演</span><span>2026-10-21</span></div>
+      <div class="edition"><span>繁體中文 · 規格與情境推演</span><span>2026-10-23</span></div>
     </header>
     <div class="reading-layout">
       <aside class="toc-panel" aria-label="本頁目錄">
         <p class="toc-label">本章閱讀路徑</p>
-        <nav aria-label="章節段落"><ol><li><a href="#journey">1. 讀取時，誰提出要求，誰負責回覆？</a></li><li><a href="#types">2. 有寫入，就一定會有 Completion 嗎？</a></li><li><a href="#fields">3. 如何把「讀 4 bytes」對到 Request 與 Completion？</a></li><li><a href="#bytes">4. 如果只讀中間 6 bytes，Length 要填 6 嗎？</a></li><li><a href="#split">5. 為什麼一次讀取可能收到兩個 Completion？</a></li><li><a href="#bounds">6. 長度沒超過上限，就一定是合法要求嗎？</a></li><li><a href="#practice">7. 換一個條件，判讀會怎麼改變？</a></li><li><a href="#next">8. 從封包走到資料可見性</a></li><li><a href="#sources">版本與來源</a></li></ol></nav>
+        <nav aria-label="章節段落"><ol><li><a href="#journey">1. 讀取時，誰提出要求，誰負責回覆？</a></li><li><a href="#types">2. 有寫入，就一定會有 Completion 嗎？</a></li><li><a href="#fields">3. 如何把「讀 4 bytes」對到 Request 與 Completion？</a></li><li><a href="#bytes">4. 如果只讀中間 6 bytes，Length 要填 6 嗎？</a></li><li><a href="#split">5. 為什麼一次讀取可能收到兩個 Completion？</a></li><li><a href="#bounds">6. 長度沒超過上限，就一定是合法要求嗎？</a></li><li><a href="#practice">7. 沿回覆欄位重新配對交易</a></li><li><a href="#next">8. 從封包走到資料可見性</a></li><li><a href="#sources">版本與來源</a></li></ol></nav>
       </aside>
       <main id="content" tabindex="-1">
         <article class="lesson">
-<p class="lead">Chapter 4 已經替裝置配置好位址。現在假設 CPU 要讀取 <code>0x80004120</code> 的 4 bytes：這個動作如何變成 PCIe 封包？裝置怎麼知道要回給誰？本章沿著一次讀取往返，再把同一套判讀方法用在部分位元組存取與較大的讀取上。</p>
-<aside class="note"><strong>版本與案例前提</strong><p>欄位依 PCI Express Base Specification Revision 6.0。本章明確使用 <strong>Non-Flit Mode</strong>；Flit Mode 的 Header 布局不同，不能直接套用下列 Fmt／Type 位置。沿用 Chapter 4 的普通 Endpoint <code>03:00.0</code>、BAR0 與 Bridge Window，且 Link、解碼、平台映射與裝置 Register 介面均已就緒。所有讀值與封包欄位都是作者推演，沒有擷取實機封包。案例使用 TC0、RO=0、IDO=0、No Snoop=0、TH=0，不使用 ATS、PASID、IDE、AtomicOp 或 DMWr。</p><p>本章的位址是 PCIe 交易使用的位址。CPU 指令如何轉成一個或多個交易，仍由處理器與平台決定；案例另行假設這次 4-byte 存取產生一個 Request。</p></aside>
+<!-- pcie-walk: walks/chapter5-overview.json -->
+<div class="guided-walk" id="ch5-overview" role="group" aria-labelledby="ch5-overview-title" data-walk-version="1">
+<h3 id="ch5-overview-title">沿一次讀取追蹤 Request 與 Completion</h3>
+<p class="walk-help" id="ch5-overview-help">選擇步驟後，圖中對應的元件與下方解說會加上重點標示。完整圖與所有解說會持續顯示；也可用方向鍵切換步驟。</p>
+<div class="walk-order"><p>由上往下看一次正常讀取。本圖省略中間 Port；實際 Request 與 Completion 各依其路由規則穿過拓樸。</p></div>
+<input class="walk-choice" type="radio" name="ch5-overview-step" id="ch5-overview-choice-1" value="1" data-walk-step="1" aria-describedby="ch5-overview-help" aria-controls="ch5-overview-view ch5-overview-step-1" checked="checked">
+<label class="walk-label" for="ch5-overview-choice-1">1. 先辨認交易類別</label>
+<input class="walk-choice" type="radio" name="ch5-overview-step" id="ch5-overview-choice-2" value="2" data-walk-step="2" aria-describedby="ch5-overview-help" aria-controls="ch5-overview-view ch5-overview-step-2">
+<label class="walk-label" for="ch5-overview-choice-2">2. 把讀取範圍編進要求</label>
+<input class="walk-choice" type="radio" name="ch5-overview-step" id="ch5-overview-choice-3" value="3" data-walk-step="3" aria-describedby="ch5-overview-help" aria-controls="ch5-overview-view ch5-overview-step-3">
+<label class="walk-label" for="ch5-overview-choice-3">3. 讀取目標端的回覆</label>
+<input class="walk-choice" type="radio" name="ch5-overview-step" id="ch5-overview-choice-4" value="4" data-walk-step="4" aria-describedby="ch5-overview-help" aria-controls="ch5-overview-view ch5-overview-step-4">
+<label class="walk-label" for="ch5-overview-choice-4">4. 配對並確認整筆讀取完成</label>
+<div class="walk-view" id="ch5-overview-view">
+<figure class="diagram walk-diagram">
+<svg viewBox="0 0 900 480" role="img" aria-labelledby="ch5-guide-title ch5-guide-desc"><title id="ch5-guide-title">主機端提出讀取，裝置端回覆資料，主機端再依交易識別與完成資訊配對。</title><desc id="ch5-guide-desc">主機端提出讀取，裝置端回覆資料，主機端再依交易識別與完成資訊配對。</desc><a href="#ch5-overview-component-requester" aria-label="Requester：提出要求的一端"><g data-walk-target="requester" class="walk-node" data-walk-steps="1"><rect x="60" y="20" width="310" height="60" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="215.0" y="45" text-anchor="middle" font-size="15">主機端 Requester：提出讀取</text></g></a><a href="#ch5-overview-component-completer" aria-label="Completer：處理要求並回覆的一端"><g data-walk-target="completer" class="walk-node" data-walk-steps="3"><rect x="530" y="20" width="310" height="60" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="685.0" y="45" text-anchor="middle" font-size="15">裝置端 Completer：提供資料</text></g></a><g data-walk-target="host-line" class="walk-node" data-walk-steps="1"><path d="M215 80 L215 460" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="6 5" /></g><g data-walk-target="device-line" class="walk-node" data-walk-steps="3"><path d="M685 80 L685 460" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="6 5" /></g><g data-walk-target="request" class="walk-node" data-walk-steps="1 2"><path d="M215 170 L685 170" fill="none" stroke="var(--accent)" stroke-width="2" /><polygon points="685.0,170.0 675.0,165.0 675.0,175.0" fill="var(--accent)" /><text x="450.0" y="161.0" text-anchor="middle" font-size="13">Memory Read Request →</text></g><g data-walk-target="completion" class="walk-node" data-walk-steps="3 4"><path d="M685 300 L215 300" fill="none" stroke="var(--accent)" stroke-width="2" /><polygon points="215.0,300.0 225.0,305.0 225.0,295.0" fill="var(--accent)" /><text x="450.0" y="291.0" text-anchor="middle" font-size="13">← Completion with Data</text></g><g data-walk-target="match" class="walk-node" data-walk-steps="4"><rect x="55" y="380" width="320" height="65" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="215.0" y="405" text-anchor="middle" font-size="15">依 Requester ID／Tag 配對</text><text x="215.0" y="428" text-anchor="middle" font-size="15">檢查狀態、資料量及位址範圍</text></g></svg>
+<figcaption><p>作者依 Base 6.0 的 Request／Completion 規則繪製的交換示意；分段回覆在正文另行放大。</p></figcaption></figure>
+<div class="walk-summary"><p class="lead">一次 MMIO（Memory-Mapped I/O，記憶體映射輸入輸出）讀取，會由主機端提出要求，再由目標端回覆資料。PCIe 用 TLP（Transaction Layer Packet，交易層封包）承載這些交換。</p><p>前情提要：Chapter 4 已完成本例的 BAR、Bridge Window 與解碼配置。現在沿同一路徑觀察一筆 4-byte 讀取。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>BAR</dt><dd>Base Address Register，基底位址暫存器</dd></div></dl><p><strong>規格路線：</strong>交易類別 Table 2-1 → Request 的 ID／Tag 與 Memory Request 格式 → Completion 格式 → 分段與邊界條件。</p></div>
+<ol class="walk-steps">
+<li class="walk-step" id="ch5-overview-step-1" data-walk-step="1" data-walk-targets="requester request host-line"><h4>先辨認交易類別</h4><div class="walk-condition"><p>本例是已配置、已就緒裝置上的正常 Memory Read；Memory Write 等其他類別另有回覆規則。</p></div><div class="walk-explanation"><p>本例是 Memory Read，屬於需要 Completion 的 Non-Posted Request。先看交易類別，才知道後面要等待哪種回覆。</p></div><div class="walk-source" data-source-claims="PCIE-CH5-TYPE-001"><p>Base 6.0 §2.1.1／Table 2-1，pp.116–117；§2.2.7.1，pp.162–165。</p></div></li>
+<li class="walk-step" id="ch5-overview-step-2" data-walk-step="2" data-walk-targets="request"><h4>把讀取範圍編進要求</h4><div class="walk-condition"><p>本章先以 Non-Flit Mode 解釋既有格式；後文另列 Flit Mode 的格式差異。</p></div><div class="walk-explanation"><p>由 Request 格式讀位址、Length 與 Byte Enable，再看 Requester ID、Tag 如何識別這筆要求。TLP 的長度欄位使用自己的單位及編碼。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>TLP</dt><dd>Transaction Layer Packet，交易層封包</dd></div></dl></div><div class="walk-source" data-source-claims="PCIE-CH5-BYTES-001 PCIE-CH5-IDENTITY-001 PCIE-CH5-MODE-001"><p>Base 6.0 §2.2.5.1、§2.2.6.2／Figures 2-26–2-28，pp.150–155。</p></div></li>
+<li class="walk-step" id="ch5-overview-step-3" data-walk-step="3" data-walk-targets="completer completion device-line"><h4>讀取目標端的回覆</h4><div class="walk-condition"><p>若發生非成功完成，資料與狀態依該完成規則判讀；一次要求也可能分成多段回覆。</p></div><div class="walk-explanation"><p>目標以 Completion with Data 回覆正常讀取；讀 Completion Status、Byte Count 與 Lower Address，確認本段資料代表的範圍。</p></div><div class="walk-source" data-source-claims="PCIE-CH5-COMPLETION-001 PCIE-CH5-SPLIT-001"><p>Base 6.0 §2.2.9.1／Figures 2-73–2-74，pp.196–197；§2.3.1.1，pp.214–218。</p></div></li>
+<li class="walk-step" id="ch5-overview-step-4" data-walk-step="4" data-walk-targets="match completion"><h4>配對並確認整筆讀取完成</h4><div class="walk-condition"><p>Tag 配對與資料範圍都須吻合；本章的分段案例會列出每筆 Completion 的實際資料量。</p></div><div class="walk-explanation"><p>以 Requester ID 與 Tag 找回原要求，再累計各段有效資料。最後把 Length、Byte Enable 與 4 KiB 邊界等條件接回原要求。</p></div><div class="walk-source" data-source-claims="PCIE-CH5-IDENTITY-001 PCIE-CH5-BOUNDARY-001 PCIE-CH5-EXAMPLE-001"><p>Base 6.0 §2.2.7.1、§2.2.9.1、§2.3.1.1，pp.163、196–197、214–218。</p></div></li>
+</ol></div>
+<div class="walk-components"><h4>圖中元件</h4><ul class="walk-component-links">
+<li><a href="#ch5-overview-component-requester">Requester：提出要求的一端</a></li>
+<li><a href="#ch5-overview-component-completer">Completer：處理要求並回覆的一端</a></li>
+</ul>
+<section class="walk-component" id="ch5-overview-component-requester" data-component-target="requester"><h4>Requester：提出要求的一端</h4><div class="walk-component-action"><p>本例是主機端的交易要求者，保留這筆讀取的識別與範圍。</p></div><details><summary>基本責任</summary><p>CPU 的軟體讀取由平台轉成 PCIe 交易；圖不表示 CPU 指令本身直接就是 TLP。</p></details></section>
+<section class="walk-component" id="ch5-overview-component-completer" data-component-target="completer"><h4>Completer：處理要求並回覆的一端</h4><div class="walk-component-action"><p>本例由裝置端提供暫存器讀取資料。</p></div><details><summary>基本責任</summary><p>Requester 與 Completer 是本次交易中的角色，不是每個元件永遠固定的身分。</p></details></section>
+</div>
+</div>
+<!-- /pcie-walk -->
+<aside class="note"><strong>版本與案例前提</strong><p>欄位依 PCI Express Base Specification Revision 6.0。本章明確使用 <strong>Non-Flit Mode</strong>；Flit Mode 的 Header 布局不同，不能直接套用下列 Fmt／Type 位置。沿用 Chapter 4 的普通 Endpoint <code>03:00.0</code>、BAR0 與 Bridge Window，且 Link、解碼、平台映射與裝置 Register 介面均已就緒。所有讀值與封包欄位都是作者推演，沒有擷取實機封包。案例使用 TC0、RO=0、IDO=0、No Snoop=0、TH=0，不使用 ATS、PASID、IDE、AtomicOp 或 DMWr。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>ATS</dt><dd>Address Translation Services，位址轉譯服務</dd></div><div><dt>PASID</dt><dd>Process Address Space ID，程序位址空間識別碼</dd></div><div><dt>IDE</dt><dd>Integrity and Data Encryption，完整性與資料加密</dd></div></dl><p>本章的位址是 PCIe 交易使用的位址。CPU 指令如何轉成一個或多個交易，仍由處理器與平台決定；案例另行假設這次 4-byte 存取產生一個 Request。</p></aside>
 
 <section id="journey"><h2>1. 讀取時，誰提出要求，誰負責回覆？</h2>
 <p><strong>Transaction Layer Packet（TLP，交易層封包）</strong>承載要求與回覆。提出這筆要求的一方稱為 Requester；服務目標位址並回覆的一方稱為 Completer。這兩個名稱隨交易改變：CPU 讀裝置時，平台代表 CPU 發出要求；裝置讀主記憶體時，裝置反而是 Requester。</p>
 <div class="diagram"><svg viewBox="0 0 840 260" role="img" aria-labelledby="journey-title journey-desc"><title id="journey-title">一次 MMIO 讀取的往返</title><desc id="journey-desc">平台要求者經 Root Port 與 Switch 送 Memory Read 到 Endpoint；Endpoint 以帶資料的 Completion 回到原要求者。要求依位址路由，回覆依 Requester ID 路由。</desc><rect class="box" x="20" y="30" width="200" height="70" rx="10"/><rect class="box" x="310" y="30" width="220" height="70" rx="10"/><rect class="box" x="620" y="30" width="200" height="70" rx="10"/><text x="120" y="58" text-anchor="middle">平台的 Requester</text><text x="120" y="84" text-anchor="middle">代表 CPU 發出要求</text><text x="420" y="58" text-anchor="middle">Root Port／Switch</text><text x="420" y="84" text-anchor="middle">沿 Chapter 4 的路徑</text><text x="720" y="58" text-anchor="middle">Endpoint 03:00.0</text><text x="720" y="84" text-anchor="middle">這次是 Completer</text><path class="arrow" d="M120 125 H720 M710 119 L720 125 L710 131"/><text x="420" y="151" text-anchor="middle">MRd：依目標位址 0x80004120 向下送</text><path class="arrow" d="M720 187 H120 M130 181 L120 187 L130 193"/><text x="420" y="218" text-anchor="middle">CplD：依 Requester ID 回送，保留配對用的 Tag</text></svg></div>
-<p>本例假設平台選用 Requester ID <code>0x0000</code>，並配置尚未使用的 Tag <code>0x12</code>。這是平台端的教學假設，不能只看 Root Port 的 BDF 就推定 CPU 存取必定使用那個 ID。Endpoint 的 Completer ID 則為 <code>0x0300</code>，來自已完成設定的 <code>03:00.0</code>。</p>
+<p>本例假設平台選用 Requester ID <code>0x0000</code>，並配置尚未使用的 Tag <code>0x12</code>。這是平台端的教學假設，不能只看 Root Port 的 BDF 就推定 CPU 存取必定使用那個 ID。Endpoint 的 Completer ID 則為 <code>0x0300</code>，來自已完成設定的 <code>03:00.0</code>。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>BDF</dt><dd>Bus／Device／Function，匯流排、裝置與功能識別</dd></div></dl>
 <p>Requester ID 與 Tag 合起來辨識一筆尚待完成的交易。同一 Requester 不得讓兩筆同時未完成、需要 Completion 的要求共用 Tag。本例只用較小的合法 Tag；Base 6.0 還定義較大的 Tag 能力與啟用條件，因此不能把 Tag 永遠說成 8 bits。</p>
 <details class="source-note"><summary>先看哪幾張圖？</summary><p>先看 §2.1.2 Figure 2-2（p.117），分清 Header 與可能存在的 Payload；再看 §2.2.6.1–§2.2.6.2 Figures 2-27／2-28（pp.152–154），理解 Transaction ID。Completer ID 見 §2.2.9.1 Figures 2-74／2-75（p.197）。圖中的路徑是作者整理，不是規格原圖。</p></details></section>
 
@@ -278,7 +455,7 @@
 </tbody></table></div>
 <p>這裡有三個必須分開的量。Request 的 Length 表示要存取多少個 DW；CplD 的 Length 表示這個回覆帶多少個 DW；Byte Count 則表示<strong>連同這個回覆在內，這筆 Memory Read 還要回傳多少 bytes</strong>。因為本例一次回完，後兩者剛好對應相同的 4 bytes。</p>
 <p>Byte Enable（BE）決定哪些位元組有效。Length=1 DW 時，First DW BE 控制唯一的 DW，Last DW BE 必須為零。Lower Address 是本次回傳第一個有效位元組位址的低 7 bits，因此 <code>0x80004120 &amp; 0x7F = 0x20</code>。它不是完整目標位址；Completion 回程依 Requester ID 路由，不靠這 7 bits 找 CPU。</p>
-<p>假設四個有效資料 bytes 按位址遞增為 <code>78 56 34 12</code>，且這個裝置 Register 定義為 little-endian，軟體便可解讀為 <code>0x12345678</code>。這個 Register 意義和數值是教學假設，不是 PCIe 為所有 MMIO 裝置統一定義的值。</p>
+<p>假設四個有效資料 bytes 按位址遞增為 <code>78 56 34 12</code>，且這個裝置 Register 定義為 little-endian，軟體便可解讀為 <code>0x12345678</code>。這個 Register 意義和數值是教學假設，不是 PCIe 為所有 MMIO 裝置統一定義的值。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>MMIO</dt><dd>Memory-Mapped I/O，記憶體映射輸入輸出</dd></div></dl>
 <details class="source-note"><summary>從 Figure 到欄位的閱讀路線</summary><p>Figure 2-31（p.163）定位 Request；Figure 2-26／Table 2-10（pp.150–151）定位 BE；Table 2-4（p.122）確認 Length 單位；Figure 2-73（p.196）定位 Completion；Table 2-37（p.197）解讀 Status；§2.3.1.1 與 Table 2-41（pp.215、218）解讀 Byte Count 和 Lower Address。特別注意：適用 Length 的資料交易中，編碼 0 表示 1024 DW，不是「沒有資料」。</p></details></section>
 
 <section id="bytes"><h2>4. 如果只讀中間 6 bytes，Length 要填 6 嗎？</h2>
@@ -292,7 +469,7 @@
 <details class="source-note"><summary>部分存取的依據</summary><p>§2.2.5.1，Figure 2-26／Table 2-10（pp.150–151）；§2.3.1.1，Table 2-40（p.217）及 Table 2-41（p.218）。Table 2-40 在 Length=2、First BE=1110b、Last BE=0111b 時給出 6 bytes。</p></details></section>
 
 <section id="split"><h2>5. 為什麼一次讀取可能收到兩個 Completion？</h2>
-<p>先把目標換成主記憶體，預習下一章的 DMA。假設 Endpoint <code>03:00.0</code> 要從 DMA 位址 <code>0x40001000</code> 讀 256 bytes，使用 Tag <code>0x13</code>。平台已準備好這段映射與讀取權限，Endpoint 及沿途的 BME 也已啟用。</p>
+<p>先把目標換成主記憶體，預習下一章的 DMA。假設 Endpoint <code>03:00.0</code> 要從 DMA 位址 <code>0x40001000</code> 讀 256 bytes，使用 Tag <code>0x13</code>。平台已準備好這段映射與讀取權限，Endpoint 及沿途的 BME 也已啟用。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>DMA</dt><dd>Direct Memory Access，裝置直接存取記憶體</dd></div></dl>
 <p>本例的 Requester 最大讀取要求為 512 bytes；Completer 的有效傳送 Payload 上限為 128 bytes，路徑接收能力也相容，Read Completion Boundary（RCB，讀取回覆切分邊界）為 128 bytes。因此 256-byte 要求可以發出，但不能塞進一個 256-byte CplD。我們選擇在 128-byte 邊界切成兩份；並不宣稱所有讀取都固定這樣切。</p>
 <div class="table-wrap"><table><caption>同一筆 256-byte 讀取的兩個回覆</caption><thead><tr><th scope="col">回覆</th><th scope="col">回傳位址範圍</th><th scope="col">Length（DW）</th><th scope="col">Byte Count（bytes）</th><th scope="col">Lower Address</th></tr></thead><tbody>
 <tr><td>第一個 CplD</td><td>0x40001000–0x4000107F</td><td>32</td><td>256</td><td>0x00</td></tr>
@@ -308,11 +485,11 @@
 <p>收到 Completion 也要先看 Status。SC 表示這次要求成功完成；UR、CA 是不同的失敗結果，不能把無資料的 Cpl 解成讀到了零。RRS 只在規定的 Configuration 情境適用，並不是普通 MMIO 讀取的通用「稍後再試」。若分段讀取中收到失敗 Completion，該回覆會終結這筆要求，不應繼續等剩餘成功片段。</p>
 <details class="source-note"><summary>邊界與失敗回覆來源</summary><p>4 KiB 規則：§2.2.7.1，p.163。Status：Table 2-37，p.197；RRS 限制：§2.3.1，p.214 的說明；失敗讀取回覆與終止：§2.3.1.1，pp.214、218。接收端對部分非法封包的檢查是可選的，不代表發送端可以產生那些封包。</p></details></section>
 
-<section id="practice"><h2>7. 換一個條件，判讀會怎麼改變？</h2>
-<details class="question"><summary>第一個回覆帶 128 bytes，Byte Count 卻是 256，是否互相矛盾？</summary><p>不矛盾。Byte Count 是這筆要求從目前片段起尚待回傳的量，包含目前片段。用 <a href="#split">兩段回覆表</a> 可算出下一段應剩 128 bytes；Payload 大小另由 Length 表達。</p></details>
-<details class="question"><summary>收到 Requester ID 相同但 Tag 不同的 CplD，可以拿來補這筆讀取缺少的資料嗎？</summary><p>不能。它屬於另一個 Transaction ID。即使長度、數值或抵達時間恰好相符，也不能取代配對條件。（Figures 2-27／2-28，p.153。）</p></details>
-<details class="question"><summary>4-byte MWr 沒收到 Completion，應該重送嗎？</summary><p>不能以此作為重送依據。普通 MWr 是 Posted Request，本來就沒有對應的一般 Completion；重送反而可能重複觸發 Register 的副作用。應依裝置介面定義的狀態或通知判斷進度。（Table 2-42，p.222。）</p></details>
-<details class="question"><summary>在 Base 6.0 查到 Figure 2-31，就能解所有 PCIe 6.0 封包嗎？</summary><p>不能。這張圖屬於 Non-Flit Mode 的 Request 格式。先確認模式，再選 §2.2.1.1 或 §2.2.1.2 的 Header 定義；不能把版本號與模式當成同一件事。</p></details></section>
+<section id="practice"><h2>7. 沿回覆欄位重新配對交易</h2>
+<details open class="question"><summary>第一個回覆帶 128 bytes，Byte Count 卻是 256，是否互相矛盾？</summary><p>不矛盾。Byte Count 是這筆要求從目前片段起尚待回傳的量，包含目前片段。用 <a href="#split">兩段回覆表</a> 可算出下一段應剩 128 bytes；Payload 大小另由 Length 表達。</p></details>
+<details open class="question"><summary>收到 Requester ID 相同但 Tag 不同的 CplD，可以拿來補這筆讀取缺少的資料嗎？</summary><p>不能。它屬於另一個 Transaction ID。即使長度、數值或抵達時間恰好相符，也不能取代配對條件。（Figures 2-27／2-28，p.153。）</p></details>
+<details open class="question"><summary>4-byte MWr 沒收到 Completion，應該重送嗎？</summary><p>不能以此作為重送依據。普通 MWr 是 Posted Request，本來就沒有對應的一般 Completion；重送反而可能重複觸發 Register 的副作用。應依裝置介面定義的狀態或通知判斷進度。（Table 2-42，p.222。）</p></details>
+<details open class="question"><summary>在 Base 6.0 查到 Figure 2-31，就能解所有 PCIe 6.0 封包嗎？</summary><p>不能。這張圖屬於 Non-Flit Mode 的 Request 格式。先確認模式，再選 §2.2.1.1 或 §2.2.1.2 的 Header 定義；不能把版本號與模式當成同一件事。</p></details></section>
 <section id="next"><h2>8. 從封包走到資料可見性</h2><p>本章已能配對一筆交易並核對資料範圍。<a href="chapter-6.html">Chapter 6</a> 接著追問：裝置用哪種位址進行 DMA？資料先寫、通知後寫，就能讓 CPU 安全使用資料嗎？</p></section>
 <section id="sources"><h2>版本與來源</h2><p>主來源為 PCI Express Base Specification Revision 6.0，6.0-1.0-PUB。文件頁碼與 PDF 頁碼相同；查核日期為 2026-10-21。封包值、裝置 Register 與平台條件均為作者設計的教學案例，來源位置已隨各節標示。</p></section>
         </article>

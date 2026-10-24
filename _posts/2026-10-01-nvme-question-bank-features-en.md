@@ -7,18 +7,21 @@ permalink: /nvme/question-bank/features/en/
 lang: en
 nvme_quickref: true
 nvme_qa: true
+spec_teaching: true
+last_modified_at: 2026-10-23
 ---
 
-<div class="nvme-quickref nvme-qa">
+<div class="nvme-quickref nvme-qa spec-teaching" data-spec-series="nvme">
 <nav class="qr-top" aria-label="Bank and editions"><a href="#content">Skip to content</a><a href="/nvme/question-bank/en/">Question index</a><a href="/nvme/question-bank/features/zh-tw/">繁體中文</a><a href="/DOCS/nvme-question-bank/features.html">Chinese tutorial HTML</a></nav>
-<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–328</p>
-<header><p class="qa-range">Q54–Q68</p><h1>Get Features and Set Features</h1><p class="qr-intro">Establish scope, changeability and saveability before Set. Completion, Current readback, actual behavior and restoration after reset are separate observations; a successful CQE does not replace them.</p><p>Practice first, then reveal the explanation. Each question uses the prose, field interpretation, comparison or flow that suits it. All numerical examples are hypothetical. Status is written SCT/SC; h indicates hexadecimal.</p></header>
-<aside class="qa-glossary"><h2>Terms used in this volume</h2><dl><dt>Controller / namespace</dt><dd>A controller receives commands and manages access. A namespace is a logical storage space that commands can address. An NVM subsystem contains controllers and nonvolatile storage resources.</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission and Completion Queues carry command entries (SQEs) and completion entries (CQEs). QID identifies a queue, CID distinguishes outstanding commands in one SQ, and NSID identifies a namespace.</dd><dt>Register / Identify / Feature / Log</dt><dd>A register exposes control or state. Identify queries capabilities and attributes; features query or configure operation; log pages report specific state or records. FID, LID, CNS and CSI select features, logs, Identify structures and command sets.</dd><dt>index / offset / zero-based</dt><dd>An index selects an entry, usually starting at 0; an offset measures distance from an origin in specified units. A zero-based count encodes count−1, but not every zero-valued field is a count. A Dword is 4 bytes; a byte is 8 bits.</dd><dt>Scope / reset / retention</dt><dd>Scope names the affected objects; retention means preserving state. Controller Reset (clearing CC.EN) is one form of Controller Level Reset, or CLR. Different CLR triggers can retain different registers.</dd></dl></aside>
+<main id="content"><p class="qr-eyebrow">NVMe · Q1–328</p>
+<div class="st-specs" aria-label="Specification editions"><span>NVM Express Base 2.4</span><span>NVM Command Set 1.3</span><span>NVMe over PCIe Transport 1.4</span></div>
+<header><p class="qa-range">Q54–Q68</p><h1>Get Features and Set Features</h1><aside class="st-context"><p>A feature is an individually selectable setting or capability. FID (Feature Identifier) selects it; SEL (Select) chooses the current, default, saved or supported-capability response. CQE (Completion Queue Entry) DW0 (Dword 0) is interpreted using that request context.</p></aside><p class="qr-intro">Establish scope, changeability and saveability before Set. Completion, Current readback, actual behavior and restoration after reset are separate observations; a successful CQE does not replace them.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>CQE</dt><dd>Completion Queue Entry</dd></div></dl><p>Each question is followed by its explanation. Start with the volume overview, then follow the field interpretations, comparisons or processes. Essential conditions and the normal path are visible from the start. All numerical examples are hypothetical. Status is written SCT/SC; h indicates hexadecimal.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>SCT</dt><dd>Status Code Type</dd></div></dl></header>
 <section id="overview" class="qa-overview"><h2>Current and Saved follow different update paths</h2><p class="qa-takeaway">SV=0 changes the present value; SV=1 requests saving. Restoration additionally depends on scope, saveability and feature exceptions.</p>
 <div class="qr-table" tabindex="0" role="region" aria-label="Horizontally scrollable comparison table"><table><thead><tr><th scope="col">Action</th><th scope="col">Current</th><th scope="col">Saved / subsequent restoration</th></tr></thead><tbody><tr><td>Start with a saveable feature</td><td>A</td><td>Saved=A</td></tr><tr><td>Successful Set B, SV=0</td><td>B</td><td>Remains A</td></tr><tr><td>A reset restoring Saved</td><td>Returns to A</td><td>A</td></tr><tr><td>Successful Set C, SV=1</td><td>C</td><td>Updates to C</td></tr><tr><td>Same reset again</td><td>Returns to C</td><td>C</td></tr></tbody></table></div>
-<p><strong>Worked interpretation: </strong>This table assumes a saveable feature and a reset that restores Saved. It is not universal: FID 84h is unsaveable with no Default, yet basic WPS1 survives power cycling and WPS2 clears on a power cycle.</p>
+<p><strong>Worked interpretation: </strong>This table assumes a saveable feature and a reset that restores Saved. It is not universal: FID 84h is unsaveable with no Default, yet basic WPS1 survives power cycling and WPS2 clears on a power cycle.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>FID</dt><dd>Feature Identifier</dd></div></dl>
 <p class="qa-citations">Sources: <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-getfeat">Base 2.4 §5.2.12</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-nwp">Base 2.4 §5.2.30.1.38, 8.1.18</a></p>
 </section>
+<details class="qa-glossary st-glossary"><summary>Review the terminology when needed</summary><dl><dt>Controller / namespace</dt><dd>A controller receives commands and manages access. A namespace is a logical storage space that commands can address. An NVM subsystem contains controllers and nonvolatile storage resources.</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission and Completion Queues carry command entries (SQEs) and completion entries (CQEs). QID identifies a queue, CID distinguishes outstanding commands in one SQ, and NSID identifies a namespace.</dd><dt>Register / Identify / Feature / Log</dt><dd>A register exposes control or state. Identify queries capabilities and attributes; features query or configure operation; log pages report specific state or records. FID, LID, CNS and CSI select features, logs, Identify structures and command sets.</dd><dt>index / offset / zero-based</dt><dd>An index selects an entry, usually starting at 0; an offset measures distance from an origin in specified units. A zero-based count encodes count−1, but not every zero-valued field is a count. A Dword is 4 bytes; a byte is 8 bits.</dd><dt>Scope / reset / retention</dt><dd>Scope names the affected objects; retention means preserving state. Controller Reset (clearing CC.EN) is one form of Controller Level Reset, or CLR. Different CLR triggers can retain different registers.</dd></dl></details>
 <div class="qa-controls" hidden><label>Search this page <input type="search" id="qa-search" placeholder="Question number, field or keyword"></label><button type="button" data-expand="true">Expand all answers</button><button type="button" data-expand="false">Collapse all answers</button><output id="qa-count" aria-live="polite"></output></div>
 <section id="question-index"><h2>Questions in this volume</h2><ol class="qa-index">
 <li><a href="#q-054">Q54 · What do Current, Default, Saved and Supported Capabilities mean?</a></li>
@@ -38,37 +41,38 @@ nvme_qa: true
 <li><a href="#q-068">Q68 · How should supported-feature claims be checked when Get, Set and behavior appear inconsistent?</a></li>
 </ol></section>
 <article class="qa-question" id="q-054" data-question="54" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-054">Q54</a> What do Current, Default, Saved and Supported Capabilities mean?</h2>
-<p class="qa-prompt">Task: establish Volatile Write Cache feature availability, saveability and current enable state. Identify the separate responses before revealing the answer.</p>
-<details class="qa-answer" id="q-054-answer"><summary>Reveal the explanation</summary>
+<p class="qa-prompt">Task: establish Volatile Write Cache feature availability, saveability and current enable state. Follow the support, saveability and current-setting queries with their response formats.</p>
+<details open class="qa-answer" id="q-054-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-054-a-01">Separate the active value, manufacturing default, saved value and change/save capabilities; these are not four identical settings.</p><div class="qa-sections">
 <section class="qa-section" id="q-054-s-01" data-answer-section="1"><h3><span>1.</span> What differs</h3>
 <span class="qa-anchor" id="q-054-a-02"></span><p>Compare the same FID, scope and selectors; Current can differ across namespaces.</p>
 <span class="qa-anchor" id="q-054-a-04"></span><p>SEL 0/1/2/3 select Current/Default/Saved/Supported Capabilities. With SEL 3, DW0 bits 2/1/0 are CHANG/NSSPEC/SVBL, not operational values.</p>
 </section>
 <section class="qa-section" id="q-054-s-02" data-answer-section="2"><h3><span>2.</span> How to choose and verify</h3>
-<span class="qa-anchor" id="q-054-a-03"></span><p>Separate FID availability from its settings capabilities. LID 12h FSUPP reports availability; Identify.ONCS.SSFS advertises Save/Select, under which Get Features.SEL 3 returns CHANG/NSSPEC/SVBL. SEL 3 DW0 bit 0 is SVBL, not FSUPP.</p>
+<span class="qa-anchor" id="q-054-a-03"></span><p>Separate FID availability from its settings capabilities. LID 12h FSUPP reports availability; Identify.ONCS.SSFS advertises Save/Select, under which Get Features.SEL 3 returns CHANG/NSSPEC/SVBL. SEL 3 DW0 bit 0 is SVBL, not FSUPP.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>LID</dt><dd>Log Page Identifier</dd></div></dl>
 <section class="qa-lookup" id="q-054-lookup"><h4>Worked lookup: FSUPP, SVBL and Current.WCE</h4>
 <p>Assume CC.CSS=000b, UUID Index 0, MLPS=1, SSFS=1 and VWC.VWCP=1. The example performs queries only and does not change the cache.</p>
-<div class="qr-table" tabindex="0" role="region" aria-label="Horizontally scrollable comparison table"><table><thead><tr><th scope="col">Step and source location</th><th scope="col">Information to retrieve</th><th scope="col">What this establishes</th></tr></thead><tbody><tr><td>1 · Figure 200, printed 211/PDF 237</td><td>Volatile Write Cache uses FID 06h; MLPS=1 also guarantees LID 12h.</td><td>Identifies the feature and discovery log. Cache presence does not establish current enablement.</td></tr><tr><td>2 · Figures 270–271, printed 276–278/PDF 302–304</td><td>Read 1024 bytes of LID 12h (NUMD=255); FID 06h is at byte 4×6=24=18h. Assume its FSUPP bit 0 is 1.</td><td>FID 06h is advertised; saveability and current WCE are still unknown.</td></tr><tr><td>3 · Figures 198/201, printed 210,212/PDF 236,238</td><td>Get Features opcode 0Ah, FID 06h, SEL 3 and NSID 0 returns successful CQE DW0=00000005h.</td><td>Bits 2/1/0 give CHANG=1/NSSPEC=0/SVBL=1: changeable and saveable. Five is a capability bitmap, not the cache setting.</td></tr><tr><td>4 · Figure 471, printed 464–465/PDF 490–491</td><td>Query the same FID with SEL 0. Assume DW0=0; the VWC format decodes bit 0 as WCE=0.</td><td>The feature is supported and saveable while caching is currently disabled. Current 0 is not lack of support and need not equal the SEL 3 bitmap 5.</td></tr></tbody></table></div>
+<div class="qr-table" tabindex="0" role="region" aria-label="Horizontally scrollable comparison table"><table><thead><tr><th scope="col">Step and source location</th><th scope="col">Information to retrieve</th><th scope="col">What this establishes</th></tr></thead><tbody><tr><td>1 · Figure 200, printed 211/PDF 237</td><td>Volatile Write Cache uses FID 06h; MLPS=1 also guarantees LID 12h.</td><td>Identifies the feature and discovery log. Cache presence does not establish current enablement.</td></tr><tr><td>2 · Figures 270–271, printed 276–278/PDF 302–304</td><td>Read 1024 bytes of LID 12h (NUMD=255); FID 06h is at byte 4×6=24=18h. Assume its FSUPP bit 0 is 1.</td><td>FID 06h is advertised; saveability and current WCE are still unknown.</td></tr><tr><td>3 · Figures 198/201, printed 210,212/PDF 236,238</td><td>Get Features opcode 0Ah, FID 06h, SEL 3 and NSID 0 returns successful CQE DW0=00000005h.</td><td>Bits 2/1/0 give CHANG=1/NSSPEC=0/SVBL=1: changeable and saveable. Five is a capability bitmap, not the cache setting.</td></tr><tr><td>4 · Figure 471, printed 464–465/PDF 490–491</td><td>Query the same FID with SEL 0. Assume DW0=0; the VWC format decodes bit 0 as WCE=0.</td><td>The feature is supported and saveable while caching is currently disabled. Current 0 is not lack of support and need not equal the SEL 3 bitmap 5.</td></tr></tbody></table><dl class="st-terms" aria-label="Terms in this passage"><div><dt>LID</dt><dd>Log Page Identifier</dd></div><div><dt>NSID</dt><dd>Namespace Identifier</dd></div></dl></div>
 <p>Three different bit 0 definitions are involved: FSUPP in LID 12h, SVBL in SEL 3 CQE and WCE in this FID’s SEL 0 CQE. Preserve LID/FID, SEL and response format with the numeric value.</p>
 <p class="qa-citations">Sources: <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a> · <a href="#ref-getfeat">Base 2.4 §5.2.12</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-vwc">Base 2.4 §5.2.30.1.4</a></p>
 </section>
 <span class="qa-anchor" id="q-054-a-05"></span><p>Read capabilities and Current first, then Saved/Default for reset analysis. If unsaveable or never saved, SEL 2 returns Default, subject to features that define no Default.</p>
 <span class="qa-anchor" id="q-054-a-06"></span><p>SEL 3 DW0=5 reports CHANG=1, SVBL=1 and NSSPEC=0: changeable and saveable. NSSPEC=0 does not indicate scope; consult FSP or the FID definition rather than assuming controller scope. Five is not the Current operating value.</p>
 </section>
-<section class="qa-section" id="q-054-s-03" data-answer-section="3"><h3><span>3.</span> Where the comparison stops</h3>
+<section class="qa-section" id="q-054-s-03" data-answer-section="3"><h3><span>3.</span> Conditions that shape the comparison</h3>
 <span class="qa-anchor" id="q-054-a-07"></span><p>Unsupported FID uses Invalid Field (0/02h); SEL 4–7 are reserved. Without Select support, do not treat a response as valid CHANG/SVBL discovery.</p>
 <span class="qa-anchor" id="q-054-a-16"></span><p>Preserve FID and SEL with the returned DW0 to distinguish a value from a capability bitmap.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-getfeat">Base 2.4 §5.2.12</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a> · <a href="#ref-vwc">Base 2.4 §5.2.30.1.4</a></p>
 <span class="qa-anchor" id="q-054-a-17"></span><span class="qa-anchor" id="q-054-a-08"></span><span class="qa-anchor" id="q-054-a-09"></span><span class="qa-anchor" id="q-054-a-10"></span><span class="qa-anchor" id="q-054-a-11"></span><span class="qa-anchor" id="q-054-a-12"></span><span class="qa-anchor" id="q-054-a-13"></span><span class="qa-anchor" id="q-054-a-14"></span><span class="qa-anchor" id="q-054-a-15"></span>
 <p class="qa-related">Related mechanisms: <a href="/nvme/question-bank/logs/en/#q-069">Q69</a> · <a href="/nvme/question-bank/logs/en/#q-081">Q81</a> · <a href="/nvme/question-bank/features/en/#q-055">Q55</a> · <a href="/nvme/question-bank/features/en/#q-060">Q60</a></p>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-getfeat">Base 2.4 §5.2.12</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a> · <a href="#ref-vwc">Base 2.4 §5.2.30.1.4</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-055" data-question="55" data-answer-kind="lifecycle"><h2><a class="qa-qid" href="#q-055">Q55</a> How does Set Features.Save affect values after reset and power cycling?</h2>
-<p class="qa-prompt">Name the reset or interruption, then assess settings, ongoing operations and data separately.</p>
-<details class="qa-answer" id="q-055-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-055-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-055-a-01">Let the host change only the active value or also the persistent value used on restoration.</p><div class="qa-sections">
 <section class="qa-section" id="q-055-s-01" data-answer-section="1"><h3><span>1.</span> Identify the trigger and affected objects</h3>
 <span class="qa-anchor" id="q-055-a-02"></span><p>Saving follows feature scope; namespace-scoped and controller-scoped settings are not one global value.</p>
@@ -85,17 +89,18 @@ nvme_qa: true
 <span class="qa-anchor" id="q-055-a-17"></span><p>First inspect original SV/SVBL, then reset type and coverage.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-getfeat">Base 2.4 §5.2.12</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 <span class="qa-anchor" id="q-055-a-08"></span><span class="qa-anchor" id="q-055-a-09"></span><span class="qa-anchor" id="q-055-a-10"></span><span class="qa-anchor" id="q-055-a-11"></span><span class="qa-anchor" id="q-055-a-12"></span><span class="qa-anchor" id="q-055-a-13"></span><span class="qa-anchor" id="q-055-a-14"></span><span class="qa-anchor" id="q-055-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-getfeat">Base 2.4 §5.2.12</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-056" data-question="56" data-answer-kind="error"><h2><a class="qa-qid" href="#q-056">Q56</a> Which errors apply to unsupported features, invalid values and unsupported Save?</h2>
-<p class="qa-prompt">Distinguish failure conditions before deciding whether a particular response is required.</p>
-<details class="qa-answer" id="q-056-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-056-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-056-a-01">Distinguish unsupported function, unchangeability, unsaveability and invalid value; their causes and corrections differ.</p><div class="qa-sections">
 <section class="qa-section" id="q-056-s-01" data-answer-section="1"><h3><span>1.</span> Distinguish the failure conditions</h3>
 <span class="qa-anchor" id="q-056-a-02"></span><p>Evaluate the FID, target scope, current state and this Get/Set operation, not merely the controller model.</p>
-<span class="qa-anchor" id="q-056-a-04"></span><p>Check FID, SV, NSID, CDW11 and payload. Some features require selectors beyond a single value.</p>
+<span class="qa-anchor" id="q-056-a-04"></span><p>Check FID, SV, NSID, CDW11 and payload. Some features require selectors beyond a single value.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>NSID</dt><dd>Namespace Identifier</dd></div></dl>
 <span class="qa-anchor" id="q-056-a-07"></span><p>Unsupported FID/invalid defined value:0/02h; unsaveable:1/0Dh; unchangeable:1/0Eh; controller-scoped Set with a valid NSID:1/0Fh. Specific FID ordering/state errors take precedence.</p>
 </section>
 <section class="qa-section" id="q-056-s-02" data-answer-section="2"><h3><span>2.</span> Establish the cause from evidence</h3>
@@ -108,13 +113,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-056-a-17"></span><p>First exclude multiple simultaneous faults that allow different valid error choices.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-getfeat">Base 2.4 §5.2.12</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 <span class="qa-anchor" id="q-056-a-08"></span><span class="qa-anchor" id="q-056-a-09"></span><span class="qa-anchor" id="q-056-a-10"></span><span class="qa-anchor" id="q-056-a-11"></span><span class="qa-anchor" id="q-056-a-12"></span><span class="qa-anchor" id="q-056-a-13"></span><span class="qa-anchor" id="q-056-a-14"></span><span class="qa-anchor" id="q-056-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-getfeat">Base 2.4 §5.2.12</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-057" data-question="57" data-answer-kind="lookup"><h2><a class="qa-qid" href="#q-057">Q57</a> How does the host determine whether a feature requires NSID?</h2>
-<p class="qa-prompt">Choose the interface and target, then identify the returned field that supports your conclusion.</p>
-<details class="qa-answer" id="q-057-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-057-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-057-a-01">Select the correct target before changing configuration.</p><div class="qa-sections">
 <section class="qa-section" id="q-057-s-01" data-answer-section="1"><h3><span>1.</span> Select the target and information</h3>
 <span class="qa-anchor" id="q-057-a-02"></span><p>Feature scope can be controller, namespace, subsystem, set, group or another management entity, not just two categories.</p>
@@ -131,18 +137,19 @@ nvme_qa: true
 <span class="qa-anchor" id="q-057-a-17"></span><p>First read the scope definition and original NSID before suspecting namespace failure.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-getfeat">Base 2.4 §5.2.12</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-nvmfeat">NVM Command Set 1.3 §4.1.3.1–4.1.3.7</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 <span class="qa-anchor" id="q-057-a-08"></span><span class="qa-anchor" id="q-057-a-09"></span><span class="qa-anchor" id="q-057-a-10"></span><span class="qa-anchor" id="q-057-a-11"></span><span class="qa-anchor" id="q-057-a-12"></span><span class="qa-anchor" id="q-057-a-13"></span><span class="qa-anchor" id="q-057-a-14"></span><span class="qa-anchor" id="q-057-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-getfeat">Base 2.4 §5.2.12</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-nvmfeat">NVM Command Set 1.3 §4.1.3.1–4.1.3.7</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-058" data-question="58" data-answer-kind="process"><h2><a class="qa-qid" href="#q-058">Q58</a> How are Arbitration, Number of Queues and I/O Command Set Profile configured and checked?</h2>
-<p class="qa-prompt">Order the actions and identify which completion must precede the next action.</p>
-<details class="qa-answer" id="q-058-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-058-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-058-a-01">These control scheduling parameters, queue allocations and allowed command-set combinations at different initialization stages.</p><div class="qa-sections">
 <section class="qa-section" id="q-058-s-01" data-answer-section="1"><h3><span>1.</span> Prepare the operation</h3>
 <span class="qa-anchor" id="q-058-a-02"></span><p>All three target controller configuration, while Profile affects namespace/command-set usability.</p>
-<span class="qa-anchor" id="q-058-a-03"></span><p>Arbitration uses CAP.AMS/CC.AMS; queue allocation uses successful Set results; Profile requires CAP.CSS.IOCSS and CNS 1Ch vectors.</p>
-<span class="qa-anchor" id="q-058-a-04"></span><p>FID 01h uses AB/HPW/MPW/LPW; FID 07h maps requested to allocated SQ/CQ counts; FID 19h.IOCSCI is a combination index.</p>
+<span class="qa-anchor" id="q-058-a-03"></span><p>Arbitration uses CAP.AMS/CC.AMS; queue allocation uses successful Set results; Profile requires CAP.CSS.IOCSS and CNS 1Ch vectors.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>CNS</dt><dd>Controller or Namespace Structure, selecting Identify data</dd></div></dl>
+<span class="qa-anchor" id="q-058-a-04"></span><p>FID 01h uses AB/HPW/MPW/LPW; FID 07h maps requested to allocated SQ/CQ counts; FID 19h.IOCSCI is a combination index.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>SQ</dt><dd>Submission Queue</dd></div><div><dt>CQ</dt><dd>Completion Queue</dd></div></dl>
 </section>
 <section class="qa-section" id="q-058-s-02" data-answer-section="2"><h3><span>2.</span> Sequence and completion conditions</h3>
 <span class="qa-anchor" id="q-058-a-05"></span><p>Select the profile and discover namespaces, allocate queues and create CQs/SQs; verify arbitration parameters together with CC.AMS/QPRIO.</p>
@@ -153,16 +160,17 @@ nvme_qa: true
 <span class="qa-anchor" id="q-058-a-16"></span><p>Verify settings, creatable queue ranges and usable command sets independently.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-arbit">Base 2.4 §5.2.30.1.1</a> · <a href="#ref-number">Base 2.4 §5.2.30.1.5</a> · <a href="#ref-profile">Base 2.4 §5.2.30.1.18</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-setcomplete">Base 2.4 §5.2.30 (Command Completion)</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 <span class="qa-anchor" id="q-058-a-17"></span><span class="qa-anchor" id="q-058-a-08"></span><span class="qa-anchor" id="q-058-a-09"></span><span class="qa-anchor" id="q-058-a-10"></span><span class="qa-anchor" id="q-058-a-11"></span><span class="qa-anchor" id="q-058-a-12"></span><span class="qa-anchor" id="q-058-a-13"></span><span class="qa-anchor" id="q-058-a-14"></span><span class="qa-anchor" id="q-058-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-arbit">Base 2.4 §5.2.30.1.1</a> · <a href="#ref-number">Base 2.4 §5.2.30.1.5</a> · <a href="#ref-profile">Base 2.4 §5.2.30.1.18</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-setcomplete">Base 2.4 §5.2.30 (Command Completion)</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-059" data-question="59" data-answer-kind="process"><h2><a class="qa-qid" href="#q-059">Q59</a> How are interrupt coalescing and vector configuration set and verified?</h2>
-<p class="qa-prompt">Order the actions and identify which completion must precede the next action.</p>
-<details class="qa-answer" id="q-059-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-059-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-059-a-01">Trade notification latency against interrupt overhead; posting a completion and generating an IRQ are different events.</p><div class="qa-sections">
 <section class="qa-section" id="q-059-s-01" data-answer-section="1"><h3><span>1.</span> Prepare the operation</h3>
-<span class="qa-anchor" id="q-059-a-02"></span><p>FID 08h controls I/O interrupt coalescing; FID 09h selects its application per vector. Admin CQ does not support coalescing.</p>
+<span class="qa-anchor" id="q-059-a-02"></span><p>FID 08h controls I/O interrupt coalescing; FID 09h selects its application per vector. Admin CQ does not support coalescing.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>CQ</dt><dd>Completion Queue</dd></div></dl>
 <span class="qa-anchor" id="q-059-a-03"></span><p>Check CQ.IEN/IV, PCIe interrupt mode and masks. Feature support is required, while aggregation algorithms remain implementation-specific.</p>
 <span class="qa-anchor" id="q-059-a-04"></span><p>FID 08h TIME uses 100 μs units and THR is zero-based; either zero implicitly disables coalescing. FID 09h uses IV/CD; CD=1 disables coalescing, not interrupts.</p>
 </section>
@@ -172,16 +180,17 @@ nvme_qa: true
 </section>
 <section class="qa-section" id="q-059-s-03" data-answer-section="3"><h3><span>3.</span> Handle unmet conditions</h3>
 <span class="qa-anchor" id="q-059-a-07"></span><p>Invalid or unassociated IV in FID 09h should return Invalid Field (0/02h), unlike Create CQ&#x27;s Invalid Interrupt Vector (1/08h).</p>
-<span class="qa-anchor" id="q-059-a-16"></span><p>Check readback, CQ mapping, masks and notification behavior. CD=1 does not override an MSI-X mask.</p>
+<span class="qa-anchor" id="q-059-a-16"></span><p>Check readback, CQ mapping, masks and notification behavior. CD=1 does not override an MSI-X mask.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>MSI-X</dt><dd>Message Signaled Interrupts Extension</dd></div></dl>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-irqfeat">Base 2.4 §5.2.30.2.1–5.2.30.2.2</a> · <a href="#ref-irq">PCIe Transport 1.4 §3.5</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 <span class="qa-anchor" id="q-059-a-17"></span><span class="qa-anchor" id="q-059-a-08"></span><span class="qa-anchor" id="q-059-a-09"></span><span class="qa-anchor" id="q-059-a-10"></span><span class="qa-anchor" id="q-059-a-11"></span><span class="qa-anchor" id="q-059-a-12"></span><span class="qa-anchor" id="q-059-a-13"></span><span class="qa-anchor" id="q-059-a-14"></span><span class="qa-anchor" id="q-059-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-irqfeat">Base 2.4 §5.2.30.2.1–5.2.30.2.2</a> · <a href="#ref-irq">PCIe Transport 1.4 §3.5</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-060" data-question="60" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-060">Q60</a> What do Volatile Write Cache and Write Atomicity Normal control?</h2>
-<p class="qa-prompt">Identify the key difference and one case where the alternatives are not interchangeable.</p>
-<details class="qa-answer" id="q-060-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-060-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-060-a-01">Separate persistence from atomicity: reaching nonvolatile storage is different from updating logical blocks as a defined unit.</p><div class="qa-sections">
 <section class="qa-section" id="q-060-s-01" data-answer-section="1"><h3><span>1.</span> What differs</h3>
 <span class="qa-anchor" id="q-060-a-02"></span><p>FID 06h controls controller volatile caching; FID 0Ah controls normal atomicity requirements, not the advertised namespace atomic units.</p>
@@ -192,18 +201,19 @@ nvme_qa: true
 <span class="qa-anchor" id="q-060-a-05"></span><p>Read capabilities/format, Set/Get, then compare allowed outcomes for Writes respecting units/boundaries. Drain first for a clean setting transition.</p>
 <span class="qa-anchor" id="q-060-a-06"></span><p>WCE=0 does not make arbitrary-size writes atomic; DN=1 does not make completion persistent. The controls are not substitutes.</p>
 </section>
-<section class="qa-section" id="q-060-s-03" data-answer-section="3"><h3><span>3.</span> Where the comparison stops</h3>
+<section class="qa-section" id="q-060-s-03" data-answer-section="3"><h3><span>3.</span> Conditions that shape the comparison</h3>
 <span class="qa-anchor" id="q-060-a-07"></span><p>Get/Set FID 06h without volatile cache shall return Invalid Field (0/02h). Other conditions follow applicable command/namespace/atomicity rules.</p>
 <span class="qa-anchor" id="q-060-a-16"></span><p>Correlate Current.WCE/DN with the effective atomic units. FUA requests persistence for a command without enlarging its atomic unit.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-vwc">Base 2.4 §5.2.30.1.4</a> · <a href="#ref-nvmfeat">NVM Command Set 1.3 §4.1.3.1–4.1.3.7</a> · <a href="#ref-nvmatomic">NVM Command Set 1.3 §2.1.2–2.1.4</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 <span class="qa-anchor" id="q-060-a-17"></span><span class="qa-anchor" id="q-060-a-08"></span><span class="qa-anchor" id="q-060-a-09"></span><span class="qa-anchor" id="q-060-a-10"></span><span class="qa-anchor" id="q-060-a-11"></span><span class="qa-anchor" id="q-060-a-12"></span><span class="qa-anchor" id="q-060-a-13"></span><span class="qa-anchor" id="q-060-a-14"></span><span class="qa-anchor" id="q-060-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-vwc">Base 2.4 §5.2.30.1.4</a> · <a href="#ref-nvmfeat">NVM Command Set 1.3 §4.1.3.1–4.1.3.7</a> · <a href="#ref-nvmatomic">NVM Command Set 1.3 §2.1.2–2.1.4</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-061" data-question="61" data-answer-kind="process"><h2><a class="qa-qid" href="#q-061">Q61</a> How does Asynchronous Event Configuration select reported events?</h2>
-<p class="qa-prompt">Order the actions and identify which completion must precede the next action.</p>
-<details class="qa-answer" id="q-061-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-061-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-061-a-01">Select desired change notifications; configuration does not submit an event request on the host&#x27;s behalf.</p><div class="qa-sections">
 <section class="qa-section" id="q-061-s-01" data-answer-section="1"><h3><span>1.</span> Prepare the operation</h3>
 <span class="qa-anchor" id="q-061-a-02"></span><p>FID 0Bh configures controller notifications about state with various scopes.</p>
@@ -222,13 +232,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-061-a-09"></span><p>This feature configures notifications, with event-specific conditions and clearing rules. FID 0Bh is not a universal switch for every Error event, and Get Features does not replenish AERs.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-aec">Base 2.4 §5.2.30.1.6</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-nvmfeat">NVM Command Set 1.3 §4.1.3.1–4.1.3.7</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 <span class="qa-anchor" id="q-061-a-17"></span><span class="qa-anchor" id="q-061-a-08"></span><span class="qa-anchor" id="q-061-a-10"></span><span class="qa-anchor" id="q-061-a-11"></span><span class="qa-anchor" id="q-061-a-12"></span><span class="qa-anchor" id="q-061-a-13"></span><span class="qa-anchor" id="q-061-a-14"></span><span class="qa-anchor" id="q-061-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-aec">Base 2.4 §5.2.30.1.6</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-nvmfeat">NVM Command Set 1.3 §4.1.3.1–4.1.3.7</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
-<article class="qa-question" id="q-062" data-question="62" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-062">Q62</a> How do Power Management, APST and Host Controlled Thermal Management differ?</h2>
-<p class="qa-prompt">Identify the key difference and one case where the alternatives are not interchangeable.</p>
-<details class="qa-answer" id="q-062-answer"><summary>Reveal the explanation</summary>
+<article class="qa-question" id="q-062" data-question="62" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-062">Q62</a> How do Power Management, APST and Host Controlled Thermal Management differ?</h2><dl class="st-terms" aria-label="Terms in this passage"><div><dt>APST</dt><dd>Autonomous Power State Transition</dd></div></dl>
+
+<details open class="qa-answer" id="q-062-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-062-a-01">Separate explicit host power-state selection, idle-driven automatic transitions and temperature-driven power/performance management.</p><div class="qa-sections">
 <section class="qa-section" id="q-062-s-01" data-answer-section="1"><h3><span>1.</span> What differs</h3>
 <span class="qa-anchor" id="q-062-a-02"></span><p>Configuration targets a controller, while shared-domain controllers can interact in power behavior.</p>
@@ -236,7 +247,7 @@ nvme_qa: true
 </section>
 <section class="qa-section" id="q-062-s-02" data-answer-section="2"><h3><span>2.</span> How to choose and verify</h3>
 <span class="qa-anchor" id="q-062-a-03"></span><p>Read NPSS/power-state descriptors, APSTA, HCTMA and MNTMT/MXTMT.</p>
-<span class="qa-anchor" id="q-062-a-05"></span><p>Discover states/latencies, select explicit PS or an APST table and separately set legal TMT1&lt;TMT2 when both are nonzero. Each new state uses its own idle-transition condition.</p>
+<span class="qa-anchor" id="q-062-a-05"></span><p>Discover states/latencies, select explicit PS or an APST table and separately set legal TMT1&lt;TMT2 when both are nonzero. Each new state uses its own idle-transition condition.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>APST</dt><dd>Autonomous Power State Transition</dd></div></dl>
 <span class="qa-anchor" id="q-062-a-06"></span><p>Successful FID 02h Set establishes the requested PS, but enabled APST may transition again. HCTM activity is not another host Power Management command.</p>
 </section>
 <section class="qa-section" id="q-062-s-03" data-answer-section="3"><h3><span>3.</span> Checks across reset or power loss</h3>
@@ -244,22 +255,23 @@ nvme_qa: true
 <span class="qa-anchor" id="q-062-a-14"></span>
 <div class="qr-table" tabindex="0" role="region" aria-label="Horizontally scrollable comparison table"><table><thead><tr><th scope="col">Trigger</th><th scope="col">Effect on this operation or state</th></tr></thead><tbody><tr><td>What survives or continues after Controller Reset?</td><td>Non-saveable Power Management/APST follows Figure 466 defaults; non-saveable HCTM is persistent. Saveable configurations use Saved rules, with coordination among controllers sharing a domain.</td></tr><tr><td>What survives or continues after a power cycle?</td><td>Do not classify all three as volatile: non-saveable HCTM persists, whereas Power Management/APST do not; saveable features restore Saved.</td></tr></tbody></table></div>
 </section>
-<section class="qa-section" id="q-062-s-04" data-answer-section="4"><h3><span>4.</span> Where the comparison stops</h3>
+<section class="qa-section" id="q-062-s-04" data-answer-section="4"><h3><span>4.</span> Conditions that shape the comparison</h3>
 <span class="qa-anchor" id="q-062-a-07"></span><p>Unsupported states, invalid APST targets and illegal thermal ranges/order follow the relevant Invalid Field (0/02h) requirements.</p>
 <span class="qa-anchor" id="q-062-a-16"></span><p>Compare configuration, operational state, SMART temperature and HCTM counters separately. Lower power alone does not identify APST as the cause.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-power">Base 2.4 §5.2.30.1.2, 5.2.30.1.7</a> · <a href="#ref-thermal">Base 2.4 §5.2.30.1.10</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a> · <a href="#ref-powerstates">Base 2.4 §8.1.19</a> · <a href="#ref-thermalpel">Base 2.4 §5.2.13.1.14.2.13</a></p>
 <span class="qa-anchor" id="q-062-a-17"></span><span class="qa-anchor" id="q-062-a-08"></span><span class="qa-anchor" id="q-062-a-09"></span><span class="qa-anchor" id="q-062-a-10"></span><span class="qa-anchor" id="q-062-a-11"></span><span class="qa-anchor" id="q-062-a-13"></span><span class="qa-anchor" id="q-062-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-power">Base 2.4 §5.2.30.1.2, 5.2.30.1.7</a> · <a href="#ref-thermal">Base 2.4 §5.2.30.1.10</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a> · <a href="#ref-powerstates">Base 2.4 §8.1.19</a> · <a href="#ref-thermalpel">Base 2.4 §5.2.13.1.14.2.13</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-063" data-question="63" data-answer-kind="process"><h2><a class="qa-qid" href="#q-063">Q63</a> How are Timestamp, Keep Alive Timer and Host Memory Buffer configured and verified?</h2>
-<p class="qa-prompt">Order the actions and identify which completion must precede the next action.</p>
-<details class="qa-answer" id="q-063-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-063-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-063-a-01">These provide event time, communication-liveness monitoring and dedicated host memory, requiring different validation methods.</p><div class="qa-sections">
 <section class="qa-section" id="q-063-s-01" data-answer-section="1"><h3><span>1.</span> Prepare the operation</h3>
-<span class="qa-anchor" id="q-063-a-02"></span><p>Timestamp/Keep Alive are controller time state; HMB also controls ownership/lifetime of host memory.</p>
-<span class="qa-anchor" id="q-063-a-03"></span><p>Check ONCS for Timestamp, KAS/CTRATT.TBKAS for Keep Alive, and HMPRE/HMMIN/HMMINDS/HMMAXD for HMB.</p>
+<span class="qa-anchor" id="q-063-a-02"></span><p>Timestamp/Keep Alive are controller time state; HMB also controls ownership/lifetime of host memory.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>HMB</dt><dd>Host Memory Buffer</dd></div></dl>
+<span class="qa-anchor" id="q-063-a-03"></span><p>Check ONCS for Timestamp, KAS/CTRATT.TBKAS for Keep Alive, and HMPRE/HMMIN/HMMINDS/HMMAXD for HMB.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>HMB</dt><dd>Host Memory Buffer</dd></div></dl>
 <span class="qa-anchor" id="q-063-a-04"></span><p>FID 0Eh sets a 48-bit millisecond Timestamp in an 8-byte buffer. FID 0Fh sets KATO milliseconds rounded up to KAS×100 ms. FID 0Dh configures EHM/MR, HSIZE and descriptor address/count.</p>
 </section>
 <section class="qa-section" id="q-063-s-02" data-answer-section="2"><h3><span>2.</span> Sequence and completion conditions</h3>
@@ -271,14 +283,15 @@ nvme_qa: true
 <span class="qa-anchor" id="q-063-a-16"></span><p>Check Timestamp Origin/Synch rather than assuming a perfect wall clock, rounded KATO Current and HMB support/configuration/EHM/memory retention.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-timestamp">Base 2.4 §5.2.30.1.8</a> · <a href="#ref-keepalive">Base 2.4 §3.9 (common and PCIe rules), 5.2.30.1.9</a> · <a href="#ref-hmb">Base 2.4 §5.2.30.2.3, 8.2.4</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 <span class="qa-anchor" id="q-063-a-17"></span><span class="qa-anchor" id="q-063-a-08"></span><span class="qa-anchor" id="q-063-a-09"></span><span class="qa-anchor" id="q-063-a-10"></span><span class="qa-anchor" id="q-063-a-11"></span><span class="qa-anchor" id="q-063-a-12"></span><span class="qa-anchor" id="q-063-a-13"></span><span class="qa-anchor" id="q-063-a-14"></span><span class="qa-anchor" id="q-063-a-15"></span>
 <p class="qa-related">Related mechanisms: <a href="/nvme/question-bank/persistent-events/en/#q-216">Q216</a> · <a href="/nvme/question-bank/keep-alive/en/#q-221">Q221</a> · <a href="/nvme/question-bank/memory/en/#q-226">Q226</a></p>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-timestamp">Base 2.4 §5.2.30.1.8</a> · <a href="#ref-keepalive">Base 2.4 §3.9 (common and PCIe rules), 5.2.30.1.9</a> · <a href="#ref-hmb">Base 2.4 §5.2.30.2.3, 8.2.4</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-064" data-question="64" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-064">Q64</a> What do Host Behavior Support, Error Recovery and Read Recovery Level do?</h2>
-<p class="qa-prompt">Identify the key difference and one case where the alternatives are not interchangeable.</p>
-<details class="qa-answer" id="q-064-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-064-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-064-a-01">Advertise host understanding of extensions, configure namespace error recovery and choose a read-recovery strategy.</p><div class="qa-sections">
 <section class="qa-section" id="q-064-s-01" data-answer-section="1"><h3><span>1.</span> What differs</h3>
 <span class="qa-anchor" id="q-064-a-02"></span><p>FID 16h is controller-scoped, FID 05h namespace-scoped, and FID 12h set/subsystem-scoped according to NVM Set support.</p>
@@ -294,18 +307,19 @@ nvme_qa: true
 <span class="qa-anchor" id="q-064-a-14"></span>
 <div class="qr-table" tabindex="0" role="region" aria-label="Horizontally scrollable comparison table"><table><thead><tr><th scope="col">Trigger</th><th scope="col">Effect on this operation or state</th></tr></thead><tbody><tr><td>What survives or continues after Controller Reset?</td><td>Non-saveable Host Behavior Support and Error Recovery are nonpersistent, while Read Recovery Level persists. Saveable cases follow Saved and scope-dependent reset rules.</td></tr><tr><td>What survives or continues after a power cycle?</td><td>Re-read Current after a power cycle. Non-saveable RRL still persists; absence of Saved does not mean it must return zero. Host Behavior Support/Error Recovery use their separate restoration rules.</td></tr></tbody></table></div>
 </section>
-<section class="qa-section" id="q-064-s-04" data-answer-section="4"><h3><span>4.</span> Where the comparison stops</h3>
-<span class="qa-anchor" id="q-064-a-07"></span><p>Unsupported levels/invalid settings follow 0/02h and applicable rules. Command Interrupted 0/21h requires ACRE=1 and DNR=0.</p>
+<section class="qa-section" id="q-064-s-04" data-answer-section="4"><h3><span>4.</span> Conditions that shape the comparison</h3>
+<span class="qa-anchor" id="q-064-a-07"></span><p>Unsupported levels/invalid settings follow 0/02h and applicable rules. Command Interrupted 0/21h requires ACRE=1 and DNR=0.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>DNR</dt><dd>Do Not Retry, a completion retry indication</dd></div></dl>
 <span class="qa-anchor" id="q-064-a-16"></span><p>LBAFEE affects exposure/use of extended formats; interpret capability, host declaration and namespace format together.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-behavior">Base 2.4 §5.2.30.1.15</a> · <a href="#ref-nvmfeat">NVM Command Set 1.3 §4.1.3.1–4.1.3.7</a> · <a href="#ref-rrl">Base 2.4 §5.2.30.1.12, 8.1.23</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 <span class="qa-anchor" id="q-064-a-17"></span><span class="qa-anchor" id="q-064-a-08"></span><span class="qa-anchor" id="q-064-a-09"></span><span class="qa-anchor" id="q-064-a-10"></span><span class="qa-anchor" id="q-064-a-11"></span><span class="qa-anchor" id="q-064-a-13"></span><span class="qa-anchor" id="q-064-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-behavior">Base 2.4 §5.2.30.1.15</a> · <a href="#ref-nvmfeat">NVM Command Set 1.3 §4.1.3.1–4.1.3.7</a> · <a href="#ref-rrl">Base 2.4 §5.2.30.1.12, 8.1.23</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-065" data-question="65" data-answer-kind="process"><h2><a class="qa-qid" href="#q-065">Q65</a> How is namespace write protection configured, and which modes survive reset or power cycling?</h2>
-<p class="qa-prompt">Order the actions and identify which completion must precede the next action.</p>
-<details class="qa-answer" id="q-065-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-065-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-065-a-01">Prevent namespace modification with reversible, until-power-cycle and permanent protection lifetimes.</p><div class="qa-sections">
 <section class="qa-section" id="q-065-s-01" data-answer-section="1"><h3><span>1.</span> Prepare the operation</h3>
 <span class="qa-anchor" id="q-065-a-02"></span><p>Protection belongs to the namespace and applies through other controllers accessing it, not just one queue&#x27;s software flag.</p>
@@ -327,13 +341,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-065-a-16"></span><p>CHANG=1 does not promise reversal of permanent protection. Reset of WPC permission bits differs from the namespace&#x27;s existing WPS state.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-nwp">Base 2.4 §5.2.30.1.38, 8.1.18</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 <span class="qa-anchor" id="q-065-a-17"></span><span class="qa-anchor" id="q-065-a-08"></span><span class="qa-anchor" id="q-065-a-09"></span><span class="qa-anchor" id="q-065-a-10"></span><span class="qa-anchor" id="q-065-a-11"></span><span class="qa-anchor" id="q-065-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-nwp">Base 2.4 §5.2.30.1.38, 8.1.18</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-066" data-question="66" data-answer-kind="process"><h2><a class="qa-qid" href="#q-066">Q66</a> Why read Get Features after a successful Set Features?</h2>
-<p class="qa-prompt">Order the actions and identify which completion must precede the next action.</p>
-<details class="qa-answer" id="q-066-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-066-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-066-a-01">Verify transformations between the requested and effective value rather than relying only on success status.</p><div class="qa-sections">
 <section class="qa-section" id="q-066-s-01" data-answer-section="1"><h3><span>1.</span> Prepare the operation</h3>
 <span class="qa-anchor" id="q-066-a-02"></span><p>Compare identical FID/scope/selectors and time; Supported Capabilities is not Current.</p>
@@ -349,13 +364,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-066-a-16"></span><p>Readback establishes reported configuration; behavioral checks establish its use. Both are needed, without duplicating the same comparison as separate tests.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-getfeat">Base 2.4 §5.2.12</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-setcomplete">Base 2.4 §5.2.30 (Command Completion)</a> · <a href="#ref-keepalive">Base 2.4 §3.9 (common and PCIe rules), 5.2.30.1.9</a> · <a href="#ref-number">Base 2.4 §5.2.30.1.5</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 <span class="qa-anchor" id="q-066-a-17"></span><span class="qa-anchor" id="q-066-a-08"></span><span class="qa-anchor" id="q-066-a-09"></span><span class="qa-anchor" id="q-066-a-10"></span><span class="qa-anchor" id="q-066-a-11"></span><span class="qa-anchor" id="q-066-a-12"></span><span class="qa-anchor" id="q-066-a-13"></span><span class="qa-anchor" id="q-066-a-14"></span><span class="qa-anchor" id="q-066-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-getfeat">Base 2.4 §5.2.12</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-setcomplete">Base 2.4 §5.2.30 (Command Completion)</a> · <a href="#ref-keepalive">Base 2.4 §3.9 (common and PCIe rules), 5.2.30.1.9</a> · <a href="#ref-number">Base 2.4 §5.2.30.1.5</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-067" data-question="67" data-answer-kind="lifecycle"><h2><a class="qa-qid" href="#q-067">Q67</a> How should features change after activation, namespace deletion, reset and power cycling?</h2>
-<p class="qa-prompt">Name the reset or interruption, then assess settings, ongoing operations and data separately.</p>
-<details class="qa-answer" id="q-067-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-067-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-067-a-01">Establish persistence expectations per event and feature instead of assuming universal clearing or retention.</p><div class="qa-sections">
 <section class="qa-section" id="q-067-s-01" data-answer-section="1"><h3><span>1.</span> Identify the trigger and affected objects</h3>
 <span class="qa-anchor" id="q-067-a-02"></span><p>Separate controller, namespace and shared-object scope, then Current/Saved/Default.</p>
@@ -372,13 +388,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-067-a-17"></span><p>First confirm the same object and the actual reset coverage.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-timestamp">Base 2.4 §5.2.30.1.8</a> · <a href="#ref-hmb">Base 2.4 §5.2.30.2.3, 8.2.4</a> · <a href="#ref-nwp">Base 2.4 §5.2.30.1.38, 8.1.18</a> · <a href="#ref-nsmanage">Base 2.4 §5.2.24–5.2.25, 8.1.17</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 <span class="qa-anchor" id="q-067-a-08"></span><span class="qa-anchor" id="q-067-a-09"></span><span class="qa-anchor" id="q-067-a-10"></span><span class="qa-anchor" id="q-067-a-11"></span><span class="qa-anchor" id="q-067-a-12"></span><span class="qa-anchor" id="q-067-a-13"></span><span class="qa-anchor" id="q-067-a-14"></span><span class="qa-anchor" id="q-067-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-timestamp">Base 2.4 §5.2.30.1.8</a> · <a href="#ref-hmb">Base 2.4 §5.2.30.2.3, 8.2.4</a> · <a href="#ref-nwp">Base 2.4 §5.2.30.1.38, 8.1.18</a> · <a href="#ref-nsmanage">Base 2.4 §5.2.24–5.2.25, 8.1.17</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-068" data-question="68" data-answer-kind="diagnose"><h2><a class="qa-qid" href="#q-068">Q68</a> How should supported-feature claims be checked when Get, Set and behavior appear inconsistent?</h2>
-<p class="qa-prompt">Separate available evidence from missing information before judging conformance.</p>
-<details class="qa-answer" id="q-068-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-068-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-068-a-01">Isolate whether the contradiction lies in capability, configuration, observation or firmware behavior under reproducible conditions.</p><div class="qa-sections">
 <section class="qa-section" id="q-068-s-01" data-answer-section="1"><h3><span>1.</span> Preserve the evidence first</h3>
 <span class="qa-anchor" id="q-068-a-02"></span><p>Fix controller, FID, NSID/other selectors and configuration interval to avoid mixing scopes.</p>
@@ -389,12 +406,13 @@ nvme_qa: true
 <span class="qa-anchor" id="q-068-a-17"></span><p>First check wrong SEL/NSID or behavioral test commands submitted before Set completed.</p>
 <span class="qa-anchor" id="q-068-a-05"></span><p>Discover, legally Set, await completion, Get Current and submit new affected work; test saving/reset separately, changing one factor at a time.</p>
 </section>
-<section class="qa-section" id="q-068-s-03" data-answer-section="3"><h3><span>3.</span> Decide what the evidence supports</h3>
+<section class="qa-section" id="q-068-s-03" data-answer-section="3"><h3><span>3.</span> Connect observations to specification conditions</h3>
 <span class="qa-anchor" id="q-068-a-06"></span><p>Consistency means conformance to allowed outcomes. Rounded KATO, dynamic Timestamp and implementation-specific coalescing cannot be rejected simply for differing from a request.</p>
 <span class="qa-anchor" id="q-068-a-07"></span><p>First distinguish unsupported FID 0/02h, unsaveable 1/0Dh, unchangeable 1/0Eh and wrong-scope 1/0Fh; retain allowed status choices for multiple faults.</p>
 <span class="qa-anchor" id="q-068-a-16"></span><p>A noncompliance finding should include the explicit requirement, established prerequisites, raw request/response and evidence excluding selector/timing misuse.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-getfeat">Base 2.4 §5.2.12</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-setcomplete">Base 2.4 §5.2.30 (Command Completion)</a> · <a href="#ref-irqfeat">Base 2.4 §5.2.30.2.1–5.2.30.2.2</a> · <a href="#ref-effects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 <span class="qa-anchor" id="q-068-a-08"></span><span class="qa-anchor" id="q-068-a-09"></span><span class="qa-anchor" id="q-068-a-10"></span><span class="qa-anchor" id="q-068-a-11"></span><span class="qa-anchor" id="q-068-a-12"></span><span class="qa-anchor" id="q-068-a-13"></span><span class="qa-anchor" id="q-068-a-14"></span><span class="qa-anchor" id="q-068-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-getfeat">Base 2.4 §5.2.12</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-setcomplete">Base 2.4 §5.2.30 (Command Completion)</a> · <a href="#ref-irqfeat">Base 2.4 §5.2.30.2.1–5.2.30.2.2</a> · <a href="#ref-effects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>

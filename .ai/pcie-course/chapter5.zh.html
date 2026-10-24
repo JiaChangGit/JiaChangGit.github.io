@@ -1,4 +1,36 @@
-<p class="lead">Chapter 4 已經替裝置配置好位址。現在假設 CPU 要讀取 <code>0x80004120</code> 的 4 bytes：這個動作如何變成 PCIe 封包？裝置怎麼知道要回給誰？本章沿著一次讀取往返，再把同一套判讀方法用在部分位元組存取與較大的讀取上。</p>
+<!-- pcie-walk: walks/chapter5-overview.json -->
+<div class="guided-walk" id="ch5-overview" role="group" aria-labelledby="ch5-overview-title" data-walk-version="1">
+<h3 id="ch5-overview-title">沿一次讀取追蹤 Request 與 Completion</h3>
+<p class="walk-help" id="ch5-overview-help">選擇步驟後，圖中對應的元件與下方解說會加上重點標示。完整圖與所有解說會持續顯示；也可用方向鍵切換步驟。</p>
+<div class="walk-order"><p>由上往下看一次正常讀取。本圖省略中間 Port；實際 Request 與 Completion 各依其路由規則穿過拓樸。</p></div>
+<input class="walk-choice" type="radio" name="ch5-overview-step" id="ch5-overview-choice-1" value="1" data-walk-step="1" aria-describedby="ch5-overview-help" aria-controls="ch5-overview-view ch5-overview-step-1" checked="checked">
+<label class="walk-label" for="ch5-overview-choice-1">1. 先辨認交易類別</label>
+<input class="walk-choice" type="radio" name="ch5-overview-step" id="ch5-overview-choice-2" value="2" data-walk-step="2" aria-describedby="ch5-overview-help" aria-controls="ch5-overview-view ch5-overview-step-2">
+<label class="walk-label" for="ch5-overview-choice-2">2. 把讀取範圍編進要求</label>
+<input class="walk-choice" type="radio" name="ch5-overview-step" id="ch5-overview-choice-3" value="3" data-walk-step="3" aria-describedby="ch5-overview-help" aria-controls="ch5-overview-view ch5-overview-step-3">
+<label class="walk-label" for="ch5-overview-choice-3">3. 讀取目標端的回覆</label>
+<input class="walk-choice" type="radio" name="ch5-overview-step" id="ch5-overview-choice-4" value="4" data-walk-step="4" aria-describedby="ch5-overview-help" aria-controls="ch5-overview-view ch5-overview-step-4">
+<label class="walk-label" for="ch5-overview-choice-4">4. 配對並確認整筆讀取完成</label>
+<div class="walk-view" id="ch5-overview-view">
+<figure class="diagram walk-diagram">
+<svg viewBox="0 0 900 480" role="img" aria-labelledby="ch5-guide-title ch5-guide-desc"><title id="ch5-guide-title">主機端提出讀取，裝置端回覆資料，主機端再依交易識別與完成資訊配對。</title><desc id="ch5-guide-desc">主機端提出讀取，裝置端回覆資料，主機端再依交易識別與完成資訊配對。</desc><a href="#ch5-overview-component-requester" aria-label="Requester：提出要求的一端"><g data-walk-target="requester" class="walk-node" data-walk-steps="1"><rect x="60" y="20" width="310" height="60" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="215.0" y="45" text-anchor="middle" font-size="15">主機端 Requester：提出讀取</text></g></a><a href="#ch5-overview-component-completer" aria-label="Completer：處理要求並回覆的一端"><g data-walk-target="completer" class="walk-node" data-walk-steps="3"><rect x="530" y="20" width="310" height="60" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="685.0" y="45" text-anchor="middle" font-size="15">裝置端 Completer：提供資料</text></g></a><g data-walk-target="host-line" class="walk-node" data-walk-steps="1"><path d="M215 80 L215 460" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="6 5" /></g><g data-walk-target="device-line" class="walk-node" data-walk-steps="3"><path d="M685 80 L685 460" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="6 5" /></g><g data-walk-target="request" class="walk-node" data-walk-steps="1 2"><path d="M215 170 L685 170" fill="none" stroke="var(--accent)" stroke-width="2" /><polygon points="685.0,170.0 675.0,165.0 675.0,175.0" fill="var(--accent)" /><text x="450.0" y="161.0" text-anchor="middle" font-size="13">Memory Read Request →</text></g><g data-walk-target="completion" class="walk-node" data-walk-steps="3 4"><path d="M685 300 L215 300" fill="none" stroke="var(--accent)" stroke-width="2" /><polygon points="215.0,300.0 225.0,305.0 225.0,295.0" fill="var(--accent)" /><text x="450.0" y="291.0" text-anchor="middle" font-size="13">← Completion with Data</text></g><g data-walk-target="match" class="walk-node" data-walk-steps="4"><rect x="55" y="380" width="320" height="65" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="215.0" y="405" text-anchor="middle" font-size="15">依 Requester ID／Tag 配對</text><text x="215.0" y="428" text-anchor="middle" font-size="15">檢查狀態、資料量及位址範圍</text></g></svg>
+<figcaption><p>作者依 Base 6.0 的 Request／Completion 規則繪製的交換示意；分段回覆在正文另行放大。</p></figcaption></figure>
+<div class="walk-summary"><p class="lead">一次 MMIO（Memory-Mapped I/O，記憶體映射輸入輸出）讀取，會由主機端提出要求，再由目標端回覆資料。PCIe 用 TLP（Transaction Layer Packet，交易層封包）承載這些交換。</p><p>前情提要：Chapter 4 已完成本例的 BAR、Bridge Window 與解碼配置。現在沿同一路徑觀察一筆 4-byte 讀取。</p><p><strong>規格路線：</strong>交易類別 Table 2-1 → Request 的 ID／Tag 與 Memory Request 格式 → Completion 格式 → 分段與邊界條件。</p></div>
+<ol class="walk-steps">
+<li class="walk-step" id="ch5-overview-step-1" data-walk-step="1" data-walk-targets="requester request host-line"><h4>先辨認交易類別</h4><div class="walk-condition"><p>本例是已配置、已就緒裝置上的正常 Memory Read；Memory Write 等其他類別另有回覆規則。</p></div><div class="walk-explanation"><p>本例是 Memory Read，屬於需要 Completion 的 Non-Posted Request。先看交易類別，才知道後面要等待哪種回覆。</p></div><div class="walk-source" data-source-claims="PCIE-CH5-TYPE-001"><p>Base 6.0 §2.1.1／Table 2-1，pp.116–117；§2.2.7.1，pp.162–165。</p></div></li>
+<li class="walk-step" id="ch5-overview-step-2" data-walk-step="2" data-walk-targets="request"><h4>把讀取範圍編進要求</h4><div class="walk-condition"><p>本章先以 Non-Flit Mode 解釋既有格式；後文另列 Flit Mode 的格式差異。</p></div><div class="walk-explanation"><p>由 Request 格式讀位址、Length 與 Byte Enable，再看 Requester ID、Tag 如何識別這筆要求。TLP 的長度欄位使用自己的單位及編碼。</p></div><div class="walk-source" data-source-claims="PCIE-CH5-BYTES-001 PCIE-CH5-IDENTITY-001 PCIE-CH5-MODE-001"><p>Base 6.0 §2.2.5.1、§2.2.6.2／Figures 2-26–2-28，pp.150–155。</p></div></li>
+<li class="walk-step" id="ch5-overview-step-3" data-walk-step="3" data-walk-targets="completer completion device-line"><h4>讀取目標端的回覆</h4><div class="walk-condition"><p>若發生非成功完成，資料與狀態依該完成規則判讀；一次要求也可能分成多段回覆。</p></div><div class="walk-explanation"><p>目標以 Completion with Data 回覆正常讀取；讀 Completion Status、Byte Count 與 Lower Address，確認本段資料代表的範圍。</p></div><div class="walk-source" data-source-claims="PCIE-CH5-COMPLETION-001 PCIE-CH5-SPLIT-001"><p>Base 6.0 §2.2.9.1／Figures 2-73–2-74，pp.196–197；§2.3.1.1，pp.214–218。</p></div></li>
+<li class="walk-step" id="ch5-overview-step-4" data-walk-step="4" data-walk-targets="match completion"><h4>配對並確認整筆讀取完成</h4><div class="walk-condition"><p>Tag 配對與資料範圍都須吻合；本章的分段案例會列出每筆 Completion 的實際資料量。</p></div><div class="walk-explanation"><p>以 Requester ID 與 Tag 找回原要求，再累計各段有效資料。最後把 Length、Byte Enable 與 4 KiB 邊界等條件接回原要求。</p></div><div class="walk-source" data-source-claims="PCIE-CH5-IDENTITY-001 PCIE-CH5-BOUNDARY-001 PCIE-CH5-EXAMPLE-001"><p>Base 6.0 §2.2.7.1、§2.2.9.1、§2.3.1.1，pp.163、196–197、214–218。</p></div></li>
+</ol></div>
+<div class="walk-components"><h4>圖中元件</h4><ul class="walk-component-links">
+<li><a href="#ch5-overview-component-requester">Requester：提出要求的一端</a></li>
+<li><a href="#ch5-overview-component-completer">Completer：處理要求並回覆的一端</a></li>
+</ul>
+<section class="walk-component" id="ch5-overview-component-requester" data-component-target="requester"><h4>Requester：提出要求的一端</h4><div class="walk-component-action"><p>本例是主機端的交易要求者，保留這筆讀取的識別與範圍。</p></div><details><summary>基本責任</summary><p>CPU 的軟體讀取由平台轉成 PCIe 交易；圖不表示 CPU 指令本身直接就是 TLP。</p></details></section>
+<section class="walk-component" id="ch5-overview-component-completer" data-component-target="completer"><h4>Completer：處理要求並回覆的一端</h4><div class="walk-component-action"><p>本例由裝置端提供暫存器讀取資料。</p></div><details><summary>基本責任</summary><p>Requester 與 Completer 是本次交易中的角色，不是每個元件永遠固定的身分。</p></details></section>
+</div>
+</div>
+<!-- /pcie-walk -->
 <aside class="note"><strong>版本與案例前提</strong><p>欄位依 PCI Express Base Specification Revision 6.0。本章明確使用 <strong>Non-Flit Mode</strong>；Flit Mode 的 Header 布局不同，不能直接套用下列 Fmt／Type 位置。沿用 Chapter 4 的普通 Endpoint <code>03:00.0</code>、BAR0 與 Bridge Window，且 Link、解碼、平台映射與裝置 Register 介面均已就緒。所有讀值與封包欄位都是作者推演，沒有擷取實機封包。案例使用 TC0、RO=0、IDO=0、No Snoop=0、TH=0，不使用 ATS、PASID、IDE、AtomicOp 或 DMWr。</p><p>本章的位址是 PCIe 交易使用的位址。CPU 指令如何轉成一個或多個交易，仍由處理器與平台決定；案例另行假設這次 4-byte 存取產生一個 Request。</p></aside>
 
 <section id="journey"><h2>1. 讀取時，誰提出要求，誰負責回覆？</h2>
@@ -62,10 +94,10 @@
 <p>收到 Completion 也要先看 Status。SC 表示這次要求成功完成；UR、CA 是不同的失敗結果，不能把無資料的 Cpl 解成讀到了零。RRS 只在規定的 Configuration 情境適用，並不是普通 MMIO 讀取的通用「稍後再試」。若分段讀取中收到失敗 Completion，該回覆會終結這筆要求，不應繼續等剩餘成功片段。</p>
 <details class="source-note"><summary>邊界與失敗回覆來源</summary><p>4 KiB 規則：§2.2.7.1，p.163。Status：Table 2-37，p.197；RRS 限制：§2.3.1，p.214 的說明；失敗讀取回覆與終止：§2.3.1.1，pp.214、218。接收端對部分非法封包的檢查是可選的，不代表發送端可以產生那些封包。</p></details></section>
 
-<section id="practice"><h2>7. 換一個條件，判讀會怎麼改變？</h2>
-<details class="question"><summary>第一個回覆帶 128 bytes，Byte Count 卻是 256，是否互相矛盾？</summary><p>不矛盾。Byte Count 是這筆要求從目前片段起尚待回傳的量，包含目前片段。用 <a href="#split">兩段回覆表</a> 可算出下一段應剩 128 bytes；Payload 大小另由 Length 表達。</p></details>
-<details class="question"><summary>收到 Requester ID 相同但 Tag 不同的 CplD，可以拿來補這筆讀取缺少的資料嗎？</summary><p>不能。它屬於另一個 Transaction ID。即使長度、數值或抵達時間恰好相符，也不能取代配對條件。（Figures 2-27／2-28，p.153。）</p></details>
-<details class="question"><summary>4-byte MWr 沒收到 Completion，應該重送嗎？</summary><p>不能以此作為重送依據。普通 MWr 是 Posted Request，本來就沒有對應的一般 Completion；重送反而可能重複觸發 Register 的副作用。應依裝置介面定義的狀態或通知判斷進度。（Table 2-42，p.222。）</p></details>
-<details class="question"><summary>在 Base 6.0 查到 Figure 2-31，就能解所有 PCIe 6.0 封包嗎？</summary><p>不能。這張圖屬於 Non-Flit Mode 的 Request 格式。先確認模式，再選 §2.2.1.1 或 §2.2.1.2 的 Header 定義；不能把版本號與模式當成同一件事。</p></details></section>
+<section id="practice"><h2>7. 沿回覆欄位重新配對交易</h2>
+<details open class="question"><summary>第一個回覆帶 128 bytes，Byte Count 卻是 256，是否互相矛盾？</summary><p>不矛盾。Byte Count 是這筆要求從目前片段起尚待回傳的量，包含目前片段。用 <a href="#split">兩段回覆表</a> 可算出下一段應剩 128 bytes；Payload 大小另由 Length 表達。</p></details>
+<details open class="question"><summary>收到 Requester ID 相同但 Tag 不同的 CplD，可以拿來補這筆讀取缺少的資料嗎？</summary><p>不能。它屬於另一個 Transaction ID。即使長度、數值或抵達時間恰好相符，也不能取代配對條件。（Figures 2-27／2-28，p.153。）</p></details>
+<details open class="question"><summary>4-byte MWr 沒收到 Completion，應該重送嗎？</summary><p>不能以此作為重送依據。普通 MWr 是 Posted Request，本來就沒有對應的一般 Completion；重送反而可能重複觸發 Register 的副作用。應依裝置介面定義的狀態或通知判斷進度。（Table 2-42，p.222。）</p></details>
+<details open class="question"><summary>在 Base 6.0 查到 Figure 2-31，就能解所有 PCIe 6.0 封包嗎？</summary><p>不能。這張圖屬於 Non-Flit Mode 的 Request 格式。先確認模式，再選 §2.2.1.1 或 §2.2.1.2 的 Header 定義；不能把版本號與模式當成同一件事。</p></details></section>
 <section id="next"><h2>8. 從封包走到資料可見性</h2><p>本章已能配對一筆交易並核對資料範圍。<a href="chapter-6.html">Chapter 6</a> 接著追問：裝置用哪種位址進行 DMA？資料先寫、通知後寫，就能讓 CPU 安全使用資料嗎？</p></section>
 <section id="sources"><h2>版本與來源</h2><p>主來源為 PCI Express Base Specification Revision 6.0，6.0-1.0-PUB。文件頁碼與 PDF 頁碼相同；查核日期為 2026-10-21。封包值、裝置 Register 與平台條件均為作者設計的教學案例，來源位置已隨各節標示。</p></section>

@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "course": "pcie-course",
+  "chapter": 36,
+  "updated": "2026-10-24",
+  "claims": [
+    {
+      "id": "PCIE-CH36-001",
+      "claim": "同TC排序、列欄方向、Yes/Y/N/No及屬性例外。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.4.1"
+      ],
+      "document_pages": [
+        222,
+        223,
+        224
+      ],
+      "pdf_pages": [
+        222,
+        223,
+        224
+      ],
+      "figures": [],
+      "tables": [
+        "2-42"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH36-002",
+      "claim": "跨TC依賴與IDO使用模型。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "D",
+        "E.1",
+        "E.3",
+        "E.4.1"
+      ],
+      "document_pages": [
+        1549,
+        1553,
+        1555
+      ],
+      "pdf_pages": [
+        1549,
+        1553,
+        1555
+      ],
+      "figures": [
+        "E-1"
+      ],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH36-003",
+      "claim": "停止及在途要求管理。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.4"
+      ],
+      "document_pages": [
+        717
+      ],
+      "pdf_pages": [
+        717
+      ],
+      "figures": [],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH36-004",
+      "claim": "訊息用途索引與版本限制。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "F"
+      ],
+      "document_pages": [
+        1559
+      ],
+      "pdf_pages": [
+        1559
+      ],
+      "figures": [],
+      "tables": [
+        "F-1"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    }
+  ]
+}

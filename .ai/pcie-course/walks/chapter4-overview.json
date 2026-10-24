@@ -1,0 +1,77 @@
+{
+  "title": "把一段裝置資源接到 CPU 的存取路徑",
+  "summary_html": "<p class=\"lead\">BAR（Base Address Register，基底位址暫存器）提供裝置資源的型別與配置入口。軟體先取得需求，再分配對齊的位址，讓沿途 Bridge Window 涵蓋它，最後開啟適用的解碼。</p><p>前情提要：Chapter 3 已找到這個 Function。現在處理它的資源，尚未開始驅動程式的工作流程。</p><p><strong>規格路線：</strong>Figures 7-10–7-12／Table 7-9 → Figure 7-14 與 Bridge Window 條文 → Figure 7-5／Table 7-4 的 Command 控制。</p>",
+  "svg": "<svg viewBox=\"0 0 900 450\" role=\"img\" aria-labelledby=\"ch4-guide-title ch4-guide-desc\"><title id=\"ch4-guide-title\">巢狀範圍表示沿途視窗涵蓋同一裝置資源，不代表各層另配置一份裝置記憶體。</title><desc id=\"ch4-guide-desc\">巢狀範圍表示沿途視窗涵蓋同一裝置資源，不代表各層另配置一份裝置記憶體。</desc><g data-walk-target=\"cpu\"><rect x=\"300\" y=\"10\" width=\"300\" height=\"60\" rx=\"9\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"450.0\" y=\"35\" text-anchor=\"middle\" font-size=\"15\">CPU 存取裝置資源</text></g><g data-walk-target=\"request\"><path d=\"M450 70 L450 115\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2\"/><polygon points=\"450.0,115.0 455.0,105.0 445.0,105.0\" fill=\"var(--accent)\"/><text x=\"450.0\" y=\"83.5\" text-anchor=\"middle\" font-size=\"13\">依平台位址轉譯</text></g><g data-walk-target=\"root-window\"><rect x=\"40\" y=\"115\" width=\"820\" height=\"305\" rx=\"9\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"450.0\" y=\"140\" text-anchor=\"middle\" font-size=\"15\">Root Port Window：涵蓋下游配置</text></g><g data-walk-target=\"switch-window\"><rect x=\"135\" y=\"190\" width=\"630\" height=\"205\" rx=\"9\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"450.0\" y=\"215\" text-anchor=\"middle\" font-size=\"15\">Switch 路徑各層 Window：涵蓋同一目標</text></g><g data-walk-target=\"bar\"><rect x=\"250\" y=\"270\" width=\"400\" height=\"95\" rx=\"9\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"450.0\" y=\"295\" text-anchor=\"middle\" font-size=\"15\">Endpoint Memory BAR</text><text x=\"450.0\" y=\"318\" text-anchor=\"middle\" font-size=\"15\">已配置的基底、大小與對齊</text></g></svg>",
+  "order_html": "<p>先看最內層 BAR 的需求，再向外檢查沿途視窗。這是配置及檢查順序；圖中的框表示位址範圍關係。</p>",
+  "caption_html": "<p>作者的位址涵蓋示意。CPU 位址與 BAR 中的位址是否相同，需依平台的位址轉譯判定。</p>",
+  "steps": [
+    {
+      "title": "先讀型別與需求",
+      "html": "<p>讀 Memory／I/O 類型、32／64-bit 與 Prefetchable 屬性，再用適用方式取得大小。64-bit Memory BAR 會使用相鄰兩個欄位。</p>",
+      "targets": [
+        "bar"
+      ],
+      "condition_html": "<p>本章的大小探查是受配置者控制的初始化情境；先停止相關解碼並保存原值，不對使用中的裝置任意寫全 1。</p>",
+      "source_html": "<p>Base 6.0 §7.5.1.2.1／Figures 7-10–7-12／Table 7-9，pp.928–930。</p>",
+      "claim_ids": [
+        "PCIE-CH4-FORMAT-001",
+        "PCIE-CH4-SIZING-001"
+      ]
+    },
+    {
+      "title": "分配可容納且對齊的範圍",
+      "html": "<p>依大小與型別選擇平台可提供的位址，再把基底寫入 BAR。大小遮罩與實際配置值分別用來回答需求及位置。</p>",
+      "targets": [
+        "bar",
+        "cpu"
+      ],
+      "condition_html": "<p>保留 BAR 的屬性位元，確認位址寬度、對齊及平台轉譯；下方算例逐項驗算。</p>",
+      "source_html": "<p>Base 6.0 §7.5.1.2.1，pp.929–930；Firmware 3.3 §3.1.1，p.32。</p>",
+      "claim_ids": [
+        "PCIE-CH4-SIZING-001",
+        "PCIE-CH4-ADDRESS-VIEW-001",
+        "PCIE-CH4-EXAMPLE-001"
+      ]
+    },
+    {
+      "title": "讓沿途視窗涵蓋目標",
+      "html": "<p>沿 Endpoint 到根部檢查每層 Memory 或 Prefetchable Window；任一層沒有涵蓋目標範圍，都會影響轉送。</p>",
+      "targets": [
+        "root-window",
+        "switch-window",
+        "bar"
+      ],
+      "condition_html": "<p>分別依視窗型別、粒度與上下界編碼處理；圖沒有把 Prefetchable 屬性當成 CPU 快取設定。</p>",
+      "source_html": "<p>Base 6.0 §7.5.1.3.8–§7.5.1.3.10，pp.940–941。</p>",
+      "claim_ids": [
+        "PCIE-CH4-MEMORY-WINDOW-001",
+        "PCIE-CH4-PREFETCH-WINDOW-001",
+        "PCIE-CH4-PREFETCH-001"
+      ]
+    },
+    {
+      "title": "開啟本次路徑需要的解碼",
+      "html": "<p>完成資源配置後，依路徑設定 Memory Space Enable。裝置發起交易另看 Bus Master Enable；後續 DMA 準備由 Chapter 6 接續。</p>",
+      "targets": [
+        "cpu",
+        "request",
+        "bar"
+      ],
+      "condition_html": "<p>MSE 是 Memory Space Enable，控制 Memory Space 存取；BME 是 Bus Master Enable，關係到 Function 發起交易。兩者的用途分開判讀。</p>",
+      "source_html": "<p>Base 6.0 §7.5.1.1.3／Figure 7-5／Table 7-4，pp.918–920。</p>",
+      "claim_ids": [
+        "PCIE-CH4-COMMAND-001",
+        "PCIE-CH4-HANDOFF-001"
+      ]
+    }
+  ],
+  "components": [
+    {
+      "target": "bar",
+      "title": "Endpoint 的 BAR",
+      "html": "<p>本圖最內層是這個 Function 提供的裝置資源範圍。</p>",
+      "basic_html": "<p>BAR 保存配置資訊，本身不是一塊可供 CPU 任意讀寫的資料緩衝區。</p>"
+    }
+  ],
+  "walk_id": "ch4-overview"
+}

@@ -1,0 +1,82 @@
+{
+  "title": "沿一次讀取追蹤 Request 與 Completion",
+  "summary_html": "<p class=\"lead\">一次 MMIO（Memory-Mapped I/O，記憶體映射輸入輸出）讀取，會由主機端提出要求，再由目標端回覆資料。PCIe 用 TLP（Transaction Layer Packet，交易層封包）承載這些交換。</p><p>前情提要：Chapter 4 已完成本例的 BAR、Bridge Window 與解碼配置。現在沿同一路徑觀察一筆 4-byte 讀取。</p><p><strong>規格路線：</strong>交易類別 Table 2-1 → Request 的 ID／Tag 與 Memory Request 格式 → Completion 格式 → 分段與邊界條件。</p>",
+  "svg": "<svg viewBox=\"0 0 900 480\" role=\"img\" aria-labelledby=\"ch5-guide-title ch5-guide-desc\"><title id=\"ch5-guide-title\">主機端提出讀取，裝置端回覆資料，主機端再依交易識別與完成資訊配對。</title><desc id=\"ch5-guide-desc\">主機端提出讀取，裝置端回覆資料，主機端再依交易識別與完成資訊配對。</desc><g data-walk-target=\"requester\"><rect x=\"60\" y=\"20\" width=\"310\" height=\"60\" rx=\"9\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"215.0\" y=\"45\" text-anchor=\"middle\" font-size=\"15\">主機端 Requester：提出讀取</text></g><g data-walk-target=\"completer\"><rect x=\"530\" y=\"20\" width=\"310\" height=\"60\" rx=\"9\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"685.0\" y=\"45\" text-anchor=\"middle\" font-size=\"15\">裝置端 Completer：提供資料</text></g><g data-walk-target=\"host-line\"><path d=\"M215 80 L215 460\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2\" stroke-dasharray=\"6 5\"/></g><g data-walk-target=\"device-line\"><path d=\"M685 80 L685 460\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2\" stroke-dasharray=\"6 5\"/></g><g data-walk-target=\"request\"><path d=\"M215 170 L685 170\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2\"/><polygon points=\"685.0,170.0 675.0,165.0 675.0,175.0\" fill=\"var(--accent)\"/><text x=\"450.0\" y=\"161.0\" text-anchor=\"middle\" font-size=\"13\">Memory Read Request →</text></g><g data-walk-target=\"completion\"><path d=\"M685 300 L215 300\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2\"/><polygon points=\"215.0,300.0 225.0,305.0 225.0,295.0\" fill=\"var(--accent)\"/><text x=\"450.0\" y=\"291.0\" text-anchor=\"middle\" font-size=\"13\">← Completion with Data</text></g><g data-walk-target=\"match\"><rect x=\"55\" y=\"380\" width=\"320\" height=\"65\" rx=\"9\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"215.0\" y=\"405\" text-anchor=\"middle\" font-size=\"15\">依 Requester ID／Tag 配對</text><text x=\"215.0\" y=\"428\" text-anchor=\"middle\" font-size=\"15\">檢查狀態、資料量及位址範圍</text></g></svg>",
+  "order_html": "<p>由上往下看一次正常讀取。本圖省略中間 Port；實際 Request 與 Completion 各依其路由規則穿過拓樸。</p>",
+  "caption_html": "<p>作者依 Base 6.0 的 Request／Completion 規則繪製的交換示意；分段回覆在正文另行放大。</p>",
+  "steps": [
+    {
+      "title": "先辨認交易類別",
+      "html": "<p>本例是 Memory Read，屬於需要 Completion 的 Non-Posted Request。先看交易類別，才知道後面要等待哪種回覆。</p>",
+      "targets": [
+        "requester",
+        "request",
+        "host-line"
+      ],
+      "condition_html": "<p>本例是已配置、已就緒裝置上的正常 Memory Read；Memory Write 等其他類別另有回覆規則。</p>",
+      "source_html": "<p>Base 6.0 §2.1.1／Table 2-1，pp.116–117；§2.2.7.1，pp.162–165。</p>",
+      "claim_ids": [
+        "PCIE-CH5-TYPE-001"
+      ]
+    },
+    {
+      "title": "把讀取範圍編進要求",
+      "html": "<p>由 Request 格式讀位址、Length 與 Byte Enable，再看 Requester ID、Tag 如何識別這筆要求。TLP 的長度欄位使用自己的單位及編碼。</p>",
+      "targets": [
+        "request"
+      ],
+      "condition_html": "<p>本章先以 Non-Flit Mode 解釋既有格式；後文另列 Flit Mode 的格式差異。</p>",
+      "source_html": "<p>Base 6.0 §2.2.5.1、§2.2.6.2／Figures 2-26–2-28，pp.150–155。</p>",
+      "claim_ids": [
+        "PCIE-CH5-BYTES-001",
+        "PCIE-CH5-IDENTITY-001",
+        "PCIE-CH5-MODE-001"
+      ]
+    },
+    {
+      "title": "讀取目標端的回覆",
+      "html": "<p>目標以 Completion with Data 回覆正常讀取；讀 Completion Status、Byte Count 與 Lower Address，確認本段資料代表的範圍。</p>",
+      "targets": [
+        "completer",
+        "completion",
+        "device-line"
+      ],
+      "condition_html": "<p>若發生非成功完成，資料與狀態依該完成規則判讀；一次要求也可能分成多段回覆。</p>",
+      "source_html": "<p>Base 6.0 §2.2.9.1／Figures 2-73–2-74，pp.196–197；§2.3.1.1，pp.214–218。</p>",
+      "claim_ids": [
+        "PCIE-CH5-COMPLETION-001",
+        "PCIE-CH5-SPLIT-001"
+      ]
+    },
+    {
+      "title": "配對並確認整筆讀取完成",
+      "html": "<p>以 Requester ID 與 Tag 找回原要求，再累計各段有效資料。最後把 Length、Byte Enable 與 4 KiB 邊界等條件接回原要求。</p>",
+      "targets": [
+        "match",
+        "completion"
+      ],
+      "condition_html": "<p>Tag 配對與資料範圍都須吻合；本章的分段案例會列出每筆 Completion 的實際資料量。</p>",
+      "source_html": "<p>Base 6.0 §2.2.7.1、§2.2.9.1、§2.3.1.1，pp.163、196–197、214–218。</p>",
+      "claim_ids": [
+        "PCIE-CH5-IDENTITY-001",
+        "PCIE-CH5-BOUNDARY-001",
+        "PCIE-CH5-EXAMPLE-001"
+      ]
+    }
+  ],
+  "components": [
+    {
+      "target": "requester",
+      "title": "Requester：提出要求的一端",
+      "html": "<p>本例是主機端的交易要求者，保留這筆讀取的識別與範圍。</p>",
+      "basic_html": "<p>CPU 的軟體讀取由平台轉成 PCIe 交易；圖不表示 CPU 指令本身直接就是 TLP。</p>"
+    },
+    {
+      "target": "completer",
+      "title": "Completer：處理要求並回覆的一端",
+      "html": "<p>本例由裝置端提供暫存器讀取資料。</p>",
+      "basic_html": "<p>Requester 與 Completer 是本次交易中的角色，不是每個元件永遠固定的身分。</p>"
+    }
+  ],
+  "walk_id": "ch5-overview"
+}

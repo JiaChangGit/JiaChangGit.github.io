@@ -130,7 +130,7 @@ def extend(volumes,intros,aids,lessons):
        ('Shutdown 先準備，後等待','正常流程要先停止送入新工作並處理相關依賴，再要求 Shutdown。接著觀察 SHST，不是睡固定時間就假定完成。實際可移除電源的範圍還要看 CAP.CPS 與其他 controllers；只看到一台完成，不保證整個多 controller 裝置都已準備好。'),
        ('未完成操作不能一律重送','Reset 可能讓 Host 失去 CQE，但媒體操作未必回復到開始前。恢復後應先查管理操作狀態與持續性紀錄，再判斷能否重試。例如 Sanitize 可能持續，namespace 也可能已建立；直接重送可能造成另一個動作或不同錯誤。')])
     chapter('health',188,204,'Power、Thermal 與 Health Monitoring || Power, thermal and health monitoring',
-      '功耗狀態、溫度控制與健康計數互相關聯，但各自回答不同問題。本冊先建立狀態與時間概念，再學習如何讀取警告與工作量。 || Power states, thermal control and health counters are related but answer different questions. Learn state and timing before warnings and workload.',
+      '先看裝置目前處於哪個功耗狀態，再追蹤溫度控制的轉換與累計時間，最後接到健康警告及工作量。這個順序能把目前狀態與過去累積的統計接在一起。 || Power states, thermal control and health counters are related but answer different questions. Learn state and timing before warnings and workload.',
       '控制值、目前值、累計值分開看 || Separate controls, current state and lifetime counts',
       '設定門檻不等於發生警告；警告恢復也不會把累計工作量清除。 || A configured threshold is not a warning, and warning recovery does not clear lifetime workload.',
       ['種類 || Kind','例子 || Examples','比較方式 || Comparison'],[

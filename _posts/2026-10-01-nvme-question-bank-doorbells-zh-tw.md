@@ -7,18 +7,21 @@ permalink: /nvme/question-bank/doorbells/zh-tw/
 lang: zh-TW
 nvme_quickref: true
 nvme_qa: true
+spec_teaching: true
+last_modified_at: 2026-10-23
 ---
 
-<div class="nvme-quickref nvme-qa">
+<div class="nvme-quickref nvme-qa spec-teaching" data-spec-series="nvme">
 <nav class="qr-top" aria-label="題庫與版本"><a href="#content">跳到內容</a><a href="/nvme/question-bank/zh-tw/">題庫總索引</a><a href="/nvme/question-bank/doorbells/en/">English</a><a href="/DOCS/nvme-question-bank/doorbells.html">繁中教學 HTML</a></nav>
-<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–328</p>
-<header><p class="qa-range">Q22–Q30</p><h1>Doorbell、Queue Full 與 Wrap-around</h1><p class="qr-intro">Doorbell 告訴 controller，Host 的指標已前進到哪個位置；Phase 則讓 Host 分辨 CQ 中的是新完成結果，還是上一圈留下的資料。本冊將位置與有效性一起說明，幫助你正確處理繞回及空間釋放，避免將正常繞回誤判成倒退，或把舊 CQE 處理兩次。</p><p>先練習，再展開解答。各題依需要使用文字、欄位判讀、比較或流程說明，不要求相同的回答項目。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p></header>
-<aside class="qa-glossary"><h2>先認識本文使用的字詞</h2><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></aside>
+<main id="content"><p class="qr-eyebrow">NVMe · Q1–328</p>
+<div class="st-specs" aria-label="Specification editions"><span>NVM Express Base 2.4</span><span>NVM Command Set 1.3</span><span>NVMe over PCIe Transport 1.4</span></div>
+<header><p class="qa-range">Q22–Q30</p><h1>Doorbell、Queue Full 與 Wrap-around</h1><aside class="st-context"><p>Doorbell 是主機用來通知控制器佇列指標已更新的暫存器。SQ（Submission Queue）提交命令，CQ（Completion Queue）回報完成；CQE（Completion Queue Entry）是其中一筆完成項目。以下把指標繞回與 Phase Tag（辨識本輪完成項目的位元）放在同一輪操作中說明。</p></aside><p class="qr-intro">Doorbell 告訴 controller，Host 的指標已前進到哪個位置；Phase 則讓 Host 分辨 CQ 中的是新完成結果，還是上一圈留下的資料。本冊將位置與有效性一起說明，幫助你正確處理繞回及空間釋放，避免將正常繞回誤判成倒退，或把舊 CQE 處理兩次。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CQ</dt><dd>Completion Queue，完成佇列</dd></div><div><dt>CQE</dt><dd>Completion Queue Entry，佇列中的完成項目</dd></div></dl><p>每個問題都接著完整解說，依內容帶讀欄位、比較機制或追蹤流程。先看本冊總覽，再沿問題閱讀；必要條件與正常路徑直接顯示。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SCT</dt><dd>Status Code Type，完成狀態代碼類型</dd></div></dl></header>
 <section id="overview" class="qa-overview"><h2>8 格 CQ：把繞回與 Phase 放在同一張表</h2><p class="qa-takeaway">CQ 索引回到 0，不表示位置 0 裡的舊資料重新有效。Host 還要比對這一圈期待的 Phase，才能確認是否已有新 CQE。</p>
 <div class="qr-table" tabindex="0" role="region" aria-label="可橫向捲動的比較表"><table><thead><tr><th scope="col">時點</th><th scope="col">Host 下一格／預期 Phase</th><th scope="col">讀取結果與動作</th></tr></thead><tbody><tr><td>初始化</td><td>位置 0，預期 P=1；記憶體 P 初始化為 0</td><td>目前沒有新完成</td></tr><tr><td>第一輪末端</td><td>位置 7，預期 P=1</td><td>讀到 P=1：處理 CQE，下一格回 0，預期改 0</td></tr><tr><td>第二輪起點</td><td>位置 0，預期 P=0</td><td>若仍是舊 P=1，不處理；讀到新 P=0 才處理</td></tr><tr><td>通知 controller 已處理的範圍</td><td>CQ Head 從 7 更新成 2</td><td>表示位置 7、0、1 的 3 筆 CQE 已處理完畢，不是指標倒退 5 格</td></tr></tbody></table></div>
 <p><strong>舉例看懂：</strong>這次前進距離為 (2−7+8) mod 8=3，所以 Host 將 Doorbell 寫成位置 2，通知 controller 有 3 格已可重用；不是因為寫了 2，就表示釋放 2 格。Phase 用來確認 Host 讀到的是新 CQE，CQ Head Doorbell 則通知 controller 哪些 CQE 已處理完畢，兩者負責不同工作。</p>
 <p class="qa-citations">來源：<a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-pcie">PCIe Transport 1.4 §3.1–3.4</a></p>
 </section>
+<details class="qa-glossary st-glossary"><summary>需要時回顧本篇名詞</summary><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></details>
 <div class="qa-controls" hidden><label>搜尋本頁 <input type="search" id="qa-search" placeholder="題號、欄位或關鍵字"></label><button type="button" data-expand="true">展開全部解答</button><button type="button" data-expand="false">收合全部解答</button><output id="qa-count" aria-live="polite"></output></div>
 <section id="question-index"><h2>本冊題目</h2><ol class="qa-index">
 <li><a href="#q-022">Q22 · Host 應在什麼時候更新 SQ Tail Doorbell 與 CQ Head Doorbell？</a></li>
@@ -31,14 +34,14 @@ nvme_qa: true
 <li><a href="#q-029">Q29 · Host 釋放 CQ 空間後，Controller 應如何恢復 Command 處理？</a></li>
 <li><a href="#q-030">Q30 · 多個 SQ 共用一個 CQ 時，Host 如何依 SQID 與 CID 辨識 Completion 來源？</a></li>
 </ol></section>
-<article class="qa-question" id="q-022" data-question="22" data-answer-kind="process"><h2><a class="qa-qid" href="#q-022">Q22</a> Host 應在什麼時候更新 SQ Tail Doorbell 與 CQ Head Doorbell？</h2>
-<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
-<details class="qa-answer" id="q-022-answer"><summary>展開解答與推導</summary>
-<p class="qa-answer-lead" id="q-022-a-01">Host 需要通知 controller，哪些 SQE 已經準備好，以及哪些 CQE 已經處理完畢。更新 SQ Tail 是提交新命令；更新 CQ Head 則是釋放已處理的完成位置，讓 controller 可以再次使用。</p><div class="qa-sections">
+<article class="qa-question" id="q-022" data-question="22" data-answer-kind="process"><h2><a class="qa-qid" href="#q-022">Q22</a> Host 應在什麼時候更新 SQ Tail Doorbell 與 CQ Head Doorbell？</h2><dl class="st-terms" aria-label="本段名詞"><div><dt>SQ</dt><dd>Submission Queue，提交佇列</dd></div></dl>
+
+<details open class="qa-answer" id="q-022-answer"><summary>跟著解說理解</summary>
+<p class="qa-answer-lead" id="q-022-a-01">Host 需要通知 controller，哪些 SQE 已經準備好，以及哪些 CQE 已經處理完畢。更新 SQ Tail 是提交新命令；更新 CQ Head 則是釋放已處理的完成位置，讓 controller 可以再次使用。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SQE</dt><dd>Submission Queue Entry，佇列中的命令項目</dd></div></dl><div class="qa-sections">
 <section class="qa-section" id="q-022-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
 <span class="qa-anchor" id="q-022-a-02"></span><p>每條 SQ／CQ 各有自己的 Doorbell；更新其中一條不會自動更新另一條。</p>
 <span class="qa-anchor" id="q-022-a-03"></span><p>更新前，先確認 queue 仍然有效，而且 controller 已就緒。提交命令時也要確認 SQ 有足夠的可用位置，再依 CAP.DSTRD 找到正確的 Doorbell Register。</p>
-<span class="qa-anchor" id="q-022-a-04"></span><p>SQ Tail 指向下一個可放入 SQE 的位置；CQ Head 指向下一個等待 Host 處理的 CQE。Doorbell 要寫入更新後的索引值，而不是這次新增或處理了幾筆。</p>
+<span class="qa-anchor" id="q-022-a-04"></span><p>SQ Tail 指向下一個可放入 SQE 的位置；CQ Head 指向下一個等待 Host 處理的 CQE。Doorbell 要寫入更新後的索引值，而不是這次新增或處理了幾筆。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SQE</dt><dd>Submission Queue Entry，佇列中的命令項目</dd></div></dl>
 </section>
 <section class="qa-section" id="q-022-s-02" data-answer-section="2"><h3><span>2.</span> 先後順序與完成條件</h3>
 <span class="qa-anchor" id="q-022-a-05"></span><p>提交時，Host 先寫好完整的 SQE，並依平台要求確保 controller 能看見這些記憶體內容，之後才更新 SQ Tail。接收完成結果時，則先讀取並處理有效的 CQE，再更新 CQ Head。Host 可以一次提交多筆命令，也可以一次釋放多個已處理的完成位置。</p>
@@ -49,18 +52,19 @@ nvme_qa: true
 <span class="qa-anchor" id="q-022-a-16"></span><p>驗證時，依時間先後比對 Host 寫入 SQE、更新 Tail、controller 寫入帶有新 Phase 的 CQE，以及 Host 更新 Head 這四個動作。它們分別代表準備命令、提交命令、回報完成及釋放完成位置，不能互相替代。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-pcie">PCIe Transport 1.4 §3.1–3.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a></p>
 <span class="qa-anchor" id="q-022-a-17"></span><span class="qa-anchor" id="q-022-a-08"></span><span class="qa-anchor" id="q-022-a-09"></span><span class="qa-anchor" id="q-022-a-10"></span><span class="qa-anchor" id="q-022-a-11"></span><span class="qa-anchor" id="q-022-a-12"></span><span class="qa-anchor" id="q-022-a-13"></span><span class="qa-anchor" id="q-022-a-14"></span><span class="qa-anchor" id="q-022-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-pcie">PCIe Transport 1.4 §3.1–3.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-023" data-question="23" data-answer-kind="error"><h2><a class="qa-qid" href="#q-023">Q23</a> Doorbell 值重複、倒退、超過 Queue 範圍或寫到錯誤 QID 時，可能造成什麼問題？</h2>
-<p class="qa-prompt">先區分失敗條件，再判斷是否有規範明定的回報結果。</p>
-<details class="qa-answer" id="q-023-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-023-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-023-a-01">判斷指標移動是否合法，避免把環狀索引當成只會遞增的計數器。</p><div class="qa-sections">
 <section class="qa-section" id="q-023-s-01" data-answer-section="1"><h3><span>1.</span> 先區分是哪一種失敗</h3>
 <span class="qa-anchor" id="q-023-a-02"></span><p>錯誤會影響被寫入 Doorbell 的 queue。如果是多條 SQ 共用的 CQ，影響還可能延伸到這些 SQ。另外，向不存在的 queue 寫 Doorbell，與向有效 queue 寫入非法值，是兩種不同情況。</p>
 <span class="qa-anchor" id="q-023-a-04"></span><p>合法索引介於 0 與 size−1。再次寫入相同的值，不表示新增了一批位置；寫入較小的值也不一定是倒退，因為指標可能剛好跨過 queue 尾端，回到起點。</p>
-<span class="qa-anchor" id="q-023-a-07"></span><p>向有效 queue 寫入非法值時，適用 Invalid Doorbell Write Value 的非同步錯誤處理；向不存在的 queue 寫 Doorbell 時，結果則未定義。前者的事件資訊碼不是這次 MMIO 寫入的 CQE Status，兩者不能混為一談。</p>
+<span class="qa-anchor" id="q-023-a-07"></span><p>向有效 queue 寫入非法值時，適用 Invalid Doorbell Write Value 的非同步錯誤處理；向不存在的 queue 寫 Doorbell 時，結果則未定義。前者的事件資訊碼不是這次 MMIO 寫入的 CQE Status，兩者不能混為一談。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>MMIO</dt><dd>Memory-Mapped I/O，記憶體映射輸入輸出</dd></div></dl>
 </section>
 <section class="qa-section" id="q-023-s-02" data-answer-section="2"><h3><span>2.</span> 用哪些資料確認原因</h3>
 <span class="qa-anchor" id="q-023-a-03"></span><p>判斷指標是否合法，需要知道 queue 大小、原來的指標、可用或已處理的位置數量，以及 Doorbell 對應的 QID。只看新寫入的數字，無法判斷這次移動是否正確。</p>
@@ -73,16 +77,17 @@ nvme_qa: true
 </section>
 <section class="qa-section" id="q-023-s-04" data-answer-section="4"><h3><span>4.</span> 分開核對事件通知與 Log 紀錄</h3>
 <span class="qa-anchor" id="q-023-a-09"></span><p>依 Base §3.3.1.2，若 Doorbell 值非法，而且有尚未完成的 Asynchronous Event Request，controller 會透過它回報對應錯誤事件。受影響的 SQ 可以完成已取得的命令，但不再取得新命令；Host 則需刪除並重建 queue。</p>
-<span class="qa-anchor" id="q-023-a-10"></span><p>這是 Error 類型的非同步事件，應讀取事件指定的 Log，取得補充資料。MMIO 寫入本身沒有 More 位元。另外，若是寫到不存在 QID 的 Doorbell，規範已將結果列為未定義，不能再要求它一定產生 Log。</p>
+<span class="qa-anchor" id="q-023-a-10"></span><p>這是 Error 類型的非同步事件，應讀取事件指定的 Log，取得補充資料。MMIO 寫入本身沒有 More 位元。另外，若是寫到不存在 QID 的 Doorbell，規範已將結果列為未定義，不能再要求它一定產生 Log。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>MMIO</dt><dd>Memory-Mapped I/O，記憶體映射輸入輸出</dd></div></dl>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-pcie">PCIe Transport 1.4 §3.1–3.4</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a></p>
 <span class="qa-anchor" id="q-023-a-08"></span><span class="qa-anchor" id="q-023-a-11"></span><span class="qa-anchor" id="q-023-a-12"></span><span class="qa-anchor" id="q-023-a-13"></span><span class="qa-anchor" id="q-023-a-14"></span><span class="qa-anchor" id="q-023-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-pcie">PCIe Transport 1.4 §3.1–3.4</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-024" data-question="24" data-answer-kind="fields"><h2><a class="qa-qid" href="#q-024">Q24</a> Host 如何根據 CAP.DSTRD 計算每個 SQ 與 CQ Doorbell 的位置？</h2>
-<p class="qa-prompt">先試著說明欄位的單位與編碼，再用一組數值推導結果。</p>
-<details class="qa-answer" id="q-024-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-024-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-024-a-01">Host 必須根據 NVMe Register 的起始位址及 QID，找出要更新的 Doorbell 位址，才能把通知送到正確的 queue。</p><div class="qa-sections">
 <section class="qa-section" id="q-024-s-01" data-answer-section="1"><h3><span>1.</span> 先確認資料的來源與範圍</h3>
 <span class="qa-anchor" id="q-024-a-02"></span><p>Doorbell 位址以該 controller 的 MMIO 起始位址為基準，不是以 SQ 或 CQ 記憶體的起始位址為基準。</p>
@@ -95,16 +100,17 @@ nvme_qa: true
 </section>
 <section class="qa-section" id="q-024-s-03" data-answer-section="3"><h3><span>3.</span> 判讀時要保留的條件</h3>
 <span class="qa-anchor" id="q-024-a-07"></span><p>計算位址本身不會產生 Command Status。如果算錯位址，可能寫到另一條有效 queue，也可能形成結果未定義的存取。controller 無法因此得知 Host 原本想更新哪一條 queue。</p>
-<span class="qa-anchor" id="q-024-a-16"></span><p>把算出的 Doorbell 位址，與建立 queue 時使用的 QID 及 BAR 映射範圍交叉比對。DSTRD 是計算間距時使用的編碼，不能直接當成 byte 數，也不能直接拿來乘上 QID。</p>
+<span class="qa-anchor" id="q-024-a-16"></span><p>把算出的 Doorbell 位址，與建立 queue 時使用的 QID 及 BAR 映射範圍交叉比對。DSTRD 是計算間距時使用的編碼，不能直接當成 byte 數，也不能直接拿來乘上 QID。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>BAR</dt><dd>Base Address Register，基底位址暫存器</dd></div></dl>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-cap">Base 2.4 §3.1.4 (CAP, VS)</a> · <a href="#ref-pcie">PCIe Transport 1.4 §3.1–3.4</a> · <a href="#ref-pciconfig">PCIe Transport 1.4 §3.8.1 (NVMe configuration access)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a></p>
 <span class="qa-anchor" id="q-024-a-17"></span><span class="qa-anchor" id="q-024-a-08"></span><span class="qa-anchor" id="q-024-a-09"></span><span class="qa-anchor" id="q-024-a-10"></span><span class="qa-anchor" id="q-024-a-11"></span><span class="qa-anchor" id="q-024-a-12"></span><span class="qa-anchor" id="q-024-a-13"></span><span class="qa-anchor" id="q-024-a-14"></span><span class="qa-anchor" id="q-024-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-cap">Base 2.4 §3.1.4 (CAP, VS)</a> · <a href="#ref-pcie">PCIe Transport 1.4 §3.1–3.4</a> · <a href="#ref-pciconfig">PCIe Transport 1.4 §3.8.1 (NVMe configuration access)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-025" data-question="25" data-answer-kind="concept"><h2><a class="qa-qid" href="#q-025">Q25</a> Host 能否存取未建立、已刪除或 Controller 未 Enable 時的 Queue Doorbell？</h2>
-<p class="qa-prompt">先用自己的話解釋機制，再舉一個常見誤解。</p>
-<details class="qa-answer" id="q-025-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-025-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-025-a-01">Doorbell 只有在對應 queue 有效時才能使用。即使 Host 能算出某個 Doorbell 的 Register 位址，也不代表那條 queue 目前已經建立。</p><div class="qa-sections">
 <section class="qa-section" id="q-025-s-01" data-answer-section="1"><h3><span>1.</span> 先確認 Queue 的有效期間</h3>
 <span class="qa-anchor" id="q-025-a-02"></span><p>I/O queue 必須在建立成功後才能使用；刪除成功或 Controller Reset 之後，Host 就不能再沿用原來的 queue。</p>
@@ -117,13 +123,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-025-a-16"></span><p>以 Create 與 Delete 的完成時間界定 queue 的有效期間，再檢查所有 Doorbell 更新是否都發生在這段期間內。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-pcie">PCIe Transport 1.4 §3.1–3.4</a> · <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-qattr">Base 2.4 §3.3.3–3.4.1</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a></p>
 <span class="qa-anchor" id="q-025-a-06"></span><span class="qa-anchor" id="q-025-a-17"></span><span class="qa-anchor" id="q-025-a-08"></span><span class="qa-anchor" id="q-025-a-09"></span><span class="qa-anchor" id="q-025-a-10"></span><span class="qa-anchor" id="q-025-a-11"></span><span class="qa-anchor" id="q-025-a-12"></span><span class="qa-anchor" id="q-025-a-13"></span><span class="qa-anchor" id="q-025-a-14"></span><span class="qa-anchor" id="q-025-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-pcie">PCIe Transport 1.4 §3.1–3.4</a> · <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-qattr">Base 2.4 §3.3.3–3.4.1</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-026" data-question="26" data-answer-kind="process"><h2><a class="qa-qid" href="#q-026">Q26</a> SQ Tail 與 CQ Head 發生 Wrap-around 時，Host 與 Controller 應如何處理？</h2>
-<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
-<details class="qa-answer" id="q-026-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-026-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-026-a-01">環狀 queue 讓固定大小的記憶體可以重複使用。指標走到尾端後回到起點，不需要每繞一圈就重新建立 queue。</p><div class="qa-sections">
 <section class="qa-section" id="q-026-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
 <span class="qa-anchor" id="q-026-a-02"></span><p>SQ Tail 與 CQ Head 都由 Host 推進；SQ Head 與 CQ Tail 則由 controller 維護。判斷指標變化時，要先分清楚是哪一端負責更新。</p>
@@ -139,13 +146,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-026-a-16"></span><p>驗證時，要一起檢查 Head、Tail 與 queue 大小的環狀索引關係。Doorbell 數值變小，可能只是正常跨過尾端，不能單憑這點判定違反規範。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-pcie">PCIe Transport 1.4 §3.1–3.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a></p>
 <span class="qa-anchor" id="q-026-a-17"></span><span class="qa-anchor" id="q-026-a-08"></span><span class="qa-anchor" id="q-026-a-09"></span><span class="qa-anchor" id="q-026-a-10"></span><span class="qa-anchor" id="q-026-a-11"></span><span class="qa-anchor" id="q-026-a-12"></span><span class="qa-anchor" id="q-026-a-13"></span><span class="qa-anchor" id="q-026-a-14"></span><span class="qa-anchor" id="q-026-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-pcie">PCIe Transport 1.4 §3.1–3.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-027" data-question="27" data-answer-kind="process"><h2><a class="qa-qid" href="#q-027">Q27</a> CQ Wrap-around 後 Phase Tag 如何變化？Host 如何利用 Phase Tag 辨識新 Completion？</h2>
-<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
-<details class="qa-answer" id="q-027-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-027-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-027-a-01">CQ 的同一個位置會反覆使用。Phase Tag 讓 Host 分辨目前看到的是這一圈的新完成結果，還是上一圈留下的舊資料。</p><div class="qa-sections">
 <section class="qa-section" id="q-027-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
 <span class="qa-anchor" id="q-027-a-02"></span><p>Phase 用來辨識 CQE 屬於哪一圈，不表示命令成功或失敗，也不是 SQ 的指標。</p>
@@ -161,20 +169,21 @@ nvme_qa: true
 <li class="qa-flow-step"><strong>檢查目前 Head 的 P</strong><p>P 不符期待值：這個位置還沒有本圈的新結果，先等待；不要解讀殘留的 CID 或 Status。</p></li>
 <li class="qa-flow-step"><span class="qa-flow-arrow" aria-hidden="true">↓</span><strong>P 符合 → 處理 CQE</strong><p>Head 依序走 0、1、2、3；這一圈各位置的新 CQE 都使用 P=1。</p></li>
 <li class="qa-flow-step"><span class="qa-flow-arrow" aria-hidden="true">↓</span><strong>Head 從 3 回到 0 → 反轉期待值</strong><p>下一圈期待 P=0。若只從 1 移到 2，尚未換圈，期待值不變。</p></li>
-</ol><p class="qa-flow-conclusion">重新建立 CQ 時，要重新初始化 Phase 與 Host 的期待值。此處的 4-entry 大小只是方便看懂換圈的教學假設。</p></figure>
+</ol><p class="qa-flow-conclusion">重新建立 CQ 時，要重新初始化 Phase 與 Host 的期待值。此處的 4-entry 大小只是方便看懂換圈的教學假設。</p></figure><dl class="st-terms" aria-label="本段名詞"><div><dt>CID</dt><dd>Command Identifier，同一提交佇列內的命令識別碼</dd></div></dl>
 </section>
 <section class="qa-section" id="q-027-s-03" data-answer-section="3"><h3><span>3.</span> 未符合條件時如何處理</h3>
-<span class="qa-anchor" id="q-027-a-07"></span><p>Phase 不符合期待值，表示該位置還沒有這一圈的新完成結果，並不代表某種錯誤 Status。此時不能把該位置殘留的 CID 或 SC 當成新命令的結果。</p>
+<span class="qa-anchor" id="q-027-a-07"></span><p>Phase 不符合期待值，表示該位置還沒有這一圈的新完成結果，並不代表某種錯誤 Status。此時不能把該位置殘留的 CID 或 SC 當成新命令的結果。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CID</dt><dd>Command Identifier，同一提交佇列內的命令識別碼</dd></div></dl>
 <span class="qa-anchor" id="q-027-a-16"></span><p>測試至少要讓 CQ 完整繞過一圈，並比對 CQ Head、Host 期待的 P 與 CQE 實際的 P。重建 queue 時必須重新初始化，不能沿用前一次 queue 的期待值。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-027-a-08"></span><span class="qa-anchor" id="q-027-a-09"></span><span class="qa-anchor" id="q-027-a-10"></span><span class="qa-anchor" id="q-027-a-11"></span><span class="qa-anchor" id="q-027-a-12"></span><span class="qa-anchor" id="q-027-a-13"></span><span class="qa-anchor" id="q-027-a-14"></span><span class="qa-anchor" id="q-027-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-028" data-question="28" data-answer-kind="concept"><h2><a class="qa-qid" href="#q-028">Q28</a> CQ Full 通常如何形成？CQ Full 時 Controller 能否繼續處理相關 SQ？</h2>
-<p class="qa-prompt">先用自己的話解釋機制，再舉一個常見誤解。</p>
-<details class="qa-answer" id="q-028-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-028-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-028-a-01">CQ 的空間管理用來避免尚未處理的完成結果被覆寫。當 controller 產生 completion 的速度，超過 Host 處理並釋放位置的速度，CQ 就可能變滿。</p><div class="qa-sections">
 <section class="qa-section" id="q-028-s-01" data-answer-section="1"><h3><span>1.</span> 機制與適用範圍</h3>
 <span class="qa-anchor" id="q-028-a-02"></span><p>影響該 CQ 與其關聯 SQ；其他不使用此 CQ 的 SQ 必須繼續處理。</p>
@@ -190,13 +199,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-028-a-16"></span><p>如果只有共用這條 CQ 的 SQ 停滯，先檢查 Host 是否持續處理並釋放 CQE。如果連使用其他獨立 CQ 的 SQ 也因這條 CQ 已滿而停止，則要檢查是否違反繼續處理其他 SQ 的要求。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-order">Base 2.4 §3.4.1–3.4.5</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-028-a-17"></span><span class="qa-anchor" id="q-028-a-08"></span><span class="qa-anchor" id="q-028-a-09"></span><span class="qa-anchor" id="q-028-a-10"></span><span class="qa-anchor" id="q-028-a-11"></span><span class="qa-anchor" id="q-028-a-12"></span><span class="qa-anchor" id="q-028-a-13"></span><span class="qa-anchor" id="q-028-a-14"></span><span class="qa-anchor" id="q-028-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-order">Base 2.4 §3.4.1–3.4.5</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-029" data-question="29" data-answer-kind="process"><h2><a class="qa-qid" href="#q-029">Q29</a> Host 釋放 CQ 空間後，Controller 應如何恢復 Command 處理？</h2>
-<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
-<details class="qa-answer" id="q-029-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-029-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-029-a-01">CQ 空間釋放後，原本受容量限制的工作便能繼續。CQ Full 本身不表示 queue 已失效，因此不需要只因空間曾經用完就重新建立 queue。</p><div class="qa-sections">
 <section class="qa-section" id="q-029-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
 <span class="qa-anchor" id="q-029-a-02"></span><p>Host 釋放的是這條 CQ 中的完成位置，讓關聯 SQ 的命令可以回報結果。這不會改變可建立的 queue 數量，也不會改變 namespace 的能力。</p>
@@ -212,16 +222,17 @@ nvme_qa: true
 <span class="qa-anchor" id="q-029-a-16"></span><p>檢查後續 CQE 是否寫入合法且已釋放的位置，並比較共用這條 CQ 的 SQ 與其他獨立 SQ 的處理進度。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-pcie">PCIe Transport 1.4 §3.1–3.4</a> · <a href="#ref-order">Base 2.4 §3.4.1–3.4.5</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-029-a-17"></span><span class="qa-anchor" id="q-029-a-08"></span><span class="qa-anchor" id="q-029-a-09"></span><span class="qa-anchor" id="q-029-a-10"></span><span class="qa-anchor" id="q-029-a-11"></span><span class="qa-anchor" id="q-029-a-12"></span><span class="qa-anchor" id="q-029-a-13"></span><span class="qa-anchor" id="q-029-a-14"></span><span class="qa-anchor" id="q-029-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-pcie">PCIe Transport 1.4 §3.1–3.4</a> · <a href="#ref-order">Base 2.4 §3.4.1–3.4.5</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
-<article class="qa-question" id="q-030" data-question="30" data-answer-kind="fields"><h2><a class="qa-qid" href="#q-030">Q30</a> 多個 SQ 共用一個 CQ 時，Host 如何依 SQID 與 CID 辨識 Completion 來源？</h2>
-<p class="qa-prompt">先試著說明欄位的單位與編碼，再用一組數值推導結果。</p>
-<details class="qa-answer" id="q-030-answer"><summary>展開解答與推導</summary>
+<article class="qa-question" id="q-030" data-question="30" data-answer-kind="fields"><h2><a class="qa-qid" href="#q-030">Q30</a> 多個 SQ 共用一個 CQ 時，Host 如何依 SQID 與 CID 辨識 Completion 來源？</h2><dl class="st-terms" aria-label="本段名詞"><div><dt>SQID</dt><dd>Submission Queue Identifier，提交佇列識別碼</dd></div></dl>
+
+<details open class="qa-answer" id="q-030-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-030-a-01">Host 必須將每筆 completion 配對到原來的命令，才能交付正確結果。CID 只要求在同一條 SQ 的未完成命令之間保持唯一；不同 SQ 可以同時使用相同 CID。</p><div class="qa-sections">
 <section class="qa-section" id="q-030-s-01" data-answer-section="1"><h3><span>1.</span> 先確認資料的來源與範圍</h3>
-<span class="qa-anchor" id="q-030-a-02"></span><p>Host 追蹤命令時，必須一起考慮 controller、SQ 的這次建立與使用期間、SQID 及 CID。controller 與 queue 的使用期間是 Host 自己維護的上下文，並不是 CQE 裡額外增加的欄位。</p>
+<span class="qa-anchor" id="q-030-a-02"></span><p>Host 追蹤命令時，必須一起考慮 controller、SQ 的這次建立與使用期間、SQID 及 CID。controller 與 queue 的使用期間是 Host 自己維護的上下文，並不是 CQE 裡額外增加的欄位。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SQID</dt><dd>Submission Queue Identifier，提交佇列識別碼</dd></div></dl>
 <span class="qa-anchor" id="q-030-a-03"></span><p>Host 使用建立 queue 時記錄的 SQ 與 CQ 對應關係，以及未完成命令的追蹤表，來尋找原命令。Identify 不會回報每筆未完成命令的位置。</p>
 </section>
 <section class="qa-section" id="q-030-s-02" data-answer-section="2"><h3><span>2.</span> 欄位、單位與判讀例子</h3>
@@ -234,6 +245,7 @@ nvme_qa: true
 <span class="qa-anchor" id="q-030-a-16"></span><p>先確認 CQE 指出的 SQID 確實關聯到這條 CQ，再確認 CID 屬於目前這次建立的 SQ，而不是前一次 queue 留下的追蹤資料。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-sqe">Base 2.4 §4.1.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-030-a-17"></span><span class="qa-anchor" id="q-030-a-08"></span><span class="qa-anchor" id="q-030-a-09"></span><span class="qa-anchor" id="q-030-a-10"></span><span class="qa-anchor" id="q-030-a-11"></span><span class="qa-anchor" id="q-030-a-12"></span><span class="qa-anchor" id="q-030-a-13"></span><span class="qa-anchor" id="q-030-a-14"></span><span class="qa-anchor" id="q-030-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-sqe">Base 2.4 §4.1.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>

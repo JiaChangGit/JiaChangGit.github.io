@@ -2,10 +2,14 @@
 layout: post
 title: "PCIe Chapter 3：從未知拓樸到完成裝置發現"
 date: 2026-10-20 00:00:00 +0800
+last_modified_at: 2026-10-23 00:00:00 +0800
 permalink: /pcie/chapter-3-zh-tw/
 categories: [PCIe]
 tags: [PCIe, Specification]
 lang: zh-TW
+spec_teaching: true
+spec_series: pcie
+description: "沿著含 Switch 的拓樸配置 Bus Number，分清存在性、RRS 未就緒與存取失敗，再追蹤 Configuration Request 路由。"
 ---
 
 <style>
@@ -220,18 +224,164 @@ lang: zh-TW
 /* Self-contained teaching diagrams use the same theme in standalone pages and posts. */
 .pcie-article .course-diagram text { fill: var(--ink); font-family: inherit; font-size: 18px; }
 
+/* Applied only to explicitly authorized teaching roots. */
+html .spec-teaching[data-spec-series] .st-terms { margin:.35rem 0 1rem; padding:.5rem .8rem; border-inline-start:3px solid var(--st-accent); background:var(--st-soft); font-size:.88em; color:var(--st-muted); }
+html .spec-teaching[data-spec-series] .st-terms > div { display:flex; flex-wrap:wrap; gap:.2em .7em; }
+html .spec-teaching[data-spec-series] .st-terms dt { font-weight:650; }
+html .spec-teaching[data-spec-series] .st-terms dd { margin:0; flex:1 1 14em; }
+html .spec-teaching[data-spec-series] {
+ --st-diagram-width:900px;
+ --st-paper:#f2f6f8; --st-surface:#fff; --st-ink:#192d40; --st-muted:#4c6479;
+ --st-line:#cbd9e3; --st-accent:#145f9d; --st-soft:#edf5fc;
+ --paper:var(--st-paper); --surface:var(--st-surface); --surface-2:var(--st-soft); --surface-alt:var(--st-soft);
+ --ink:var(--st-ink); --muted:var(--st-muted); --line:var(--st-line);
+ --accent:var(--st-accent); --accent-2:var(--st-accent); --soft:var(--st-soft); --blue-soft:var(--st-soft); --teal-soft:var(--st-soft);
+ --qr-paper:var(--st-paper); --qr-surface:var(--st-surface); --qr-ink:var(--st-ink); --qr-muted:var(--st-muted);
+ --qr-line:var(--st-line); --qr-accent:var(--st-accent); --qr-soft:var(--st-soft);
+ color:var(--st-ink); background:var(--st-paper); font-size:17px; line-height:1.9;
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+}
+html .spec-teaching[data-spec-series="nvme"] { --st-accent:#086b56; --st-soft:#e7f4ee; }
+@media(prefers-color-scheme:dark) {
+ html:not([data-theme="light"]) .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+ html:not([data-theme="light"]) .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+}
+html[data-theme="dark"] .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+html[data-theme="dark"] .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+.spec-teaching * { box-sizing:border-box; }
+.spec-teaching :is(h1,h2,h3,h4,h5,p,li,td,th,summary,strong,figcaption) { color:var(--st-ink); }
+.spec-teaching svg text { font-family:inherit; }
+.spec-teaching h1 { font-size:clamp(1.8rem,3.2vw,2.65rem); line-height:1.4; }
+.spec-teaching h2 { font-size:clamp(1.3rem,2.5vw,1.7rem); line-height:1.55; }
+.spec-teaching h3 { font-size:1.15rem; line-height:1.65; }
+.spec-teaching h4 { font-size:1rem; line-height:1.7; }
+.spec-teaching :is(h1,h2,h3,h4) { overflow-wrap:anywhere; }
+.spec-teaching p { margin:.7rem 0 1.15rem; }
+.spec-teaching :is(a,summary) { text-underline-offset:.2em; }
+.spec-teaching :focus-visible { outline:3px solid var(--st-accent); outline-offset:4px; }
+.spec-teaching :is(.qa-takeaway,.qa-answer-lead,.st-takeaway) { color:var(--st-ink); font-weight:650; font-size:1.06rem; line-height:1.9; }
+.spec-teaching :is(.qa-question,.qr-card,.guided-walk) { border:1px solid var(--st-line); border-radius:12px; background:var(--st-surface); padding:clamp(18px,3vw,30px); margin:1.8rem 0; }
+.spec-teaching :is(.qa-flow,.qr-note,.qr-observations,.st-context,.st-route) { background:var(--st-soft); border-left:4px solid var(--st-accent); padding:1rem 1.2rem; margin:1.4rem 0; }
+.spec-teaching :is(.qr-step,.qa-qid,.st-label) { color:var(--st-accent); font-weight:700; }
+.spec-teaching :is(.qa-citations,.qa-source-links,.qr-case-sources,.walk-source,.st-source) { font-size:.84rem; line-height:1.75; color:var(--st-muted); overflow-wrap:anywhere; }
+.spec-teaching :is(.qr-table,.table-wrap) { overflow-x:auto; margin:1.4rem 0; border-radius:7px; }
+.spec-teaching :is(th,td) { line-height:1.8; vertical-align:top; min-width:120px; }
+.spec-teaching :is(table,td) { background:var(--st-surface); }
+.spec-teaching th { background:var(--st-soft); }
+.spec-teaching .st-step { border-left:3px solid var(--st-line); padding:.6rem 1rem; margin:1.2rem 0; }
+.spec-teaching .st-step:target { border-left-color:var(--st-accent); background:var(--st-soft); }
+.spec-teaching .st-glossary { border:1px solid var(--st-line); padding:.7rem 1rem; margin:1.4rem 0; border-radius:8px; }
+.spec-teaching .st-glossary > summary { min-height:44px; cursor:pointer; }
+.spec-teaching .st-specs { display:flex; flex-wrap:wrap; gap:.4rem 1rem; color:var(--st-muted); font-size:.8rem; line-height:1.8; margin:1rem 0; }
+.spec-teaching .st-specs span { border-bottom:2px solid var(--st-accent); padding:.2rem 0; }
+@media(max-width:620px) { .spec-teaching :is(.qa-question,.qr-card,.guided-walk) { padding:16px; } .spec-teaching .diagram svg { min-width:var(--st-diagram-width); } }
+@media print {
+ .spec-teaching { --st-paper:#fff!important; --st-surface:#fff!important; --st-ink:#000!important; --st-muted:#333!important; --st-line:#999!important; --st-accent:#000!important; --st-soft:#fff!important; }
+ .spec-teaching details > * { display:block!important; }
+ .spec-teaching details::details-content { content-visibility:visible!important; }
+ .spec-teaching .st-step { break-inside:avoid; }
+}
+
+/* Native reading guides: selection highlights; it never hides teaching content.
+   build_pcie_course.py changes .pcie-article to .pcie-article for the posts. */
+.pcie-article .guided-walk { margin: 1.8rem 0; padding: 1.2rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); min-width: 0; }
+.pcie-article .guided-walk > h3 { margin-top: 0; }
+.pcie-article .walk-help { color: var(--muted); font-size: .85rem; }
+.pcie-article .walk-order { margin-bottom: 1.1rem; }
+/* Keep native radio semantics and keyboard handling; the associated label is
+   the visible control, so a radio cannot wrap away from its own label. */
+.pcie-article .walk-choice { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.pcie-article .walk-label { display: inline-flex; align-items: center; min-height: 44px; padding: .35rem .7rem; margin: .25rem .8rem .25rem 0; border: 2px solid var(--line); border-radius: 8px; cursor: pointer; font-size: .9rem; line-height: 1.5; color: var(--ink); background: var(--surface-alt); }
+.pcie-article .walk-choice:checked + .walk-label { border-color: var(--accent); background: var(--blue-soft); font-weight: 700; }
+.pcie-article .walk-choice:focus-visible + .walk-label { outline: 3px solid var(--focus); outline-offset: 3px; }
+.pcie-article .walk-view { margin-top: 1rem; min-width: 0; }
+.pcie-article .walk-diagram { margin: 0 0 1.2rem; }
+.pcie-article .walk-diagram svg { width: 100%; height: auto; display: block; }
+.pcie-article .walk-diagram svg a { cursor: pointer; }
+.pcie-article .walk-diagram svg a:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
+.pcie-article .walk-diagram figcaption { margin-top: .8rem; }
+.pcie-article .walk-steps { max-width: none; padding-left: 1.6rem; }
+.pcie-article .walk-step { padding: .6rem .9rem; margin: .7rem 0; border: 2px solid transparent; border-left: 5px solid var(--line); border-radius: 5px; background: var(--surface); }
+.pcie-article .walk-step h4 { margin: .2rem 0 .5rem; }
+.pcie-article .walk-condition { font-size: .9rem; color: var(--muted); }
+.pcie-article .walk-source { border-top: 1px solid var(--line); padding-top: .35rem; color: var(--muted); font-size: .85rem; }
+.pcie-article .walk-step p:last-child { margin-bottom: .3rem; }
+.pcie-article .walk-components { border-top: 1px solid var(--line); margin-top: 1.4rem; padding-top: .4rem; }
+.pcie-article .walk-component-links { display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; list-style: none; padding-left: 0; }
+.pcie-article .walk-component-links a { min-height: 44px; min-width: 44px; }
+.pcie-article .walk-component { padding: .7rem 1rem; margin: 1rem 0; border: 1px solid var(--line); border-radius: 8px; }
+.pcie-article .walk-component > h4 { margin-top: .2rem; }
+.pcie-article .walk-component:target { outline: 3px solid var(--accent-2); outline-offset: 3px; }
+.pcie-article .walk-component details { margin-bottom: .3rem; }
+
+.pcie-article .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-step[data-walk-step="1"],
+.pcie-article .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-step[data-walk-step="2"],
+.pcie-article .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-step[data-walk-step="3"],
+.pcie-article .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-step[data-walk-step="4"],
+.pcie-article .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-step[data-walk-step="5"],
+.pcie-article .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-step[data-walk-step="6"],
+.pcie-article .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-step[data-walk-step="7"],
+.pcie-article .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-step[data-walk-step="8"] { border-color: var(--accent); background: var(--blue-soft); }
+
+.pcie-article .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-node[data-walk-steps~="1"],
+.pcie-article .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-node[data-walk-steps~="2"],
+.pcie-article .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-node[data-walk-steps~="3"],
+.pcie-article .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-node[data-walk-steps~="4"],
+.pcie-article .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-node[data-walk-steps~="5"],
+.pcie-article .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-node[data-walk-steps~="6"],
+.pcie-article .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-node[data-walk-steps~="7"],
+.pcie-article .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-node[data-walk-steps~="8"] { --walk-active-weight: 750; }
+.pcie-article .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-node[data-walk-steps~="1"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-node[data-walk-steps~="2"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-node[data-walk-steps~="3"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-node[data-walk-steps~="4"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-node[data-walk-steps~="5"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-node[data-walk-steps~="6"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-node[data-walk-steps~="7"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-node[data-walk-steps~="8"] > :is(rect, circle, ellipse, polygon, path, line, polyline) { stroke: var(--accent); stroke-width: 3.5px; vector-effect: non-scaling-stroke; }
+.pcie-article .walk-node text { font-weight: var(--walk-active-weight, inherit); }
+
+@media (max-width: 620px) {
+  .pcie-article .guided-walk { padding: .8rem; }
+  .pcie-article .walk-label { margin-right: .45rem; padding-left: .45rem; padding-right: .45rem; }
+  .pcie-article .walk-steps { padding-left: 1.15rem; }
+  .pcie-article .walk-step { padding: .5rem .6rem; }
+  .pcie-article .walk-diagram { overflow-x: auto; }
+  .pcie-article .walk-diagram svg { min-width: var(--st-diagram-width, 700px); }
+}
+@media (forced-colors: active) {
+  .pcie-article .walk-choice:checked + .walk-label { border-color: Highlight; }
+  .pcie-article .walk-step { border-color: CanvasText; }
+}
+@media print {
+  .pcie-article .guided-walk { border: 1px solid #999; padding: .7rem; break-inside: auto; }
+  .pcie-article .walk-choice, .pcie-article .walk-label, .pcie-article .walk-help { display: none; }
+  .pcie-article .walk-step { display: list-item !important; border-color: #999 !important; background: transparent !important; }
+  .pcie-article .walk-node { --walk-active-weight: 500 !important; }
+  .pcie-article .walk-node > :is(rect, circle, ellipse, polygon, path, line, polyline) { stroke: #333 !important; stroke-width: 1.5px !important; }
+  .pcie-article .walk-diagram { overflow: visible; }
+  .pcie-article .walk-diagram svg { min-width: 0; }
+  .pcie-article .walk-component details > * { display: block !important; }
+  .pcie-article .walk-component details::details-content { content-visibility: visible !important; }
+}
+
+/* SVG text follows the selected reading theme. */
+.pcie-article svg text { fill: var(--ink); }
+.pcie-article .walk-summary { margin: 1rem 0 1.5rem; }
+
 html:not([data-theme="dark"]) .pcie-article { color-scheme: light; }
 html[data-theme="dark"] .pcie-article { color-scheme: dark; }
 
 .pcie-article { background: transparent; margin: 1.5rem 0; }
 .pcie-article .lesson { padding: 0; border: 0; background: transparent; }
 </style>
-<div class="pcie-article" lang="zh-Hant-TW">
+<div class="pcie-article spec-teaching" data-spec-series="pcie" lang="zh-Hant-TW">
 <nav class="bottom-nav" aria-label="課程與語言版本"><a href="/DOCS/pcie-course/index.html">課程總覽</a><a href="/DOCS/pcie-course/chapter-3.html">繁中完整教學</a><a href="/pcie/chapter-3-en/">English</a></nav>
 <article class="lesson">
+<section id="chapter-overview"><h2>先看本章的角色與路徑</h2><figure class="diagram"><svg viewBox="0 0 900 470" role="img" aria-labelledby="ch3-guide-title ch3-guide-desc"><title id="ch3-guide-title">完成後的橋接範圍快照；導圖以這張結果圖定位每次探查，編號先後在步驟中說明。</title><desc id="ch3-guide-desc">完成後的橋接範圍快照；導圖以這張結果圖定位每次探查，編號先後在步驟中說明。</desc><g data-walk-target="root"><rect x="300" y="20" width="300" height="65" rx="9" fill="var(--surface-alt)" stroke="var(--line)"/><text x="450.0" y="45" text-anchor="middle" font-size="15">Root Port 00:01.0</text><text x="450.0" y="68" text-anchor="middle" font-size="15">完成後下游範圍 01–04</text></g><g data-walk-target="e-root"><path d="M450 85 L450 135" fill="none" stroke="var(--accent)" stroke-width="2"/><polygon points="450.0,135.0 455.0,125.0 445.0,125.0" fill="var(--accent)"/></g><g data-walk-target="up"><rect x="300" y="135" width="300" height="65" rx="9" fill="var(--surface-alt)" stroke="var(--line)"/><text x="450.0" y="160" text-anchor="middle" font-size="15">Switch Upstream 01:00.0</text><text x="450.0" y="183" text-anchor="middle" font-size="15">完成後下游範圍 02–04</text></g><g data-walk-target="a"><path d="M450 200 L225 260" fill="none" stroke="var(--accent)" stroke-width="2"/><polygon points="225.0,260.0 236.0,262.3 233.4,252.6" fill="var(--accent)"/></g><g data-walk-target="b"><path d="M450 200 L675 260" fill="none" stroke="var(--accent)" stroke-width="2"/><polygon points="675.0,260.0 666.6,252.6 664.0,262.3" fill="var(--accent)"/></g><g data-walk-target="dp-a"><rect x="75" y="260" width="300" height="65" rx="9" fill="var(--surface-alt)" stroke="var(--line)"/><text x="225.0" y="285" text-anchor="middle" font-size="15">Downstream A 02:01.0</text><text x="225.0" y="308" text-anchor="middle" font-size="15">完成後範圍 03–03</text></g><g data-walk-target="dp-b"><rect x="525" y="260" width="300" height="65" rx="9" fill="var(--surface-alt)" stroke="var(--line)"/><text x="675.0" y="285" text-anchor="middle" font-size="15">Downstream B 02:02.0</text><text x="675.0" y="308" text-anchor="middle" font-size="15">完成後範圍 04–04</text></g><g data-walk-target="to-a"><path d="M225 325 L225 375" fill="none" stroke="var(--accent)" stroke-width="2"/><polygon points="225.0,375.0 230.0,365.0 220.0,365.0" fill="var(--accent)"/></g><g data-walk-target="to-b"><path d="M675 325 L675 375" fill="none" stroke="var(--accent)" stroke-width="2"/><polygon points="675.0,375.0 680.0,365.0 670.0,365.0" fill="var(--accent)"/></g><g data-walk-target="ep-a"><rect x="75" y="375" width="300" height="65" rx="9" fill="var(--surface-alt)" stroke="var(--line)"/><text x="225.0" y="400" text-anchor="middle" font-size="15">Endpoint：03:00.0／03:00.1</text></g><g data-walk-target="ep-b"><rect x="525" y="375" width="300" height="65" rx="9" fill="var(--surface-alt)" stroke="var(--line)"/><text x="675.0" y="400" text-anchor="middle" font-size="15">Endpoint：04:00.0</text></g></svg><figcaption><p>作者的教學拓樸；Bus Number 配置策略是示範，規格定義欄位及路由條件。</p></figcaption></figure><p class="lead">枚舉是由已知根部向下發現 Function 的過程。本章沿用前兩章的拓樸，先替橋接路徑建立可轉送的 Bus 範圍，再探查下游，最後記錄已找到的功能。</p><p>前情提要：Chapter 1 教你辨認 Port 與 Function；Chapter 2 教你在已知 Function 的設定空間中找欄位。現在要建立那些已知位置。</p><p><strong>規格路線：</strong>Figures 7-1／7-2 的階層 → Figure 7-14 的橋接 Bus 欄位 → Figures 7-7／7-8 的身分與標頭。</p></section>
 <p class="lead">枚舉要先建立可走的設定路徑，才能找到下游 Function。讀到某個值時，也必須分清有效身分、暫時未就緒，以及存取失敗。本章把 Bridge 的 Bus Number 配置與這些結果放在同一個流程中。</p>
 <p><a href="/DOCS/pcie-course/chapter-3.html">完整中文教學</a> · <a href="/DOCS/pcie-course/index.html">課程路線</a> · <a href="/pcie/chapter-3-en/">English</a></p>
-<aside class="note"><strong>版本與教學前提</strong><p>欄位與交易依 Base 6.0；平台與交接依 PCI Firmware 3.3，後者並非 Base 6.0 的同版配套。以下為作者推演，不是實機操作。採傳統 BDF，不用 ARI、SR-IOV 或 FPB。平台提供 Segment 0000、Bus 00–3F，Root Port 00:01.0 已可存取，連線與等待條件已滿足；軟體獨占這段配置，沒有其他階層競爭 Bus Number。文件頁與 PDF 頁序相同。</p></aside>
+<aside class="note"><strong>版本與教學前提</strong><p>欄位與交易依 Base 6.0；平台與交接依 PCI Firmware 3.3，後者並非 Base 6.0 的同版配套。以下為作者推演，不是實機操作。採傳統 BDF，不用 ARI、SR-IOV 或 FPB。平台提供 Segment 0000、Bus 00–3F，Root Port 00:01.0 已可存取，連線與等待條件已滿足；軟體獨占這段配置，沒有其他階層競爭 Bus Number。文件頁與 PDF 頁序相同。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>BDF</dt><dd>Bus／Device／Function，匯流排、裝置與功能識別</dd></div><div><dt>ARI</dt><dd>Alternative Routing-ID Interpretation，替代路由識別碼解讀</dd></div><div><dt>SR-IOV</dt><dd>Single Root I/O Virtualization，單根I/O虛擬化</dd></div><div><dt>FPB</dt><dd>Flattening Portal Bridge，扁平化入口橋接器</dd></div></dl></aside>
 <section id="entry"><h2>平台提供起點，Function 讀值提供下一步證據</h2>
 <p>系統先從平台取得 Host／Root Bridge 的 Segment、Bus 範圍與設定存取介面，不是任意掃描實體記憶體。Root Bridge 的平台介面與 Root Port 的對外 Link 角色不同。Firmware 3.3 要求韌體配置所有 Host Bridge，讓 OS 能處理其下游裝置。</p>
 <p>探查 Function 時，Vendor ID 是規格建議的存在性線索，FFFFh 表示沒有 Function。但軟體可見資料不等於 Completion payload：對依賴全 1 回覆的軟體，Root Complex 會把 Configuration Request 的 UR 結果合成全 1。讀取失敗或路徑尚未建立，則不能只憑任意 buffer 值判定實體卡不存在。</p>
@@ -246,16 +396,16 @@ html[data-theme="dark"] .pcie-article { color-scheme: dark; }
 <p>本例採先走完一個分支再返回的搜尋策略，暫以平台授予的 3F 作 Subordinate 上限，完成後縮回實際範圍。這是教學策略，不是所有平台唯一的程序。</p>
 <div class="table-wrap"><table><caption>Bus Number 配置的教學順序</caption><thead><tr><th scope="col">順序</th><th scope="col">動作</th></tr></thead><tbody><tr><td>1</td><td>Root Port 00:01.0 設 Secondary=01、Subordinate=3F。</td></tr><tr><td>2</td><td>找到 01:00.0 的 Switch Upstream Port，設 Secondary=02、Subordinate=3F。</td></tr><tr><td>3</td><td>找到 02:01.0 的 Downstream A，設 Secondary=03、Subordinate=3F。</td></tr><tr><td>4</td><td>確認 03:00.0 與 03:00.1；本分支完成後，A 的 Subordinate 改為 03。</td></tr><tr><td>5</td><td>回到 Bus 02，替 02:02.0 的 Downstream B 設 Secondary=04、Subordinate=3F。</td></tr><tr><td>6</td><td>確認 04:00.0；B 的 Subordinate 改為 04，最後 Upstream Port 與 Root Port 也改為 04。</td></tr></tbody></table></div>
 <p>03:00.0 的 Header Type=80h 只允許探查其他 Function；Function 1 存在是另一筆有效結果。04:00.0 的 Header Type=00h，且無其他機制指示，因此不得一律掃描 Function 1–7。本例的普通 Link 對端用 Device 0，Switch 內部 Downstream Port 則可出現在其他 Device Number。</p>
-<p>讀 Figure 7-14 找 Secondary／Subordinate 的 0x19／0x1A，各讀寫 8 bits，再依 p.937 的定義使用。設定寫入必須完成，才能使用新路徑；本例不以 Primary Bus Number 推導 Bridge 自身 BDF。平台若有保留需求，也不一定要把最後的上限縮到 04。</p>
+<p>讀 Figure 7-14 找 Secondary／Subordinate 的 0x19／0x1A，各讀寫 8 bits，再依 p.937 的定義使用。設定寫入必須完成，才能使用新路徑；本例不以 Primary Bus Number 推導 Bridge 自身 BDF。平台若有保留需求，也不一定要把最後的上限縮到 04。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>BDF</dt><dd>Bus／Device／Function，匯流排、裝置與功能識別</dd></div></dl>
 <details class="source-note"><summary>來源</summary><p>Base 6.0 §7.5.1.3，Figure 7-14，p.936；§7.5.1.3.2–§7.5.1.3.4，p.937；Header Type：Table 7-7，p.925；Device Number：§7.3.1，p.911；ECAM 寫入完成保障：p.908。</p></details></section>
 <section id="routing"><h2>Header 的 Type 與要求封包的 Type，必須分開</h2>
 <p>Configuration Header Type 1 描述 Bridge 的標頭格式；Configuration Request Type 1 則用於向更深層路由。對目標 03:00.1，Root Port 的下一層 Bus 是 01，因此仍以 Type 1 往 Switch 送；Switch 判定 Bus 03 正是 Downstream A 的下一層，再轉為 Type 0 送到 Endpoint。對 Bridge 自身設定空間的有效 Type 0 Request，同樣可以由 Bridge 處理。</p>
 <p>本例描述對外路由結果，不假設 Switch 的內部邏輯 Bus 是另一條實體 PCIe Link。若目標不在有效範圍，則依 UR 規則處理。（Base 6.0 §7.3.2–§7.3.3，pp.912–913。）</p></section>
 <section id="finish"><h2>找到 BDF 後，仍未完成資源與工作設定</h2>
-<p>枚舉結果提供 Function 清單、橋接路徑與身分線索，不能直接證明 MMIO 或 DMA 已可用。Firmware 3.3 §3.5（pp.34–35）要求開機／主控台路徑及所有 Host Bridge 完成指定配置，其他裝置可留給 OS；不能只因任意 Endpoint 尚未配置就宣告韌體違規。</p>
+<p>枚舉結果提供 Function 清單、橋接路徑與身分線索，不能直接證明 MMIO 或 DMA 已可用。Firmware 3.3 §3.5（pp.34–35）要求開機／主控台路徑及所有 Host Bridge 完成指定配置，其他裝置可留給 OS；不能只因任意 Endpoint 尚未配置就宣告韌體違規。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>MMIO</dt><dd>Memory-Mapped I/O，記憶體映射輸入輸出</dd></div><div><dt>DMA</dt><dd>Direct Memory Access，裝置直接存取記憶體</dd></div></dl>
 <details class="question"><summary>讀到 0xFFFF0001，就以 Device ID FFFFh 選擇驅動程式，可以嗎？</summary><p>在本例 RRS 條件下不可以。這是暫時未就緒的合成值，尚未取得真正身分；應處理重試與就緒，而非當成未知產品繼續初始化。（§2.3.2，p.220。）</p></details>
 <details class="question"><summary>最後 Subordinate 比 04 大，一定是枚舉錯誤嗎？</summary><p>不一定。要核對平台授予範圍、分支一致性與保留政策；04 是本例採用的最終範圍，不是通用常數。</p></details></section>
-<p>下一步是 <a href="/DOCS/pcie-course/chapter-4.html">Chapter 4 的 BAR 與資源配置</a>。</p>
+<p>下一步是 <a href="/DOCS/pcie-course/chapter-4.html">Chapter 4 的 BAR 與資源配置</a>。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>BAR</dt><dd>Base Address Register，基底位址暫存器</dd></div></dl>
 </article>
 <nav class="bottom-nav" aria-label="課程與語言版本"><a href="/DOCS/pcie-course/index.html">課程總覽</a><a href="/DOCS/pcie-course/chapter-3.html">繁中完整教學</a><a href="/pcie/chapter-3-en/">English</a></nav>
 </div>

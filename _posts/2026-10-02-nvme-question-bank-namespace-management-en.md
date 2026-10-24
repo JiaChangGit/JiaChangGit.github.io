@@ -7,18 +7,21 @@ permalink: /nvme/question-bank/namespace-management/en/
 lang: en
 nvme_quickref: true
 nvme_qa: true
+spec_teaching: true
+last_modified_at: 2026-10-23
 ---
 
-<div class="nvme-quickref nvme-qa">
+<div class="nvme-quickref nvme-qa spec-teaching" data-spec-series="nvme">
 <nav class="qr-top" aria-label="Bank and editions"><a href="#content">Skip to content</a><a href="/nvme/question-bank/en/">Question index</a><a href="/nvme/question-bank/namespace-management/zh-tw/">繁體中文</a><a href="/DOCS/nvme-question-bank/namespace-management.html">Chinese tutorial HTML</a></nav>
-<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–328</p>
-<header><p class="qa-range">Q157–Q173</p><h1>Namespace management, attachment and protection</h1><p class="qr-intro">Creation, attachment and write protection are separate states connected through a namespace lifecycle.</p><p>Practice first, then reveal the explanation. Each question uses the prose, field interpretation, comparison or flow that suits it. All numerical examples are hypothetical. Status is written SCT/SC; h indicates hexadecimal.</p></header>
-<aside class="qa-glossary"><h2>Terms used in this volume</h2><dl><dt>Controller / namespace</dt><dd>A controller receives commands and manages access. A namespace is a logical storage space that commands can address. An NVM subsystem contains controllers and nonvolatile storage resources.</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission and Completion Queues carry command entries (SQEs) and completion entries (CQEs). QID identifies a queue, CID distinguishes outstanding commands in one SQ, and NSID identifies a namespace.</dd><dt>Register / Identify / Feature / Log</dt><dd>A register exposes control or state. Identify queries capabilities and attributes; features query or configure operation; log pages report specific state or records. FID, LID, CNS and CSI select features, logs, Identify structures and command sets.</dd><dt>index / offset / zero-based</dt><dd>An index selects an entry, usually starting at 0; an offset measures distance from an origin in specified units. A zero-based count encodes count−1, but not every zero-valued field is a count. A Dword is 4 bytes; a byte is 8 bits.</dd><dt>Scope / reset / retention</dt><dd>Scope names the affected objects; retention means preserving state. Controller Reset (clearing CC.EN) is one form of Controller Level Reset, or CLR. Different CLR triggers can retain different registers.</dd></dl></aside>
+<main id="content"><p class="qr-eyebrow">NVMe · Q1–328</p>
+<div class="st-specs" aria-label="Specification editions"><span>NVM Express Base 2.4</span><span>NVM Command Set 1.3</span><span>NVMe over PCIe Transport 1.4</span></div>
+<header><p class="qa-range">Q157–Q173</p><h1>Namespace management, attachment and protection</h1><aside class="st-context"><p>A namespace is a command-addressable logical storage space identified by an NSID (Namespace Identifier). Namespace Management creates or deletes it; Namespace Attachment changes controller attachment. Connect existence, attachment and accessibility through the relevant lists.</p></aside><p class="qr-intro">Creation, attachment and write protection are separate states connected through a namespace lifecycle.</p><p>Each question is followed by its explanation. Start with the volume overview, then follow the field interpretations, comparisons or processes. Essential conditions and the normal path are visible from the start. All numerical examples are hypothetical. Status is written SCT/SC; h indicates hexadecimal.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>SCT</dt><dd>Status Code Type</dd></div></dl></header>
 <section id="overview" class="qa-overview"><h2>Check existence, access and writability separately</h2><p class="qa-takeaway">Creation does not automatically attach a namespace.</p>
-<div class="qr-table" tabindex="0" role="region" aria-label="Horizontally scrollable comparison table"><table><thead><tr><th scope="col">Question</th><th scope="col">Evidence</th><th scope="col">Next step</th></tr></thead><tbody><tr><td>Does it exist?</td><td>Allocated inventory and returned NSID</td><td>Check format/capacity</td></tr><tr><td>Is it attached here?</td><td>Active and attachment lists</td><td>Check readiness/path</td></tr><tr><td>Is writing allowed?</td><td>Capability, control and state</td><td>Apply command restrictions</td></tr></tbody></table></div>
+<div class="qr-table" tabindex="0" role="region" aria-label="Horizontally scrollable comparison table"><table><thead><tr><th scope="col">Question</th><th scope="col">Evidence</th><th scope="col">Next step</th></tr></thead><tbody><tr><td>Does it exist?</td><td>Allocated inventory and returned NSID</td><td>Check format/capacity</td></tr><tr><td>Is it attached here?</td><td>Active and attachment lists</td><td>Check readiness/path</td></tr><tr><td>Is writing allowed?</td><td>Capability, control and state</td><td>Apply command restrictions</td></tr></tbody></table><dl class="st-terms" aria-label="Terms in this passage"><div><dt>NSID</dt><dd>Namespace Identifier</dd></div></dl></div>
 <p><strong>Worked interpretation: </strong>Namespace 2 absent from A’s active list may still exist and be attached to B.</p>
 <p class="qa-citations">Sources: <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-nvmcreate">NVM Command Set 1.3 §4.1.5.8, 4.1.6, 5.8</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nwp">Base 2.4 §5.2.30.1.38, 8.1.18</a></p>
 </section>
+<details class="qa-glossary st-glossary"><summary>Review the terminology when needed</summary><dl><dt>Controller / namespace</dt><dd>A controller receives commands and manages access. A namespace is a logical storage space that commands can address. An NVM subsystem contains controllers and nonvolatile storage resources.</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission and Completion Queues carry command entries (SQEs) and completion entries (CQEs). QID identifies a queue, CID distinguishes outstanding commands in one SQ, and NSID identifies a namespace.</dd><dt>Register / Identify / Feature / Log</dt><dd>A register exposes control or state. Identify queries capabilities and attributes; features query or configure operation; log pages report specific state or records. FID, LID, CNS and CSI select features, logs, Identify structures and command sets.</dd><dt>index / offset / zero-based</dt><dd>An index selects an entry, usually starting at 0; an offset measures distance from an origin in specified units. A zero-based count encodes count−1, but not every zero-valued field is a count. A Dword is 4 bytes; a byte is 8 bits.</dd><dt>Scope / reset / retention</dt><dd>Scope names the affected objects; retention means preserving state. Controller Reset (clearing CC.EN) is one form of Controller Level Reset, or CLR. Different CLR triggers can retain different registers.</dd></dl></details>
 <div class="qa-controls" hidden><label>Search this page <input type="search" id="qa-search" placeholder="Question number, field or keyword"></label><button type="button" data-expand="true">Expand all answers</button><button type="button" data-expand="false">Collapse all answers</button><output id="qa-count" aria-live="polite"></output></div>
 <section id="question-index"><h2>Questions in this volume</h2><ol class="qa-index">
 <li><a href="#q-157">Q157 · How are namespace management and attachment supported?</a></li>
@@ -40,8 +43,8 @@ nvme_qa: true
 <li><a href="#q-173">Q173 · How does protection affect format, sanitize and namespace management?</a></li>
 </ol></section>
 <article class="qa-question" id="q-157" data-question="157" data-answer-kind="lookup"><h2><a class="qa-qid" href="#q-157">Q157</a> How are namespace management and attachment supported?</h2>
-<p class="qa-prompt">Choose the interface and target, then identify the returned field that supports your conclusion.</p>
-<details class="qa-answer" id="q-157-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-157-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-157-a-01">Management creates/deletes namespaces; attachment controls controller access. The capabilities are related but not equivalent.</p><div class="qa-sections">
 <section class="qa-section" id="q-157-s-01" data-answer-section="1"><h3><span>1.</span> Select the target and information</h3>
 <span class="qa-anchor" id="q-157-a-02"></span><p>Allocation is subsystem inventory; active access is controller-specific.</p>
@@ -58,13 +61,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-157-a-17"></span><p>First check the mistaken implication that NMS0 forbids attachment.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-commandseffects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-157-a-08"></span><span class="qa-anchor" id="q-157-a-09"></span><span class="qa-anchor" id="q-157-a-10"></span><span class="qa-anchor" id="q-157-a-11"></span><span class="qa-anchor" id="q-157-a-12"></span><span class="qa-anchor" id="q-157-a-13"></span><span class="qa-anchor" id="q-157-a-14"></span><span class="qa-anchor" id="q-157-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-commandseffects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-158" data-question="158" data-answer-kind="fields"><h2><a class="qa-qid" href="#q-158">Q158</a> How are size, capacity, format and thin provisioning selected?</h2>
-<p class="qa-prompt">Explain the units and encoding, then work through one set of values.</p>
-<details class="qa-answer" id="q-158-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-158-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-158-a-01">NSZE defines address range and NCAP allocatable logical blocks, both in the selected format’s units.</p><div class="qa-sections">
 <section class="qa-section" id="q-158-s-01" data-answer-section="1"><h3><span>1.</span> Establish the source and scope</h3>
 <span class="qa-anchor" id="q-158-a-02"></span><p>Creation consumes selected resources without attaching the new namespace.</p>
@@ -80,13 +84,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-158-a-16"></span><p>Compare requested block counts/format with NSZE/NCAP/NVMCAP using their distinct units.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-nvmcreate">NVM Command Set 1.3 §4.1.5.8, 4.1.6, 5.8</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-158-a-17"></span><span class="qa-anchor" id="q-158-a-08"></span><span class="qa-anchor" id="q-158-a-09"></span><span class="qa-anchor" id="q-158-a-10"></span><span class="qa-anchor" id="q-158-a-11"></span><span class="qa-anchor" id="q-158-a-12"></span><span class="qa-anchor" id="q-158-a-13"></span><span class="qa-anchor" id="q-158-a-14"></span><span class="qa-anchor" id="q-158-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-nvmcreate">NVM Command Set 1.3 §4.1.5.8, 4.1.6, 5.8</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-159" data-question="159" data-answer-kind="error"><h2><a class="qa-qid" href="#q-159">Q159</a> How are namespace-creation resource and parameter errors reported?</h2>
-<p class="qa-prompt">Distinguish failure conditions before deciding whether a particular response is required.</p>
-<details class="qa-answer" id="q-159-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-159-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-159-a-01">Distinguish capacity, identifier count, format and resource mapping before choosing a remedy.</p><div class="qa-sections">
 <section class="qa-section" id="q-159-s-01" data-answer-section="1"><h3><span>1.</span> Distinguish the failure conditions</h3>
 <span class="qa-anchor" id="q-159-a-02"></span><p>Capacity is evaluated in the selected resource pool, not unrelated groups.</p>
@@ -100,20 +105,21 @@ nvme_qa: true
 <section class="qa-section" id="q-159-s-03" data-answer-section="3"><h3><span>3.</span> Outcome and follow-up checks</h3>
 <span class="qa-anchor" id="q-159-a-06"></span><p>Only successful Create DW0 contains the created NSID.</p>
 <span class="qa-anchor" id="q-159-a-16"></span><p>Distinguish invalid format from insufficient allocation using consistent quantities.</p>
-<span class="qa-anchor" id="q-159-a-17"></span><p>First decode SCT/SC before choosing the resource to inspect.</p>
+<span class="qa-anchor" id="q-159-a-17"></span><p>First decode SCT/SC before choosing the resource to inspect.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>SCT</dt><dd>Status Code Type</dd></div></dl>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-nvmcreate">NVM Command Set 1.3 §4.1.5.8, 4.1.6, 5.8</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-159-a-08"></span><span class="qa-anchor" id="q-159-a-09"></span><span class="qa-anchor" id="q-159-a-10"></span><span class="qa-anchor" id="q-159-a-11"></span><span class="qa-anchor" id="q-159-a-12"></span><span class="qa-anchor" id="q-159-a-13"></span><span class="qa-anchor" id="q-159-a-14"></span><span class="qa-anchor" id="q-159-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-nvmcreate">NVM Command Set 1.3 §4.1.5.8, 4.1.6, 5.8</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-160" data-question="160" data-answer-kind="process"><h2><a class="qa-qid" href="#q-160">Q160</a> How does creation change the allocated namespace list?</h2>
-<p class="qa-prompt">Order the actions and identify which completion must precede the next action.</p>
-<details class="qa-answer" id="q-160-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-160-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-160-a-01">Allocated means existence; active means access through a controller. Creation establishes allocation first.</p><div class="qa-sections">
 <section class="qa-section" id="q-160-s-01" data-answer-section="1"><h3><span>1.</span> Prepare the operation</h3>
 <span class="qa-anchor" id="q-160-a-02"></span><p>Allocated inventory and controller-specific active lists are distinct.</p>
-<span class="qa-anchor" id="q-160-a-03"></span><p>Query CNS 10h and the new namespace; CNS 02h verifies later attachment.</p>
+<span class="qa-anchor" id="q-160-a-03"></span><p>Query CNS 10h and the new namespace; CNS 02h verifies later attachment.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>CNS</dt><dd>Controller or Namespace Structure, selecting Identify data</dd></div></dl>
 <span class="qa-anchor" id="q-160-a-04"></span><p>Create returns a controller-selected ID, not a guaranteed host-predicted sequence.</p>
 </section>
 <section class="qa-section" id="q-160-s-02" data-answer-section="2"><h3><span>2.</span> Sequence and completion conditions</h3>
@@ -125,13 +131,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-160-a-16"></span><p>Correlate returned ID, inventory and attributes rather than count alone.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-nsid">Base 2.4 §3.2.1</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-160-a-17"></span><span class="qa-anchor" id="q-160-a-08"></span><span class="qa-anchor" id="q-160-a-09"></span><span class="qa-anchor" id="q-160-a-10"></span><span class="qa-anchor" id="q-160-a-11"></span><span class="qa-anchor" id="q-160-a-12"></span><span class="qa-anchor" id="q-160-a-13"></span><span class="qa-anchor" id="q-160-a-14"></span><span class="qa-anchor" id="q-160-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-nsid">Base 2.4 §3.2.1</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-161" data-question="161" data-answer-kind="process"><h2><a class="qa-qid" href="#q-161">Q161</a> How are controllers selected for attachment changes?</h2>
-<p class="qa-prompt">Order the actions and identify which completion must precede the next action.</p>
-<details class="qa-answer" id="q-161-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-161-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-161-a-01">Attachment changes access relationships without creating/deleting or reformatting the namespace.</p><div class="qa-sections">
 <section class="qa-section" id="q-161-s-01" data-answer-section="1"><h3><span>1.</span> Prepare the operation</h3>
 <span class="qa-anchor" id="q-161-a-02"></span><p>NSID selects the namespace and the payload Controller List selects controllers.</p>
@@ -147,13 +154,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-161-a-16"></span><p>CSINFO identifies the first failing entry offset; processing stops there, without a universal all-or-nothing rollback guarantee.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-161-a-17"></span><span class="qa-anchor" id="q-161-a-08"></span><span class="qa-anchor" id="q-161-a-09"></span><span class="qa-anchor" id="q-161-a-10"></span><span class="qa-anchor" id="q-161-a-11"></span><span class="qa-anchor" id="q-161-a-12"></span><span class="qa-anchor" id="q-161-a-13"></span><span class="qa-anchor" id="q-161-a-14"></span><span class="qa-anchor" id="q-161-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-162" data-question="162" data-answer-kind="process"><h2><a class="qa-qid" href="#q-162">Q162</a> How are active and controller lists cross-checked?</h2>
-<p class="qa-prompt">Order the actions and identify which completion must precede the next action.</p>
-<details class="qa-answer" id="q-162-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-162-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-162-a-01">View the relationship from both controller and namespace to detect one-sided updates.</p><div class="qa-sections">
 <section class="qa-section" id="q-162-s-01" data-answer-section="1"><h3><span>1.</span> Prepare the operation</h3>
 <span class="qa-anchor" id="q-162-a-02"></span><p>An active list belongs to one controller, not the full subsystem.</p>
@@ -169,13 +177,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-162-a-16"></span><p>Allocation persists across attachment-only changes.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-162-a-17"></span><span class="qa-anchor" id="q-162-a-08"></span><span class="qa-anchor" id="q-162-a-09"></span><span class="qa-anchor" id="q-162-a-10"></span><span class="qa-anchor" id="q-162-a-11"></span><span class="qa-anchor" id="q-162-a-12"></span><span class="qa-anchor" id="q-162-a-13"></span><span class="qa-anchor" id="q-162-a-14"></span><span class="qa-anchor" id="q-162-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-163" data-question="163" data-answer-kind="error"><h2><a class="qa-qid" href="#q-163">Q163</a> How are attachment relationship errors reported?</h2>
-<p class="qa-prompt">Distinguish failure conditions before deciding whether a particular response is required.</p>
-<details class="qa-answer" id="q-163-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-163-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-163-a-01">Relationship/list errors do not imply namespace-data damage.</p><div class="qa-sections">
 <section class="qa-section" id="q-163-s-01" data-answer-section="1"><h3><span>1.</span> Distinguish the failure conditions</h3>
 <span class="qa-anchor" id="q-163-a-02"></span><p>Evaluate each list entry against its state; earlier entries may have been processed before failure.</p>
@@ -192,13 +201,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-163-a-17"></span><p>First check sharing mode and existing attachment.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-163-a-08"></span><span class="qa-anchor" id="q-163-a-09"></span><span class="qa-anchor" id="q-163-a-10"></span><span class="qa-anchor" id="q-163-a-11"></span><span class="qa-anchor" id="q-163-a-12"></span><span class="qa-anchor" id="q-163-a-13"></span><span class="qa-anchor" id="q-163-a-14"></span><span class="qa-anchor" id="q-163-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-164" data-question="164" data-answer-kind="concept"><h2><a class="qa-qid" href="#q-164">Q164</a> What happens to outstanding commands during detach?</h2>
-<p class="qa-prompt">Explain the mechanism in your own words and identify a common misconception.</p>
-<details class="qa-answer" id="q-164-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-164-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-164-a-01">Detach invalidates controller access; quiescing first helps hosts, but outstanding-command behavior remains specified.</p><div class="qa-sections">
 <section class="qa-section" id="q-164-s-01" data-answer-section="1"><h3><span>1.</span> Mechanism and scope</h3>
 <span class="qa-anchor" id="q-164-a-02"></span><p>Only specified relationships change; other attached controllers remain attached.</p>
@@ -214,13 +224,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-164-a-16"></span><p>Check timing classification and premature buffer reclamation.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-sqe">Base 2.4 §4.1.1</a> · <a href="#ref-nsid">Base 2.4 §3.2.1</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-164-a-17"></span><span class="qa-anchor" id="q-164-a-08"></span><span class="qa-anchor" id="q-164-a-09"></span><span class="qa-anchor" id="q-164-a-10"></span><span class="qa-anchor" id="q-164-a-11"></span><span class="qa-anchor" id="q-164-a-12"></span><span class="qa-anchor" id="q-164-a-13"></span><span class="qa-anchor" id="q-164-a-14"></span><span class="qa-anchor" id="q-164-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-sqe">Base 2.4 §4.1.1</a> · <a href="#ref-nsid">Base 2.4 §3.2.1</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-165" data-question="165" data-answer-kind="error"><h2><a class="qa-qid" href="#q-165">Q165</a> How are commands handled after namespace detach?</h2>
-<p class="qa-prompt">Distinguish failure conditions before deciding whether a particular response is required.</p>
-<details class="qa-answer" id="q-165-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-165-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-165-a-01">Detach makes an ID inactive on that controller without deleting it from the subsystem.</p><div class="qa-sections">
 <section class="qa-section" id="q-165-s-01" data-answer-section="1"><h3><span>1.</span> Distinguish the failure conditions</h3>
 <span class="qa-anchor" id="q-165-a-02"></span><p>The same namespace can remain active through another controller.</p>
@@ -237,13 +248,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-165-a-17"></span><p>First distinguish ordinary I/O from permitted inactive-object queries.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-sqe">Base 2.4 §4.1.1</a> · <a href="#ref-nsid">Base 2.4 §3.2.1</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-165-a-08"></span><span class="qa-anchor" id="q-165-a-09"></span><span class="qa-anchor" id="q-165-a-10"></span><span class="qa-anchor" id="q-165-a-11"></span><span class="qa-anchor" id="q-165-a-12"></span><span class="qa-anchor" id="q-165-a-13"></span><span class="qa-anchor" id="q-165-a-14"></span><span class="qa-anchor" id="q-165-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-sqe">Base 2.4 §4.1.1</a> · <a href="#ref-nsid">Base 2.4 §3.2.1</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-166" data-question="166" data-answer-kind="error"><h2><a class="qa-qid" href="#q-166">Q166</a> How are nonexistent or attached namespace deletions handled?</h2>
-<p class="qa-prompt">Distinguish failure conditions before deciding whether a particular response is required.</p>
-<details class="qa-answer" id="q-166-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-166-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-166-a-01">Correct the premise that attached namespaces cannot be deleted: prior detach is recommended, and deletion itself removes all attachments.</p><div class="qa-sections">
 <section class="qa-section" id="q-166-s-01" data-answer-section="1"><h3><span>1.</span> Distinguish the failure conditions</h3>
 <span class="qa-anchor" id="q-166-a-02"></span><p>Deletion removes the object, not merely one access path.</p>
@@ -260,18 +272,19 @@ nvme_qa: true
 <span class="qa-anchor" id="q-166-a-17"></span><p>First inspect broadcast NSID before judging empty-inventory behavior.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-sqe">Base 2.4 §4.1.1</a> · <a href="#ref-nsid">Base 2.4 §3.2.1</a> · <a href="#ref-nwp">Base 2.4 §5.2.30.1.38, 8.1.18</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-166-a-08"></span><span class="qa-anchor" id="q-166-a-09"></span><span class="qa-anchor" id="q-166-a-10"></span><span class="qa-anchor" id="q-166-a-11"></span><span class="qa-anchor" id="q-166-a-12"></span><span class="qa-anchor" id="q-166-a-13"></span><span class="qa-anchor" id="q-166-a-14"></span><span class="qa-anchor" id="q-166-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-sqe">Base 2.4 §4.1.1</a> · <a href="#ref-nsid">Base 2.4 §3.2.1</a> · <a href="#ref-nwp">Base 2.4 §5.2.30.1.38, 8.1.18</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-167" data-question="167" data-answer-kind="events"><h2><a class="qa-qid" href="#q-167">Q167</a> Which events and logs follow namespace changes?</h2>
-<p class="qa-prompt">Establish the event condition, then distinguish notification, acknowledgment and recording.</p>
-<details class="qa-answer" id="q-167-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-167-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-167-a-01">Notifications invalidate host caches, changed lists identify changes and Identify describes current configuration.</p><div class="qa-sections">
 <section class="qa-section" id="q-167-s-01" data-answer-section="1"><h3><span>1.</span> When the event exists and who observes it</h3>
 <span class="qa-anchor" id="q-167-a-02"></span><p>Create/delete change inventory; attach/detach change controller-active membership.</p>
 <span class="qa-anchor" id="q-167-a-03"></span><p>Check attached/allocated notice support, enablement and available requests.</p>
-<span class="qa-anchor" id="q-167-a-04"></span><p>LID 04h/1Ch identify attached/allocated changes; Identify and defined PEL management events serve different purposes.</p>
+<span class="qa-anchor" id="q-167-a-04"></span><p>LID 04h/1Ch identify attached/allocated changes; Identify and defined PEL management events serve different purposes.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>LID</dt><dd>Log Page Identifier</dd></div></dl>
 </section>
 <section class="qa-section" id="q-167-s-02" data-answer-section="2"><h3><span>2.</span> Notification, reading and acknowledgment</h3>
 <span class="qa-anchor" id="q-167-a-05"></span><p>Process affected-controller notices, preserve lists and refresh Identify after management completion.</p>
@@ -288,16 +301,17 @@ nvme_qa: true
 <span class="qa-anchor" id="q-167-a-11"></span><p>Supported Change Namespace 06h records defined management changes; do not treat attachment as creation/deletion. <a class="qa-rule-link" href="#common-namespace_op-11">Read the complete conditions in this volume</a></p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-aerfull">Base 2.4 §5.2.2 (PCIe-applicable events)</a> · <a href="#ref-aec">Base 2.4 §5.2.30.1.6</a> · <a href="#ref-changedlog">Base 2.4 §5.2.13.1.5</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-167-a-08"></span><span class="qa-anchor" id="q-167-a-12"></span><span class="qa-anchor" id="q-167-a-13"></span><span class="qa-anchor" id="q-167-a-14"></span><span class="qa-anchor" id="q-167-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-aerfull">Base 2.4 §5.2.2 (PCIe-applicable events)</a> · <a href="#ref-aec">Base 2.4 §5.2.30.1.6</a> · <a href="#ref-changedlog">Base 2.4 §5.2.13.1.5</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-168" data-question="168" data-answer-kind="fields"><h2><a class="qa-qid" href="#q-168">Q168</a> How does changed-namespace overflow work?</h2>
-<p class="qa-prompt">Explain the units and encoding, then work through one set of values.</p>
-<details class="qa-answer" id="q-168-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-168-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-168-a-01">Overflow requests a full relevant rescan instead of trusting an incomplete list.</p><div class="qa-sections">
 <section class="qa-section" id="q-168-s-01" data-answer-section="1"><h3><span>1.</span> Establish the source and scope</h3>
-<span class="qa-anchor" id="q-168-a-02"></span><p>LID 04h concerns attached changes for that controller, not universal subsystem history.</p>
+<span class="qa-anchor" id="q-168-a-02"></span><p>LID 04h concerns attached changes for that controller, not universal subsystem history.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>LID</dt><dd>Log Page Identifier</dd></div></dl>
 <span class="qa-anchor" id="q-168-a-03"></span><p>Apply the fixed 1024-entry layout and read/clear rules.</p>
 </section>
 <section class="qa-section" id="q-168-s-02" data-answer-section="2"><h3><span>2.</span> Fields, units and worked interpretation</h3>
@@ -310,13 +324,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-168-a-16"></span><p>Validate rescan cache against current Identify state.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-changedlog">Base 2.4 §5.2.13.1.5</a> · <a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-168-a-17"></span><span class="qa-anchor" id="q-168-a-08"></span><span class="qa-anchor" id="q-168-a-09"></span><span class="qa-anchor" id="q-168-a-10"></span><span class="qa-anchor" id="q-168-a-11"></span><span class="qa-anchor" id="q-168-a-12"></span><span class="qa-anchor" id="q-168-a-13"></span><span class="qa-anchor" id="q-168-a-14"></span><span class="qa-anchor" id="q-168-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-changedlog">Base 2.4 §5.2.13.1.5</a> · <a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-169" data-question="169" data-answer-kind="lifecycle"><h2><a class="qa-qid" href="#q-169">Q169</a> Do namespace configuration and attachment survive resets?</h2>
-<p class="qa-prompt">Name the reset or interruption, then assess settings, ongoing operations and data separately.</p>
-<details class="qa-answer" id="q-169-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-169-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-169-a-01">Namespaces are persistent configuration, separate from recreated queues.</p><div class="qa-sections">
 <section class="qa-section" id="q-169-s-01" data-answer-section="1"><h3><span>1.</span> Identify the trigger and affected objects</h3>
 <span class="qa-anchor" id="q-169-a-02"></span><p>Completed configuration persists; interrupted commands require state discovery.</p>
@@ -334,18 +349,19 @@ nvme_qa: true
 <div class="qr-table" tabindex="0" role="region" aria-label="Horizontally scrollable comparison table"><table><thead><tr><th scope="col">Trigger</th><th scope="col">Effect on this operation or state</th></tr></thead><tbody><tr><td>What survives or continues after Controller Reset?</td><td>Completed configuration/attachment survives reset; command channels reset without deleting namespaces. For interrupted commands, inspect lists rather than assuming rollback.</td></tr><tr><td>What survives or continues after NVM Subsystem Reset?</td><td>Subsystem reset is not Restore Default Namespace Configuration. Rediscover persisted namespaces/attachments and rebuild queues, accounting for domain scope.</td></tr><tr><td>What survives or continues after a power cycle?</td><td>Completed namespace configuration/attachments persist. Ordinary/permanent write protection persist; until-power-cycle protection clears on a real power cycle, not all configuration.</td></tr></tbody></table></div>
 </section>
 <section class="qa-section" id="q-169-s-04" data-answer-section="4"><h3><span>4.</span> Verify retention and recovery</h3>
-<span class="qa-anchor" id="q-169-a-07"></span><p>Post-reset lists may reflect an operation whose CQE was lost; absence of completion does not prove non-execution.</p>
+<span class="qa-anchor" id="q-169-a-07"></span><p>Post-reset lists may reflect an operation whose CQE was lost; absence of completion does not prove non-execution.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>CQE</dt><dd>Completion Queue Entry</dd></div></dl>
 <span class="qa-anchor" id="q-169-a-16"></span><p>Match persistent identity/properties to avoid NSID-reuse mistakes.</p>
 <span class="qa-anchor" id="q-169-a-17"></span><p>First check whether host recovery itself restored defaults or deleted objects.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-nsid">Base 2.4 §3.2.1</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-169-a-08"></span><span class="qa-anchor" id="q-169-a-09"></span><span class="qa-anchor" id="q-169-a-10"></span><span class="qa-anchor" id="q-169-a-11"></span><span class="qa-anchor" id="q-169-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-nsid">Base 2.4 §3.2.1</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-170" data-question="170" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-170">Q170</a> How do private and shared namespaces differ?</h2>
-<p class="qa-prompt">Identify the key difference and one case where the alternatives are not interchangeable.</p>
-<details class="qa-answer" id="q-170-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-170-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-170-a-01">Private limits attachment to one controller; shared allows multiple. These describe access topology, not encryption or access permissions.</p><div class="qa-sections">
 <section class="qa-section" id="q-170-s-01" data-answer-section="1"><h3><span>1.</span> What differs</h3>
 <span class="qa-anchor" id="q-170-a-02"></span><p>Multiple paths can address one data object, not separate copies.</p>
@@ -356,41 +372,43 @@ nvme_qa: true
 <span class="qa-anchor" id="q-170-a-05"></span><p>Configure sharing, attach controllers and verify each active list.</p>
 <span class="qa-anchor" id="q-170-a-06"></span><p>Shared permits multiple accessors; private can move fromA toB through detachment but not attach to both simultaneously.</p>
 </section>
-<section class="qa-section" id="q-170-s-03" data-answer-section="3"><h3><span>3.</span> Where the comparison stops</h3>
+<section class="qa-section" id="q-170-s-03" data-answer-section="3"><h3><span>3.</span> Conditions that shape the comparison</h3>
 <span class="qa-anchor" id="q-170-a-07"></span><p>Additional attachment of an already attached private namespace uses Namespace Is Private.</p>
 <span class="qa-anchor" id="q-170-a-16"></span><p>Compare identity/data/attachments rather than counting paths as additional capacity.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-170-a-17"></span><span class="qa-anchor" id="q-170-a-08"></span><span class="qa-anchor" id="q-170-a-09"></span><span class="qa-anchor" id="q-170-a-10"></span><span class="qa-anchor" id="q-170-a-11"></span><span class="qa-anchor" id="q-170-a-12"></span><span class="qa-anchor" id="q-170-a-13"></span><span class="qa-anchor" id="q-170-a-14"></span><span class="qa-anchor" id="q-170-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-171" data-question="171" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-171">Q171</a> How do write-protection modes and entry controls differ?</h2>
-<p class="qa-prompt">Identify the key difference and one case where the alternatives are not interchangeable.</p>
-<details class="qa-answer" id="q-171-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-171-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-171-a-01">Protection modes differ in reversibility; permanent protection is not an ordinary reversible toggle.</p><div class="qa-sections">
 <section class="qa-section" id="q-171-s-01" data-answer-section="1"><h3><span>1.</span> What differs</h3>
 <span class="qa-anchor" id="q-171-a-02"></span><p>WPS is namespace state enforced across attached controllers.</p>
 <span class="qa-anchor" id="q-171-a-04"></span><p>WPS0/1/2/3 select unprotected/ordinary/until-cycle/permanent; only ordinary protection is normally reversible by Set.</p>
 </section>
 <section class="qa-section" id="q-171-s-02" data-answer-section="2"><h3><span>2.</span> How to choose and verify</h3>
-<span class="qa-anchor" id="q-171-a-03"></span><p>NWPC advertises modes, RPMB WPC gates entry and FID 84h reports actual WPS.</p>
+<span class="qa-anchor" id="q-171-a-03"></span><p>NWPC advertises modes, RPMB WPC gates entry and FID 84h reports actual WPS.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>FID</dt><dd>Feature Identifier</dd></div></dl>
 <span class="qa-anchor" id="q-171-a-05"></span><p>Check support/entry permission, Set and Get; entering protection commits associated volatile cached data/metadata.</p>
 <span class="qa-anchor" id="q-171-a-06"></span><p>State and write prohibition agree while reads remain subject to normal conditions.</p>
 </section>
-<section class="qa-section" id="q-171-s-03" data-answer-section="3"><h3><span>3.</span> Where the comparison stops</h3>
+<section class="qa-section" id="q-171-s-03" data-answer-section="3"><h3><span>3.</span> Conditions that shape the comparison</h3>
 <span class="qa-anchor" id="q-171-a-07"></span><p>Disallowed entry or changing locked modes uses Feature Not Changeable; until-cycle mode is prohibited in multi-domain systems.</p>
 <span class="qa-anchor" id="q-171-a-16"></span><p>WPC is entry permission, not state; clearing it does not remove existing protection.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-nwp">Base 2.4 §5.2.30.1.38, 8.1.18</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-171-a-17"></span><span class="qa-anchor" id="q-171-a-08"></span><span class="qa-anchor" id="q-171-a-09"></span><span class="qa-anchor" id="q-171-a-10"></span><span class="qa-anchor" id="q-171-a-11"></span><span class="qa-anchor" id="q-171-a-12"></span><span class="qa-anchor" id="q-171-a-13"></span><span class="qa-anchor" id="q-171-a-14"></span><span class="qa-anchor" id="q-171-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-nwp">Base 2.4 §5.2.30.1.38, 8.1.18</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-172" data-question="172" data-answer-kind="lifecycle"><h2><a class="qa-qid" href="#q-172">Q172</a> How does write protection persist across reset and power?</h2>
-<p class="qa-prompt">Name the reset or interruption, then assess settings, ongoing operations and data separately.</p>
-<details class="qa-answer" id="q-172-answer"><summary>Reveal the explanation</summary>
-<p class="qa-answer-lead" id="q-172-a-01">FID 84h is non-saveable but has explicit persistent state; generic saved-feature assumptions do not apply.</p><div class="qa-sections">
+
+<details open class="qa-answer" id="q-172-answer"><summary>Follow the explanation</summary>
+<p class="qa-answer-lead" id="q-172-a-01">FID 84h is non-saveable but has explicit persistent state; generic saved-feature assumptions do not apply.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>FID</dt><dd>Feature Identifier</dd></div></dl><div class="qa-sections">
 <section class="qa-section" id="q-172-s-01" data-answer-section="1"><h3><span>1.</span> Identify the trigger and affected objects</h3>
 <span class="qa-anchor" id="q-172-a-02"></span><p>Persistence follows the namespace, not one access controller.</p>
 <span class="qa-anchor" id="q-172-a-03"></span><p>Read current WPS and record the actual reset/power event.</p>
@@ -406,14 +424,15 @@ nvme_qa: true
 <span class="qa-anchor" id="q-172-a-17"></span><p>First establish whether a real power cycle occurred.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-nwp">Base 2.4 §5.2.30.1.38, 8.1.18</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-172-a-08"></span><span class="qa-anchor" id="q-172-a-09"></span><span class="qa-anchor" id="q-172-a-10"></span><span class="qa-anchor" id="q-172-a-11"></span><span class="qa-anchor" id="q-172-a-12"></span><span class="qa-anchor" id="q-172-a-13"></span><span class="qa-anchor" id="q-172-a-14"></span><span class="qa-anchor" id="q-172-a-15"></span>
 <p class="qa-related">Related mechanisms: <a href="/nvme/question-bank/features/en/#q-065">Q65</a></p>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-nwp">Base 2.4 §5.2.30.1.38, 8.1.18</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-173" data-question="173" data-answer-kind="concept"><h2><a class="qa-qid" href="#q-173">Q173</a> How does protection affect format, sanitize and namespace management?</h2>
-<p class="qa-prompt">Explain the mechanism in your own words and identify a common misconception.</p>
-<details class="qa-answer" id="q-173-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-173-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-173-a-01">Protection covers operations modifying the namespace, including broad commands not naming it directly.</p><div class="qa-sections">
 <section class="qa-section" id="q-173-s-01" data-answer-section="1"><h3><span>1.</span> Mechanism and scope</h3>
 <span class="qa-anchor" id="q-173-a-02"></span><p>All attached paths enforce protection, including covering Format/subsystem-sanitize scopes.</p>
@@ -429,6 +448,7 @@ nvme_qa: true
 <span class="qa-anchor" id="q-173-a-16"></span><p>Cross-check direct writes and broader operations against the same protection scope.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-nwp">Base 2.4 §5.2.30.1.38, 8.1.18</a> · <a href="#ref-format">Base 2.4 §5.1.1, 5.2.11</a> · <a href="#ref-sanitizecmd">Base 2.4 §5.2.26–5.2.27</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-173-a-17"></span><span class="qa-anchor" id="q-173-a-08"></span><span class="qa-anchor" id="q-173-a-09"></span><span class="qa-anchor" id="q-173-a-10"></span><span class="qa-anchor" id="q-173-a-11"></span><span class="qa-anchor" id="q-173-a-12"></span><span class="qa-anchor" id="q-173-a-13"></span><span class="qa-anchor" id="q-173-a-14"></span><span class="qa-anchor" id="q-173-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-nwp">Base 2.4 §5.2.30.1.38, 8.1.18</a> · <a href="#ref-format">Base 2.4 §5.1.1, 5.2.11</a> · <a href="#ref-sanitizecmd">Base 2.4 §5.2.26–5.2.27</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>

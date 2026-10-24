@@ -1,0 +1,51 @@
+{
+  "walk_id": "ch27-overview",
+  "title": "裝置快取了位址轉譯，映射改變時怎麼辦？",
+  "summary_html": "<p>ATS（Address Translation Services，位址轉譯服務）讓裝置向平台查詢轉譯並快取。ATC（Address Translation Cache，位址轉譯快取）保存結果，TA（Translation Agent，轉譯代理）處理轉譯與保護資訊。接著必須安排失效通知，才不會繼續使用舊映射。</p>",
+  "svg": "<svg viewBox=\"0 0 900 420\" role=\"img\" aria-labelledby=\"ch27-zh-t ch27-zh-d\"><title id=\"ch27-zh-t\">本章角色與事件</title><desc id=\"ch27-zh-d\">一般轉譯、資料存取與失效通知分成不同事件。</desc><g data-walk-target=\"dev\"><rect x=\"25\" y=\"30\" width=\"300\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"175.0\" y=\"59\" text-anchor=\"middle\" font-size=\"16\">裝置：ATC 轉譯快取</text></g><g data-walk-target=\"ta\"><rect x=\"550\" y=\"30\" width=\"325\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"712.5\" y=\"59\" text-anchor=\"middle\" font-size=\"16\">TA：轉譯代理與保護資訊</text></g><g data-walk-target=\"mem\"><rect x=\"550\" y=\"335\" width=\"325\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"712.5\" y=\"364\" text-anchor=\"middle\" font-size=\"16\">記憶體目標</text></g><g data-walk-target=\"a\"><path d=\"M325 110 L550 110\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"550,110 540.0,115.0 540.0,105.0\" fill=\"var(--accent)\"/><text x=\"437.5\" y=\"100.0\" text-anchor=\"middle\" font-size=\"16\">Translation Request</text></g><g data-walk-target=\"b\"><path d=\"M550 200 L325 200\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"325,200 335.0,195.0 335.0,205.0\" fill=\"var(--accent)\"/><text x=\"437.5\" y=\"190.0\" text-anchor=\"middle\" font-size=\"16\">Translation Completion</text></g><g data-walk-target=\"c\"><path d=\"M325 345 L550 345\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"550,345 540.0,350.0 540.0,340.0\" fill=\"var(--accent)\"/><text x=\"437.5\" y=\"335.0\" text-anchor=\"middle\" font-size=\"16\">依轉譯與權限存取</text></g><g data-walk-target=\"d\"><path d=\"M550 280 L325 280\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"325,280 335.0,275.0 335.0,285.0\" fill=\"var(--accent)\"/><text x=\"437.5\" y=\"270.0\" text-anchor=\"middle\" font-size=\"16\">Invalidate／完成交握</text></g></svg>",
+  "order_html": "<p>先沿查詢與回覆走一遍，再看後續資料存取。失效通知是映射改變時的另一段協調，不是每筆存取前固定執行。</p>",
+  "caption_html": "<p>作者依 Base 6.0 繪製的教學示意；省略與本章無關的交換。</p>",
+  "steps": [
+    {
+      "title": "先找到轉譯服務的角色",
+      "targets": [
+        "dev",
+        "a",
+        "ta"
+      ],
+      "html": "<p>Figure 10-1 放置代理、保護表與裝置快取；Figure 10-2 再追單筆轉譯要求與回覆。</p>",
+      "condition_html": "<p>ATS（供裝置查詢轉譯的服務）不是只改一個DMA位址的數字，還有配置與存取權檢查。</p>",
+      "source_html": "<p>Base 6.0 §10.1.1，pp.1470–1471。</p>",
+      "claim_ids": [
+        "PCIE-CH27-001"
+      ]
+    },
+    {
+      "title": "把轉譯回覆接到資料存取",
+      "targets": [
+        "b",
+        "c",
+        "mem"
+      ],
+      "html": "<p>查到轉譯後，裝置按回覆資訊與適用權限形成資料要求。PASID（Process Address Space ID，程序位址空間識別碼）另可補充要求的位址空間。</p>",
+      "condition_html": "<p>PASID 必須與 Requester ID 一起解讀，單一數字不是跨所有 Function 的全域程序身分。</p>",
+      "source_html": "<p>Base 6.0 §6.20，p.791；§10.1.1，p.1471。</p>",
+      "claim_ids": [
+        "PCIE-CH27-001",
+        "PCIE-CH27-002"
+      ]
+    },
+    {
+      "title": "映射改變時完成失效協調",
+      "targets": [
+        "d"
+      ],
+      "html": "<p>TA（負責轉譯的代理）在需要同步快取時發出 Invalidate Request，裝置再依失效規則回覆。</p>",
+      "condition_html": "<p>送出通知還不等於所有舊要求與快取都已處理完成，須保留完成交握與排序條件。</p>",
+      "source_html": "<p>Base 6.0 §10.3／§10.3.1，p.1497；Figure 10-5，p.1476。</p>",
+      "claim_ids": [
+        "PCIE-CH27-003"
+      ]
+    }
+  ]
+}

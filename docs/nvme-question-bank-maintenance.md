@@ -310,3 +310,6 @@ visually reviewed. Offline navigation, keyboard disclosure, search, theme change
 and legacy deep links passed. Q172 specifically excludes the old unrelated
 Attachment retention text; Q195 links the established feature-specific comparison
 instead of repeating a generic reset table.
+# 2026-10-23 共同教學修訂
+
+使用者已確認改為以問題直接帶讀，主要解說預設顯示，不要求先作答；這項要求取代下方歷史紀錄的預設收合方式。題號、URL、相關來源及數值保留。每冊先給必要背景與總覽，再依題目目的安排解說；參考名詞及完整來源可收合。共同樣式只作用在明確標記的教材，NVMe 為綠色。

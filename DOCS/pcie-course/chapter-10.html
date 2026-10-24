@@ -222,9 +222,154 @@
 
 /* Self-contained teaching diagrams use the same theme in standalone pages and posts. */
 .pcie-surface .course-diagram text { fill: var(--ink); font-family: inherit; font-size: 18px; }
+
+/* Applied only to explicitly authorized teaching roots. */
+html .spec-teaching[data-spec-series] .st-terms { margin:.35rem 0 1rem; padding:.5rem .8rem; border-inline-start:3px solid var(--st-accent); background:var(--st-soft); font-size:.88em; color:var(--st-muted); }
+html .spec-teaching[data-spec-series] .st-terms > div { display:flex; flex-wrap:wrap; gap:.2em .7em; }
+html .spec-teaching[data-spec-series] .st-terms dt { font-weight:650; }
+html .spec-teaching[data-spec-series] .st-terms dd { margin:0; flex:1 1 14em; }
+html .spec-teaching[data-spec-series] {
+ --st-diagram-width:900px;
+ --st-paper:#f2f6f8; --st-surface:#fff; --st-ink:#192d40; --st-muted:#4c6479;
+ --st-line:#cbd9e3; --st-accent:#145f9d; --st-soft:#edf5fc;
+ --paper:var(--st-paper); --surface:var(--st-surface); --surface-2:var(--st-soft); --surface-alt:var(--st-soft);
+ --ink:var(--st-ink); --muted:var(--st-muted); --line:var(--st-line);
+ --accent:var(--st-accent); --accent-2:var(--st-accent); --soft:var(--st-soft); --blue-soft:var(--st-soft); --teal-soft:var(--st-soft);
+ --qr-paper:var(--st-paper); --qr-surface:var(--st-surface); --qr-ink:var(--st-ink); --qr-muted:var(--st-muted);
+ --qr-line:var(--st-line); --qr-accent:var(--st-accent); --qr-soft:var(--st-soft);
+ color:var(--st-ink); background:var(--st-paper); font-size:17px; line-height:1.9;
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+}
+html .spec-teaching[data-spec-series="nvme"] { --st-accent:#086b56; --st-soft:#e7f4ee; }
+@media(prefers-color-scheme:dark) {
+ html:not([data-theme="light"]) .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+ html:not([data-theme="light"]) .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+}
+html[data-theme="dark"] .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+html[data-theme="dark"] .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+.spec-teaching * { box-sizing:border-box; }
+.spec-teaching :is(h1,h2,h3,h4,h5,p,li,td,th,summary,strong,figcaption) { color:var(--st-ink); }
+.spec-teaching svg text { font-family:inherit; }
+.spec-teaching h1 { font-size:clamp(1.8rem,3.2vw,2.65rem); line-height:1.4; }
+.spec-teaching h2 { font-size:clamp(1.3rem,2.5vw,1.7rem); line-height:1.55; }
+.spec-teaching h3 { font-size:1.15rem; line-height:1.65; }
+.spec-teaching h4 { font-size:1rem; line-height:1.7; }
+.spec-teaching :is(h1,h2,h3,h4) { overflow-wrap:anywhere; }
+.spec-teaching p { margin:.7rem 0 1.15rem; }
+.spec-teaching :is(a,summary) { text-underline-offset:.2em; }
+.spec-teaching :focus-visible { outline:3px solid var(--st-accent); outline-offset:4px; }
+.spec-teaching :is(.qa-takeaway,.qa-answer-lead,.st-takeaway) { color:var(--st-ink); font-weight:650; font-size:1.06rem; line-height:1.9; }
+.spec-teaching :is(.qa-question,.qr-card,.guided-walk) { border:1px solid var(--st-line); border-radius:12px; background:var(--st-surface); padding:clamp(18px,3vw,30px); margin:1.8rem 0; }
+.spec-teaching :is(.qa-flow,.qr-note,.qr-observations,.st-context,.st-route) { background:var(--st-soft); border-left:4px solid var(--st-accent); padding:1rem 1.2rem; margin:1.4rem 0; }
+.spec-teaching :is(.qr-step,.qa-qid,.st-label) { color:var(--st-accent); font-weight:700; }
+.spec-teaching :is(.qa-citations,.qa-source-links,.qr-case-sources,.walk-source,.st-source) { font-size:.84rem; line-height:1.75; color:var(--st-muted); overflow-wrap:anywhere; }
+.spec-teaching :is(.qr-table,.table-wrap) { overflow-x:auto; margin:1.4rem 0; border-radius:7px; }
+.spec-teaching :is(th,td) { line-height:1.8; vertical-align:top; min-width:120px; }
+.spec-teaching :is(table,td) { background:var(--st-surface); }
+.spec-teaching th { background:var(--st-soft); }
+.spec-teaching .st-step { border-left:3px solid var(--st-line); padding:.6rem 1rem; margin:1.2rem 0; }
+.spec-teaching .st-step:target { border-left-color:var(--st-accent); background:var(--st-soft); }
+.spec-teaching .st-glossary { border:1px solid var(--st-line); padding:.7rem 1rem; margin:1.4rem 0; border-radius:8px; }
+.spec-teaching .st-glossary > summary { min-height:44px; cursor:pointer; }
+.spec-teaching .st-specs { display:flex; flex-wrap:wrap; gap:.4rem 1rem; color:var(--st-muted); font-size:.8rem; line-height:1.8; margin:1rem 0; }
+.spec-teaching .st-specs span { border-bottom:2px solid var(--st-accent); padding:.2rem 0; }
+@media(max-width:620px) { .spec-teaching :is(.qa-question,.qr-card,.guided-walk) { padding:16px; } .spec-teaching .diagram svg { min-width:var(--st-diagram-width); } }
+@media print {
+ .spec-teaching { --st-paper:#fff!important; --st-surface:#fff!important; --st-ink:#000!important; --st-muted:#333!important; --st-line:#999!important; --st-accent:#000!important; --st-soft:#fff!important; }
+ .spec-teaching details > * { display:block!important; }
+ .spec-teaching details::details-content { content-visibility:visible!important; }
+ .spec-teaching .st-step { break-inside:avoid; }
+}
+
+/* Native reading guides: selection highlights; it never hides teaching content.
+   build_pcie_course.py changes .pcie-surface to .pcie-article for the posts. */
+.pcie-surface .guided-walk { margin: 1.8rem 0; padding: 1.2rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); min-width: 0; }
+.pcie-surface .guided-walk > h3 { margin-top: 0; }
+.pcie-surface .walk-help { color: var(--muted); font-size: .85rem; }
+.pcie-surface .walk-order { margin-bottom: 1.1rem; }
+/* Keep native radio semantics and keyboard handling; the associated label is
+   the visible control, so a radio cannot wrap away from its own label. */
+.pcie-surface .walk-choice { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.pcie-surface .walk-label { display: inline-flex; align-items: center; min-height: 44px; padding: .35rem .7rem; margin: .25rem .8rem .25rem 0; border: 2px solid var(--line); border-radius: 8px; cursor: pointer; font-size: .9rem; line-height: 1.5; color: var(--ink); background: var(--surface-alt); }
+.pcie-surface .walk-choice:checked + .walk-label { border-color: var(--accent); background: var(--blue-soft); font-weight: 700; }
+.pcie-surface .walk-choice:focus-visible + .walk-label { outline: 3px solid var(--focus); outline-offset: 3px; }
+.pcie-surface .walk-view { margin-top: 1rem; min-width: 0; }
+.pcie-surface .walk-diagram { margin: 0 0 1.2rem; }
+.pcie-surface .walk-diagram svg { width: 100%; height: auto; display: block; }
+.pcie-surface .walk-diagram svg a { cursor: pointer; }
+.pcie-surface .walk-diagram svg a:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
+.pcie-surface .walk-diagram figcaption { margin-top: .8rem; }
+.pcie-surface .walk-steps { max-width: none; padding-left: 1.6rem; }
+.pcie-surface .walk-step { padding: .6rem .9rem; margin: .7rem 0; border: 2px solid transparent; border-left: 5px solid var(--line); border-radius: 5px; background: var(--surface); }
+.pcie-surface .walk-step h4 { margin: .2rem 0 .5rem; }
+.pcie-surface .walk-condition { font-size: .9rem; color: var(--muted); }
+.pcie-surface .walk-source { border-top: 1px solid var(--line); padding-top: .35rem; color: var(--muted); font-size: .85rem; }
+.pcie-surface .walk-step p:last-child { margin-bottom: .3rem; }
+.pcie-surface .walk-components { border-top: 1px solid var(--line); margin-top: 1.4rem; padding-top: .4rem; }
+.pcie-surface .walk-component-links { display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; list-style: none; padding-left: 0; }
+.pcie-surface .walk-component-links a { min-height: 44px; min-width: 44px; }
+.pcie-surface .walk-component { padding: .7rem 1rem; margin: 1rem 0; border: 1px solid var(--line); border-radius: 8px; }
+.pcie-surface .walk-component > h4 { margin-top: .2rem; }
+.pcie-surface .walk-component:target { outline: 3px solid var(--accent-2); outline-offset: 3px; }
+.pcie-surface .walk-component details { margin-bottom: .3rem; }
+
+.pcie-surface .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-step[data-walk-step="1"],
+.pcie-surface .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-step[data-walk-step="2"],
+.pcie-surface .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-step[data-walk-step="3"],
+.pcie-surface .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-step[data-walk-step="4"],
+.pcie-surface .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-step[data-walk-step="5"],
+.pcie-surface .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-step[data-walk-step="6"],
+.pcie-surface .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-step[data-walk-step="7"],
+.pcie-surface .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-step[data-walk-step="8"] { border-color: var(--accent); background: var(--blue-soft); }
+
+.pcie-surface .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-node[data-walk-steps~="1"],
+.pcie-surface .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-node[data-walk-steps~="2"],
+.pcie-surface .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-node[data-walk-steps~="3"],
+.pcie-surface .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-node[data-walk-steps~="4"],
+.pcie-surface .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-node[data-walk-steps~="5"],
+.pcie-surface .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-node[data-walk-steps~="6"],
+.pcie-surface .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-node[data-walk-steps~="7"],
+.pcie-surface .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-node[data-walk-steps~="8"] { --walk-active-weight: 750; }
+.pcie-surface .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-node[data-walk-steps~="1"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-node[data-walk-steps~="2"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-node[data-walk-steps~="3"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-node[data-walk-steps~="4"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-node[data-walk-steps~="5"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-node[data-walk-steps~="6"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-node[data-walk-steps~="7"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-node[data-walk-steps~="8"] > :is(rect, circle, ellipse, polygon, path, line, polyline) { stroke: var(--accent); stroke-width: 3.5px; vector-effect: non-scaling-stroke; }
+.pcie-surface .walk-node text { font-weight: var(--walk-active-weight, inherit); }
+
+@media (max-width: 620px) {
+  .pcie-surface .guided-walk { padding: .8rem; }
+  .pcie-surface .walk-label { margin-right: .45rem; padding-left: .45rem; padding-right: .45rem; }
+  .pcie-surface .walk-steps { padding-left: 1.15rem; }
+  .pcie-surface .walk-step { padding: .5rem .6rem; }
+  .pcie-surface .walk-diagram { overflow-x: auto; }
+  .pcie-surface .walk-diagram svg { min-width: var(--st-diagram-width, 700px); }
+}
+@media (forced-colors: active) {
+  .pcie-surface .walk-choice:checked + .walk-label { border-color: Highlight; }
+  .pcie-surface .walk-step { border-color: CanvasText; }
+}
+@media print {
+  .pcie-surface .guided-walk { border: 1px solid #999; padding: .7rem; break-inside: auto; }
+  .pcie-surface .walk-choice, .pcie-surface .walk-label, .pcie-surface .walk-help { display: none; }
+  .pcie-surface .walk-step { display: list-item !important; border-color: #999 !important; background: transparent !important; }
+  .pcie-surface .walk-node { --walk-active-weight: 500 !important; }
+  .pcie-surface .walk-node > :is(rect, circle, ellipse, polygon, path, line, polyline) { stroke: #333 !important; stroke-width: 1.5px !important; }
+  .pcie-surface .walk-diagram { overflow: visible; }
+  .pcie-surface .walk-diagram svg { min-width: 0; }
+  .pcie-surface .walk-component details > * { display: block !important; }
+  .pcie-surface .walk-component details::details-content { content-visibility: visible !important; }
+}
+
+/* SVG text follows the selected reading theme. */
+.pcie-surface svg text { fill: var(--ink); }
+.pcie-surface .walk-summary { margin: 1rem 0 1.5rem; }
   </style>
 </head>
-<body class="pcie-surface">
+<body class="pcie-surface spec-teaching" data-spec-series="pcie">
   <a class="skip-link" href="#content">跳到正文</a>
   <div class="site-shell">
     <nav class="topbar" aria-label="課程導覽">
@@ -235,17 +380,47 @@
       <p class="eyebrow">PCIe · 系統與規格閱讀 / CHAPTER 10</p>
       <h1>裝置與連線如何省電</h1>
       <p class="header-description">用 PMCSR 讀改寫與 L1.2 雙端設定案例，串起 D-state、ASPM、LTR、恢復與平台喚醒。</p>
-      <div class="edition"><span>繁體中文 · 規格與情境推演</span><span>2026-10-21</span></div>
+      <div class="edition"><span>繁體中文 · 規格與情境推演</span><span>2026-10-23</span></div>
     </header>
     <div class="reading-layout">
       <aside class="toc-panel" aria-label="本頁目錄">
         <p class="toc-label">本章閱讀路徑</p>
-        <nav aria-label="章節段落"><ol><li><a href="#states">1. 裝置在 D0，Link 還能省電嗎？</a></li><li><a href="#pmcsr">2. 要查裝置的省電能力，先找哪個 Capability？</a></li><li><a href="#resume">3. 從 D3hot 回 D0，要不要重新初始化？</a></li><li><a href="#aspm">4. ASPM 與把 Function 寫成 D3hot，有什麼不同？</a></li><li><a href="#substates">5. 已支援 L1，是否就能直接開 L1.2？</a></li><li><a href="#configure">6. 這組 Enable 值應該如何建立？</a></li><li><a href="#ltr">7. Enable 已經是 1，為什麼還不能進 L1.2？</a></li><li><a href="#wake">8. 主電源已移除，裝置如何通知系統醒來？</a></li><li><a href="#practice">9. 用條件改變答案</a></li></ol></nav>
+        <nav aria-label="章節段落"><ol><li><a href="#states">1. 裝置在 D0，Link 還能省電嗎？</a></li><li><a href="#pmcsr">2. 要查裝置的省電能力，先找哪個 Capability？</a></li><li><a href="#resume">3. 從 D3hot 回 D0，要不要重新初始化？</a></li><li><a href="#aspm">4. ASPM 與把 Function 寫成 D3hot，有什麼不同？</a></li><li><a href="#substates">5. 已支援 L1，是否就能直接開 L1.2？</a></li><li><a href="#configure">6. 這組 Enable 值應該如何建立？</a></li><li><a href="#ltr">7. Enable 已經是 1，為什麼還不能進 L1.2？</a></li><li><a href="#wake">8. 主電源已移除，裝置如何通知系統醒來？</a></li><li><a href="#practice">9. 沿條件判讀省電行為</a></li></ol></nav>
       </aside>
       <main id="content" tabindex="-1">
         <article class="lesson">
-<p class="lead">省電不只是把 Enable 設為 1。系統要知道哪些工作可以暫停、哪些狀態必須保存，以及下一次傳輸要等多久。本章先分清 Function 的 D-state 與 Link 的 L-state，再從 PMCSR、ASPM、L1 PM Substates，一路讀到喚醒所需的平台條件。</p>
-<aside class="note"><strong>版本與案例邊界</strong><p>PCIe 行為以 Base 6.0 為準；平台電源資源另以 ACPI 6.6（2025-05-13）補充，兩者不是同一版次體系。本章的回傳值與時間條件均為作者假設。PMCSR 案例使用普通 Endpoint 03:00.0；L1.2 是另一個已具備所需能力的 Link 案例，不替前幾章的裝置追加未宣告功能。SR-IOV 電源管理另留專章。</p></aside>
+<!-- pcie-walk: walks/chapter10-overview.json -->
+<div class="guided-walk" id="ch10-overview" role="group" aria-labelledby="ch10-overview-title" data-walk-version="1">
+<h3 id="ch10-overview-title">分開看 Function 與 Link，再設定省電路徑</h3>
+<p class="walk-help" id="ch10-overview-help">選擇步驟後，圖中對應的元件與下方解說會加上重點標示。完整圖與所有解說會持續顯示；也可用方向鍵切換步驟。</p>
+<div class="walk-order"><p>先區分上下兩列的對象，再讀各自控制。橫線表示各列有自己的轉換規則，不把 D-state 與 L-state 畫成同一條狀態鏈。</p></div>
+<input class="walk-choice" type="radio" name="ch10-overview-step" id="ch10-overview-choice-1" value="1" data-walk-step="1" aria-describedby="ch10-overview-help" aria-controls="ch10-overview-view ch10-overview-step-1" checked="checked">
+<label class="walk-label" for="ch10-overview-choice-1">1. 先確定想省的是哪一部分</label>
+<input class="walk-choice" type="radio" name="ch10-overview-step" id="ch10-overview-choice-2" value="2" data-walk-step="2" aria-describedby="ch10-overview-help" aria-controls="ch10-overview-view ch10-overview-step-2">
+<label class="walk-label" for="ch10-overview-choice-2">2. 取得兩端的能力與控制</label>
+<input class="walk-choice" type="radio" name="ch10-overview-step" id="ch10-overview-choice-3" value="3" data-walk-step="3" aria-describedby="ch10-overview-help" aria-controls="ch10-overview-view ch10-overview-step-3">
+<label class="walk-label" for="ch10-overview-choice-3">3. 依規則建立設定與時間參數</label>
+<input class="walk-choice" type="radio" name="ch10-overview-step" id="ch10-overview-choice-4" value="4" data-walk-step="4" aria-describedby="ch10-overview-help" aria-controls="ch10-overview-view ch10-overview-step-4">
+<label class="walk-label" for="ch10-overview-choice-4">4. 檢查進入及退出所需條件</label>
+<div class="walk-view" id="ch10-overview-view">
+<figure class="diagram walk-diagram">
+<svg viewBox="0 0 900 440" role="img" aria-labelledby="ch10-guide-title ch10-guide-desc"><title id="ch10-guide-title">上下兩列分別是 Function 與 Link 的狀態；虛線指向 L1 子狀態的額外條件。</title><desc id="ch10-guide-desc">上下兩列分別是 Function 與 Link 的狀態；虛線指向 L1 子狀態的額外條件。</desc><g data-walk-target="function-label" class="walk-node" data-walk-steps="1"><rect x="30" y="15" width="230" height="55" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="145.0" y="40" text-anchor="middle" font-size="15">Function 的電源狀態</text></g><g data-walk-target="d0" class="walk-node" data-walk-steps="1 2"><rect x="325" y="15" width="200" height="65" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="425.0" y="40" text-anchor="middle" font-size="15">D0</text></g><g data-walk-target="d3" class="walk-node" data-walk-steps="1"><rect x="650" y="15" width="200" height="65" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="750.0" y="40" text-anchor="middle" font-size="15">D3hot</text></g><g data-walk-target="d-transition" class="walk-node" data-walk-steps="1"><path d="M525 45 L650 45" fill="none" stroke="var(--accent)" stroke-width="2" /><polygon points="650.0,45.0 640.0,40.0 640.0,50.0" fill="var(--accent)" /><text x="587.5" y="36.0" text-anchor="middle" font-size="13">依 PM 規則</text></g><g data-walk-target="link-label" class="walk-node" data-walk-steps="1"><rect x="30" y="170" width="230" height="55" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="145.0" y="195" text-anchor="middle" font-size="15">Link 的電源狀態</text></g><g data-walk-target="l0" class="walk-node" data-walk-steps="1"><rect x="325" y="170" width="200" height="65" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="425.0" y="195" text-anchor="middle" font-size="15">L0</text></g><g data-walk-target="l1" class="walk-node" data-walk-steps="1 2 4"><rect x="650" y="170" width="200" height="65" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="750.0" y="195" text-anchor="middle" font-size="15">L1</text></g><g data-walk-target="link-transition" class="walk-node" data-walk-steps="4"><path d="M525 200 L650 200" fill="none" stroke="var(--accent)" stroke-width="2" /><polygon points="650.0,200.0 640.0,195.0 640.0,205.0" fill="var(--accent)" /><text x="587.5" y="191.0" text-anchor="middle" font-size="13">依 ASPM 條件</text></g><a href="#ch10-overview-component-substates" aria-label="L1 子狀態"><g data-walk-target="substates" class="walk-node" data-walk-steps="2 3 4"><rect x="550" y="325" width="300" height="75" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="700.0" y="350" text-anchor="middle" font-size="15">L1.1／L1.2</text><text x="700.0" y="373" text-anchor="middle" font-size="15">另查兩端能力、控制與時間</text></g></a><g data-walk-target="substate-condition" class="walk-node" data-walk-steps="3"><path d="M750 235 L750 325" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="6 5" /></g></svg>
+<figcaption><p>作者的分層狀態示意，未列出全部狀態與雙向轉換；本章以適用的 L1.2 設定案例放大說明。</p></figcaption></figure>
+<div class="walk-summary"><p class="lead">Function 電源狀態與 Link 電源狀態描述不同對象。D0 表示 Function 的工作電源狀態；在符合條件時，它使用的 Link 仍可透過 ASPM（Active State Power Management，主動狀態電源管理）進入省電狀態。</p><p>前情提要：Chapter 8 已建立相鄰兩端的 Link；本章再把這兩端的省電能力、控制與退出條件接起來。</p><p><strong>規格路線：</strong>Tables 5-1／5-2 → PM Capability 與 Link 欄位 → Figures 7-146–7-150 的 L1 Substates → LTR 與退出時間條件。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>LTR</dt><dd>Latency Tolerance Reporting，延遲容忍度回報</dd></div></dl></div>
+<ol class="walk-steps">
+<li class="walk-step" id="ch10-overview-step-1" data-walk-step="1" data-walk-targets="function-label d0 d3 link-label l0 l1 d-transition"><h4>先確定想省的是哪一部分</h4><div class="walk-condition"><p>本章分開說明不同 Mode 的支援條件；Flit Mode 不支援 L0s，不能照搬舊模式的狀態集合。</p></div><div class="walk-explanation"><p>分清 Function 的 D-state 與 Link 的 L-state，再選 PMCSR 或 Link 控制。</p></div><div class="walk-source" data-source-claims="PCIE-CH10-STATES-001"><p>Base 6.0 §5.2–§5.3.1／Tables 5-1–5-2，pp.600–609。</p></div></li>
+<li class="walk-step" id="ch10-overview-step-2" data-walk-step="2" data-walk-targets="d0 l1 substates"><h4>取得兩端的能力與控制</h4><div class="walk-condition"><p>ASPM 控制 Link；PMCSR 控制 Function。L1 子狀態的支援與 Enable 必須依兩端條件安排。</p></div><div class="walk-explanation"><p>讀 PM Capability、Link Capabilities／Control；需要 L1 子狀態時，再找到 L1 PM Substates Extended Capability。</p></div><div class="walk-source" data-source-claims="PCIE-CH10-PMCSR-001 PCIE-CH10-ASPM-001 PCIE-CH10-L1SS-FIELDS-001"><p>Base 6.0 Figures 7-17–7-19、7-24、7-27–7-28、7-146–7-150，pp.944–949、956–957、967–972、1103–1108。</p></div></li>
+<li class="walk-step" id="ch10-overview-step-3" data-walk-step="3" data-walk-targets="substates substate-condition"><h4>依規則建立設定與時間參數</h4><div class="walk-condition"><p>本章逐項說明 Control 1／Control 2 的適用狀態及兩端先後；圖不省略這些設定前提。</p></div><div class="walk-explanation"><p>沿正文的設定順序處理 Enable 與退出時間，確認目前狀態允許修改相關欄位。</p></div><div class="walk-source" data-source-claims="PCIE-CH10-L1SS-ORDER-001 PCIE-CH10-EXAMPLE-001"><p>Base 6.0 §5.5.4–§5.5.5、§7.8.3.3–§7.8.3.4，pp.650–651、1106–1108。</p></div></li>
+<li class="walk-step" id="ch10-overview-step-4" data-walk-step="4" data-walk-targets="link-transition l1 substates"><h4>檢查進入及退出所需條件</h4><div class="walk-condition"><p>已支援、已啟用與當下允許進入省電狀態是相連的檢查步驟；喚醒另依電源與 PME 路徑處理。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>PME</dt><dd>Power Management Event，電源管理事件</dd></div></dl></div><div class="walk-explanation"><p>Enable 設定完成後，仍依 LTR（Latency Tolerance Reporting，延遲容忍回報）與相關時間要求判斷是否可進入 L1.2；退出後再依狀態確認可用性。</p></div><div class="walk-source" data-source-claims="PCIE-CH10-LTR-001 PCIE-CH10-RESUME-001 PCIE-CH10-WAKE-001"><p>Base 6.0 §5.5.1、§6.18／Figure 6-15，pp.644、781–782；§5.8–§5.9，pp.654–655。</p></div></li>
+</ol></div>
+<div class="walk-components"><h4>圖中元件</h4><ul class="walk-component-links">
+<li><a href="#ch10-overview-component-substates">L1 子狀態</a></li>
+</ul>
+<section class="walk-component" id="ch10-overview-component-substates" data-component-target="substates"><h4>L1 子狀態</h4><div class="walk-component-action"><p>本章用同一條 Link 的兩端設定說明 L1.1／L1.2。</p></div><details><summary>基本責任</summary><p>子狀態屬於 Link 省電機制，不是 Function 的另一個 D-state。</p></details></section>
+</div>
+</div>
+<!-- /pcie-walk -->
+<aside class="note"><strong>版本與案例邊界</strong><p>PCIe 行為以 Base 6.0 為準；平台電源資源另以 ACPI 6.6（2025-05-13）補充，兩者不是同一版次體系。本章的回傳值與時間條件均為作者假設。PMCSR 案例使用普通 Endpoint 03:00.0；L1.2 是另一個已具備所需能力的 Link 案例，不替前幾章的裝置追加未宣告功能。SR-IOV 電源管理另留專章。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SR-IOV</dt><dd>Single Root I/O Virtualization，單根I/O虛擬化</dd></div></dl></aside>
 <section id="states"><h2>1. 裝置在 D0，Link 還能省電嗎？</h2>
 <p>可以。D-state 描述 Function 的電源管理狀態，L-state 描述 Link 的狀態。D0 是 Function 的正常工作狀態，但在沒有傳輸需求時，啟用的 Active State Power Management（ASPM）仍可讓 Link 進入較省電的狀態。新流量出現時，Link 再恢復傳輸。</p>
 <div class="table-wrap"><table><caption>先分清楚誰進入低功耗</caption><thead><tr><th scope="col">狀態</th><th scope="col">管理對象與用途</th><th scope="col">恢復時要注意</th></tr></thead><tbody>
@@ -256,24 +431,24 @@
 <tr><td>L2／L3</td><td>主電源已移除的 Link 狀態；是否有 Vaux 區分 L2 與 L3。</td><td>L2 不傳一般封包，要先喚醒電源／時脈與 Link。</td></tr>
 </tbody></table></div>
 <p>Vaux 指輔助電源，實際供應方式取決於 form factor。D3cold 不是「完全沒有任何電源」的同義詞：若要在主電源移除後偵測喚醒事件，仍需適當的輔助供電。</p>
-<p>此外，D0 還分 uninitialized 與 active。剛完成 Conventional Reset 或 FLR 的 Function 回到 D0uninitialized，不能只因 PowerState=00b 就假定裝置工作介面已可使用。</p>
+<p>此外，D0 還分 uninitialized 與 active。剛完成 Conventional Reset 或 FLR 的 Function 回到 D0uninitialized，不能只因 PowerState=00b 就假定裝置工作介面已可使用。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>FLR</dt><dd>Function Level Reset，以功能為範圍的重設</dd></div></dl>
 <details class="source-note"><summary>D-state 與 L-state 的關係</summary><p>§5.2、Table 5-1（pp.600–604）；§5.3.1（pp.604–608）；Table 5-2（p.609）；D0 子狀態見 p.605。L0s 限制與 L0p 見 §4.2.6.6–§4.2.6.7（p.445）。這裡只建立狀態關係，不把圖表中的可能組合當成任意可直接轉移的操作。</p></details></section>
 <section id="pmcsr"><h2>2. 要查裝置的省電能力，先找哪個 Capability？</h2>
 <p>先走傳統 Capability 清單找 ID=0x01，再看 Figure 7-17 的 Power Management 結構。注意 Figure 7-18 把 Capability ID、Next Pointer 與能力欄位畫在同一個 32-bit 範圍內；如果只讀 +0x02 的 16-bit PMC，bit 編號要隨讀取起點調整。本例直接讀完整 DWORD，避免混用兩套編號。</p>
 <div class="table-wrap"><table><caption>PM 能力與狀態的教學讀值</caption><thead><tr><th scope="col">位置與寬度</th><th scope="col">值</th><th scope="col">先取得的資訊</th></tr></thead><tbody><tr><td>0x40，32 bits</td><td>0xC8035001</td><td>ID=0x01、Next=0x50、Version=3；D1／D2 不支援。</td></tr><tr><td>0x44，16 bits</td><td>0x810B</td><td>PowerState=3、No_Soft_Reset=1、PME_En=1、PME_Status=1。</td></tr></tbody></table></div>
-<p><code>(0xC8035001 &gt;&gt; 27) &amp; 0x1F = 0x19</code>，代表可從 D0、D3hot、D3cold 產生 PME。這是能力，不是保證系統目前已備妥所有喚醒資源。本例假設適當的輔助供電可用、沒有實作可選 Data Register，Aux_Current=0 採自供電情況；不把零解讀成所有情況都不需要供電。</p>
+<p><code>(0xC8035001 &gt;&gt; 27) &amp; 0x1F = 0x19</code>，代表可從 D0、D3hot、D3cold 產生 PME。這是能力，不是保證系統目前已備妥所有喚醒資源。本例假設適當的輔助供電可用、沒有實作可選 Data Register，Aux_Current=0 採自供電情況；不把零解讀成所有情況都不需要供電。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>PME</dt><dd>Power Management Event，電源管理事件</dd></div></dl>
 <p>PME 是 Power Management Event。PME_En=1 表示允許發出通知，PME_Status=1 則記錄符合條件的事件；Status 的設定不受 Enable 值影響。因此「有事件」與「允許送通知」仍然要分開。</p>
 <p>PMCSR 的 PowerState 只有 00b=D0、01b=D1、10b=D2、11b=D3hot，沒有「再寫一個值就進 D3cold」的編碼。寫入不支援的可選 D1／D2 時，寫入本身正常完成，但資料被丟棄，狀態不改變。</p>
 <details class="source-note"><summary>能力到控制的 Figure 路徑</summary><p>Figure 7-17（p.944）→ Figure 7-18／Table 7-14（pp.945–947）→ Figure 7-19／Table 7-15（pp.947–949）。PME_Support 的 bit 31 與輔助電源條件見 p.947；Aux_Current=0 的解釋見 p.946。</p></details></section>
 <section id="resume"><h2>3. 從 D3hot 回 D0，要不要重新初始化？</h2>
-<p>先讀 No_Soft_Reset。若為 1，透過 PowerState 寫入從 D3hot 回 D0，必須保留內部 Function 狀態，回到 D0active；若為 0，內部狀態未定義，軟體必須完整重新初始化。後者也不保證舊資料都已清除，所以 D3hot→D0 不能取代 FLR 的用途。</p>
+<p>先讀 No_Soft_Reset。若為 1，透過 PowerState 寫入從 D3hot 回 D0，必須保留內部 Function 狀態，回到 D0active；若為 0，內部狀態未定義，軟體必須完整重新初始化。後者也不保證舊資料都已清除，所以 D3hot→D0 不能取代 FLR 的用途。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>FLR</dt><dd>Function Level Reset，以功能為範圍的重設</dd></div></dl>
 <p>本例 PMCSR=0x810B，想回到 D0 且暫時保留 PME_Status 供後續處理。除了清 PowerState bits 1:0，還要在寫值中將 RW1CS 的 bit 15 寫零；否則把讀到的 1 原樣寫回，就會提前清掉事件。</p>
 <div class="table-wrap"><table><caption>回到 D0，但不意外清除 PME 事件</caption><thead><tr><th scope="col">動作</th><th scope="col">16-bit 值</th><th scope="col">結果或理由</th></tr></thead><tbody><tr><td>起始讀值</td><td>0x810B</td><td>D3hot、No_Soft_Reset=1、通知已啟用、事件待處理。</td></tr><tr><td>寫入 D0</td><td>0x0108</td><td>保留其他適用欄位；PowerState=0，對 PME_Status 寫 0。</td></tr><tr><td>等待適用恢復時間後讀取</td><td>0x8108</td><td>D0；PME_Status 仍是 1。</td></tr><tr><td>處理事件後，明確清除 PME_Status</td><td>0x8108</td><td>這次刻意對 bit 15 寫 1；若沒有新事件，後續讀回 0x0108。</td></tr></tbody></table></div>
 <p>這些值假設沒有其他軟體或新事件並行改動狀態。本例的 Immediate_Readiness_on_Return_to_D0=0，也未採其他就緒時間機制，所以 D3hot→D0 後至少等 10 ms，才再存取 Function，包括 Configuration Space。No_Soft_Reset=1 免除的是重新初始化，不是這段恢復等待。</p>
 <p>進入 D3hot 前，驅動程式必須處理仍等待 Completion 的交易，並準備可能因主電源移除而遺失的狀態。若是經 Fundamental Reset 回 D0，或曾進入 L2/L3 Ready 而產生 DL_Down，不能沿用本例的狀態保存結論。</p>
 <details class="source-note"><summary>保存狀態與恢復時間</summary><p>§5.3.1.4（pp.606–608）；Figure 5-18／Table 5-14（pp.654–655）；No_Soft_Reset、PME_En、PME_Status 見 Table 7-15（pp.948–949），Immediate Readiness 見 Table 7-14（p.945）。Flit-capable Function 必須設定 No_Soft_Reset，但它仍只適用指定的電源轉換。</p></details></section>
 <section id="aspm"><h2>4. ASPM 與把 Function 寫成 D3hot，有什麼不同？</h2>
-<p>ASPM 讓硬體在允許的條件下，於 D0 閒置時管理 Link。PCI-PM 軟體電源管理則先改變 Function 的 D-state，再由相關規則協調 Link。例如普通非 ARI 多 Function 裝置，不能只因其中一個 Function 離開 D0，就代表其他 Function 也都停止工作；其 Upstream Port 必須等所有 Functions 都離開 D0，才可代表 PCI-PM 發起進 L1。</p>
+<p>ASPM 讓硬體在允許的條件下，於 D0 閒置時管理 Link。PCI-PM 軟體電源管理則先改變 Function 的 D-state，再由相關規則協調 Link。例如普通非 ARI 多 Function 裝置，不能只因其中一個 Function 離開 D0，就代表其他 Function 也都停止工作；其 Upstream Port 必須等所有 Functions 都離開 D0，才可代表 PCI-PM 發起進 L1。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>ARI</dt><dd>Alternative Routing-ID Interpretation，替代路由識別碼解讀</dd></div></dl>
 <p>查 ASPM 時，先讀兩端 Link Capabilities 的 ASPM Support，再查 Link Control 的 ASPM Control。前者宣告可用機制，後者表示軟體開放哪些機制；Enable 不是「這一刻已經在 L1」的狀態回報。</p>
 <p>接著要比對恢復延遲：Link Capabilities 的 L1 Exit Latency 是 Port 恢復需要多久；Endpoint 的 Device Capabilities 則提供 Endpoint L1 Acceptable Latency，表示它可容忍多少延遲。兩者名字相近，卻不在同一個 Register。若經過多個 Switch，必須考慮整條路徑。</p>
 <details class="question"><summary>三段 Link 的 L1 exit latency，要直接相加嗎？</summary><p>不能一概相加。Figure 5-8 的三段 Link 範例中，Switch 會及早在上游開始退出，退出過程可重疊；規格的結果為最後一段在 T+34 μs 完成，而不是把所有 Port 的數字相加。先讀 p.634 的時間敘述，再對照 p.635 的拓樸，才能理解延遲如何沿路傳播。</p></details>
@@ -300,13 +475,13 @@
 <p>在情境 A，若另外開了 ASPM L1.1，還可以依規則進 L1.1；本例的 bit 3=0，因此不能假設有這個退路。只看到 L1.2 Enable=1，既不能證明正在 L1.2，也不能證明設定失敗。</p>
 <details class="source-note"><summary>進入條件與 LTR 單位</summary><p>§5.5.1（p.644）要求兩類 LTR 分別滿足；Figure 6-15、§6.18（pp.781–782）定義 Requirement 與 Scale。啟用 Endpoint LTR 前，Root Complex 與所有中間 Switch 必須支援，且由靠近 Root Port 者先啟用（p.781）。Control 1 threshold 的兩端一致性見 p.650。</p></details></section>
 <section id="wake"><h2>8. 主電源已移除，裝置如何通知系統醒來？</h2>
-<p>先分兩步：恢復能傳輸的環境，再送出辨識事件來源的 PM_PME Message。L2 中不能直接傳一般 TLP；支援喚醒的裝置必須利用適用的 WAKE# 或 Beacon 機制，讓平台恢復電源、時脈與 Link。具體使用哪一種，取決於 form factor。Link 重新可用後，PM_PME 帶著 Requester ID 向 Root Complex 傳遞來源。</p>
+<p>先分兩步：恢復能傳輸的環境，再送出辨識事件來源的 PM_PME Message。L2 中不能直接傳一般 TLP；支援喚醒的裝置必須利用適用的 WAKE# 或 Beacon 機制，讓平台恢復電源、時脈與 Link。具體使用哪一種，取決於 form factor。Link 重新可用後，PM_PME 帶著 Requester ID 向 Root Complex 傳遞來源。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>TLP</dt><dd>Transaction Layer Packet，交易層封包</dd></div></dl>
 <p>因此，PME_Support=1 只是其中一項證據。還要有 PME_En、必要的輔助供電、平台喚醒路徑，以及沿途元件的配合。這也說明為什麼 PMCSR 的 D3hot 設定不能單獨代表整個平台已完成 D3cold 電源切換。</p>
 <aside class="note"><strong>補充背景：ACPI 的分工</strong><p>ACPI 6.6 的 _PR0／_PR3 描述裝置在 D0／D3hot 所需的電源資源。_PR3 雖然與 D3cold 決策相關，名稱中的 3 並不表示它是「D3cold Register」；它也不是 PCIe Configuration Space 裡的一個欄位。作業系統還需依平台協調條件管理這些資源。</p><p>來源：<a href="https://uefi.org/sites/default/files/resources/ACPI_Spec_6.6.pdf#page=568">ACPI 6.6 §7.3.8–§7.3.11，文件 pp.497–498／PDF pp.568–569</a>。本節只補充平台分工，不展開 AML 程式或假設特定主機的電源接線。</p></aside>
 <details class="source-note"><summary>喚醒的兩個階段</summary><p>Base 6.0 §5.3.3.1–§5.3.3.2（pp.615–616）；D3cold 的供電與保存狀態見 §5.3.1.4.2（pp.608–609）。WAKE# 不是可不分插槽形式任意套用的通用接線指令。</p></details></section>
-<section id="practice"><h2>9. 用條件改變答案</h2>
-<details class="question"><summary>No_Soft_Reset=1，但裝置經歷 D3cold 再上電，還能直接沿用原先狀態嗎？</summary><p>不能。No_Soft_Reset 保證的是指定的 D3hot→D0 軟體轉換；從 D3cold 恢復需要電源與 Fundamental Reset，回到 D0uninitialized，再建立工作狀態。（§5.3.1.4，pp.606–608。）</p></details>
-<details class="question"><summary>只有 Endpoint 支援 ASPM L1.2，上游 Port 不支援，可以只開 Endpoint 嗎？</summary><p>不可以。對應能力必須兩端都支援才可啟用，否則行為未定義；還要遵守雙端設定順序與 LTR／時序前提。（§5.5.4，p.650。）</p></details>
+<section id="practice"><h2>9. 沿條件判讀省電行為</h2>
+<details open class="question"><summary>No_Soft_Reset=1，但裝置經歷 D3cold 再上電，還能直接沿用原先狀態嗎？</summary><p>不能。No_Soft_Reset 保證的是指定的 D3hot→D0 軟體轉換；從 D3cold 恢復需要電源與 Fundamental Reset，回到 D0uninitialized，再建立工作狀態。（§5.3.1.4，pp.606–608。）</p></details>
+<details open class="question"><summary>只有 Endpoint 支援 ASPM L1.2，上游 Port 不支援，可以只開 Endpoint 嗎？</summary><p>不可以。對應能力必須兩端都支援才可啟用，否則行為未定義；還要遵守雙端設定順序與 LTR／時序前提。（§5.5.4，p.650。）</p></details>
 <p>到這裡，課程已串起裝置發現、傳輸、可靠性、Reset 與省電。接著讀 <a href="chapter-11.html">Chapter 11</a> 的 Hot-Plug，再串起錯誤回報與系統控制權，處理裝置在運作中改變狀態時，平台如何協調。</p></section>
         </article>
         <nav class="bottom-nav" aria-label="下一步"><a href="index.html">課程總覽</a><a href="chapter-9.html">← Chapter 9</a><a href="chapter-11.html">Chapter 11 →</a><a href="#content">回到本章開頭 ↑</a></nav>

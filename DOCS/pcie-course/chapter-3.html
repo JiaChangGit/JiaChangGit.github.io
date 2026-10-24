@@ -222,9 +222,154 @@
 
 /* Self-contained teaching diagrams use the same theme in standalone pages and posts. */
 .pcie-surface .course-diagram text { fill: var(--ink); font-family: inherit; font-size: 18px; }
+
+/* Applied only to explicitly authorized teaching roots. */
+html .spec-teaching[data-spec-series] .st-terms { margin:.35rem 0 1rem; padding:.5rem .8rem; border-inline-start:3px solid var(--st-accent); background:var(--st-soft); font-size:.88em; color:var(--st-muted); }
+html .spec-teaching[data-spec-series] .st-terms > div { display:flex; flex-wrap:wrap; gap:.2em .7em; }
+html .spec-teaching[data-spec-series] .st-terms dt { font-weight:650; }
+html .spec-teaching[data-spec-series] .st-terms dd { margin:0; flex:1 1 14em; }
+html .spec-teaching[data-spec-series] {
+ --st-diagram-width:900px;
+ --st-paper:#f2f6f8; --st-surface:#fff; --st-ink:#192d40; --st-muted:#4c6479;
+ --st-line:#cbd9e3; --st-accent:#145f9d; --st-soft:#edf5fc;
+ --paper:var(--st-paper); --surface:var(--st-surface); --surface-2:var(--st-soft); --surface-alt:var(--st-soft);
+ --ink:var(--st-ink); --muted:var(--st-muted); --line:var(--st-line);
+ --accent:var(--st-accent); --accent-2:var(--st-accent); --soft:var(--st-soft); --blue-soft:var(--st-soft); --teal-soft:var(--st-soft);
+ --qr-paper:var(--st-paper); --qr-surface:var(--st-surface); --qr-ink:var(--st-ink); --qr-muted:var(--st-muted);
+ --qr-line:var(--st-line); --qr-accent:var(--st-accent); --qr-soft:var(--st-soft);
+ color:var(--st-ink); background:var(--st-paper); font-size:17px; line-height:1.9;
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+}
+html .spec-teaching[data-spec-series="nvme"] { --st-accent:#086b56; --st-soft:#e7f4ee; }
+@media(prefers-color-scheme:dark) {
+ html:not([data-theme="light"]) .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+ html:not([data-theme="light"]) .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+}
+html[data-theme="dark"] .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+html[data-theme="dark"] .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+.spec-teaching * { box-sizing:border-box; }
+.spec-teaching :is(h1,h2,h3,h4,h5,p,li,td,th,summary,strong,figcaption) { color:var(--st-ink); }
+.spec-teaching svg text { font-family:inherit; }
+.spec-teaching h1 { font-size:clamp(1.8rem,3.2vw,2.65rem); line-height:1.4; }
+.spec-teaching h2 { font-size:clamp(1.3rem,2.5vw,1.7rem); line-height:1.55; }
+.spec-teaching h3 { font-size:1.15rem; line-height:1.65; }
+.spec-teaching h4 { font-size:1rem; line-height:1.7; }
+.spec-teaching :is(h1,h2,h3,h4) { overflow-wrap:anywhere; }
+.spec-teaching p { margin:.7rem 0 1.15rem; }
+.spec-teaching :is(a,summary) { text-underline-offset:.2em; }
+.spec-teaching :focus-visible { outline:3px solid var(--st-accent); outline-offset:4px; }
+.spec-teaching :is(.qa-takeaway,.qa-answer-lead,.st-takeaway) { color:var(--st-ink); font-weight:650; font-size:1.06rem; line-height:1.9; }
+.spec-teaching :is(.qa-question,.qr-card,.guided-walk) { border:1px solid var(--st-line); border-radius:12px; background:var(--st-surface); padding:clamp(18px,3vw,30px); margin:1.8rem 0; }
+.spec-teaching :is(.qa-flow,.qr-note,.qr-observations,.st-context,.st-route) { background:var(--st-soft); border-left:4px solid var(--st-accent); padding:1rem 1.2rem; margin:1.4rem 0; }
+.spec-teaching :is(.qr-step,.qa-qid,.st-label) { color:var(--st-accent); font-weight:700; }
+.spec-teaching :is(.qa-citations,.qa-source-links,.qr-case-sources,.walk-source,.st-source) { font-size:.84rem; line-height:1.75; color:var(--st-muted); overflow-wrap:anywhere; }
+.spec-teaching :is(.qr-table,.table-wrap) { overflow-x:auto; margin:1.4rem 0; border-radius:7px; }
+.spec-teaching :is(th,td) { line-height:1.8; vertical-align:top; min-width:120px; }
+.spec-teaching :is(table,td) { background:var(--st-surface); }
+.spec-teaching th { background:var(--st-soft); }
+.spec-teaching .st-step { border-left:3px solid var(--st-line); padding:.6rem 1rem; margin:1.2rem 0; }
+.spec-teaching .st-step:target { border-left-color:var(--st-accent); background:var(--st-soft); }
+.spec-teaching .st-glossary { border:1px solid var(--st-line); padding:.7rem 1rem; margin:1.4rem 0; border-radius:8px; }
+.spec-teaching .st-glossary > summary { min-height:44px; cursor:pointer; }
+.spec-teaching .st-specs { display:flex; flex-wrap:wrap; gap:.4rem 1rem; color:var(--st-muted); font-size:.8rem; line-height:1.8; margin:1rem 0; }
+.spec-teaching .st-specs span { border-bottom:2px solid var(--st-accent); padding:.2rem 0; }
+@media(max-width:620px) { .spec-teaching :is(.qa-question,.qr-card,.guided-walk) { padding:16px; } .spec-teaching .diagram svg { min-width:var(--st-diagram-width); } }
+@media print {
+ .spec-teaching { --st-paper:#fff!important; --st-surface:#fff!important; --st-ink:#000!important; --st-muted:#333!important; --st-line:#999!important; --st-accent:#000!important; --st-soft:#fff!important; }
+ .spec-teaching details > * { display:block!important; }
+ .spec-teaching details::details-content { content-visibility:visible!important; }
+ .spec-teaching .st-step { break-inside:avoid; }
+}
+
+/* Native reading guides: selection highlights; it never hides teaching content.
+   build_pcie_course.py changes .pcie-surface to .pcie-article for the posts. */
+.pcie-surface .guided-walk { margin: 1.8rem 0; padding: 1.2rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); min-width: 0; }
+.pcie-surface .guided-walk > h3 { margin-top: 0; }
+.pcie-surface .walk-help { color: var(--muted); font-size: .85rem; }
+.pcie-surface .walk-order { margin-bottom: 1.1rem; }
+/* Keep native radio semantics and keyboard handling; the associated label is
+   the visible control, so a radio cannot wrap away from its own label. */
+.pcie-surface .walk-choice { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.pcie-surface .walk-label { display: inline-flex; align-items: center; min-height: 44px; padding: .35rem .7rem; margin: .25rem .8rem .25rem 0; border: 2px solid var(--line); border-radius: 8px; cursor: pointer; font-size: .9rem; line-height: 1.5; color: var(--ink); background: var(--surface-alt); }
+.pcie-surface .walk-choice:checked + .walk-label { border-color: var(--accent); background: var(--blue-soft); font-weight: 700; }
+.pcie-surface .walk-choice:focus-visible + .walk-label { outline: 3px solid var(--focus); outline-offset: 3px; }
+.pcie-surface .walk-view { margin-top: 1rem; min-width: 0; }
+.pcie-surface .walk-diagram { margin: 0 0 1.2rem; }
+.pcie-surface .walk-diagram svg { width: 100%; height: auto; display: block; }
+.pcie-surface .walk-diagram svg a { cursor: pointer; }
+.pcie-surface .walk-diagram svg a:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
+.pcie-surface .walk-diagram figcaption { margin-top: .8rem; }
+.pcie-surface .walk-steps { max-width: none; padding-left: 1.6rem; }
+.pcie-surface .walk-step { padding: .6rem .9rem; margin: .7rem 0; border: 2px solid transparent; border-left: 5px solid var(--line); border-radius: 5px; background: var(--surface); }
+.pcie-surface .walk-step h4 { margin: .2rem 0 .5rem; }
+.pcie-surface .walk-condition { font-size: .9rem; color: var(--muted); }
+.pcie-surface .walk-source { border-top: 1px solid var(--line); padding-top: .35rem; color: var(--muted); font-size: .85rem; }
+.pcie-surface .walk-step p:last-child { margin-bottom: .3rem; }
+.pcie-surface .walk-components { border-top: 1px solid var(--line); margin-top: 1.4rem; padding-top: .4rem; }
+.pcie-surface .walk-component-links { display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; list-style: none; padding-left: 0; }
+.pcie-surface .walk-component-links a { min-height: 44px; min-width: 44px; }
+.pcie-surface .walk-component { padding: .7rem 1rem; margin: 1rem 0; border: 1px solid var(--line); border-radius: 8px; }
+.pcie-surface .walk-component > h4 { margin-top: .2rem; }
+.pcie-surface .walk-component:target { outline: 3px solid var(--accent-2); outline-offset: 3px; }
+.pcie-surface .walk-component details { margin-bottom: .3rem; }
+
+.pcie-surface .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-step[data-walk-step="1"],
+.pcie-surface .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-step[data-walk-step="2"],
+.pcie-surface .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-step[data-walk-step="3"],
+.pcie-surface .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-step[data-walk-step="4"],
+.pcie-surface .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-step[data-walk-step="5"],
+.pcie-surface .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-step[data-walk-step="6"],
+.pcie-surface .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-step[data-walk-step="7"],
+.pcie-surface .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-step[data-walk-step="8"] { border-color: var(--accent); background: var(--blue-soft); }
+
+.pcie-surface .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-node[data-walk-steps~="1"],
+.pcie-surface .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-node[data-walk-steps~="2"],
+.pcie-surface .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-node[data-walk-steps~="3"],
+.pcie-surface .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-node[data-walk-steps~="4"],
+.pcie-surface .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-node[data-walk-steps~="5"],
+.pcie-surface .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-node[data-walk-steps~="6"],
+.pcie-surface .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-node[data-walk-steps~="7"],
+.pcie-surface .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-node[data-walk-steps~="8"] { --walk-active-weight: 750; }
+.pcie-surface .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-node[data-walk-steps~="1"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-node[data-walk-steps~="2"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-node[data-walk-steps~="3"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-node[data-walk-steps~="4"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-node[data-walk-steps~="5"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-node[data-walk-steps~="6"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-node[data-walk-steps~="7"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-node[data-walk-steps~="8"] > :is(rect, circle, ellipse, polygon, path, line, polyline) { stroke: var(--accent); stroke-width: 3.5px; vector-effect: non-scaling-stroke; }
+.pcie-surface .walk-node text { font-weight: var(--walk-active-weight, inherit); }
+
+@media (max-width: 620px) {
+  .pcie-surface .guided-walk { padding: .8rem; }
+  .pcie-surface .walk-label { margin-right: .45rem; padding-left: .45rem; padding-right: .45rem; }
+  .pcie-surface .walk-steps { padding-left: 1.15rem; }
+  .pcie-surface .walk-step { padding: .5rem .6rem; }
+  .pcie-surface .walk-diagram { overflow-x: auto; }
+  .pcie-surface .walk-diagram svg { min-width: var(--st-diagram-width, 700px); }
+}
+@media (forced-colors: active) {
+  .pcie-surface .walk-choice:checked + .walk-label { border-color: Highlight; }
+  .pcie-surface .walk-step { border-color: CanvasText; }
+}
+@media print {
+  .pcie-surface .guided-walk { border: 1px solid #999; padding: .7rem; break-inside: auto; }
+  .pcie-surface .walk-choice, .pcie-surface .walk-label, .pcie-surface .walk-help { display: none; }
+  .pcie-surface .walk-step { display: list-item !important; border-color: #999 !important; background: transparent !important; }
+  .pcie-surface .walk-node { --walk-active-weight: 500 !important; }
+  .pcie-surface .walk-node > :is(rect, circle, ellipse, polygon, path, line, polyline) { stroke: #333 !important; stroke-width: 1.5px !important; }
+  .pcie-surface .walk-diagram { overflow: visible; }
+  .pcie-surface .walk-diagram svg { min-width: 0; }
+  .pcie-surface .walk-component details > * { display: block !important; }
+  .pcie-surface .walk-component details::details-content { content-visibility: visible !important; }
+}
+
+/* SVG text follows the selected reading theme. */
+.pcie-surface svg text { fill: var(--ink); }
+.pcie-surface .walk-summary { margin: 1rem 0 1.5rem; }
   </style>
 </head>
-<body class="pcie-surface">
+<body class="pcie-surface spec-teaching" data-spec-series="pcie">
   <a class="skip-link" href="#content">跳到正文</a>
   <div class="site-shell">
     <nav class="topbar" aria-label="課程導覽">
@@ -235,22 +380,52 @@
       <p class="eyebrow">PCIe · 系統與規格閱讀 / CHAPTER 3</p>
       <h1>從未知拓樸到完成裝置發現</h1>
       <p class="header-description">沿著含 Switch 的拓樸配置 Bus Number，分清存在性、RRS 未就緒與存取失敗，再追蹤 Configuration Request 路由。</p>
-      <div class="edition"><span>繁體中文 · 規格與情境推演</span><span>2026-10-20</span></div>
+      <div class="edition"><span>繁體中文 · 規格與情境推演</span><span>2026-10-23</span></div>
     </header>
     <div class="reading-layout">
       <aside class="toc-panel" aria-label="本頁目錄">
         <p class="toc-label">本章閱讀路徑</p>
-        <nav aria-label="章節段落"><ol><li><a href="#starting">1. 完全不知道裝置位置時，第一筆查詢從哪裡開始？</a></li><li><a href="#probe">2. 第一筆讀取，要取得什麼證據？</a></li><li><a href="#readiness">3. 讀到 0xFFFF0001，是什麼裝置？</a></li><li><a href="#walk">4. 還不知道下一層有多深，Subordinate 要先填多少？</a></li><li><a href="#routing">5. 對 Endpoint 讀設定時，Type 1 到哪裡變成 Type 0？</a></li><li><a href="#handoff">6. 能列出 BDF，就表示裝置已經可以工作嗎？</a></li><li><a href="#practice">7. 換一個情況，原流程還成立嗎？</a></li><li><a href="#next">8. 找到裝置之後，還欠哪一步？</a></li><li><a href="#sources">版本與來源</a></li></ol></nav>
+        <nav aria-label="章節段落"><ol><li><a href="#starting">1. 完全不知道裝置位置時，第一筆查詢從哪裡開始？</a></li><li><a href="#probe">2. 第一筆讀取，要取得什麼證據？</a></li><li><a href="#walk">3. 還不知道下一層有多深，Subordinate 要先填多少？</a></li><li><a href="#readiness">4. 讀到 0xFFFF0001，是什麼裝置？</a></li><li><a href="#routing">5. 對 Endpoint 讀設定時，Type 1 到哪裡變成 Type 0？</a></li><li><a href="#handoff">6. 能列出 BDF，就表示裝置已經可以工作嗎？</a></li><li><a href="#practice">7. 沿著不同條件調整發現流程</a></li><li><a href="#next">8. 找到裝置之後，還欠哪一步？</a></li><li><a href="#sources">版本與來源</a></li></ol></nav>
       </aside>
       <main id="content" tabindex="-1">
         <article class="lesson">
-<p class="lead">Chapter 1 給了一張已經編好號碼的拓樸圖；Chapter 2 則假設 Function 已經找到。現在把時間往前移：開機時還不知道 Switch 後面有哪些裝置，系統怎麼先替路徑編號，再找到那些 Function？</p>
+<!-- pcie-walk: walks/chapter3-overview.json -->
+<div class="guided-walk" id="ch3-overview" role="group" aria-labelledby="ch3-overview-title" data-walk-version="1">
+<h3 id="ch3-overview-title">沿同一棵樹找到各個 Function</h3>
+<p class="walk-help" id="ch3-overview-help">選擇步驟後，圖中對應的元件與下方解說會加上重點標示。完整圖與所有解說會持續顯示；也可用方向鍵切換步驟。</p>
+<div class="walk-order"><p>圖中標的是本例完成後的範圍。閱讀時從根部向下追蹤；探查期間的暫時上限及回填動作見下方步驟與正常枚舉時間表。</p></div>
+<input class="walk-choice" type="radio" name="ch3-overview-step" id="ch3-overview-choice-1" value="1" data-walk-step="1" aria-describedby="ch3-overview-help" aria-controls="ch3-overview-view ch3-overview-step-1" checked="checked">
+<label class="walk-label" for="ch3-overview-choice-1">1. 從平台提供的根部開始</label>
+<input class="walk-choice" type="radio" name="ch3-overview-step" id="ch3-overview-choice-2" value="2" data-walk-step="2" aria-describedby="ch3-overview-help" aria-controls="ch3-overview-view ch3-overview-step-2">
+<label class="walk-label" for="ch3-overview-choice-2">2. 配置通往下一層的橋接範圍</label>
+<input class="walk-choice" type="radio" name="ch3-overview-step" id="ch3-overview-choice-3" value="3" data-walk-step="3" aria-describedby="ch3-overview-help" aria-controls="ch3-overview-view ch3-overview-step-3">
+<label class="walk-label" for="ch3-overview-choice-3">3. 探查分支並收斂範圍</label>
+<input class="walk-choice" type="radio" name="ch3-overview-step" id="ch3-overview-choice-4" value="4" data-walk-step="4" aria-describedby="ch3-overview-help" aria-controls="ch3-overview-view ch3-overview-step-4">
+<label class="walk-label" for="ch3-overview-choice-4">4. 記錄身分，接到後續配置</label>
+<div class="walk-view" id="ch3-overview-view">
+<figure class="diagram walk-diagram">
+<svg viewBox="0 0 900 470" role="img" aria-labelledby="ch3-guide-title ch3-guide-desc"><title id="ch3-guide-title">完成後的橋接範圍快照；導圖以這張結果圖定位每次探查，編號先後在步驟中說明。</title><desc id="ch3-guide-desc">完成後的橋接範圍快照；導圖以這張結果圖定位每次探查，編號先後在步驟中說明。</desc><g data-walk-target="root" class="walk-node" data-walk-steps="1 2"><rect x="300" y="20" width="300" height="65" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="450.0" y="45" text-anchor="middle" font-size="15">Root Port 00:01.0</text><text x="450.0" y="68" text-anchor="middle" font-size="15">完成後下游範圍 01–04</text></g><g data-walk-target="e-root" class="walk-node" data-walk-steps="2"><path d="M450 85 L450 135" fill="none" stroke="var(--accent)" stroke-width="2" /><polygon points="450.0,135.0 455.0,125.0 445.0,125.0" fill="var(--accent)" /></g><a href="#ch3-overview-component-up" aria-label="Switch 的 Upstream Port"><g data-walk-target="up" class="walk-node" data-walk-steps="2"><rect x="300" y="135" width="300" height="65" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="450.0" y="160" text-anchor="middle" font-size="15">Switch Upstream 01:00.0</text><text x="450.0" y="183" text-anchor="middle" font-size="15">完成後下游範圍 02–04</text></g></a><g data-walk-target="a" class="walk-node" data-walk-steps="3"><path d="M450 200 L225 260" fill="none" stroke="var(--accent)" stroke-width="2" /><polygon points="225.0,260.0 236.0,262.3 233.4,252.6" fill="var(--accent)" /></g><g data-walk-target="b" class="walk-node" data-walk-steps="3"><path d="M450 200 L675 260" fill="none" stroke="var(--accent)" stroke-width="2" /><polygon points="675.0,260.0 666.6,252.6 664.0,262.3" fill="var(--accent)" /></g><g data-walk-target="dp-a" class="walk-node" data-walk-steps="3"><rect x="75" y="260" width="300" height="65" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="225.0" y="285" text-anchor="middle" font-size="15">Downstream A 02:01.0</text><text x="225.0" y="308" text-anchor="middle" font-size="15">完成後範圍 03–03</text></g><g data-walk-target="dp-b" class="walk-node" data-walk-steps="3"><rect x="525" y="260" width="300" height="65" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="675.0" y="285" text-anchor="middle" font-size="15">Downstream B 02:02.0</text><text x="675.0" y="308" text-anchor="middle" font-size="15">完成後範圍 04–04</text></g><g data-walk-target="to-a" class="walk-node" data-walk-steps="3"><path d="M225 325 L225 375" fill="none" stroke="var(--accent)" stroke-width="2" /><polygon points="225.0,375.0 230.0,365.0 220.0,365.0" fill="var(--accent)" /></g><g data-walk-target="to-b" class="walk-node" data-walk-steps="3"><path d="M675 325 L675 375" fill="none" stroke="var(--accent)" stroke-width="2" /><polygon points="675.0,375.0 680.0,365.0 670.0,365.0" fill="var(--accent)" /></g><g data-walk-target="ep-a" class="walk-node" data-walk-steps="3 4"><rect x="75" y="375" width="300" height="65" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="225.0" y="400" text-anchor="middle" font-size="15">Endpoint：03:00.0／03:00.1</text></g><g data-walk-target="ep-b" class="walk-node" data-walk-steps="3 4"><rect x="525" y="375" width="300" height="65" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="675.0" y="400" text-anchor="middle" font-size="15">Endpoint：04:00.0</text></g></svg>
+<figcaption><p>作者的教學拓樸；Bus Number 配置策略是示範，規格定義欄位及路由條件。</p></figcaption></figure>
+<div class="walk-summary"><p class="lead">枚舉是由已知根部向下發現 Function 的過程。本章沿用前兩章的拓樸，先替橋接路徑建立可轉送的 Bus 範圍，再探查下游，最後記錄已找到的功能。</p><p>前情提要：Chapter 1 教你辨認 Port 與 Function；Chapter 2 教你在已知 Function 的設定空間中找欄位。現在要建立那些已知位置。</p><p><strong>規格路線：</strong>Figures 7-1／7-2 的階層 → Figure 7-14 的橋接 Bus 欄位 → Figures 7-7／7-8 的身分與標頭。</p></div>
+<ol class="walk-steps">
+<li class="walk-step" id="ch3-overview-step-1" data-walk-step="1" data-walk-targets="root"><h4>從平台提供的根部開始</h4><div class="walk-condition"><p>平台已提供本例的合法根部範圍；路徑的 Link 與 Reset 後等待條件已滿足。</p></div><div class="walk-explanation"><p>先取得 Root Bridge 的設定存取介面、Segment 與 Bus 範圍，再從已知 Root Port 探查。</p></div><div class="walk-source" data-source-claims="PCIE-CH3-PLATFORM-001 PCIE-CH3-ROUTE-001"><p>Base 6.0 §7.1／Figures 7-1–7-2，pp.903–904；Firmware 3.3 §3.1.1／§3.5，pp.32、34–35。</p></div></li>
+<li class="walk-step" id="ch3-overview-step-2" data-walk-step="2" data-walk-targets="root up e-root"><h4>配置通往下一層的橋接範圍</h4><div class="walk-condition"><p>本章示範先往一條分支走到底的配置策略；暫時上限採平台提供範圍，沒有其他管理者同時修改。</p></div><div class="walk-explanation"><p>在 Figure 7-14 找到 Primary、Secondary、Subordinate Bus Number。軟體先讓待探查分支具有合法的轉送範圍，再往下發設定要求。</p></div><div class="walk-source" data-source-claims="PCIE-CH3-BUS-001 PCIE-CH3-EXAMPLE-001"><p>Base 6.0 §7.5.1.3.2–§7.5.1.3.4／Figure 7-14，pp.936–937。</p></div></li>
+<li class="walk-step" id="ch3-overview-step-3" data-walk-step="3" data-walk-targets="dp-a to-a ep-a dp-b to-b ep-b a b"><h4>探查分支並收斂範圍</h4><div class="walk-condition"><p>每筆設定存取先依成功、未就緒或失敗分流；後文另說明 RRS（Request Retry Status，暫時未就緒回覆）。</p></div><div class="walk-explanation"><p>沿 A 分支找到 Bus 03 的功能，再回來處理 B 分支。找到最深一層後，依本例策略回填各橋接器的最高下游 Bus。</p></div><div class="walk-source" data-source-claims="PCIE-CH3-PROBE-001 PCIE-CH3-ROUTE-001 PCIE-CH3-EXAMPLE-001"><p>Base 6.0 §7.3.1–§7.3.3，pp.911–913；§7.5.1.3.3–§7.5.1.3.4，p.937。</p></div></li>
+<li class="walk-step" id="ch3-overview-step-4" data-walk-step="4" data-walk-targets="ep-a ep-b"><h4>記錄身分，接到後續配置</h4><div class="walk-condition"><p>探查 Function 1 前仍須依多功能裝置規則確認存在；完成發現後，資源與使用條件還需逐項建立。</p></div><div class="walk-explanation"><p>讀取 Vendor ID、Device ID、Header Type 與 Class Code，辨認功能及下一層橋接關係。這些資料接到 Chapter 4 的資源配置。</p></div><div class="walk-source" data-source-claims="PCIE-CH3-CANDIDATES-001 PCIE-CH3-IDENTITY-001 PCIE-CH3-HANDOFF-001"><p>Base 6.0 §7.5.1.1／Figures 7-7–7-8、Tables 7-6–7-7，pp.923–925。</p></div></li>
+</ol></div>
+<div class="walk-components"><h4>圖中元件</h4><ul class="walk-component-links">
+<li><a href="#ch3-overview-component-up">Switch 的 Upstream Port</a></li>
+</ul>
+<section class="walk-component" id="ch3-overview-component-up" data-component-target="up"><h4>Switch 的 Upstream Port</h4><div class="walk-component-action"><p>本例從 Bus 01 的橋接功能走到內部 Bus 02。</p></div><details><summary>基本責任</summary><p>Port 是連接介面；設定空間把相關路徑表示為可配置的橋接功能。</p></details></section>
+</div>
+</div>
+<!-- /pcie-walk -->
 <p>本章用同一棵樹示範發現過程。重點是每一步為什麼能走到下一層，不把一種軟體搜尋策略寫成所有平台唯一的枚舉程序。</p>
-<aside class="note"><strong>版本與範圍</strong><p>欄位與交易規則依 PCI Express Base Specification Revision 6.0；韌體交接依 PCI Firmware Specification Revision 3.3。採傳統 BDF，不使用 ARI、SR-IOV 或 FPB。以下是教學推演，不執行實機掃描或寫入；本文的 offset 均以 byte 為單位。</p></aside>
+<aside class="note"><strong>版本與範圍</strong><p>欄位與交易規則依 PCI Express Base Specification Revision 6.0；韌體交接依 PCI Firmware Specification Revision 3.3。採傳統 BDF，不使用 ARI、SR-IOV 或 FPB。以下是教學推演，不執行實機掃描或寫入；本文的 offset 均以 byte 為單位。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>BDF</dt><dd>Bus／Device／Function，匯流排、裝置與功能識別</dd></div><div><dt>ARI</dt><dd>Alternative Routing-ID Interpretation，替代路由識別碼解讀</dd></div><div><dt>SR-IOV</dt><dd>Single Root I/O Virtualization，單根I/O虛擬化</dd></div><div><dt>FPB</dt><dd>Flattening Portal Bridge，扁平化入口橋接器</dd></div></dl></aside>
 
 <section id="starting"><h2>1. 完全不知道裝置位置時，第一筆查詢從哪裡開始？</h2>
 <p>枚舉（enumeration）不是從任意記憶體位址開始猜。系統軟體先取得平台提供的 Host／Root Bridge 資訊，例如 Segment、可用 Bus 範圍，以及執行設定存取的介面，再從已知的根部往下找。</p>
-<p>Root Bridge 是平台向軟體提供的根部存取與資源範圍，Root Port 則是 PCIe 階層中向下接出 Link 的 Port。兩者不要只因名稱都有 Root 就合併。Firmware 3.3 §3.1.1 說明 UEFI 的 Root Bridge 介面如何提供 PCI Memory、I/O 與 Configuration 存取；§3.5 則要求韌體配置所有 Host Bridge，並提供相關平台描述。</p>
+<p>Root Bridge 是平台向軟體提供的根部存取與資源範圍，Root Port 則是 PCIe 階層中向下接出 Link 的 Port。兩者不要只因名稱都有 Root 就合併。Firmware 3.3 §3.1.1 說明 UEFI 的 Root Bridge 介面如何提供 PCI Memory、I/O 與 Configuration 存取；§3.5 則要求韌體配置所有 Host Bridge，並提供相關平台描述。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>UEFI</dt><dd>Unified Extensible Firmware Interface，統一可延伸韌體介面</dd></div></dl>
 <aside class="example"><strong>本章的起始條件</strong><p>平台已提供 Segment 0000、Bus 00–3F 的可用範圍；本例沒有其他階層與它競爭這段 Bus Number。Root Port 00:01.0 已能存取，相關連線與 Reset 後等待條件已滿足。下游尚未完成 Bus Number 配置。軟體持有這段配置的管理權，沒有另一個執行者同時修改；Hot-Plug 與執行中的裝置重新配置另有條件，留到後續章節。</p></aside>
 <p>本例的搜尋策略是先往一條分支走到底，再回來處理旁邊的分支。Bus Number 依序使用 01、02、03、04，探查期間暫以 3F 作下游上限，完成後再縮到實際範圍。<strong>這是作者設計的配置策略</strong>；規格定義 Register 與路由行為，並未要求每個平台照這個編號順序，也未禁止為熱插拔保留額外 Bus Number。</p>
 <details class="source-note"><summary>平台起點的依據</summary><p>PCI Firmware 3.3 §3.1.1，p.32；§3.5，pp.34–35。Base 6.0 §7.1，Figures 7-1／7-2，pp.903–904。Host Bridge 的實作與 Root Complex 內部編號具有平台差異，本例將已知起點列為前提，不由 Endpoint 反推平台設定。</p></details></section>
@@ -263,9 +438,21 @@
 <p class="term-note">UR 是 Unsupported Request，表示該要求無法依適用規則被接受。RRS 是 Base 6.0 的 Request Retry Status，表示在規格允許的情況下，接收端暫時不能處理要求。RRS 不是要求遺失，也不是可在任何時刻任意使用的忙碌通知。</p>
 <details class="source-note"><summary>Vendor ID 與讀值合成的來源</summary><p>Vendor ID：Base 6.0 §7.5.1.1.1，p.917。未實作的 Bus／Device／Function 對設定要求回 UR：§7.3.1，p.911。對依賴全 1 讀值的軟體，Root Complex 應合成資料的要求見 §2.3.2 的 implementation note，p.221。這不表示 UR Completion 本身帶著全 1 payload；非成功 Completion 不帶讀取資料。</p></details></section>
 
-<section id="readiness"><h2>3. 讀到 0xFFFF0001，是什麼裝置？</h2>
+
+
+<section id="walk"><h2>3. 還不知道下一層有多深，Subordinate 要先填多少？</h2>
+<p>先沿已就緒的正常案例往下找。讀取 Bridge 的 Header Type 與 PCIe 類型，再依 Figure 7-14 找到 Secondary（0x19）與 Subordinate（0x1A）；兩者各為 8 bits、可讀寫。Secondary 先指定下一層 Bus，Subordinate 暫時涵蓋仍可能分配的範圍，讓後續查詢有路可走。</p>
+<p>本例已知平台可用上限是 3F，因此用 3F 作暫時上限，沒有任意擴到 FF。每次先完成必要的 Configuration Write，再探查新的下游位置；寫入完成的確認依平台存取機制處理，不把 CPU 已送出存取當成遠端已完成設定。</p>
+<div class="table-wrap"><table><caption>教學枚舉時間表：先往下找，再回填範圍</caption><thead><tr><th scope="col">步驟</th><th scope="col">本次設定或探查</th><th scope="col">為什麼下一步走得通？</th></tr></thead><tbody>
+<tr><td>1</td><td>Root Port 00:01.0：Secondary=01，Subordinate=3F。</td><td>開放下一層 Bus 01，以及尚待探查的下游範圍。</td></tr><tr><td>2</td><td>在 01:00.0 找到 Switch Upstream Port；設 Secondary=02，Subordinate=3F。</td><td>可以探查 Switch 內部 Bus 02。</td></tr><tr><td>3</td><td>在 02:01.0 找到 Downstream A；設 Secondary=03，Subordinate=3F。</td><td>沿 A 的 Link 探查 Bus 03 的 Device 00。</td></tr><tr><td>4</td><td>找到 03:00.0，Header Type=80h；再確認 03:00.1 存在。完成本分支後，把 A 的 Subordinate 改為 03。</td><td>本例 A 下方沒有更深 Bridge；後續號碼可交給另一分支。</td></tr><tr><td>5</td><td>回 Bus 02，找到 02:02.0 的 Downstream B；設 Secondary=04，Subordinate=3F。</td><td>A 已縮回 03，不會與 B 的暫時範圍重疊。</td></tr><tr><td>6</td><td>找到 04:00.0，Header Type=00h；本分支完成，把 B 的 Subordinate 改為 04。</td><td>本例是單功能 Device，沒有其他機制指示須探查更多 Function。</td></tr><tr><td>7</td><td>Switch Upstream Port 的 Subordinate 改為 04，Root Port 的 Subordinate 也改為 04。</td><td>兩者保留完整下游範圍，形成 Chapter 1 的最終快照。</td></tr>
+</tbody></table></div>
+<p>Function 0 的 Header Type=80h 只是允許繼續探查，並沒有說 Function 1 一定存在。表中的「確認 03:00.1 存在」是另一筆有效結果。本例另外假設其他合法候選位置沒有新 Function；即使某個 Function Number 不存在，也不能自行推出後面所有號碼都不存在。</p>
+<p>普通 Link 對端與 Switch 內部 Bus 的候選位置也不同。非 ARI、未使用 FPB 時，外部 Link 的對端關聯到 Device 0；內部的 Downstream Port 則可用其他 Device Number。因此不能為了讓表格整齊，就只在 Bus 02 查 Device 0 而漏掉本例的 Device 01、02。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>ARI</dt><dd>Alternative Routing-ID Interpretation，替代路由識別碼解讀</dd></div><div><dt>FPB</dt><dd>Flattening Portal Bridge，扁平化入口橋接器</dd></div></dl>
+<details class="source-note"><summary>時間表所依據的 Register 與規則</summary><p>Base 6.0 §7.5.1.3，Figure 7-14，p.936；Secondary／Subordinate 的語義與 RW 屬性：§7.5.1.3.3–§7.5.1.3.4，p.937。Header Type：Table 7-7，p.925。Device Number 限制：§7.3.1，p.911。ECAM 寫入完成的保障要求：§7.2.2，p.908。本例不使用 Primary Bus Number 推自身 BDF，原因見 <a href="chapter-1.html#bridge-path">Chapter 1</a>。深度優先次序、3F 暫時上限及最後緊縮範圍是教學策略。</p></details></section>
+
+<section id="readiness"><h2>4. 讀到 0xFFFF0001，是什麼裝置？</h2>
 <p>先不要把它拆成一般 Vendor／Device ID。若 Root Port 支援並已啟用 Configuration RRS Software Visibility，而且 Configuration Read 包含 Vendor ID 的兩個 bytes，Root Complex 在收到 RRS 時，會讓軟體讀到 Vendor ID = 0001h；同筆讀取的其他 bytes 則回報全 1。</p>
-<aside class="example"><strong>獨立的就緒情境</strong><p>假設目標剛經過規格允許回 RRS 的 Reset，尚未回報 Configuration-Ready，也尚未成功完成重設後的設定要求；沒有 Immediate Readiness 等禁止 RRS 的條件。Root Port 使用自身的可見性控制，已找到 PCIe Capability 起點 0x70；以下讀值均成功取得。這個情境用來解釋暫時未就緒，不插入後面已具備就緒條件的正常枚舉時間表。</p></aside>
+<aside class="example"><strong>獨立的就緒情境</strong><p>假設目標剛經過規格允許回 RRS 的 Reset，尚未回報 Configuration-Ready，也尚未成功完成重設後的設定要求；沒有 Immediate Readiness 等禁止 RRS 的條件。Root Port 使用自身的可見性控制，已找到 PCIe Capability 起點 0x70；以下讀值均成功取得。這個情境用來解釋暫時未就緒，與前節已具備就緒條件的正常枚舉時間表分開閱讀。</p></aside>
 <div class="table-wrap"><table><caption>RRS 可見性案例的讀取</caption><thead><tr><th scope="col">對象與 byte offset</th><th scope="col">寬度</th><th scope="col">假設讀值</th><th scope="col">判讀</th></tr></thead><tbody>
 <tr><td>Root Port，0x70 + 0x1E = 0x8E</td><td>16 bits</td><td>0x0001</td><td>Root Capabilities bit 0 = 1，支援可見性。</td></tr><tr><td>Root Port，0x70 + 0x1C = 0x8C</td><td>16 bits</td><td>0x0010</td><td>Root Control bit 4 = 1，已啟用。</td></tr><tr><td>目標 Function，0x00</td><td>32 bits</td><td>0xFFFF0001</td><td>本情境中的 RRS 合成讀值；不是真實 Vendor／Device ID。</td></tr>
 </tbody></table></div>
@@ -273,16 +460,6 @@
 <p>若只讀 16-bit Vendor ID，特殊值會是 <code>0x0001</code>；本例讀了 32 bits，才看到 <code>0xFFFF0001</code>。若沒有啟用這項可見性，或讀取沒有同時涵蓋 Vendor ID 的兩個 bytes，就不能要求 Root Complex 用這個資料格式回報；適用時由 Root Complex 重新發出設定要求。</p>
 <p>教材不把「等固定一秒」當成所有 Reset 的共同答案。重試期限要連同 Reset、Readiness 與平台策略判斷；用完允許的等待仍未就緒，應記為初始化或存取未完成，不能假裝已取得有效 Vendor ID。</p>
 <details class="source-note"><summary>RRS 的精確依據與邊界</summary><p>Base 6.0 §2.3.1，p.211 列出可回 RRS 的 Reset 與禁止條件；p.214 的 implementation note 說明軟體可見性。實際 Root Complex 處理見 §2.3.2，pp.220–221。Register 位置：Figure 7-21，p.952；§7.5.3.12，Figure 7-33／Table 7-30，pp.986–988；§7.5.3.13，Figure 7-34／Table 7-31，p.988。本章使用 Base 6.0 的 RRS 名稱。</p></details></section>
-
-<section id="walk"><h2>4. 還不知道下一層有多深，Subordinate 要先填多少？</h2>
-<p>回到已就緒的正常案例。先讀 Bridge 的 Header Type 與 PCIe 類型，再依 Figure 7-14 找到 Secondary（0x19）與 Subordinate（0x1A）；兩者各為 8 bits、可讀寫。Secondary 先指定下一層 Bus，Subordinate 暫時涵蓋仍可能分配的範圍，讓後續查詢有路可走。</p>
-<p>本例已知平台可用上限是 3F，因此用 3F 作暫時上限，沒有任意擴到 FF。每次先完成必要的 Configuration Write，再探查新的下游位置；寫入完成的確認依平台存取機制處理，不把 CPU 已送出存取當成遠端已完成設定。</p>
-<div class="table-wrap"><table><caption>教學枚舉時間表：先往下找，再回填範圍</caption><thead><tr><th scope="col">步驟</th><th scope="col">本次設定或探查</th><th scope="col">為什麼下一步走得通？</th></tr></thead><tbody>
-<tr><td>1</td><td>Root Port 00:01.0：Secondary=01，Subordinate=3F。</td><td>開放下一層 Bus 01，以及尚待探查的下游範圍。</td></tr><tr><td>2</td><td>在 01:00.0 找到 Switch Upstream Port；設 Secondary=02，Subordinate=3F。</td><td>可以探查 Switch 內部 Bus 02。</td></tr><tr><td>3</td><td>在 02:01.0 找到 Downstream A；設 Secondary=03，Subordinate=3F。</td><td>沿 A 的 Link 探查 Bus 03 的 Device 00。</td></tr><tr><td>4</td><td>找到 03:00.0，Header Type=80h；再確認 03:00.1 存在。完成本分支後，把 A 的 Subordinate 改為 03。</td><td>本例 A 下方沒有更深 Bridge；後續號碼可交給另一分支。</td></tr><tr><td>5</td><td>回 Bus 02，找到 02:02.0 的 Downstream B；設 Secondary=04，Subordinate=3F。</td><td>A 已縮回 03，不會與 B 的暫時範圍重疊。</td></tr><tr><td>6</td><td>找到 04:00.0，Header Type=00h；本分支完成，把 B 的 Subordinate 改為 04。</td><td>本例是單功能 Device，沒有其他機制指示須探查更多 Function。</td></tr><tr><td>7</td><td>Switch Upstream Port 的 Subordinate 改為 04，Root Port 的 Subordinate 也改為 04。</td><td>兩者保留完整下游範圍，形成 Chapter 1 的最終快照。</td></tr>
-</tbody></table></div>
-<p>Function 0 的 Header Type=80h 只是允許繼續探查，並沒有說 Function 1 一定存在。表中的「確認 03:00.1 存在」是另一筆有效結果。本例另外假設其他合法候選位置沒有新 Function；即使某個 Function Number 不存在，也不能自行推出後面所有號碼都不存在。</p>
-<p>普通 Link 對端與 Switch 內部 Bus 的候選位置也不同。非 ARI、未使用 FPB 時，外部 Link 的對端關聯到 Device 0；內部的 Downstream Port 則可用其他 Device Number。因此不能為了讓表格整齊，就只在 Bus 02 查 Device 0 而漏掉本例的 Device 01、02。</p>
-<details class="source-note"><summary>時間表所依據的 Register 與規則</summary><p>Base 6.0 §7.5.1.3，Figure 7-14，p.936；Secondary／Subordinate 的語義與 RW 屬性：§7.5.1.3.3–§7.5.1.3.4，p.937。Header Type：Table 7-7，p.925。Device Number 限制：§7.3.1，p.911。ECAM 寫入完成的保障要求：§7.2.2，p.908。本例不使用 Primary Bus Number 推自身 BDF，原因見 <a href="chapter-1.html#bridge-path">Chapter 1</a>。深度優先次序、3F 暫時上限及最後緊縮範圍是教學策略。</p></details></section>
 
 <section id="routing"><h2>5. 對 Endpoint 讀設定時，Type 1 到哪裡變成 Type 0？</h2>
 <p>這一節的 Type 指 <strong>Configuration Request 的封包類型</strong>，不是 Configuration Header 的布局。Header Type 1 的 Bridge 也會接受對自身設定空間的 Type 0 Request；兩者名稱相同，不代表一一配對。</p>
@@ -294,18 +471,18 @@
 <p>Switch 內部是邏輯設定拓樸；本例沒有假設內部真的有另一條實體 PCIe Link，或每個 virtual Bridge 都要在實體線路上產生一份封包。這裡只描述規格要求的對外路由結果。</p>
 <details class="source-note"><summary>路由規則的來源</summary><p>Base 6.0 §7.3.2–§7.3.3，pp.912–913。Endpoint 對 Type 1 Configuration Request 依 UR 處理；Root Port／Switch 對有效的本地 Type 0 Request 則處理自身設定空間。本節沒有將 Type 0／Type 1 的角色延伸到所有其他 TLP。</p></details></section>
 
-<section id="handoff"><h2>6. 能列出 BDF，就表示裝置已經可以工作嗎？</h2>
-<p>這次搜尋完成後，系統有了 Function 清單與下游路徑，但還沒有因此完成 BAR 資源配置、開啟 Memory Space，或準備驅動程式的工作資料。Vendor／Device ID 和 Class Code 能提供識別與驅動選擇線索，也不等於初始化已成功。</p>
+<section id="handoff"><h2>6. 能列出 BDF，就表示裝置已經可以工作嗎？</h2><dl class="st-terms" aria-label="本段名詞"><div><dt>BDF</dt><dd>Bus／Device／Function，匯流排、裝置與功能識別</dd></div></dl>
+<p>這次搜尋完成後，系統有了 Function 清單與下游路徑，但還沒有因此完成 BAR 資源配置、開啟 Memory Space，或準備驅動程式的工作資料。Vendor／Device ID 和 Class Code 能提供識別與驅動選擇線索，也不等於初始化已成功。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>BAR</dt><dd>Base Address Register，基底位址暫存器</dd></div></dl>
 <p>枚舉也不保證全由韌體一次做完。Firmware 3.3 §3.5 要求韌體配置開機與主控台裝置的完整路徑，以及所有 Host Bridge；其他裝置可以留給 OS 處理。因此，OS 看到某個 Endpoint 尚未配置，不能僅憑這件事宣告韌體違反規格。若要檢查交接，應先確認它是不是被要求完成的那條路徑。</p>
 <details class="source-note"><summary>來源與下一步</summary><p>Base 6.0 §7.5.1.1.1–§7.5.1.1.2，p.917；Class Code：§7.5.1.1.6，Figure 7-7／Table 7-6，pp.923–924。PCI Firmware 3.3 §3.5，pp.34–35。資源與命令控制位在 <a href="chapter-4.html">Chapter 4</a> 接續處理。</p></details></section>
 
-<section id="practice"><h2>7. 換一個情況，原流程還成立嗎？</h2>
-<details class="question"><summary>Root Port 只把下游上限開到 Bus 01，還沒找到 Switch 下方的 Bus 03，就能直接跳去讀 03:00.0 嗎？</summary><p>不能假設走得通。先要為通往 Bus 03 的各層 Bridge 建立一致且有效的 Bus 範圍。對目前不屬於有效路徑的要求，規格允許的結果不是「幫你找到裝置」，而是按 UR 規則處理。（§7.3.3，pp.912–913。）</p></details>
-<details class="question"><summary>Function 0 的 Header Type 是 00h，可以為了保險一律掃 Function 1–7 嗎？</summary><p>本章沒有 ARI／SR-IOV 等額外指示，因此不可以。Table 7-7（p.925）在 Multi-Function Device bit 清除時禁止這種探查。若 bit 設定，允許探查也不等於那些 Function 已存在。</p></details>
-<details class="question"><summary>讀到 0xFFFF0001，就把 Device ID FFFFh 當成未知型號繼續初始化，問題在哪裡？</summary><p>若符合本章的 RRS 可見性條件，整個讀值是 Root Complex 為重試狀態合成的資料，尚未取得真正的 Vendor／Device ID。應處理就緒與重試，不能據此選驅動或讀取假想的裝置欄位。（§2.3.2，p.220。）</p></details>
-<details class="question"><summary>最終 Subordinate 比本例的 04 大，就一定錯了嗎？</summary><p>不一定。本例採完成後緊縮到實際使用範圍的策略；平台可能依法配置並保留額外 Bus Number。要檢查的是平台授予的範圍、各分支是否一致，以及保留政策，不能把本例的數字當成唯一合法答案。</p></details></section>
+<section id="practice"><h2>7. 沿著不同條件調整發現流程</h2>
+<details open class="question"><summary>Root Port 只把下游上限開到 Bus 01，還沒找到 Switch 下方的 Bus 03，就能直接跳去讀 03:00.0 嗎？</summary><p>不能假設走得通。先要為通往 Bus 03 的各層 Bridge 建立一致且有效的 Bus 範圍。對目前不屬於有效路徑的要求，規格允許的結果不是「幫你找到裝置」，而是按 UR 規則處理。（§7.3.3，pp.912–913。）</p></details>
+<details open class="question"><summary>Function 0 的 Header Type 是 00h，可以為了保險一律掃 Function 1–7 嗎？</summary><p>本章沒有 ARI／SR-IOV 等額外指示，因此不可以。Table 7-7（p.925）在 Multi-Function Device bit 清除時禁止這種探查。若 bit 設定，允許探查也不等於那些 Function 已存在。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SR-IOV</dt><dd>Single Root I/O Virtualization，單根I/O虛擬化</dd></div></dl></details>
+<details open class="question"><summary>讀到 0xFFFF0001，就把 Device ID FFFFh 當成未知型號繼續初始化，問題在哪裡？</summary><p>若符合本章的 RRS 可見性條件，整個讀值是 Root Complex 為重試狀態合成的資料，尚未取得真正的 Vendor／Device ID。應處理就緒與重試，不能據此選驅動或讀取假想的裝置欄位。（§2.3.2，p.220。）</p></details>
+<details open class="question"><summary>最終 Subordinate 比本例的 04 大，就一定錯了嗎？</summary><p>不一定。本例採完成後緊縮到實際使用範圍的策略；平台可能依法配置並保留額外 Bus Number。要檢查的是平台授予的範圍、各分支是否一致，以及保留政策，不能把本例的數字當成唯一合法答案。</p></details></section>
 
-<section id="next"><h2>8. 找到裝置之後，還欠哪一步？</h2><p>接著讀 <a href="chapter-4.html">Chapter 4：BAR、位址空間與資源配置</a>。那一章會從裝置需要多少空間開始，算出大小與對齊，檢查沿途 Bridge Window，再分清 Memory Space Enable 與 Bus Master Enable。</p></section>
+<section id="next"><h2>8. 找到裝置之後，還欠哪一步？</h2><p>接著讀 <a href="chapter-4.html">Chapter 4：BAR、位址空間與資源配置</a>。那一章會從裝置需要多少空間開始，算出大小與對齊，檢查沿途 Bridge Window，再分清 Memory Space Enable 與 Bus Master Enable。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>BAR</dt><dd>Base Address Register，基底位址暫存器</dd></div></dl></section>
 <section id="sources"><h2>版本與來源</h2><p>PCI Express Base Specification Revision 6.0 與 PCI Firmware Specification Revision 3.3；精確位置附於各節。Firmware 3.3 的 Base 參考版為 5.0，本章欄位和 RRS 行為均取自 Base 6.0。枚舉順序與 Bus Number 配置是作者推演，不是原文指定程序。查核日期：2026-10-20。</p></section>
         </article>
         <nav class="bottom-nav" aria-label="下一步"><a href="index.html">課程總覽</a><a href="chapter-2.html">← Chapter 2</a><a href="chapter-4.html">Chapter 4 →</a><a href="#content">回到本章開頭 ↑</a></nav>

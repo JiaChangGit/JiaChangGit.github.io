@@ -1,0 +1,54 @@
+{
+  "walk_id": "ch15-overview",
+  "title": "要求到了接收端，什麼時候才算完成？",
+  "summary_html": "<p>前章已能定位 TLP（Transaction Layer Packet，交易層封包）的欄位。現在沿接收端追蹤：先檢查封包，再決定目標是否接受。AtomicOp（Atomic Operation，原子操作）與 DMWr（Deferrable Memory Write，可延後的記憶體寫入）都有完成回覆，但各自保證的操作與回覆狀態不同。</p>",
+  "svg": "<svg viewBox=\"0 0 900 420\" role=\"img\" aria-labelledby=\"ch15-zh-t ch15-zh-d\"><title id=\"ch15-zh-t\">本章角色與事件</title><desc id=\"ch15-zh-d\">由合法要求進到能力檢查，正常完成與暫時拒收分開閱讀。</desc><g data-walk-target=\"rx\"><rect x=\"25\" y=\"30\" width=\"260\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"155.0\" y=\"59\" text-anchor=\"middle\" font-size=\"16\">接收端：解析要求</text></g><g data-walk-target=\"check\"><rect x=\"330\" y=\"30\" width=\"540\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"600.0\" y=\"59\" text-anchor=\"middle\" font-size=\"16\">檢查目標、能力、大小與存取條件</text></g><g data-walk-target=\"atom\"><rect x=\"40\" y=\"190\" width=\"360\" height=\"68\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"220.0\" y=\"219\" text-anchor=\"middle\" font-size=\"16\">AtomicOp：原子讀改寫</text><text x=\"220.0\" y=\"243\" text-anchor=\"middle\" font-size=\"16\">回傳原值</text></g><g data-walk-target=\"dmw\"><rect x=\"500\" y=\"190\" width=\"350\" height=\"68\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"675.0\" y=\"219\" text-anchor=\"middle\" font-size=\"16\">DMWr：接收共享工作</text><text x=\"675.0\" y=\"243\" text-anchor=\"middle\" font-size=\"16\">依狀況回覆</text></g><g data-walk-target=\"done\"><rect x=\"290\" y=\"335\" width=\"320\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"450.0\" y=\"364\" text-anchor=\"middle\" font-size=\"16\">要求者：依完成狀態往下走</text></g><g data-walk-target=\"a\"><path d=\"M285 52 L330 52\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"330,52 320.0,57.0 320.0,47.0\" fill=\"var(--accent)\"/><text x=\"307.5\" y=\"42.0\" text-anchor=\"middle\" font-size=\"16\"></text></g><g data-walk-target=\"b\"><path d=\"M450 98 L220 190\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"220,190 227.42781352708207,181.64370978203266 231.1417202906231,190.92847669088525\" fill=\"var(--accent)\"/><text x=\"335.0\" y=\"134.0\" text-anchor=\"middle\" font-size=\"16\">AtomicOp</text></g><g data-walk-target=\"c\"><path d=\"M720 98 L670 190\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"670,190 670.3820106563359,178.82618830217524 679.1682557520613,183.60132150637384\" fill=\"var(--accent)\"/><text x=\"695.0\" y=\"134.0\" text-anchor=\"middle\" font-size=\"16\">DMWr</text></g><g data-walk-target=\"d\"><path d=\"M220 258 L350 335\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"350,335 338.8479049790518,334.20578551779596 343.94411457319427,325.601795293919\" fill=\"var(--accent)\"/><text x=\"285.0\" y=\"286.5\" text-anchor=\"middle\" font-size=\"16\">完成回覆</text></g><g data-walk-target=\"f\"><path d=\"M670 258 L550 335\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"550,335 555.7160971423175,325.39134590800614 561.1165815589857,333.8076852586577\" fill=\"var(--accent)\"/><text x=\"610.0\" y=\"286.5\" text-anchor=\"middle\" font-size=\"16\">完成回覆</text></g></svg>",
+  "order_html": "<p>圖中兩條分支代表不同要求種類。先把其中一種要求走完，不把兩種操作接成同一次交易。</p>",
+  "caption_html": "<p>作者依 Base 6.0 繪製的教學示意；省略與本章無關的交換。</p>",
+  "steps": [
+    {
+      "title": "先看封包處理的入口",
+      "targets": [
+        "rx",
+        "a",
+        "check"
+      ],
+      "html": "<p>Figure 2-81 的入口在資料鏈結層完整性檢查之後。交易層仍要判斷封包是否合法，再分成要求與完成回覆。</p>",
+      "condition_html": "<p>鏈結層已驗過的封包，也可能在交易層出現格式或語意錯誤。</p>",
+      "source_html": "<p>Base 6.0 §2.3，pp.204–205。</p>",
+      "claim_ids": [
+        "PCIE-CH15-001"
+      ]
+    },
+    {
+      "title": "正常操作按要求種類執行",
+      "targets": [
+        "b",
+        "c",
+        "atom",
+        "dmw"
+      ],
+      "html": "<p>原子操作在目的位置完成讀改寫並回傳原值；可延後寫入可讓接收端針對暫時條件回覆重試狀態。</p>",
+      "condition_html": "<p>兩者均須先確認路徑與端點的相應能力，不由封包有編碼推定全系統支援。</p>",
+      "source_html": "<p>Base 6.0 §6.15，pp.772–774；§6.32，pp.857–858。</p>",
+      "claim_ids": [
+        "PCIE-CH15-002",
+        "PCIE-CH15-003"
+      ]
+    },
+    {
+      "title": "由回覆結果接續後續工作",
+      "targets": [
+        "d",
+        "f",
+        "done"
+      ],
+      "html": "<p>要求者收到成功或其他完成狀態後，按該種類的語意處理。若一直收不到必要回覆，才進到完成逾時與恢復。</p>",
+      "condition_html": "<p>Completion Timeout（完成回覆逾時）的範圍不是正常服務延遲，不能拿它估算一般效能。</p>",
+      "source_html": "<p>Base 6.0 §2.8，p.259。</p>",
+      "claim_ids": [
+        "PCIE-CH15-004"
+      ]
+    }
+  ]
+}

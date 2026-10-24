@@ -124,7 +124,7 @@ Management SEL=1 為 Delete，NSID 選既有物件；FFFFFFFFh 表示刪除全�
 ''')
 
 q(167,'Namespace 變更後哪些事件與 Log 應更新？ || Which events and logs follow namespace changes?', ['aerfull','aec','changedlog','nspelevent'], '''
-變更通知讓 Host 更新已快取的配置；事件、變更清單與 Identify 現況各自回答不同問題。 || Notifications invalidate host caches, changed lists identify changes and Identify describes current configuration.
+Host 收到變更通知後，先用變更清單找到需要更新的 namespace，再以 Identify 讀回目前配置，更新快取。 || Notifications invalidate host caches, changed lists identify changes and Identify describes current configuration.
 Create／Delete 改 inventory；Attach／Detach 改特定 controller 的 Active List。 || Create/delete change inventory; attach/detach change controller-active membership.
 確認 Attached／Allocated notices 的支援與 AEC，以及 AER 是否可用。 || Check attached/allocated notice support, enablement and available requests.
 LID04h 列 attached namespace 變更，1Ch 列 allocated 變更；Identify 再查目前狀態，PEL Change Namespace 記錄其定義的管理事件。 || LID04h/1Ch identify attached/allocated changes; Identify and defined PEL management events serve different purposes.

@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "course": "pcie-course",
+  "chapter": 19,
+  "updated": "2026-10-24",
+  "claims": [
+    {
+      "id": "PCIE-CH19-001",
+      "claim": "訓練狀態各自目的、L0s限制與L0p。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "4.2.6.1",
+        "4.2.6.2",
+        "4.2.6.3",
+        "4.2.6.4",
+        "4.2.6.5",
+        "4.2.6.6",
+        "4.2.6.7"
+      ],
+      "document_pages": [
+        444,
+        445
+      ],
+      "pdf_pages": [
+        444,
+        445
+      ],
+      "figures": [],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH19-002",
+      "claim": "等化啟動、適用速率與NoEqualizationNeeded條件。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "4.2.4"
+      ],
+      "document_pages": [
+        392
+      ],
+      "pdf_pages": [
+        392
+      ],
+      "figures": [],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH19-003",
+      "claim": "重定時器透明性、模式、上限與L0s限制。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "4.3",
+        "4.3.2"
+      ],
+      "document_pages": [
+        564,
+        566
+      ],
+      "pdf_pages": [
+        564,
+        566
+      ],
+      "figures": [
+        "4-61"
+      ],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    }
+  ]
+}

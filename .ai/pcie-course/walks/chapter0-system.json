@@ -1,0 +1,79 @@
+{
+  "walk_id": "ch0-system",
+  "title": "先在系統中找到本章的裝置",
+  "svg": "<svg viewBox=\"0 0 840 565\" class=\"course-diagram\" role=\"img\" aria-labelledby=\"ch0-system-svg-title ch0-system-svg-desc\"><title id=\"ch0-system-svg-title\">從 CPU／記憶體定位 PCIe 角色</title><desc id=\"ch0-system-svg-desc\">CPU與記憶體經Root Complex、Root Port及Switch連到Endpoint；連線不代表所有初始化均已完成。</desc><g data-walk-target=\"host\"><rect x=\"30\" y=\"25\" width=\"245\" height=\"80\" rx=\"10\" fill=\"var(--blue-soft)\" stroke=\"var(--line)\" stroke-width=\"2\"/><text x=\"152.5\" y=\"52\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"18\">CPU／記憶體</text><text x=\"152.5\" y=\"77\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"16\">準備與使用工作資料</text></g><g data-walk-target=\"root\"><rect x=\"335\" y=\"25\" width=\"280\" height=\"80\" rx=\"10\" fill=\"var(--blue-soft)\" stroke=\"var(--line)\" stroke-width=\"2\"/><text x=\"475\" y=\"52\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"18\">Root Complex</text><text x=\"475\" y=\"77\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"16\">連接主機與 I/O 階層</text></g><g data-walk-target=\"port\"><rect x=\"335\" y=\"155\" width=\"280\" height=\"80\" rx=\"10\" fill=\"var(--blue-soft)\" stroke=\"var(--line)\" stroke-width=\"2\"/><text x=\"475\" y=\"182\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"18\">Root Port</text><text x=\"475\" y=\"207\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"16\">對外連線的介面</text></g><g data-walk-target=\"switch\"><rect x=\"335\" y=\"305\" width=\"280\" height=\"80\" rx=\"10\" fill=\"var(--blue-soft)\" stroke=\"var(--line)\" stroke-width=\"2\"/><text x=\"475\" y=\"332\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"18\">Switch</text><text x=\"475\" y=\"357\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"16\">延伸下游連接路徑</text></g><g data-walk-target=\"endpoint\"><rect x=\"335\" y=\"455\" width=\"280\" height=\"80\" rx=\"10\" fill=\"var(--blue-soft)\" stroke=\"var(--line)\" stroke-width=\"2\"/><text x=\"475\" y=\"482\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"18\">Endpoint</text><text x=\"475\" y=\"507\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"16\">提供裝置功能</text></g><g data-walk-target=\"host-root\"><path d=\"M275 65 H335\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2.5\"/></g><g data-walk-target=\"root-port\"><path d=\"M475 105 V155\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2.5\"/></g><g data-walk-target=\"first-link\"><path d=\"M475 235 V305\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2.5\"/><text x=\"525\" y=\"278\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"15\">Link</text></g><g data-walk-target=\"second-link\"><path d=\"M475 385 V455\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2.5\"/><text x=\"525\" y=\"428\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"15\">Link</text></g></svg>",
+  "steps": [
+    {
+      "title": "主機準備工作",
+      "html": "<p>CPU 與記憶體保存工作資料。Root Complex 是把這個主機子系統接到 I/O（輸入輸出）階層的角色；圖中先依連接關係閱讀。</p>",
+      "targets": [
+        "host",
+        "host-root",
+        "root"
+      ],
+      "condition_html": "<p>這是作者簡化的邏輯拓樸；數個角色可能整合在同一顆晶片。</p>",
+      "source_html": "<p>Base 6.0 §1.3.1／Figure 1-2，文件頁／PDF 頁 102–103。</p>",
+      "claim_ids": [
+        "PCIE-ARCH-TOPOLOGY-001"
+      ]
+    },
+    {
+      "title": "沿相鄰連線找到裝置",
+      "html": "<p>Root Port 是對外建立連線的介面；Switch 是延伸下游路徑的交換器。每條 Link 只連接相鄰兩端，圖中沒有把整條路徑當成同一條連線。</p>",
+      "targets": [
+        "root-port",
+        "port",
+        "first-link",
+        "switch",
+        "second-link",
+        "endpoint"
+      ],
+      "condition_html": "<p>Endpoint 是提供裝置功能的端點；此圖省略 Switch 內部的個別 Port。</p>",
+      "source_html": "<p>Base 6.0 §1.2–§1.3／Figures 1-1–1-3，文件頁／PDF 頁 100–107。</p>",
+      "claim_ids": [
+        "PCIE-ARCH-LINK-001",
+        "PCIE-ARCH-TOPOLOGY-001"
+      ]
+    },
+    {
+      "title": "由軟體選定設定對象",
+      "html": "<p>系統軟體讀取 Function，也就是可個別辨識與設定的功能。後面的查詢會在裝置端選定一個 Function，沿設定空間清單找到連線欄位。</p>",
+      "targets": [
+        "host",
+        "root",
+        "port",
+        "switch",
+        "endpoint"
+      ],
+      "condition_html": "<p>兩端建立 Link 後，資源配置與驅動程式的工作準備仍各有條件。</p>",
+      "source_html": "<p>Base 6.0 §1.4，文件頁／PDF 頁 108–109。</p>",
+      "claim_ids": [
+        "PCIE-ARCH-CONFIGURATION-001"
+      ]
+    }
+  ],
+  "caption_html": "作者依 Base 6.0 Figure 1-2 重繪的系統關係。Port 是連接介面；Link 是相鄰連線。線條只表示連接，不指定初始化時序。",
+  "order_html": "<p>先定位 CPU／記憶體，再沿連線走到裝置。這三步是閱讀順序；實際初始化的依賴關係在正文另行說明。</p>",
+  "components": [
+    {
+      "target": "root",
+      "title": "Root Complex：連接主機與 I/O",
+      "html": "<p>本圖把 CPU／記憶體所在的主機子系統接到下游路徑。</p>",
+      "basic_html": "<p>Root Complex 是邏輯角色，不能據此推定它是一顆獨立晶片。</p>"
+    },
+    {
+      "target": "switch",
+      "title": "Switch：延伸路徑",
+      "html": "<p>本圖把上游連接帶到裝置所在的下游路徑。</p>",
+      "basic_html": "<p>Switch 對設定軟體呈現為多個邏輯橋接功能；下一章會放大其內部關係。</p>"
+    },
+    {
+      "target": "endpoint",
+      "title": "Endpoint：提供裝置功能",
+      "html": "<p>本章接著在裝置端選定一個 Function，讀它的設定空間。</p>",
+      "basic_html": "<p>Endpoint 是提供裝置功能的端點；實體卡與 Function 的數量可能不同。</p>"
+    }
+  ],
+  "language": "zh",
+  "summary_html": "<p class=\"lead\">PCI Express（PCIe）讓 CPU／記憶體子系統與周邊裝置交換要求和資料。本章先沿系統拓樸認識各角色，再選定一個裝置端的連接介面，查出它支援的連線速率與目前運作結果。</p>"
+}

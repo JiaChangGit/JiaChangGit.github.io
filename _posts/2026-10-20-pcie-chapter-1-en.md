@@ -2,10 +2,14 @@
 layout: post
 title: "PCIe Chapter 1: Topology, Functions, and PCIe Identity"
 date: 2026-10-20 00:00:00 +0800
+last_modified_at: 2026-10-23 00:00:00 +0800
 permalink: /pcie/chapter-1-en/
 categories: [PCIe]
 tags: [PCIe, Specification]
 lang: en
+spec_teaching: true
+spec_series: pcie
+description: "沿著含 Switch 的拓樸，釐清實體卡、Function 與 Port 的關係，再從欄位判讀 BDF、下游 Bus 範圍與 Requester ID。"
 ---
 
 <style>
@@ -220,22 +224,169 @@ lang: en
 /* Self-contained teaching diagrams use the same theme in standalone pages and posts. */
 .pcie-article .course-diagram text { fill: var(--ink); font-family: inherit; font-size: 18px; }
 
+/* Applied only to explicitly authorized teaching roots. */
+html .spec-teaching[data-spec-series] .st-terms { margin:.35rem 0 1rem; padding:.5rem .8rem; border-inline-start:3px solid var(--st-accent); background:var(--st-soft); font-size:.88em; color:var(--st-muted); }
+html .spec-teaching[data-spec-series] .st-terms > div { display:flex; flex-wrap:wrap; gap:.2em .7em; }
+html .spec-teaching[data-spec-series] .st-terms dt { font-weight:650; }
+html .spec-teaching[data-spec-series] .st-terms dd { margin:0; flex:1 1 14em; }
+html .spec-teaching[data-spec-series] {
+ --st-diagram-width:900px;
+ --st-paper:#f2f6f8; --st-surface:#fff; --st-ink:#192d40; --st-muted:#4c6479;
+ --st-line:#cbd9e3; --st-accent:#145f9d; --st-soft:#edf5fc;
+ --paper:var(--st-paper); --surface:var(--st-surface); --surface-2:var(--st-soft); --surface-alt:var(--st-soft);
+ --ink:var(--st-ink); --muted:var(--st-muted); --line:var(--st-line);
+ --accent:var(--st-accent); --accent-2:var(--st-accent); --soft:var(--st-soft); --blue-soft:var(--st-soft); --teal-soft:var(--st-soft);
+ --qr-paper:var(--st-paper); --qr-surface:var(--st-surface); --qr-ink:var(--st-ink); --qr-muted:var(--st-muted);
+ --qr-line:var(--st-line); --qr-accent:var(--st-accent); --qr-soft:var(--st-soft);
+ color:var(--st-ink); background:var(--st-paper); font-size:17px; line-height:1.9;
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+}
+html .spec-teaching[data-spec-series="nvme"] { --st-accent:#086b56; --st-soft:#e7f4ee; }
+@media(prefers-color-scheme:dark) {
+ html:not([data-theme="light"]) .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+ html:not([data-theme="light"]) .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+}
+html[data-theme="dark"] .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+html[data-theme="dark"] .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+.spec-teaching * { box-sizing:border-box; }
+.spec-teaching :is(h1,h2,h3,h4,h5,p,li,td,th,summary,strong,figcaption) { color:var(--st-ink); }
+.spec-teaching svg text { font-family:inherit; }
+.spec-teaching h1 { font-size:clamp(1.8rem,3.2vw,2.65rem); line-height:1.4; }
+.spec-teaching h2 { font-size:clamp(1.3rem,2.5vw,1.7rem); line-height:1.55; }
+.spec-teaching h3 { font-size:1.15rem; line-height:1.65; }
+.spec-teaching h4 { font-size:1rem; line-height:1.7; }
+.spec-teaching :is(h1,h2,h3,h4) { overflow-wrap:anywhere; }
+.spec-teaching p { margin:.7rem 0 1.15rem; }
+.spec-teaching :is(a,summary) { text-underline-offset:.2em; }
+.spec-teaching :focus-visible { outline:3px solid var(--st-accent); outline-offset:4px; }
+.spec-teaching :is(.qa-takeaway,.qa-answer-lead,.st-takeaway) { color:var(--st-ink); font-weight:650; font-size:1.06rem; line-height:1.9; }
+.spec-teaching :is(.qa-question,.qr-card,.guided-walk) { border:1px solid var(--st-line); border-radius:12px; background:var(--st-surface); padding:clamp(18px,3vw,30px); margin:1.8rem 0; }
+.spec-teaching :is(.qa-flow,.qr-note,.qr-observations,.st-context,.st-route) { background:var(--st-soft); border-left:4px solid var(--st-accent); padding:1rem 1.2rem; margin:1.4rem 0; }
+.spec-teaching :is(.qr-step,.qa-qid,.st-label) { color:var(--st-accent); font-weight:700; }
+.spec-teaching :is(.qa-citations,.qa-source-links,.qr-case-sources,.walk-source,.st-source) { font-size:.84rem; line-height:1.75; color:var(--st-muted); overflow-wrap:anywhere; }
+.spec-teaching :is(.qr-table,.table-wrap) { overflow-x:auto; margin:1.4rem 0; border-radius:7px; }
+.spec-teaching :is(th,td) { line-height:1.8; vertical-align:top; min-width:120px; }
+.spec-teaching :is(table,td) { background:var(--st-surface); }
+.spec-teaching th { background:var(--st-soft); }
+.spec-teaching .st-step { border-left:3px solid var(--st-line); padding:.6rem 1rem; margin:1.2rem 0; }
+.spec-teaching .st-step:target { border-left-color:var(--st-accent); background:var(--st-soft); }
+.spec-teaching .st-glossary { border:1px solid var(--st-line); padding:.7rem 1rem; margin:1.4rem 0; border-radius:8px; }
+.spec-teaching .st-glossary > summary { min-height:44px; cursor:pointer; }
+.spec-teaching .st-specs { display:flex; flex-wrap:wrap; gap:.4rem 1rem; color:var(--st-muted); font-size:.8rem; line-height:1.8; margin:1rem 0; }
+.spec-teaching .st-specs span { border-bottom:2px solid var(--st-accent); padding:.2rem 0; }
+@media(max-width:620px) { .spec-teaching :is(.qa-question,.qr-card,.guided-walk) { padding:16px; } .spec-teaching .diagram svg { min-width:var(--st-diagram-width); } }
+@media print {
+ .spec-teaching { --st-paper:#fff!important; --st-surface:#fff!important; --st-ink:#000!important; --st-muted:#333!important; --st-line:#999!important; --st-accent:#000!important; --st-soft:#fff!important; }
+ .spec-teaching details > * { display:block!important; }
+ .spec-teaching details::details-content { content-visibility:visible!important; }
+ .spec-teaching .st-step { break-inside:avoid; }
+}
+
+/* Native reading guides: selection highlights; it never hides teaching content.
+   build_pcie_course.py changes .pcie-article to .pcie-article for the posts. */
+.pcie-article .guided-walk { margin: 1.8rem 0; padding: 1.2rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); min-width: 0; }
+.pcie-article .guided-walk > h3 { margin-top: 0; }
+.pcie-article .walk-help { color: var(--muted); font-size: .85rem; }
+.pcie-article .walk-order { margin-bottom: 1.1rem; }
+/* Keep native radio semantics and keyboard handling; the associated label is
+   the visible control, so a radio cannot wrap away from its own label. */
+.pcie-article .walk-choice { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.pcie-article .walk-label { display: inline-flex; align-items: center; min-height: 44px; padding: .35rem .7rem; margin: .25rem .8rem .25rem 0; border: 2px solid var(--line); border-radius: 8px; cursor: pointer; font-size: .9rem; line-height: 1.5; color: var(--ink); background: var(--surface-alt); }
+.pcie-article .walk-choice:checked + .walk-label { border-color: var(--accent); background: var(--blue-soft); font-weight: 700; }
+.pcie-article .walk-choice:focus-visible + .walk-label { outline: 3px solid var(--focus); outline-offset: 3px; }
+.pcie-article .walk-view { margin-top: 1rem; min-width: 0; }
+.pcie-article .walk-diagram { margin: 0 0 1.2rem; }
+.pcie-article .walk-diagram svg { width: 100%; height: auto; display: block; }
+.pcie-article .walk-diagram svg a { cursor: pointer; }
+.pcie-article .walk-diagram svg a:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
+.pcie-article .walk-diagram figcaption { margin-top: .8rem; }
+.pcie-article .walk-steps { max-width: none; padding-left: 1.6rem; }
+.pcie-article .walk-step { padding: .6rem .9rem; margin: .7rem 0; border: 2px solid transparent; border-left: 5px solid var(--line); border-radius: 5px; background: var(--surface); }
+.pcie-article .walk-step h4 { margin: .2rem 0 .5rem; }
+.pcie-article .walk-condition { font-size: .9rem; color: var(--muted); }
+.pcie-article .walk-source { border-top: 1px solid var(--line); padding-top: .35rem; color: var(--muted); font-size: .85rem; }
+.pcie-article .walk-step p:last-child { margin-bottom: .3rem; }
+.pcie-article .walk-components { border-top: 1px solid var(--line); margin-top: 1.4rem; padding-top: .4rem; }
+.pcie-article .walk-component-links { display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; list-style: none; padding-left: 0; }
+.pcie-article .walk-component-links a { min-height: 44px; min-width: 44px; }
+.pcie-article .walk-component { padding: .7rem 1rem; margin: 1rem 0; border: 1px solid var(--line); border-radius: 8px; }
+.pcie-article .walk-component > h4 { margin-top: .2rem; }
+.pcie-article .walk-component:target { outline: 3px solid var(--accent-2); outline-offset: 3px; }
+.pcie-article .walk-component details { margin-bottom: .3rem; }
+
+.pcie-article .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-step[data-walk-step="1"],
+.pcie-article .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-step[data-walk-step="2"],
+.pcie-article .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-step[data-walk-step="3"],
+.pcie-article .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-step[data-walk-step="4"],
+.pcie-article .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-step[data-walk-step="5"],
+.pcie-article .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-step[data-walk-step="6"],
+.pcie-article .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-step[data-walk-step="7"],
+.pcie-article .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-step[data-walk-step="8"] { border-color: var(--accent); background: var(--blue-soft); }
+
+.pcie-article .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-node[data-walk-steps~="1"],
+.pcie-article .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-node[data-walk-steps~="2"],
+.pcie-article .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-node[data-walk-steps~="3"],
+.pcie-article .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-node[data-walk-steps~="4"],
+.pcie-article .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-node[data-walk-steps~="5"],
+.pcie-article .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-node[data-walk-steps~="6"],
+.pcie-article .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-node[data-walk-steps~="7"],
+.pcie-article .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-node[data-walk-steps~="8"] { --walk-active-weight: 750; }
+.pcie-article .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-node[data-walk-steps~="1"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-node[data-walk-steps~="2"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-node[data-walk-steps~="3"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-node[data-walk-steps~="4"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-node[data-walk-steps~="5"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-node[data-walk-steps~="6"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-node[data-walk-steps~="7"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-node[data-walk-steps~="8"] > :is(rect, circle, ellipse, polygon, path, line, polyline) { stroke: var(--accent); stroke-width: 3.5px; vector-effect: non-scaling-stroke; }
+.pcie-article .walk-node text { font-weight: var(--walk-active-weight, inherit); }
+
+@media (max-width: 620px) {
+  .pcie-article .guided-walk { padding: .8rem; }
+  .pcie-article .walk-label { margin-right: .45rem; padding-left: .45rem; padding-right: .45rem; }
+  .pcie-article .walk-steps { padding-left: 1.15rem; }
+  .pcie-article .walk-step { padding: .5rem .6rem; }
+  .pcie-article .walk-diagram { overflow-x: auto; }
+  .pcie-article .walk-diagram svg { min-width: var(--st-diagram-width, 700px); }
+}
+@media (forced-colors: active) {
+  .pcie-article .walk-choice:checked + .walk-label { border-color: Highlight; }
+  .pcie-article .walk-step { border-color: CanvasText; }
+}
+@media print {
+  .pcie-article .guided-walk { border: 1px solid #999; padding: .7rem; break-inside: auto; }
+  .pcie-article .walk-choice, .pcie-article .walk-label, .pcie-article .walk-help { display: none; }
+  .pcie-article .walk-step { display: list-item !important; border-color: #999 !important; background: transparent !important; }
+  .pcie-article .walk-node { --walk-active-weight: 500 !important; }
+  .pcie-article .walk-node > :is(rect, circle, ellipse, polygon, path, line, polyline) { stroke: #333 !important; stroke-width: 1.5px !important; }
+  .pcie-article .walk-diagram { overflow: visible; }
+  .pcie-article .walk-diagram svg { min-width: 0; }
+  .pcie-article .walk-component details > * { display: block !important; }
+  .pcie-article .walk-component details::details-content { content-visibility: visible !important; }
+}
+
+/* SVG text follows the selected reading theme. */
+.pcie-article svg text { fill: var(--ink); }
+.pcie-article .walk-summary { margin: 1rem 0 1.5rem; }
+
 html:not([data-theme="dark"]) .pcie-article { color-scheme: light; }
 html[data-theme="dark"] .pcie-article { color-scheme: dark; }
 
 .pcie-article { background: transparent; margin: 1.5rem 0; }
 .pcie-article .lesson { padding: 0; border: 0; background: transparent; }
 </style>
-<div class="pcie-article" lang="en">
+<div class="pcie-article spec-teaching" data-spec-series="pcie" lang="en">
 <nav class="bottom-nav" aria-label="Course and editions"><a href="/DOCS/pcie-course/index.html">Course overview</a><a href="/DOCS/pcie-course/chapter-1.html">Full Chinese tutorial</a><a href="/pcie/chapter-1-zh-tw/">繁體中文</a></nav>
 <article class="lesson">
-<p class="lead">Two Functions do not necessarily mean two cards, and matching BDF values need the same Segment context before they can identify the same target. This chapter uses one example to connect physical Links, the bridge structure visible to software, and Function identifiers, then shows how register fields establish their relationships.</p>
+<p class="lead">This chapter follows a topology containing a Switch to one individually configurable device Function. Register fields connect its role and identity to the physical Links, the logical bridge structure, and the configuration snapshot.</p>
+<figure class="diagram"><svg viewBox="0 0 840 585" class="course-diagram" role="img" aria-labelledby="ch1-topology-en-svg-title ch1-topology-en-svg-desc"><title id="ch1-topology-en-svg-title">Find Function 03:00.1</title><desc id="ch1-topology-en-svg-desc">All BDFs are in Segment 0000. Solid lines are external Links; dashed lines are internal logical connections.</desc><g><rect x="285" y="20" width="270" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2"/><text x="420" y="47" text-anchor="middle" fill="var(--ink)" font-size="18">Root Port</text><text x="420" y="72" text-anchor="middle" fill="var(--ink)" font-size="16">00:01.0 · 01–04</text></g><g><rect x="285" y="155" width="270" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2"/><text x="420" y="182" text-anchor="middle" fill="var(--ink)" font-size="18">Switch Upstream Port</text><text x="420" y="207" text-anchor="middle" fill="var(--ink)" font-size="16">01:00.0 · 02–04</text></g><g><rect x="35" y="330" width="300" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2"/><text x="185" y="357" text-anchor="middle" fill="var(--ink)" font-size="18">Downstream Port A</text><text x="185" y="382" text-anchor="middle" fill="var(--ink)" font-size="16">02:01.0 · 03–03</text></g><g><rect x="505" y="330" width="300" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2"/><text x="655" y="357" text-anchor="middle" fill="var(--ink)" font-size="18">Downstream Port B</text><text x="655" y="382" text-anchor="middle" fill="var(--ink)" font-size="16">02:02.0 · 04–04</text></g><g><rect x="35" y="475" width="300" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2"/><text x="185" y="502" text-anchor="middle" fill="var(--ink)" font-size="18">Endpoint A</text><text x="185" y="527" text-anchor="middle" fill="var(--ink)" font-size="16">03:00.0 / 03:00.1</text></g><g><rect x="505" y="475" width="300" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2"/><text x="655" y="502" text-anchor="middle" fill="var(--ink)" font-size="18">Endpoint B</text><text x="655" y="527" text-anchor="middle" fill="var(--ink)" font-size="16">04:00.0</text></g><g><path d="M420 100 V155" fill="none" stroke="var(--accent)" stroke-width="2.5"/><text x="465" y="132" text-anchor="middle" fill="var(--ink)" font-size="15">Link</text></g><g><path d="M420 235 V280 H185 V330 M420 280 H655 V330" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-dasharray="6 5"/><text x="420" y="270" text-anchor="middle" fill="var(--ink)" font-size="15">Internal Bus 02 (logical)</text></g><g><path d="M185 410 V475" fill="none" stroke="var(--accent)" stroke-width="2.5"/><text x="225" y="450" text-anchor="middle" fill="var(--ink)" font-size="15">Link</text></g><g><path d="M655 410 V475" fill="none" stroke="var(--accent)" stroke-width="2.5"/><text x="695" y="450" text-anchor="middle" fill="var(--ink)" font-size="15">Link</text></g></svg><figcaption>An authored snapshot in Segment 0000. Solid lines are external Links; dashed lines are internal logical connections. Endpoint A has two Functions sharing one Link. Base 6.0 Figures 1-3/7-2, printed/PDF pp.107 and 904.</figcaption></figure>
+
 <p><a href="/DOCS/pcie-course/chapter-1.html">Full Chinese tutorial and topology diagram</a> · <a href="/DOCS/pcie-course/index.html">Course roadmap</a> · <a href="/pcie/chapter-1-zh-tw/">繁體中文</a></p>
-<aside class="note"><strong>Version and scope</strong><p>Register definitions follow PCI Express Base Specification Revision 6.0, with Segment context from PCI Firmware Specification Revision 3.3. Page numbers refer to the PDFs used by this course; printed and PDF page numbers coincide. The example uses conventional Bus/Device/Function (BDF) addressing, without Alternative Routing-ID Interpretation (ARI) or the identification scheme of Flattening Portal Bridge (FPB). Those mechanisms introduce additional discovery, numbering, or routing rules; ARI in particular changes how the Device/Function bits are interpreted. The example also excludes SR-IOV and Phantom/Shadow Functions. The latter mechanisms can use additional Function identifiers and are left to advanced chapters.</p></aside>
+<aside class="note"><strong>Version and scope</strong><p>Register definitions follow PCI Express Base Specification Revision 6.0, with Segment context from PCI Firmware Specification Revision 3.3. Page numbers refer to the PDFs used by this course; printed and PDF page numbers coincide. The example uses conventional Bus/Device/Function (BDF (Bus, Device, and Function identifier)) addressing, without Alternative Routing-ID Interpretation (ARI) or the identification scheme of Flattening Portal Bridge (FPB). Those mechanisms introduce additional discovery, numbering, or routing rules; ARI in particular changes how the Device/Function bits are interpreted. The example also excludes SR-IOV and Phantom/Shadow Functions. The latter mechanisms can use additional Function identifiers and are left to advanced chapters.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>SR-IOV</dt><dd>Single Root I/O Virtualization</dd></div></dl></aside>
 
 <section id="objects">
 <h2>Why are a card, a Function, and a Port different objects?</h2>
-<p>A card is a physical assembly. A Function is an object that software can identify and configure individually. One card can expose multiple Functions and may contain a Switch and multiple Endpoints. Function counts therefore do not directly establish card counts.</p>
+<p>A card describes physical assembly; a Function is the object software identifies and configures individually. A card can expose several Functions and may contain a Switch and several Endpoints. Read the configuration topology to select the Function, and use assembly information separately to identify its card.</p>
 <p>A Switch's Upstream Port faces the Root Complex, while its Downstream Ports face downstream components. Software sees each Switch Port as a PCI-to-PCI Bridge, with those bridges connected through an internal logical Bus. This does not turn external PCIe Links into a shared parallel bus, nor does each Bridge imply a separate chip.</p>
 <p>Keep both views when reading a topology: Links describe connections between adjacent hardware components, while Bridge configuration describes the paths that software can identify toward downstream components.</p>
 <details class="source-note"><summary>Specification locations for the Switch and its logical topology</summary><p>Base 6.0 §1.3.3, pp.106–107, with Figure 1-3 on p.107; §7.1, pp.903–904, with Figures 7-1 and 7-2 on p.904. The first explains Switch connections and bridge presentation; the latter contrasts the configuration structure visible to software. The example's internal Switch Bus connects only the virtual bridges for Downstream Ports. Endpoints sit at the other ends of external Links.</p></details>
@@ -243,7 +394,7 @@ html[data-theme="dark"] .pcie-article { color-scheme: dark; }
 
 <section id="types">
 <h2>Which two fields establish a Function's role?</h2>
-<p>First read the 8-bit Header Type at configuration offset <code>0x0E</code>. Its low seven bits select the header format, while bit 7 is the Multi-Function Device indication. Then locate the PCI Express Capability and read its 16-bit PCI Express Capabilities Register at base plus <code>0x02</code>. Device/Port Type in bits 7:4 identifies the PCIe role. Both names contain “Type,” but they answer different questions.</p>
+<p>At the selected Function, read the 8-bit Header Type at offset <code>0x0E</code>. The low seven bits select the header layout and bit 7 indicates possible multiple Functions. Then locate the PCI Express Capability and read its 16-bit register at base + <code>0x02</code>; Device/Port Type in bits 7:4 identifies the role. The first field selects the layout used to read the second.</p>
 <aside class="example"><strong>Teaching assumptions</strong><p>The addresses and values below are author-created, not hardware measurements. Enumeration is complete, the topology remains stable while it is read, and all configuration reads succeed. Each Function's PCI Express Capability has already been found by following the Capability list and happens to start at <code>0x70</code>, placing the role field at <code>0x72</code> in this example. Device/Port Type values in the table are extracted field values, not full Register reads. For the Capability search, see <a href="/DOCS/pcie-course/chapter-0.html#case">the Chapter 0 example</a>.</p></aside>
 <div class="table-wrap"><table><caption>Decode the header format separately from the PCIe role</caption><thead><tr><th scope="col">Target</th><th scope="col">Header Type read</th><th scope="col">Device/Port Type field</th><th scope="col">Interpretation</th></tr></thead><tbody>
 <tr><td>Endpoint A, Function 0</td><td><code>0x80</code></td><td><code>0x0</code></td><td>Type 0 header; may have multiple Functions; PCI Express Endpoint.</td></tr>
@@ -266,9 +417,9 @@ Device/Port Type: (PCIe_Capabilities &amp; 0x00F0) &gt;&gt; 4</code></pre>
 <tr><td>Switch Upstream Port</td><td><code>01:00.0</code></td><td><code>02</code></td><td><code>04</code></td><td>The two Downstream Ports on internal Bus 02.</td></tr>
 <tr><td>Switch Downstream Port A</td><td><code>02:01.0</code></td><td><code>03</code></td><td><code>03</code></td><td>Endpoint A: <code>03:00.0</code> and <code>03:00.1</code>.</td></tr>
 <tr><td>Switch Downstream Port B</td><td><code>02:02.0</code></td><td><code>04</code></td><td><code>04</code></td><td>Endpoint B: <code>04:00.0</code>.</td></tr>
-</tbody></table></div>
+</tbody></table><dl class="st-terms" aria-label="Terms in this passage"><div><dt>BDF</dt><dd>Bus/Device/Function</dd></div></dl></div>
 <p>Secondary Bus Number identifies the Bus immediately downstream of a Bridge. Subordinate Bus Number bounds the upper end of its downstream Bus Number range. Target Bus <code>03</code> is within the Root Port's <code>01–04</code>, the Upstream Port's <code>02–04</code>, and Downstream Port A's <code>03–03</code> ranges. Downstream Port B covers only <code>04–04</code>, so it is outside the path to this target.</p>
-<p>These ranges check the known topology; they do not establish that every number in a range has a populated Bus. A Bridge's own BDF also differs from the Bus it leads to: <code>02:01.0</code> is on Bus <code>02</code> and has Secondary <code>03</code>. This chapter does not derive a Bridge's own BDF from Primary Bus Number. Base 6.0 retains that field for legacy compatibility, and PCIe generally does not use it.</p>
+<p>These ranges check the known topology; they do not establish that every number in a range has a populated Bus. A Bridge's own BDF (Bus, Device, and Function identifier) also differs from the Bus it leads to: <code>02:01.0</code> is on Bus <code>02</code> and has Secondary <code>03</code>. This chapter does not derive a Bridge's own BDF from Primary Bus Number. Base 6.0 retains that field for legacy compatibility, and PCIe generally does not use it.</p>
 <details class="source-note"><summary>Where are the downstream Bus Number fields?</summary><p>Base 6.0 §7.5.1.3, Figure 7-14 (p.936), shows the Type 1 Header. Secondary and Subordinate are 8-bit fields at byte offsets <code>0x19</code> and <code>0x1A</code>, respectively; their meanings are in §7.5.1.3.3–§7.5.1.3.4 (p.937). The neighboring Primary field is at <code>0x18</code>, with its PCIe compatibility explanation in §7.5.1.3.2 on the same page.</p></details>
 </section>
 
@@ -291,6 +442,7 @@ Device/Port Type: (PCIe_Capabilities &amp; 0x00F0) &gt;&gt; 4</code></pre>
 
 <section id="self-check">
 <h2>Do changed observations support the same conclusions?</h2>
+<p>In this snapshot, select Segment 0000, follow the Bus 03 range through branch A, and read Function 1 separately. Its traditional Requester ID is 0x0301 when it originates a Request. Keep the Segment and snapshot with that result when comparing records.</p>
 <details class="question"><summary>Does a Header Type read of 0x80 prove that Function 1 exists?</summary><p>No. Table 7-7 (pp.924–925) establishes a Type 0 header and that the device may contain multiple Functions. Function 1 still needs valid discovery evidence before it can be reported as present. That evidence is a separate teaching assumption in this example.</p></details>
 <details class="question"><summary>If the target becomes 0000:04:00.0, does its path still pass through Downstream Port A?</summary><p>No. In this snapshot, Bus <code>04</code> lies within Downstream Port B's <code>04–04</code> range, outside A's <code>03–03</code> range. The path still passes through the same Root Port and Upstream Port; only the downstream Switch branch changes. (Base 6.0 §7.5.1.3.3–§7.5.1.3.4, p.937.)</p></details>
 <details class="question"><summary>Can two records with BDF 03:00.0 be treated as the same Function?</summary><p>Not yet. First establish the Segment and the configuration time represented by each record. The example's <code>0000:03:00.0</code> and <code>0001:03:00.0</code> are different Functions. Across different times, a matching BDF alone also does not establish the same hardware identity. (Firmware 3.3 §1.3, pp.8–9; Base 6.0 §2.2.6.2, p.156.)</p></details>

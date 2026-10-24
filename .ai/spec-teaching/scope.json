@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "decision_date": "2026-10-23",
+  "phase": "authoring",
+  "article_mutation_enabled": true,
+  "series": {
+    "pcie": {
+      "accent": "blue",
+      "existing_chapters": [
+        0,
+        13
+      ],
+      "expand_to": "PCI Express Base Specification Revision 6.0, including appendices",
+      "path_prefixes": [
+        "DOCS/pcie-course/"
+      ],
+      "post_patterns": [
+        "*-pcie-chapter-*.md"
+      ]
+    },
+    "nvme_questions": {
+      "accent": "green",
+      "questions": [
+        1,
+        328
+      ],
+      "volumes": 27,
+      "path_prefixes": [
+        "DOCS/nvme-question-bank/"
+      ],
+      "post_patterns": [
+        "*-nvme-question-bank-*.md"
+      ]
+    },
+    "nvme_figures": {
+      "accent": "green",
+      "volumes": 7,
+      "scenarios": 45,
+      "figures": 117,
+      "path_prefixes": [
+        "DOCS/nvme-quick-reference/"
+      ],
+      "post_patterns": [
+        "*-nvme-figure-reference-*.md"
+      ]
+    },
+    "nvme_transport": {
+      "accent": "green",
+      "report_id": "pcie-transport-1.4",
+      "path_prefixes": [
+        "DOCS/nvme-spec-report/pcie-transport-1.4/"
+      ],
+      "post_patterns": [
+        "*-nvme-pcie-transport-1-4-*.md"
+      ]
+    },
+    "nvme_nvm_command_set": {
+      "accent": "green",
+      "report_id": "nvm-command-set-1.3",
+      "path_prefixes": [
+        "DOCS/nvme-spec-report/nvm-command-set-1.3/"
+      ],
+      "post_patterns": [
+        "*-nvme-nvm-command-set-1-3-*.md"
+      ]
+    }
+  },
+  "editions": [
+    "full Traditional Chinese tutorial HTML",
+    "Traditional Chinese article",
+    "English article"
+  ],
+  "preserve": [
+    "existing URLs",
+    "question IDs",
+    "valid anchors",
+    "canonical figure locations",
+    "technical conditions",
+    "source revisions",
+    "verified numerical examples"
+  ],
+  "excluded_mutations": [
+    "other NVMe reports",
+    "whole-site theme",
+    "source PDFs"
+  ]
+}

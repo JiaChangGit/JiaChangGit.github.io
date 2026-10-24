@@ -6,19 +6,21 @@ categories: ["nvme"]
 tags: ["NVMe", "Reference"]
 permalink: "/nvme/figure-reference/features/zh-tw/"
 nvme_quickref: true
-last_modified_at: "2026-10-01"
+spec_teaching: true
+last_modified_at: "2026-10-23"
 lang: "zh-Hant-TW"
 description: "NVMe 情境練習與圖表速查：查詢路徑、欄位推導、完整解答及 Spec 位置。"
 ---
 
-<div class="nvme-quickref">
+<div class="nvme-quickref spec-teaching" data-spec-series="nvme">
 <nav class="qr-top" aria-label="版本與索引"><a href="#content">跳到內容</a><a href="/nvme/figure-reference/zh-tw/">總索引</a><a href="/nvme/figure-reference/features/en/">English</a><a href="/DOCS/nvme-quick-reference/features.html">繁中 HTML</a></nav>
 <main id="content">
+<div class="st-specs" aria-label="Specification editions"><span>NVM Express Base 2.4</span><span>NVM Command Set 1.3</span><span>NVMe over PCIe Transport 1.4</span></div>
 <header><p class="qr-eyebrow">反覆查詢 · 欄位判讀 · 原文定位</p><h1>NVMe 圖表判讀與情境練習 05 · Features、電源、效能與資源</h1><p class="qr-intro">先分辨支援能力、目前值、預設值與保存值，再查各 Feature。電源延遲、排程權重、佇列數與回收資源各有單位，不能互相替代。</p></header>
-<aside class="qr-note"><p>每張原圖都有用途、欄位和判讀例子。例子中的數值用於說明，不代表你的裝置設定；原文另有條件時，依該欄位與命令定義判斷。</p><p>用瀏覽器「在頁面中尋找」搜尋欄位、FID、LID、CNS 或 Figure。bit／byte 位置沿用原圖：bit 是位元，byte 是 8 bits，Dword 是 4 bytes；index 是第幾筆，offset 是相對起點的偏移，須看當處使用的單位。</p><p>FID（Feature Identifier）選擇功能；LID（Log Page Identifier）選擇紀錄頁；CNS（Controller or Namespace Structure）選擇 Identify 回傳的資料結構。</p></aside>
+<aside class="qr-note"><p>每張原圖都有用途、欄位和判讀例子。例子中的數值用於說明，不代表你的裝置設定；原文另有條件時，依該欄位與命令定義判斷。</p><p>用瀏覽器「在頁面中尋找」搜尋欄位、FID、LID、CNS 或 Figure。bit／byte 位置沿用原圖：bit 是位元，byte 是 8 bits，Dword 是 4 bytes；index 是第幾筆，offset 是相對起點的偏移，須看當處使用的單位。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>FID</dt><dd>Feature Identifier，功能識別碼</dd></div><div><dt>LID</dt><dd>Log Page Identifier，紀錄頁識別碼</dd></div><div><dt>CNS</dt><dd>Controller or Namespace Structure，選擇Identify回傳結構</dd></div></dl><p>FID（Feature Identifier）選擇功能；LID（Log Page Identifier）選擇紀錄頁；CNS（Controller or Namespace Structure）選擇 Identify 回傳的資料結構。</p></aside>
 <nav class="qr-top" aria-label="本冊閱讀入口"><a href="#exercises">從情境練習開始</a><a href="#figure-index">直接查圖表</a></nav>
-<section id="exercises"><h2>先做情境練習</h2>
-<p>每題資料均為教學假設，不是實際裝置回傳。先寫下查詢介面、目標、欄位與可支持的結論，再展開解答。題目只做 Spec 推導，不會執行命令。</p>
+<section id="exercises"><h2>先跟著一個情境讀規格</h2>
+<p>以下回傳資料均為教學假設。先看需求與已知條件，再沿閱讀路線找到相關欄位，接著一起判讀結果。完整解說直接顯示，來源細節可另外展開。</p>
 <nav class="qr-toc" id="exercise-toc" aria-label="情境索引"><ol>
 <li><a href="#exercise-features-01">Get Features 成功，為什麼還不知道目前值？</a></li>
 <li><a href="#exercise-features-02">要求 16 組 queues，實際能建立幾組？</a></li>
@@ -31,74 +33,88 @@ description: "NVMe 情境練習與圖表速查：查詢路徑、欄位推導、�
 <p class="qr-case-question">程式讀到 DW0=5，便把某功能的「目前設定」顯示為 5。請檢查它解錯了哪一層。</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
 <li>這是支援 Save／Select 的 controller；命令 SEL=3，目標 FID 合法，CQE success、DW0=00000005h。</li>
 <li>目前值、預設值與已保存值都尚未讀取。</li>
-</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
-<p class="qr-route"><strong>查詢次序：</strong>保留原 Get Features 的 FID／SEL／NSID → 按 SEL=3 解能力 → 再以同一 FID、正確對象、SEL=0 讀目前值。</p>
+</ul></div><section class="st-route" id="route-features-01"><h4>這個情境要連起哪些規格圖表？</h4>
+<p class="st-route-help">下面是閱讀規格的順序；實際操作的先後與等待條件，會在情境解說中另外交代。</p>
+<ol class="st-reading-route">
+<li><strong>先看請求中的選擇欄位</strong><p>Get Features 的 FID 選功能，SEL 選回覆種類。先保留這兩個值，才能選對 DW0 的格式。</p>
+<a href="#figure-b198">Base 2.4 · Figure 198</a>
+</li>
+<li><strong>SEL=3 時讀能力格式</strong><p>這張圖專門解釋 SEL=3 的 DW0：CHANG、NSSPEC 與 SVBL。先按此格式解讀 00000005h。</p>
+<a href="#figure-b201">Base 2.4 · Figure 201</a>
+</li>
+<li><strong>再接到功能自身的工作值</strong><p>從 Feature 清單找到該 FID 的定義，再以 SEL=0 讀目前值。能力 bitmap 與工作值使用不同回覆格式。</p>
+<a href="#figure-b466">Base 2.4 · Figure 466</a>
+<a href="#figure-b198">Base 2.4 · Figure 198</a>
+</li>
+</ol></section><details open class="qr-answer"><summary>沿著欄位一步步理解</summary>
+<p class="qr-route"><strong>查詢次序：</strong>保留原 Get Features 的 FID／SEL／NSID → 按 SEL=3 解能力 → 再以同一 FID、正確對象、SEL=0 讀目前值。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>NSID</dt><dd>Namespace Identifier，邏輯儲存空間識別碼</dd></div></dl>
 <p data-reasoning="features-01-1"><span class="qr-step">推導 1</span>5 的二進位是 101b：CHANG=1、NSSPEC=0、SVBL=1。這表示有可變更屬性、不是 namespace-specific、可保存；不是功能值 5，也不是這個功能一定已啟用。</p>
 <p data-reasoning="features-01-2"><span class="qr-step">推導 2</span>SEL=0、1、2 分別取得 Current、Default、Saved；三者可能不同。NSSPEC=0 也不能直接推定只影響這一個 controller，實際 scope 仍由該 Feature 定義決定。</p>
-<p data-reasoning="features-01-3"><span class="qr-step">推導 3</span>報告若只保存 DW0 而丟掉 SEL，這次查詢的語意就無法可靠重建。需要資料 buffer 的 Feature 還要保存該 buffer；成功 CQE 不代表 DW0 已包含全部回傳資訊。</p>
+<p data-reasoning="features-01-3"><span class="qr-step">推導 3</span>報告若只保存 DW0 而丟掉 SEL，這次查詢的語意就無法可靠重建。需要資料 buffer 的 Feature 還要保存該 buffer；成功 CQE 不代表 DW0 已包含全部回傳資訊。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry，佇列中的完成項目</dd></div></dl>
 <div class="qr-related">需要重看欄位時，接著查：<a href="/nvme/figure-reference/features/zh-tw/#figure-b198">Base 2.4 Figure 198 · Get Features：現在值、預設值、保存值或能力</a><a href="/nvme/figure-reference/features/zh-tw/#figure-b201">Base 2.4 Figure 201 · Feature 能力：可改、可保存及 namespace 範圍</a><a href="/nvme/figure-reference/features/zh-tw/#figure-b466">Base 2.4 Figure 466 · FID 總表：功能名稱、資料 buffer 與作用範圍</a></div>
-<h4>本題原文定位</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.12 · Figure 198 · Get Features – Command Dword 10 · 文件頁 209–210 · PDF 235–236</li><li>Base 2.4 · §5.2.12 · Figure 201 · Completion Queue Entry Dword 0 when Select is set to 11b · 文件頁 212 · PDF 238</li><li>Base 2.4 · §5.2.30 · Figure 466 · Set Features – Feature Identifiers · 文件頁 457–459 · PDF 483–485</li></ul></details>
+<details class="st-source"><summary>完整原文定位</summary><ul class="qr-case-sources"><li>Base 2.4 · §5.2.12 · Figure 198 · Get Features – Command Dword 10 · 文件頁 209–210 · PDF 235–236</li><li>Base 2.4 · §5.2.12 · Figure 201 · Completion Queue Entry Dword 0 when Select is set to 11b · 文件頁 212 · PDF 238</li><li>Base 2.4 · §5.2.30 · Figure 466 · Set Features – Feature Identifiers · 文件頁 457–459 · PDF 483–485</li></ul></details></details>
 <a href="#exercise-toc">回情境索引</a></article>
+<h3>接著看其他情境</h3>
 <article class="qr-card qr-case" id="exercise-features-02" data-scenario="features-02"><h3><span class="qr-number">練習 02</span>要求 16 組 queues，實際能建立幾組？</h3>
-<p class="qr-case-question">驅動要求 16 個 SQ、16 個 CQ，就直接建立 QID 1 到 16。回傳資訊是否允許這樣做？</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
+<p class="qr-case-question">驅動要求 16 個 SQ、16 個 CQ，就直接建立 QID 1 到 16。回傳資訊是否允許這樣做？</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SQ</dt><dd>Submission Queue，提交佇列</dd></div><div><dt>CQ</dt><dd>Completion Queue，完成佇列</dd></div></dl><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
 <li>Set Features FID=07h：NSQR=15、NCQR=15；成功回傳 DW0=00030007h。</li>
 <li>CAP.MQES=1023；尚未執行 Create I/O CQ／SQ。</li>
-</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
-<p class="qr-route"><strong>查詢次序：</strong>解 FID=07h 完成回覆的 NCQA／NSQA；另讀 CAP.MQES，再規劃 Create I/O CQ／SQ 的數量與深度。</p>
+</ul></div><details open class="qr-answer"><summary>沿著欄位一步步理解</summary>
+<p class="qr-route"><strong>查詢次序：</strong>解 FID=07h 完成回覆的 NCQA／NSQA；另讀 CAP.MQES，再規劃 Create I/O CQ／SQ 的數量與深度。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CQ</dt><dd>Completion Queue，完成佇列</dd></div><div><dt>SQ</dt><dd>Submission Queue，提交佇列</dd></div></dl>
 <p data-reasoning="features-02-1"><span class="qr-step">推導 1</span>DW0 高 16 bits=3、低 16 bits=7，因此分配的是 4 個 CQ、8 個 SQ。要求 16 不等於獲配 16，不能用要求值覆蓋 controller 的回覆。</p>
 <p data-reasoning="features-02-2"><span class="qr-step">推導 2</span>MQES=1023 表示每個 I/O queue 最多 1024 entries，與 queue 數量不同。多個 SQ 可依合法設定共用 CQ，因此 SQ 與 CQ 的分配數不必相同。</p>
-<p data-reasoning="features-02-3"><span class="qr-step">推導 3</span>此時只是取得可用資源，還沒有建立 queue。後續需先有可關聯的 CQ，再建立 SQ，檢查各次 Create 的完成結果；也不能把 queue 數直接當 MSI-X vector 數。</p>
+<p data-reasoning="features-02-3"><span class="qr-step">推導 3</span>此時只是取得可用資源，還沒有建立 queue。後續需先有可關聯的 CQ，再建立 SQ，檢查各次 Create 的完成結果；也不能把 queue 數直接當 MSI-X vector 數。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>MSI-X</dt><dd>Message Signaled Interrupts Extension，表格式訊息中斷</dd></div></dl>
 <div class="qr-related">需要重看欄位時，接著查：<a href="/nvme/figure-reference/features/zh-tw/#figure-b472">Base 2.4 Figure 472 · Number of Queues：主機要求的數量</a><a href="/nvme/figure-reference/features/zh-tw/#figure-b473">Base 2.4 Figure 473 · Number of Queues：實際分配的數量</a><a href="/nvme/figure-reference/init/zh-tw/#figure-b36">Base 2.4 Figure 36 · CAP：設定前先查硬體能力</a></div>
-<h4>本題原文定位</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.30.1.5 · Figure 472 · Number of Queues – Command Dword 11 · 文件頁 465 · PDF 491</li><li>Base 2.4 · §5.2.30.1.5 · Figure 473 · Number of Queues – Completion Queue Entry Dword 0 · 文件頁 466 · PDF 492</li><li>Base 2.4 · §3.1.4.1 · Figure 36 · Offset 0h: CAP – Controller Capabilities · 文件頁 55–58 · PDF 81–84</li></ul></details>
+<details class="st-source"><summary>完整原文定位</summary><ul class="qr-case-sources"><li>Base 2.4 · §5.2.30.1.5 · Figure 472 · Number of Queues – Command Dword 11 · 文件頁 465 · PDF 491</li><li>Base 2.4 · §5.2.30.1.5 · Figure 473 · Number of Queues – Completion Queue Entry Dword 0 · 文件頁 466 · PDF 492</li><li>Base 2.4 · §3.1.4.1 · Figure 36 · Offset 0h: CAP – Controller Capabilities · 文件頁 55–58 · PDF 81–84</li></ul></details></details>
 <a href="#exercise-toc">回情境索引</a></article>
-<article class="qr-card qr-case" id="exercise-features-03" data-scenario="features-03"><h3><span class="qr-number">練習 03</span>APST 表有兩條轉換，空閒 700 ms 會在哪裡？</h3>
+<article class="qr-card qr-case" id="exercise-features-03" data-scenario="features-03"><h3><span class="qr-number">練習 03</span>APST 表有兩條轉換，空閒 700 ms 會在哪裡？</h3><dl class="st-terms" aria-label="本段名詞"><div><dt>APST</dt><dd>Autonomous Power State Transition，自主電源狀態轉換</dd></div></dl>
 <p class="qr-case-question">你要畫出自動省電流程，而不是只列出最低功耗 state。如何從 table entry 讀出轉換的起點與計時位置？</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
 <li>APSTE=1；PS0 entry：ITPT=100、ITPS=2；PS2 entry：ITPT=500、ITPS=3。</li>
 <li>PS2、PS3 均為支援的 non-operational state；其餘相關 entries 停用；起始 PS0，連續 idle 700 ms。</li>
-</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
-<p class="qr-route"><strong>查詢次序：</strong>Identify CNS=01h 的 APST 能力與 Power State Descriptors → Get Features FID=0Ch、SEL=0，同時取得 APSTE 與完整 APST buffer。</p>
+</ul></div><details open class="qr-answer"><summary>沿著欄位一步步理解</summary>
+<p class="qr-route"><strong>查詢次序：</strong>Identify CNS=01h 的 APST 能力與 Power State Descriptors → Get Features FID=0Ch、SEL=0，同時取得 APSTE 與完整 APST buffer。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>APST</dt><dd>Autonomous Power State Transition，自主電源狀態轉換</dd></div></dl>
 <p data-reasoning="features-03-1"><span class="qr-step">推導 1</span>表格的 entry index 是來源，ITPS 是目的地。因此流程是 PS0 ─ idle 門檻 100 ms → PS2 ─ 在 PS2 的 idle 門檻 500 ms → PS3。第二個 500 ms 不是從一開始在 PS0 就一併倒數。</p>
 <p data-reasoning="features-03-2"><span class="qr-step">推導 2</span>若先忽略轉換耗時，700 ms 足以讓兩個門檻依序到達；但這只是教學時間線，不是讀取即時 state 的證據。實際轉換時間與控制器行為須一併考慮，APST 表本身是設定。</p>
 <p data-reasoning="features-03-3"><span class="qr-step">推導 3</span>要討論下一筆 I/O 的代價，再查目的 state 的 EXLAT。若 EXLAT=0，意思是未回報，不能補成零延遲；若中途有工作打斷 idle，也不能照這條無工作時間線推論。</p>
 <div class="qr-table"><table class=""><thead><tr><th scope="col">來源 entry</th><th scope="col">條件</th><th scope="col">目的 state</th></tr></thead><tbody><tr><td>PS0</td><td>在 PS0 達到 100 ms idle 門檻</td><td>PS2</td></tr><tr><td>PS2</td><td>在 PS2 達到 500 ms idle 門檻</td><td>PS3</td></tr></tbody></table></div>
 <div class="qr-related">需要重看欄位時，接著查：<a href="/nvme/figure-reference/features/zh-tw/#figure-b475">Base 2.4 Figure 475 · APST：是否允許自動切換</a><a href="/nvme/figure-reference/features/zh-tw/#figure-b477">Base 2.4 Figure 477 · APST Entry：從哪個 state、等多久、到哪裡</a><a href="/nvme/figure-reference/features/zh-tw/#figure-b340">Base 2.4 Figure 340 · Power State Descriptor：功耗、延遲與可執行 I/O</a><a href="/nvme/figure-reference/features/zh-tw/#figure-b468">Base 2.4 Figure 468 · Power Management：指定 state 與 idle 回應限制</a></div>
-<h4>本題原文定位</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.30.1.7 · Figure 475 · Autonomous Power State Transition – Command Dword 11 · 文件頁 468 · PDF 494</li><li>Base 2.4 · §5.2.30.1.7 · Figure 477 · Autonomous Power State Transition Data Structure Entry · 文件頁 469 · PDF 495</li><li>Base 2.4 · §5.2.14.2.1 · Figure 340 · Identify – Power State Descriptor Data Structure · 文件頁 384–386 · PDF 410–412</li></ul></details>
+<details class="st-source"><summary>完整原文定位</summary><ul class="qr-case-sources"><li>Base 2.4 · §5.2.30.1.7 · Figure 475 · Autonomous Power State Transition – Command Dword 11 · 文件頁 468 · PDF 494</li><li>Base 2.4 · §5.2.30.1.7 · Figure 477 · Autonomous Power State Transition Data Structure Entry · 文件頁 469 · PDF 495</li><li>Base 2.4 · §5.2.14.2.1 · Figure 340 · Identify – Power State Descriptor Data Structure · 文件頁 384–386 · PDF 410–412</li></ul></details></details>
 <a href="#exercise-toc">回情境索引</a></article>
 <article class="qr-card qr-case" id="exercise-features-04" data-scenario="features-04"><h3><span class="qr-number">練習 04</span>溫度升高時變慢，就能說是 HCTM 嗎？</h3>
 <p class="qr-case-question">效能測試變慢，同時讀到溫度高於 TMT1。哪些回報能補強熱管理的判斷，哪些仍無法證明因果？</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
 <li>Get Features FID=10h：TMT1=340 K、TMT2=350 K；Identify 允許這組設定。</li>
 <li>SMART Composite Temperature=345 K；測試區間內 Thermal Management Temperature 1 Transition Count 增加 1，Total Time 增加 20 seconds。</li>
-</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
+</ul></div><details open class="qr-answer"><summary>沿著欄位一步步理解</summary>
 <p class="qr-route"><strong>查詢次序：</strong>Identify CNS=01h 查 HCTM 能力與允許溫度範圍 → Get Features FID=10h、SEL=0 → 兩次 Get Log Page LID=02h 比較計數。</p>
 <p data-reasoning="features-04-1"><span class="qr-step">推導 1</span>345 K 約 71.85°C，介於兩個設定門檻之間。門檻與量測值都要先確認單位，不能把 K 直接當攝氏，也不能把 Feature 的設定值當成當下溫度。</p>
 <p data-reasoning="features-04-2"><span class="qr-step">推導 2</span>transition count 與 time 的增加，支持這段期間發生過第一階段 host-controlled thermal management。這比單張高溫快照多了行為證據，但它仍是區間累計，未交代每筆 I/O 的時間點。</p>
 <p data-reasoning="features-04-3"><span class="qr-step">推導 3</span>因此可報告熱管理曾介入，卻不能把整段效能下降都歸因給它。還需對齊量測時段、工作負載、power state 與 PCIe link 等資訊，才能分析各因素的影響。</p>
 <div class="qr-related">需要重看欄位時，接著查：<a href="/nvme/figure-reference/features/zh-tw/#figure-b482">Base 2.4 Figure 482 · HCTM：兩個熱管理門檻</a><a href="/nvme/figure-reference/logs/zh-tw/#figure-b213">Base 2.4 Figure 213 · SMART：警告、累計量、溫度與時間</a><a href="/nvme/figure-reference/identify/zh-tw/#figure-b338">Base 2.4 Figure 338 · Identify Controller：能力與限制的主要入口</a></div>
-<h4>本題原文定位</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.30.1.10 · Figure 482 · HCTM – Command Dword 11 · 文件頁 472 · PDF 498</li><li>Base 2.4 · §5.2.13.1.3 · Figure 213 · SMART / Health Information Log Page · 文件頁 221–225 · PDF 247–251</li><li>Base 2.4 · §5.2.14.2.1 · Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent · 文件頁 359–360 · PDF 385–386</li></ul></details>
+<details class="st-source"><summary>完整原文定位</summary><ul class="qr-case-sources"><li>Base 2.4 · §5.2.30.1.10 · Figure 482 · HCTM – Command Dword 11 · 文件頁 472 · PDF 498</li><li>Base 2.4 · §5.2.13.1.3 · Figure 213 · SMART / Health Information Log Page · 文件頁 221–225 · PDF 247–251</li><li>Base 2.4 · §5.2.14.2.1 · Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent · 文件頁 359–360 · PDF 385–386</li></ul></details></details>
 <a href="#exercise-toc">回情境索引</a></article>
-<article class="qr-card qr-case" id="exercise-features-05" data-scenario="features-05"><h3><span class="qr-number">練習 05</span>HMB 位址一樣，就能聲稱原記憶體已返還嗎？</h3>
-<p class="qr-case-question">重設後 host 把原位址的 HMB 清零，再宣稱 MR=1。只比對實體位址，是否足以驗證這個設定？</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
+<article class="qr-card qr-case" id="exercise-features-05" data-scenario="features-05"><h3><span class="qr-number">練習 05</span>HMB 位址一樣，就能聲稱原記憶體已返還嗎？</h3><dl class="st-terms" aria-label="本段名詞"><div><dt>HMB</dt><dd>Host Memory Buffer，主機記憶體緩衝</dd></div></dl>
+<p class="qr-case-question">重設後 host 把原位址的 HMB 清零，再宣稱 MR=1。只比對實體位址，是否足以驗證這個設定？</p><dl class="st-terms" aria-label="本段名詞"><div><dt>HMB</dt><dd>Host Memory Buffer，主機記憶體緩衝</dd></div></dl><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
 <li>停用前後 descriptor 位址與總大小相同，但 buffer 內容已被清零。</li>
 <li>擬用 Host Memory Buffer Feature：EHM=1、MR=1；本題只判讀紀錄，不送出設定。</li>
-</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
+</ul></div><details open class="qr-answer"><summary>沿著欄位一步步理解</summary>
 <p class="qr-route"><strong>查詢次序：</strong>Identify CNS=01h 查 HMB 能力；查 Feature FID=0Dh 與保存的停用前 descriptor／buffer 紀錄。</p>
 <p data-reasoning="features-05-1"><span class="qr-step">推導 1</span>MR=1 表示返還先前同一份 HMB，要求的不只是相同位址與大小，也包含 descriptor 與 buffer 內容的一致。清零已破壞這項條件，所以這個宣稱不成立。</p>
 <p data-reasoning="features-05-2"><span class="qr-step">推導 2</span>EHM=1 只要求啟用，不能補足 MR 的真實性。讀到目前 Feature 已啟用，也不足以倒推 host 過去是否保持了每個 byte；必須有生命週期與記憶體管理紀錄。</p>
 <p data-reasoning="features-05-3"><span class="qr-step">推導 3</span>若是重新配置的記憶體，應按新的 HMB 配置流程處理，而不是把位址偶然相同當成原內容仍在。這是能力查詢與 host 履約證據不同的一個例子。</p>
 <div class="qr-related">需要重看欄位時，接著查：<a href="/nvme/figure-reference/features/zh-tw/#figure-b545">Base 2.4 Figure 545 · HMB：啟用、新配置或返還原記憶體</a><a href="/nvme/figure-reference/identify/zh-tw/#figure-b338">Base 2.4 Figure 338 · Identify Controller：能力與限制的主要入口</a></div>
-<h4>本題原文定位</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.30.2.3 · Figure 545 · Host Memory Buffer – Command Dword 11 · 文件頁 516–517 · PDF 542–543</li><li>Base 2.4 · §5.2.14.2.1 · Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent · 文件頁 357, 362 · PDF 383, 388</li></ul></details>
+<details class="st-source"><summary>完整原文定位</summary><ul class="qr-case-sources"><li>Base 2.4 · §5.2.30.2.3 · Figure 545 · Host Memory Buffer – Command Dword 11 · 文件頁 516–517 · PDF 542–543</li><li>Base 2.4 · §5.2.14.2.1 · Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent · 文件頁 357, 362 · PDF 383, 388</li></ul></details></details>
 <a href="#exercise-toc">回情境索引</a></article>
 <article class="qr-card qr-case" id="exercise-features-06" data-scenario="features-06"><h3><span class="qr-number">練習 06</span>權重 7：3，能保證 IOPS 是 2：1 嗎？</h3>
 <p class="qr-case-question">高、低優先級 workload 的實測 IOPS 沒有依設定成比例。該直接判 controller 排程錯誤嗎？</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
 <li>CC.AMS 已選擇有權重的仲裁模式，且 CAP 表示支援；FID=01h：HPW=7、MPW=3、LPW=3、AB=2。</li>
 <li>高、低優先級分別使用不同 I/O 大小與讀寫比例。</li>
-</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
+</ul></div><details open class="qr-answer"><summary>沿著欄位一步步理解</summary>
 <p class="qr-route"><strong>查詢次序：</strong>讀 CAP 與 CC.AMS → Get Features FID=01h、SEL=0 → 對照 SQ priority 與實際 workload。</p>
 <p data-reasoning="features-06-1"><span class="qr-step">推導 1</span>HPW=7 與 LPW=3 分別解成每輪 8 與 4 個命令的權重；AB=2 則用 2^2=4 計算單次 burst。相同大小的數字不代表相同編碼方式。</p>
 <p data-reasoning="features-06-2"><span class="qr-step">推導 2</span>權重描述命令服務機會，沒有把不同大小、不同執行成本的 I/O 變成相同工作量。因此不能從 8：4 直接推出穩定的 2：1 IOPS，更不能推出 2：1 bandwidth。</p>
 <p data-reasoning="features-06-3"><span class="qr-step">推導 3</span>若要驗證仲裁，應記錄模式、各 SQ 的 priority、命令是否持續待處理與觀測時段，再用規格對應的服務規則判斷。單張應用 throughput 圖不足以證明排程違規。</p>
 <div class="qr-related">需要重看欄位時，接著查：<a href="/nvme/figure-reference/features/zh-tw/#figure-b467">Base 2.4 Figure 467 · Arbitration：權重不是效能保證</a><a href="/nvme/figure-reference/init/zh-tw/#figure-b41">Base 2.4 Figure 41 · CC：主機實際選了什麼</a><a href="/nvme/figure-reference/init/zh-tw/#figure-b36">Base 2.4 Figure 36 · CAP：設定前先查硬體能力</a></div>
-<h4>本題原文定位</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.30.1.1 · Figure 467 · Arbitration &amp; Command Processing – Command Dword 11 · 文件頁 460 · PDF 486</li><li>Base 2.4 · §3.1.4.5 · Figure 41 · Offset 14h: CC – Controller Configuration · 文件頁 60–63 · PDF 86–89</li><li>Base 2.4 · §3.1.4.1 · Figure 36 · Offset 0h: CAP – Controller Capabilities · 文件頁 55–58 · PDF 81–84</li></ul></details>
+<details class="st-source"><summary>完整原文定位</summary><ul class="qr-case-sources"><li>Base 2.4 · §5.2.30.1.1 · Figure 467 · Arbitration &amp; Command Processing – Command Dword 11 · 文件頁 460 · PDF 486</li><li>Base 2.4 · §3.1.4.5 · Figure 41 · Offset 14h: CC – Controller Configuration · 文件頁 60–63 · PDF 86–89</li><li>Base 2.4 · §3.1.4.1 · Figure 36 · Offset 0h: CAP – Controller Capabilities · 文件頁 55–58 · PDF 81–84</li></ul></details></details>
 <a href="#exercise-toc">回情境索引</a></article>
 </section>
 <nav class="qr-toc" id="figure-index" aria-label="本冊圖表索引"><h2>本冊圖表</h2><ol>
@@ -195,7 +211,7 @@ description: "NVMe 情境練習與圖表速查：查詢路徑、欄位推導、�
 <p class="qr-original">Base 2.4 · Figure 471 · Volatile Write Cache – Command Dword 11</p>
 <p class="qr-location">§5.2.30.1.4 · 文件頁 464–465 · PDF 490–491</p>
 <p class="qr-explanation" data-paragraph="B471-1"><span class="qr-step">08.1 · 用途</span>判斷 Write 完成是否可能只到揮發性 cache 時，查 WCE 設定，再結合 cache 是否存在與命令 FUA。WCE 不是硬體是否有 cache 的能力位。</p>
-<p class="qr-explanation" data-paragraph="B471-2"><span class="qr-step">08.2 · 欄位與關係</span>CDW11 bit0 為 WCE，1 啟用、0 停用，bits31:1 保留。實際 cache 存在性還需依 Identify 與 namespace／FDP 配置判斷；Flush 與 FUA 另有各自的非揮發要求。</p>
+<p class="qr-explanation" data-paragraph="B471-2"><span class="qr-step">08.2 · 欄位與關係</span>CDW11 bit0 為 WCE，1 啟用、0 停用，bits31:1 保留。實際 cache 存在性還需依 Identify 與 namespace／FDP 配置判斷；Flush 與 FUA 另有各自的非揮發要求。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>FDP</dt><dd>Flexible Data Placement，彈性資料放置</dd></div></dl>
 <p class="qr-explanation" data-paragraph="B471-3"><span class="qr-step">08.3 · 判讀與例子</span>WCE=1 不能單獨證明某筆 Write 只在 cache 中，因為那筆命令可能 FUA=1。比較資料保留結果，需同時保存 cache 能力、WCE 及命令內容。</p>
 <p class="qr-tags">搜尋詞：FID 06h · WCE · VWC · volatile cache · Flush</p>
 <div class="qr-related">接著查：<a href="/nvme/figure-reference/identify/zh-tw/#figure-b338">Base 2.4 Figure 338 · Identify Controller：能力與限制的主要入口</a><a href="/nvme/figure-reference/identify/zh-tw/#figure-b346">Base 2.4 Figure 346 · Namespace 共通狀態：可用、受保護與儲存歸屬</a><a href="/nvme/figure-reference/io/zh-tw/#figure-n71">NVM Command Set 1.3 Figure 71 · Write CDW12：持久性、PI 與配置提示</a><a href="/nvme/figure-reference/features/zh-tw/#figure-b294">Base 2.4 Figure 294 · FDP Configuration：配置大小、資源數與 PID 切割</a></div>
@@ -205,7 +221,7 @@ description: "NVMe 情境練習與圖表速查：查詢路徑、欄位推導、�
 <p class="qr-original">Base 2.4 · Figure 472 · Number of Queues – Command Dword 11</p>
 <p class="qr-location">§5.2.30.1.5 · 文件頁 465 · PDF 491</p>
 <p class="qr-explanation" data-paragraph="B472-1"><span class="qr-step">09.1 · 用途</span>初始化要建立多組 I/O queues 前，用此表解讀主機要求分配的數量。它不是每個 queue 的深度，也不包括 Admin queues。</p>
-<p class="qr-explanation" data-paragraph="B472-2"><span class="qr-step">09.2 · 欄位與關係</span>NSQR bits15:0 要求 SQ 數，NCQR bits31:16 要求 CQ 數，兩者都減 1 編碼；最大可指定原始值 FFFEh。此設定應在建立 I/O queues 前完成，實際分配量由 CQE DW0 回報。</p>
+<p class="qr-explanation" data-paragraph="B472-2"><span class="qr-step">09.2 · 欄位與關係</span>NSQR bits15:0 要求 SQ 數，NCQR bits31:16 要求 CQ 數，兩者都減 1 編碼；最大可指定原始值 FFFEh。此設定應在建立 I/O queues 前完成，實際分配量由 CQE DW0 回報。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry，佇列中的完成項目</dd></div></dl>
 <p class="qr-explanation" data-paragraph="B472-3"><span class="qr-step">09.3 · 判讀與例子</span>要求 8 個 SQ 與 4 個 CQ，CDW11=00030007h。主機不能直接依要求值建立全部 queues，而要先讀 Figure473 的實際結果。</p>
 <p class="qr-tags">搜尋詞：FID 07h · NSQR · NCQR · queue allocation</p>
 <div class="qr-related">接著查：<a href="/nvme/figure-reference/features/zh-tw/#figure-b473">Base 2.4 Figure 473 · Number of Queues：實際分配的數量</a></div>
@@ -271,7 +287,7 @@ description: "NVMe 情境練習與圖表速查：查詢路徑、欄位推導、�
 <div class="qr-related">接著查：<a href="/nvme/figure-reference/identify/zh-tw/#figure-b338">Base 2.4 Figure 338 · Identify Controller：能力與限制的主要入口</a></div>
 <a href="#figure-index">回本冊圖表索引</a></article>
 <article class="qr-card" id="figure-b294" data-figure="B294">
-<h2><span class="qr-number">16</span>FDP Configuration：配置大小、資源數與 PID 切割</h2>
+<h2><span class="qr-number">16</span>FDP Configuration：配置大小、資源數與 PID 切割</h2><dl class="st-terms" aria-label="本段名詞"><div><dt>FDP</dt><dd>Flexible Data Placement，彈性資料放置</dd></div></dl>
 <p class="qr-original">Base 2.4 · Figure 294 · FDP Configuration Descriptor</p>
 <p class="qr-location">§5.2.13.1.29 · 文件頁 293–295 · PDF 319–321</p>
 <p class="qr-explanation" data-paragraph="B294-1"><span class="qr-step">16.1 · 用途</span>解 FDP 資源配置或 Placement Identifier 前，查目前配置描述子。PID 不是固定格式的任意數字，Reclaim Group 與 Placement Handle 的切割取決於 RGIF。</p>

@@ -1,0 +1,86 @@
+{
+  "walk_id": "ch2-dsn",
+  "title": "先選清單，再把序號讀出來",
+  "svg": "<svg viewBox=\"0 0 840 580\" class=\"course-diagram\" role=\"img\" aria-labelledby=\"ch2-dsn-svg-title ch2-dsn-svg-desc\"><title id=\"ch2-dsn-svg-title\">兩個入口，沿正確清單找到序號</title><desc id=\"ch2-dsn-svg-desc\">傳統與延伸清單分別從自己的入口開始；找到DSN後才從目前結構起點加資料位移。</desc><g data-walk-target=\"function\"><rect x=\"270\" y=\"20\" width=\"300\" height=\"80\" rx=\"10\" fill=\"var(--blue-soft)\" stroke=\"var(--line)\" stroke-width=\"2\"/><text x=\"420\" y=\"47\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"18\">Function 03:00.0</text><text x=\"420\" y=\"72\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"16\">同一份設定空間</text></g><g data-walk-target=\"conventional\"><rect x=\"20\" y=\"180\" width=\"350\" height=\"80\" rx=\"10\" fill=\"var(--blue-soft)\" stroke=\"var(--line)\" stroke-width=\"2\"/><text x=\"195\" y=\"207\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"18\">傳統清單</text><text x=\"195\" y=\"232\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"16\">0x34 → 0x40</text></g><g data-walk-target=\"extended\"><rect x=\"470\" y=\"180\" width=\"350\" height=\"80\" rx=\"10\" fill=\"var(--blue-soft)\" stroke=\"var(--line)\" stroke-width=\"2\"/><text x=\"645\" y=\"207\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"18\">延伸清單</text><text x=\"645\" y=\"232\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"16\">從 0x100 開始</text></g><g data-walk-target=\"null\"><rect x=\"20\" y=\"325\" width=\"350\" height=\"80\" rx=\"10\" fill=\"var(--blue-soft)\" stroke=\"var(--line)\" stroke-width=\"2\"/><text x=\"195\" y=\"352\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"18\">Null → PCIe → MSI-X</text><text x=\"195\" y=\"377\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"16\">0x50 → 0x70 → 0xD0</text></g><g data-walk-target=\"dsn\"><rect x=\"470\" y=\"325\" width=\"350\" height=\"80\" rx=\"10\" fill=\"var(--blue-soft)\" stroke=\"var(--line)\" stroke-width=\"2\"/><text x=\"645\" y=\"352\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"18\">AER → DSN</text><text x=\"645\" y=\"377\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"16\">0x100 → 0x180</text></g><g data-walk-target=\"data\"><rect x=\"470\" y=\"470\" width=\"350\" height=\"80\" rx=\"10\" fill=\"var(--blue-soft)\" stroke=\"var(--line)\" stroke-width=\"2\"/><text x=\"645\" y=\"497\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"18\">讀取序號資料</text><text x=\"645\" y=\"522\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"16\">起點+0x04／起點+0x08</text></g><g data-walk-target=\"choice\"><path d=\"M420 100 V140 H195 V180 M420 140 H645 V180\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2.5\"/><text x=\"420\" y=\"130\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"15\">按目標功能選清單</text></g><g data-walk-target=\"conventional-next\"><path d=\"M195 260 V325\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2.5\"/><text x=\"195\" y=\"302\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"15\">Next：從 Function 起點算</text></g><g data-walk-target=\"extended-next\"><path d=\"M645 260 V325\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2.5\"/><text x=\"645\" y=\"302\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"15\">Next=0x180</text></g><g data-walk-target=\"read-data\"><path d=\"M645 405 V470\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2.5\"/><text x=\"645\" y=\"448\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"15\">ID=0003h; Version=1</text></g></svg>",
+  "steps": [
+    {
+      "title": "選定 Function 與正確入口",
+      "html": "<p>先用 Segment 與 BDF 選定設定對象，再以 byte offset 選擇其中的位置。傳統清單與 Extended Capability（延伸能力）清單各有入口。</p>",
+      "targets": [
+        "function",
+        "choice",
+        "conventional",
+        "extended"
+      ],
+      "condition_html": "<p>普通 Type 0 Endpoint；平台能存取完整設定空間，讀取成功且快照穩定。</p>",
+      "source_html": "<p>Base 6.0 §7.2／Figure 7-3、§7.6.1／Figure 7-42，文件頁／PDF 頁 905–906、1009。</p>",
+      "claim_ids": [
+        "PCIE-CH2-SPACE-001",
+        "PCIE-CH2-EXTENDED-001"
+      ]
+    },
+    {
+      "title": "用傳統清單看懂 Next 的用途",
+      "html": "<p>傳統清單的 Null Capability 是沒有功能資料的節點。其 ID=0 仍須依 Next Pointer（下一項位置）繼續到 0x70；這一路沒有接到延伸清單。</p>",
+      "targets": [
+        "conventional",
+        "conventional-next",
+        "null"
+      ],
+      "condition_html": "<p>此處作為清單格式的對照；本次序號查詢使用右側的延伸清單。</p>",
+      "source_html": "<p>Base 6.0 §7.9.27／Figure 7-384／Table 7-336，文件頁／PDF 頁 1315。</p>",
+      "claim_ids": [
+        "PCIE-CH2-CONVENTIONAL-001"
+      ]
+    },
+    {
+      "title": "從延伸清單找到序號結構",
+      "html": "<p>在 0x100 讀 Header，分出 ID、Version 與 Next。沿 Next=0x180 到下一項，確認 DSN（Device Serial Number，裝置序號）ID=0003h、Version=1。</p>",
+      "targets": [
+        "extended",
+        "extended-next",
+        "dsn"
+      ],
+      "condition_html": "<p>AER 是進階錯誤回報結構；本例不支援 Flit Mode，因此使用其 Version 2。</p>",
+      "source_html": "<p>Base 6.0 Figures 7-43／7-154／7-242、Tables 7-39／7-134／7-221，文件頁／PDF 頁 1010、1112、1206。</p>",
+      "claim_ids": [
+        "PCIE-CH2-EXTENDED-001",
+        "PCIE-CH2-VERSION-001",
+        "PCIE-CH2-DSN-001"
+      ]
+    },
+    {
+      "title": "以目前結構起點取得資料",
+      "html": "<p>DSN 是提供裝置序號的能力。由目前起點 0x180 加 0x04、0x08，讀取低、高 DWORD，再依 Table 7-222 的位元組對映重組序號。</p>",
+      "targets": [
+        "dsn",
+        "read-data",
+        "data"
+      ],
+      "condition_html": "<p>DWORD 是四個 bytes。這組序號數值只示範重組，不宣稱已配發，也不用來認證硬體。</p>",
+      "source_html": "<p>Base 6.0 Figures 7-241–7-243／Tables 7-221–7-222，文件頁／PDF 頁 1205–1207。</p>",
+      "claim_ids": [
+        "PCIE-CH2-DSN-BYTES-001",
+        "PCIE-CH2-EXAMPLE-001"
+      ]
+    }
+  ],
+  "caption_html": "作者的清單查詢圖；兩條支線表示兩種入口。Next 使用 Function 內的 byte offset；資料欄位則使用目前結構的相對位移。",
+  "order_html": "<p>先讀兩種入口的差別，再沿右側完成 DSN 查詢。左側是對照，並非必須先走完它才能開始右側。</p>",
+  "components": [
+    {
+      "target": "function",
+      "title": "Function：本次的設定對象",
+      "html": "<p>本次固定查詢 0000:03:00.0 的設定空間。</p>",
+      "basic_html": "<p>每個 Function 各有設定空間；byte offset 只在選定的 Function 內定位。</p>"
+    },
+    {
+      "target": "dsn",
+      "title": "DSN：裝置序號能力",
+      "html": "<p>在 0x180 確認結構後，才讀它的兩個資料 DWORD。</p>",
+      "basic_html": "<p>DSN 為可選能力；一般多功能 Device 中有實作的各 Function 必須回報相同序號。</p>"
+    }
+  ],
+  "language": "zh",
+  "summary_html": "<p class=\"lead\">沿用前章已找到的裝置功能，本章要讀出它提供的裝置序號。查詢先從設定空間選對清單，再沿指標找到能力結構，最後讀取資料欄位並解釋位元組順序。這條路徑也能用來理解其他能力的查詢。</p>"
+}

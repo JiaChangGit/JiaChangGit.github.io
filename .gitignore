@@ -20,3 +20,7 @@
 NVM-Express-*.pdf
 __pycache__/
 *.pyc
+
+PCI-Express-Base-Specification-*.pdf
+PCI-Firmware-Specification.pdf
+/output/

@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "course": "pcie-course",
+  "chapter": 31,
+  "updated": "2026-10-24",
+  "claims": [
+    {
+      "id": "PCIE-CH31-001",
+      "claim": "DOE多實例、Configuration用途、Discovery與協定分工。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.30",
+        "6.30.2"
+      ],
+      "document_pages": [
+        843,
+        847
+      ],
+      "pdf_pages": [
+        843,
+        847
+      ],
+      "figures": [],
+      "tables": [
+        "6-32"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH31-002",
+      "claim": "DOE信箱、Go、Busy、Ready、Error與Abort規則。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.9.24.3",
+        "7.9.24.4",
+        "7.9.24.5",
+        "7.9.24.6"
+      ],
+      "document_pages": [
+        1297,
+        1298,
+        1299
+      ],
+      "pdf_pages": [
+        1297,
+        1298,
+        1299
+      ],
+      "figures": [
+        "7-361",
+        "7-362",
+        "7-363",
+        "7-364"
+      ],
+      "tables": [
+        "7-315",
+        "7-316",
+        "7-317",
+        "7-318"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH31-003",
+      "claim": "CMA分層與外部SPDM來源邊界。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.31"
+      ],
+      "document_pages": [
+        849,
+        850
+      ],
+      "pdf_pages": [
+        849,
+        850
+      ],
+      "figures": [
+        "6-43"
+      ],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    }
+  ]
+}

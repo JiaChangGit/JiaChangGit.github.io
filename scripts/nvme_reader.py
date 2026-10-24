@@ -10,6 +10,7 @@ import re
 from difflib import SequenceMatcher
 from pathlib import Path
 from scripts.nvme_lessons import LESSONS
+from scripts.spec_teaching import SERIES_REPORTS, specification_badges
 from scripts.nvme_plain_language import chinese
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -52,7 +53,7 @@ class Reading:
         self.used_guides = set()
         self.figure_label = None
         self.figure_paragraph_no = 0
-        # Define each term once per document, including hidden field sections.
+        # Approved shared teaching articles remind readers at the first two uses.
         self.term_note_counts = {}
         self.section_no = 0
         self.section_paragraph_no = 0
@@ -89,7 +90,8 @@ class Reading:
                 'index', 'offset', 'index-offset', 'zero-based', 'word',
                 'page offset', 'bit range', 'raw value',
             }
-            if self.term_note_counts.get(term_key, 0) >= 1 or not re.search(pattern, value, re.I if term in case_insensitive else 0):
+            limit = 2 if self.id in SERIES_REPORTS else 1
+            if self.term_note_counts.get(term_key, 0) >= limit or not re.search(pattern, value, re.I if term in case_insensitive else 0):
                 continue
             definition = candidates[term]
             self.term_note_counts[term_key] = self.term_note_counts.get(term_key, 0) + 1
@@ -281,6 +283,12 @@ class Reading:
             out.append(self.paragraph(passage))
         out.append('</div>')
         out.append('</section>')
+        if self.id in SERIES_REPORTS:
+            # Replace the generic axis cards with the authored diagram and route.
+            self.term_note_counts = {}
+            self.begin_section(0)
+            from scripts.nvme_report_openings import opening
+            out = [opening(self)]
         if self.id == 'admin-io-spec-walkthrough' and not self.tutorial:
             from scripts.nvme_admin_io import render_route
             out.append(render_route(self))
@@ -423,6 +431,9 @@ POST_MODULES = {
 def render(report_id, report, claims, figures, modules, language, tutorial, api):
     reading = Reading(report_id, report, claims, figures, modules, language, tutorial, api)
     body = reading.body()
+    revised = report_id in SERIES_REPORTS
+    if revised:
+        body = specification_badges() + body
     route_link = ''
     title = report['title_en'] if language == 'en' else (report.get('title_tutorial_zh',report['title_zh']) if tutorial else report['title_zh'])
     sources = '\n'.join(api.SOURCES[s]['marker'] for s in dict.fromkeys(c['source_id'] for c in claims))
@@ -431,8 +442,15 @@ def render(report_id, report, claims, figures, modules, language, tutorial, api)
         description = pair(language, '從主題主軸到關鍵機制、條件與例子的 NVMe 技術報告。', 'An NVMe technical report covering the main ideas, mechanisms, conditions, and examples.')
         frontmatter = api.frontmatter(report_id, title, description, language)
         frontmatter = frontmatter.replace('toc: yes', 'toc: yes\nnvme_notes: true')
-        return frontmatter + '\n<div class="nvme-note">\n' + body + '\n' + footer + '\n</div>\n'
+        if revised:
+            frontmatter = frontmatter.replace('nvme_notes: true','nvme_notes: true\nspec_teaching: true\nlast_modified_at: 2026-10-23')
+        root = '<div class="nvme-note spec-teaching" data-spec-series="nvme">' if revised else '<div class="nvme-note">'
+        return frontmatter + '\n' + root + '\n' + body + '\n' + footer + '\n</div>\n'
     css = (ROOT / 'assets/css/nvme-reader.css').read_text(encoding='utf-8')
+    root_class = 'edition-tutorial'
+    if revised:
+        css += '\n' + (ROOT / 'assets/css/spec-teaching.css').read_text(encoding='utf-8')
+        root_class += ' spec-teaching'
     toc = ''.join(f'<a href="#module-{m["id"]}">{index:02d} {esc(m["title"]["zh"])}</a>' for index, m in enumerate(reading.modules, 1))
     return f'''<!DOCTYPE html>
 <html lang="zh-Hant-TW"><head><meta charset="UTF-8">
@@ -441,8 +459,8 @@ def render(report_id, report, claims, figures, modules, language, tutorial, api)
 <meta name="theme-color" content="#eef1f2" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0c1113" media="(prefers-color-scheme: dark)">
 <title>{esc(title)}</title><style>{css}</style></head>
-<body class="edition-tutorial"><a class="skip-link" href="#main">跳到正文</a>
+<body class="{root_class}"{(' data-spec-series="nvme"' if revised else '')}><a class="skip-link" href="#main">跳到正文</a>
 <div class="reader-shell"><aside class="reader-nav"><details open><summary>閱讀目錄</summary><nav aria-label="章節目錄"><a href="#topic-overview">主題與主軸</a>{route_link}{toc}<a href="#figure-reading">讀懂本篇的規格圖表</a><a href="#knowledge-check">學完後想一想</a></nav></details></aside>
-<main id="main" class="nvme-note"><header class="reader-heading"><p class="eyebrow">NVMe · 規格與原理</p><h1>{esc(title)}</h1></header>
+<main id="main" class="nvme-note{(' spec-teaching' if revised else '')}"{(' data-spec-series="nvme"' if revised else '')}><header class="reader-heading"><p class="eyebrow">NVMe · 規格與原理</p><h1>{esc(title)}</h1></header>
 {body}
 {footer}</main></div></body></html>'''

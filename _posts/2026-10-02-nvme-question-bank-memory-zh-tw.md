@@ -7,18 +7,21 @@ permalink: /nvme/question-bank/memory/zh-tw/
 lang: zh-TW
 nvme_quickref: true
 nvme_qa: true
+spec_teaching: true
+last_modified_at: 2026-10-23
 ---
 
-<div class="nvme-quickref nvme-qa">
+<div class="nvme-quickref nvme-qa spec-teaching" data-spec-series="nvme">
 <nav class="qr-top" aria-label="題庫與版本"><a href="#content">跳到內容</a><a href="/nvme/question-bank/zh-tw/">題庫總索引</a><a href="/nvme/question-bank/memory/en/">English</a><a href="/DOCS/nvme-question-bank/memory.html">繁中教學 HTML</a></nav>
-<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–328</p>
-<header><p class="qa-range">Q223–Q236</p><h1>HMB、CMB 與 PMR</h1><p class="qr-intro">先看記憶體位於哪裡、由誰提供與何時可回收，再看持久性。HMB、CMB、PMR 不能因都含 Memory 就套同一組 reset 規則。</p><p>先練習，再展開解答。各題依需要使用文字、欄位判讀、比較或流程說明，不要求相同的回答項目。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p></header>
-<aside class="qa-glossary"><h2>先認識本文使用的字詞</h2><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></aside>
-<section id="overview" class="qa-overview"><h2>位置、使用者與持久性</h2><p class="qa-takeaway">位址設定保留，不代表原內容保留；CQE 成功也不必然證明 PMR 資料已持久化。</p>
+<main id="content"><p class="qr-eyebrow">NVMe · Q1–328</p>
+<div class="st-specs" aria-label="Specification editions"><span>NVM Express Base 2.4</span><span>NVM Command Set 1.3</span><span>NVMe over PCIe Transport 1.4</span></div>
+<header><p class="qa-range">Q223–Q236</p><h1>HMB、CMB 與 PMR</h1><dl class="st-terms" aria-label="本段名詞"><div><dt>HMB</dt><dd>Host Memory Buffer，主機記憶體緩衝</dd></div><div><dt>CMB</dt><dd>Controller Memory Buffer，控制器記憶體緩衝</dd></div><div><dt>PMR</dt><dd>Persistent Memory Region，持久性記憶體區域</dd></div></dl><aside class="st-context"><p>HMB（Host Memory Buffer）使用主機提供的記憶體；CMB（Controller Memory Buffer）與 PMR（Persistent Memory Region）則有各自的控制器端區域與存取規則。以下先定位記憶體由誰提供、誰能存取，再看啟用、同步與生命週期。</p></aside><p class="qr-intro">先看記憶體位於哪裡、由誰提供與何時可回收，再看持久性。HMB、CMB、PMR 不能因都含 Memory 就套同一組 reset 規則。</p><p>每個問題都接著完整解說，依內容帶讀欄位、比較機制或追蹤流程。先看本冊總覽，再沿問題閱讀；必要條件與正常路徑直接顯示。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SCT</dt><dd>Status Code Type，完成狀態代碼類型</dd></div></dl></header>
+<section id="overview" class="qa-overview"><h2>位置、使用者與持久性</h2><p class="qa-takeaway">位址設定保留，不代表原內容保留；CQE 成功也不必然證明 PMR 資料已持久化。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry，佇列中的完成項目</dd></div></dl>
 <div class="qr-table" tabindex="0" role="region" aria-label="可橫向捲動的比較表"><table><thead><tr><th scope="col">機制</th><th scope="col">記憶體與用途</th><th scope="col">結束或確認條件</th></tr></thead><tbody><tr><td>HMB</td><td>Host 提供 controller 專用 buffer</td><td>成功停用後才能回收</td></tr><tr><td>CMB</td><td>Controller 提供可選用途記憶體</td><td>依 reset／CMSE 規則重建內容</td></tr><tr><td>PMR</td><td>PCIe function 提供持久記憶體</td><td>檢查 Ready、健康及 PMRWBM</td></tr></tbody></table></div>
-<p><strong>舉例看懂：</strong>HMB 停用成功前，Host 不能重用其 buffer。CMB 在某些 reset 後即使 CBA 還在，CQ 內容仍須重新初始化；PMR 則另有持久性與健康要求。</p>
+<p><strong>舉例看懂：</strong>HMB 停用成功前，Host 不能重用其 buffer。CMB 在某些 reset 後即使 CBA 還在，CQ 內容仍須重新初始化；PMR 則另有持久性與健康要求。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CQ</dt><dd>Completion Queue，完成佇列</dd></div></dl>
 <p class="qa-citations">來源：<a href="#ref-hmb">Base 2.4 §5.2.30.2.3, 8.2.4</a> · <a href="#ref-cmb">Base 2.4 §8.2.1 (memory placement and lifetime)</a> · <a href="#ref-cmbreg">Base 2.4 §3.1.4 (CMBLOC, CMBSZ, CMBMSC, CMBSTS)</a> · <a href="#ref-pmr">Base 2.4 §8.2.5 (memory behavior; exclude PCIe packet detail)</a> · <a href="#ref-pmrreg">Base 2.4 §3.1.4 (PMR properties)</a></p>
 </section>
+<details class="qa-glossary st-glossary"><summary>需要時回顧本篇名詞</summary><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></details>
 <div class="qa-controls" hidden><label>搜尋本頁 <input type="search" id="qa-search" placeholder="題號、欄位或關鍵字"></label><button type="button" data-expand="true">展開全部解答</button><button type="button" data-expand="false">收合全部解答</button><output id="qa-count" aria-live="polite"></output></div>
 <section id="question-index"><h2>本冊題目</h2><ol class="qa-index">
 <li><a href="#q-223">Q223 · HMB、CMB 與 PMR 分別解決什麼問題？</a></li>
@@ -37,8 +40,8 @@ nvme_qa: true
 <li><a href="#q-236">Q236 · Host Memory、HMB、CMB 與 PMR 的存取與生命週期如何比較？</a></li>
 </ol></section>
 <article class="qa-question" id="q-223" data-question="223" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-223">Q223</a> HMB、CMB 與 PMR 分別解決什麼問題？</h2>
-<p class="qa-prompt">先說出比較對象最重要的差別，並舉一個不能互相代用的例子。</p>
-<details class="qa-answer" id="q-223-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-223-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-223-a-01">它們都與記憶體有關，但借用方向、使用者與保存承諾不同；先辨認這三件事，才不會錯配 buffer。</p><div class="qa-sections">
 <section class="qa-section" id="q-223-s-01" data-answer-section="1"><h3><span>1.</span> 差別在哪裡</h3>
 <span class="qa-anchor" id="q-223-a-02"></span><p>HMB 位於 Host，專供 controller 使用；CMB 位於 controller，供宣告支援的 queue 或 buffer；PMR 是可直接讀寫的持久記憶體區域。</p>
@@ -46,22 +49,23 @@ nvme_qa: true
 </section>
 <section class="qa-section" id="q-223-s-02" data-answer-section="2"><h3><span>2.</span> 如何選擇與確認</h3>
 <span class="qa-anchor" id="q-223-a-03"></span><p>HMB 查 HMPRE；CMB 查 CAP.CMBS、CMBSZ；PMR 查 CAP.PMRS、PMRCAP。</p>
-<span class="qa-anchor" id="q-223-a-05"></span><p>依需求選擇：借 Host RAM 給韌體使用選 HMB；將 SQ 放到裝置記憶體須查 CMB.SQS；要直接存放持久資料則研究 PMR 的 barrier 與健康。</p>
+<span class="qa-anchor" id="q-223-a-05"></span><p>依需求選擇：借 Host RAM 給韌體使用選 HMB；將 SQ 放到裝置記憶體須查 CMB.SQS；要直接存放持久資料則研究 PMR 的 barrier 與健康。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SQ</dt><dd>Submission Queue，提交佇列</dd></div></dl>
 <span class="qa-anchor" id="q-223-a-06"></span><p>正確結果是功能可用且符合各自使用限制，不是所有記憶體都能放所有資料結構。</p>
 </section>
-<section class="qa-section" id="q-223-s-03" data-answer-section="3"><h3><span>3.</span> 哪些結論不能互相套用</h3>
-<span class="qa-anchor" id="q-223-a-07"></span><p>PMR 的 queue、PRP／SGL list 支援不在規範範圍，controller 可回 Invalid Field；不能因 PMR 可讀寫就把它當成另一個 CMB。</p>
+<section class="qa-section" id="q-223-s-03" data-answer-section="3"><h3><span>3.</span> 比較時要保留的條件</h3>
+<span class="qa-anchor" id="q-223-a-07"></span><p>PMR 的 queue、PRP／SGL list 支援不在規範範圍，controller 可回 Invalid Field；不能因 PMR 可讀寫就把它當成另一個 CMB。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>PRP</dt><dd>Physical Region Page，描述資料頁位置的指標</dd></div><div><dt>SGL</dt><dd>Scatter Gather List，描述分散資料區段的清單</dd></div></dl>
 <span class="qa-anchor" id="q-223-a-16"></span><p>用能力、配置、存取方式與恢復後內容交叉比對，而不是只看一個地址能不能讀到 bytes。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-hmb">Base 2.4 §5.2.30.2.3, 8.2.4</a> · <a href="#ref-cmb">Base 2.4 §8.2.1 (memory placement and lifetime)</a> · <a href="#ref-cmbreg">Base 2.4 §3.1.4 (CMBLOC, CMBSZ, CMBMSC, CMBSTS)</a> · <a href="#ref-pmr">Base 2.4 §8.2.5 (memory behavior; exclude PCIe packet detail)</a> · <a href="#ref-pmrreg">Base 2.4 §3.1.4 (PMR properties)</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-223-a-17"></span><span class="qa-anchor" id="q-223-a-08"></span><span class="qa-anchor" id="q-223-a-09"></span><span class="qa-anchor" id="q-223-a-10"></span><span class="qa-anchor" id="q-223-a-11"></span><span class="qa-anchor" id="q-223-a-12"></span><span class="qa-anchor" id="q-223-a-13"></span><span class="qa-anchor" id="q-223-a-14"></span><span class="qa-anchor" id="q-223-a-15"></span>
 <p class="qa-related">相關機制：<a href="/nvme/question-bank/memory/zh-tw/#q-226">Q226</a> · <a href="/nvme/question-bank/memory/zh-tw/#q-231">Q231</a> · <a href="/nvme/question-bank/memory/zh-tw/#q-235">Q235</a></p>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-hmb">Base 2.4 §5.2.30.2.3, 8.2.4</a> · <a href="#ref-cmb">Base 2.4 §8.2.1 (memory placement and lifetime)</a> · <a href="#ref-cmbreg">Base 2.4 §3.1.4 (CMBLOC, CMBSZ, CMBMSC, CMBSTS)</a> · <a href="#ref-pmr">Base 2.4 §8.2.5 (memory behavior; exclude PCIe packet detail)</a> · <a href="#ref-pmrreg">Base 2.4 §3.1.4 (PMR properties)</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-224" data-question="224" data-answer-kind="fields"><h2><a class="qa-qid" href="#q-224">Q224</a> HMB 大小與 Descriptor List 如何配置？</h2>
-<p class="qa-prompt">先試著說明欄位的單位與編碼，再用一組數值推導結果。</p>
-<details class="qa-answer" id="q-224-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-224-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-224-a-01">Host 以多段實體連續記憶體提供 HMB，不必一次取得整塊連續 RAM，但 descriptor list 本身必須實體連續。</p><div class="qa-sections">
 <section class="qa-section" id="q-224-s-01" data-answer-section="1"><h3><span>1.</span> 先確認資料的來源與範圍</h3>
 <span class="qa-anchor" id="q-224-a-02"></span><p>配置給一個 controller 專用，Host 啟用後不能當一般工作 buffer 改寫。</p>
@@ -69,7 +73,7 @@ nvme_qa: true
 </section>
 <section class="qa-section" id="q-224-s-02" data-answer-section="2"><h3><span>2.</span> 欄位、單位與判讀例子</h3>
 <span class="qa-anchor" id="q-224-a-04"></span><p>HSIZE 與每筆 BSIZE 卻用 CC.MPS page 單位；HMDLEC 是實際筆數，list address 16-byte 對齊，BADD 按 CC.MPS 對齊。</p>
-<span class="qa-anchor" id="q-224-a-05"></span><p>先配置並固定 RAM，填 16-byte descriptors，核對各段大小與 HSIZE，再以 EHM=1 啟用，等 CQE 成功才交給 controller 使用。</p>
+<span class="qa-anchor" id="q-224-a-05"></span><p>先配置並固定 RAM，填 16-byte descriptors，核對各段大小與 HSIZE，再以 EHM=1 啟用，等 CQE 成功才交給 controller 使用。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry，佇列中的完成項目</dd></div></dl>
 <span class="qa-anchor" id="q-224-a-06"></span><p>Get 回 EHM 與 attributes 可核對實際配置。假設 CC.MPS 選 8 KiB，HSIZE=256 表示 2 MiB，不是 1 MiB。</p>
 </section>
 <section class="qa-section" id="q-224-s-03" data-answer-section="3"><h3><span>3.</span> 判讀時要保留的條件</h3>
@@ -77,13 +81,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-224-a-16"></span><p>同時比對能力單位、命令單位與 Get attributes，不能直接將 HMPRE 數字抄進 HSIZE。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-hmb">Base 2.4 §5.2.30.2.3, 8.2.4</a> · <a href="#ref-cmb">Base 2.4 §8.2.1 (memory placement and lifetime)</a> · <a href="#ref-cmbreg">Base 2.4 §3.1.4 (CMBLOC, CMBSZ, CMBMSC, CMBSTS)</a> · <a href="#ref-pmr">Base 2.4 §8.2.5 (memory behavior; exclude PCIe packet detail)</a> · <a href="#ref-pmrreg">Base 2.4 §3.1.4 (PMR properties)</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-224-a-17"></span><span class="qa-anchor" id="q-224-a-08"></span><span class="qa-anchor" id="q-224-a-09"></span><span class="qa-anchor" id="q-224-a-10"></span><span class="qa-anchor" id="q-224-a-11"></span><span class="qa-anchor" id="q-224-a-12"></span><span class="qa-anchor" id="q-224-a-13"></span><span class="qa-anchor" id="q-224-a-14"></span><span class="qa-anchor" id="q-224-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-hmb">Base 2.4 §5.2.30.2.3, 8.2.4</a> · <a href="#ref-cmb">Base 2.4 §8.2.1 (memory placement and lifetime)</a> · <a href="#ref-cmbreg">Base 2.4 §3.1.4 (CMBLOC, CMBSZ, CMBMSC, CMBSTS)</a> · <a href="#ref-pmr">Base 2.4 §8.2.5 (memory behavior; exclude PCIe packet detail)</a> · <a href="#ref-pmrreg">Base 2.4 §3.1.4 (PMR properties)</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-225" data-question="225" data-answer-kind="error"><h2><a class="qa-qid" href="#q-225">Q225</a> HMB 位址、大小或 Descriptor 數量不合法時如何判斷？</h2>
-<p class="qa-prompt">先區分失敗條件，再判斷是否有規範明定的回報結果。</p>
-<details class="qa-answer" id="q-225-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-225-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-225-a-01">不同欄位的錯誤規則不同；驗證時要指定單一錯誤，才知道應預期哪一種反應。</p><div class="qa-sections">
 <section class="qa-section" id="q-225-s-01" data-answer-section="1"><h3><span>1.</span> 先區分是哪一種失敗</h3>
 <span class="qa-anchor" id="q-225-a-02"></span><p>包含 descriptor list 本身、每筆記憶體範圍，以及目前 HMB 是否已啟用。</p>
@@ -100,13 +105,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-225-a-17"></span><p>先確認測試是否同時放入多種錯誤，造成 Status 無法唯一預測。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-hmb">Base 2.4 §5.2.30.2.3, 8.2.4</a> · <a href="#ref-cmb">Base 2.4 §8.2.1 (memory placement and lifetime)</a> · <a href="#ref-cmbreg">Base 2.4 §3.1.4 (CMBLOC, CMBSZ, CMBMSC, CMBSTS)</a> · <a href="#ref-pmr">Base 2.4 §8.2.5 (memory behavior; exclude PCIe packet detail)</a> · <a href="#ref-pmrreg">Base 2.4 §3.1.4 (PMR properties)</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-225-a-08"></span><span class="qa-anchor" id="q-225-a-09"></span><span class="qa-anchor" id="q-225-a-10"></span><span class="qa-anchor" id="q-225-a-11"></span><span class="qa-anchor" id="q-225-a-12"></span><span class="qa-anchor" id="q-225-a-13"></span><span class="qa-anchor" id="q-225-a-14"></span><span class="qa-anchor" id="q-225-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-hmb">Base 2.4 §5.2.30.2.3, 8.2.4</a> · <a href="#ref-cmb">Base 2.4 §8.2.1 (memory placement and lifetime)</a> · <a href="#ref-cmbreg">Base 2.4 §3.1.4 (CMBLOC, CMBSZ, CMBMSC, CMBSTS)</a> · <a href="#ref-pmr">Base 2.4 §8.2.5 (memory behavior; exclude PCIe packet detail)</a> · <a href="#ref-pmrreg">Base 2.4 §3.1.4 (PMR properties)</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-226" data-question="226" data-answer-kind="process"><h2><a class="qa-qid" href="#q-226">Q226</a> HMB 如何啟用、停用並在 Reset 後重新提供？</h2>
-<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
-<details class="qa-answer" id="q-226-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-226-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-226-a-01">HMB 的使用權要明確交接，Host 才知道何時能回收記憶體。</p><div class="qa-sections">
 <section class="qa-section" id="q-226-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
 <span class="qa-anchor" id="q-226-a-02"></span><p>EHM 控制 controller 是否可使用 HMB，MR 描述返回的內容是否仍符合原狀。</p>
@@ -130,13 +136,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-226-a-07"></span><p>已啟用再次啟用是 Command Sequence Error；內容已被改動卻宣告 MR=1 是 Host 違反前提，不能期待原快取仍安全可用。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-hmb">Base 2.4 §5.2.30.2.3, 8.2.4</a> · <a href="#ref-cmb">Base 2.4 §8.2.1 (memory placement and lifetime)</a> · <a href="#ref-cmbreg">Base 2.4 §3.1.4 (CMBLOC, CMBSZ, CMBMSC, CMBSTS)</a> · <a href="#ref-pmr">Base 2.4 §8.2.5 (memory behavior; exclude PCIe packet detail)</a> · <a href="#ref-pmrreg">Base 2.4 §3.1.4 (PMR properties)</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-226-a-08"></span><span class="qa-anchor" id="q-226-a-09"></span><span class="qa-anchor" id="q-226-a-10"></span><span class="qa-anchor" id="q-226-a-11"></span><span class="qa-anchor" id="q-226-a-12"></span><span class="qa-anchor" id="q-226-a-13"></span><span class="qa-anchor" id="q-226-a-14"></span><span class="qa-anchor" id="q-226-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-hmb">Base 2.4 §5.2.30.2.3, 8.2.4</a> · <a href="#ref-cmb">Base 2.4 §8.2.1 (memory placement and lifetime)</a> · <a href="#ref-cmbreg">Base 2.4 §3.1.4 (CMBLOC, CMBSZ, CMBMSC, CMBSTS)</a> · <a href="#ref-pmr">Base 2.4 §8.2.5 (memory behavior; exclude PCIe packet detail)</a> · <a href="#ref-pmrreg">Base 2.4 §3.1.4 (PMR properties)</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-227" data-question="227" data-answer-kind="concept"><h2><a class="qa-qid" href="#q-227">Q227</a> Host 提前回收仍在使用的 HMB 會有什麼後果？</h2>
-<p class="qa-prompt">先用自己的話解釋機制，再舉一個常見誤解。</p>
-<details class="qa-answer" id="q-227-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-227-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-227-a-01">這會破壞 controller 專用記憶體的前提，可能讓裝置讀到其他用途的資料，或改寫已被重新分配的 RAM。</p><div class="qa-sections">
 <section class="qa-section" id="q-227-s-01" data-answer-section="1"><h3><span>1.</span> 機制與適用範圍</h3>
 <span class="qa-anchor" id="q-227-a-02"></span><p>受影響可能超過 NVMe buffer 本身，因為 Host 已把同一實體頁交给別的程式。</p>
@@ -152,18 +159,19 @@ nvme_qa: true
 <span class="qa-anchor" id="q-227-a-16"></span><p>區分 Host 提前回收與 controller 在成功停用後仍存取：前者是 Host 問題，後者才違反明定停止存取要求。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-hmb">Base 2.4 §5.2.30.2.3, 8.2.4</a> · <a href="#ref-cmb">Base 2.4 §8.2.1 (memory placement and lifetime)</a> · <a href="#ref-cmbreg">Base 2.4 §3.1.4 (CMBLOC, CMBSZ, CMBMSC, CMBSTS)</a> · <a href="#ref-pmr">Base 2.4 §8.2.5 (memory behavior; exclude PCIe packet detail)</a> · <a href="#ref-pmrreg">Base 2.4 §3.1.4 (PMR properties)</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-227-a-17"></span><span class="qa-anchor" id="q-227-a-08"></span><span class="qa-anchor" id="q-227-a-09"></span><span class="qa-anchor" id="q-227-a-10"></span><span class="qa-anchor" id="q-227-a-11"></span><span class="qa-anchor" id="q-227-a-12"></span><span class="qa-anchor" id="q-227-a-13"></span><span class="qa-anchor" id="q-227-a-14"></span><span class="qa-anchor" id="q-227-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-hmb">Base 2.4 §5.2.30.2.3, 8.2.4</a> · <a href="#ref-cmb">Base 2.4 §8.2.1 (memory placement and lifetime)</a> · <a href="#ref-cmbreg">Base 2.4 §3.1.4 (CMBLOC, CMBSZ, CMBMSC, CMBSTS)</a> · <a href="#ref-pmr">Base 2.4 §8.2.5 (memory behavior; exclude PCIe packet detail)</a> · <a href="#ref-pmrreg">Base 2.4 §3.1.4 (PMR properties)</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-228" data-question="228" data-answer-kind="lookup"><h2><a class="qa-qid" href="#q-228">Q228</a> Host 如何找出 CMB 的位置、大小與可用用途？</h2>
-<p class="qa-prompt">先選查詢介面與目標，再說明哪個回傳欄位能支持你的結論。</p>
-<details class="qa-answer" id="q-228-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-228-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-228-a-01">需要同時知道 Host 如何存取 CMB，以及命令中的地址如何讓 controller 指向同一區域。</p><div class="qa-sections">
 <section class="qa-section" id="q-228-s-01" data-answer-section="1"><h3><span>1.</span> 要查哪個對象、哪份資料</h3>
 <span class="qa-anchor" id="q-228-a-02"></span><p>CMB 有 PCIe address range 與 controller address range，兩者基底可不同，相同 offset 對應相同內容。</p>
 <span class="qa-anchor" id="q-228-a-03"></span><p>查 CAP.CMBS，設 CMBMSC.CRE 後讀 CMBLOC 與 CMBSZ；CRE=0 時這兩個屬性可為零。</p>
-<span class="qa-anchor" id="q-228-a-04"></span><p>CMBLOC.BIR 選 BAR、OFST 配合大小單位求偏移；CMBSZ.SZ×SZU 求大小，再受 BAR 可用範圍限制。SQS、CQS、LISTS、RDS、WDS 各自宣告用途。</p>
+<span class="qa-anchor" id="q-228-a-04"></span><p>CMBLOC.BIR 選 BAR、OFST 配合大小單位求偏移；CMBSZ.SZ×SZU 求大小，再受 BAR 可用範圍限制。SQS、CQS、LISTS、RDS、WDS 各自宣告用途。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>BAR</dt><dd>Base Address Register，基底位址暫存器</dd></div></dl>
 </section>
 <section class="qa-section" id="q-228-s-02" data-answer-section="2"><h3><span>2.</span> 查詢順序與回覆判讀</h3>
 <span class="qa-anchor" id="q-228-a-05"></span><p>配置不衝突的 CBA，設 CMSE，檢查 CMBSTS.CBAI，再初始化要放入的 queue 或 buffer。</p>
@@ -175,17 +183,18 @@ nvme_qa: true
 <span class="qa-anchor" id="q-228-a-17"></span><p>先檢查是否把 BAR 地址直接拿去當已重新配置的 controller 地址。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-hmb">Base 2.4 §5.2.30.2.3, 8.2.4</a> · <a href="#ref-cmb">Base 2.4 §8.2.1 (memory placement and lifetime)</a> · <a href="#ref-cmbreg">Base 2.4 §3.1.4 (CMBLOC, CMBSZ, CMBMSC, CMBSTS)</a> · <a href="#ref-pmr">Base 2.4 §8.2.5 (memory behavior; exclude PCIe packet detail)</a> · <a href="#ref-pmrreg">Base 2.4 §3.1.4 (PMR properties)</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-228-a-08"></span><span class="qa-anchor" id="q-228-a-09"></span><span class="qa-anchor" id="q-228-a-10"></span><span class="qa-anchor" id="q-228-a-11"></span><span class="qa-anchor" id="q-228-a-12"></span><span class="qa-anchor" id="q-228-a-13"></span><span class="qa-anchor" id="q-228-a-14"></span><span class="qa-anchor" id="q-228-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-hmb">Base 2.4 §5.2.30.2.3, 8.2.4</a> · <a href="#ref-cmb">Base 2.4 §8.2.1 (memory placement and lifetime)</a> · <a href="#ref-cmbreg">Base 2.4 §3.1.4 (CMBLOC, CMBSZ, CMBMSC, CMBSTS)</a> · <a href="#ref-pmr">Base 2.4 §8.2.5 (memory behavior; exclude PCIe packet detail)</a> · <a href="#ref-pmrreg">Base 2.4 §3.1.4 (PMR properties)</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-229" data-question="229" data-answer-kind="concept"><h2><a class="qa-qid" href="#q-229">Q229</a> 哪些 Queue、Data、Metadata 與指標清單可放 CMB？</h2>
-<p class="qa-prompt">先用自己的話解釋機制，再舉一個常見誤解。</p>
-<details class="qa-answer" id="q-229-answer"><summary>展開解答與推導</summary>
-<p class="qa-answer-lead" id="q-229-a-01">CMB 用途由多個能力位元分別控制，支援 SQ 不表示同時支援 CQ 或資料。</p><div class="qa-sections">
+
+<details open class="qa-answer" id="q-229-answer"><summary>跟著解說理解</summary>
+<p class="qa-answer-lead" id="q-229-a-01">CMB 用途由多個能力位元分別控制，支援 SQ 不表示同時支援 CQ 或資料。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SQ</dt><dd>Submission Queue，提交佇列</dd></div><div><dt>CQ</dt><dd>Completion Queue，完成佇列</dd></div></dl><div class="qa-sections">
 <section class="qa-section" id="q-229-s-01" data-answer-section="1"><h3><span>1.</span> 機制與適用範圍</h3>
 <span class="qa-anchor" id="q-229-a-02"></span><p>限制可能以整條 queue、單筆命令的 list，或該命令的所有 data／metadata 為單位。</p>
-<span class="qa-anchor" id="q-229-a-04"></span><p>CQMMS=0 要求單一 queue 全在 CMB 或全在外；CQPDS=0 要求 CMB queue 實體連續。LISTS 控制 PRP／SGL list，其他 bits 再決定混放與 SQ 位置限制。</p>
+<span class="qa-anchor" id="q-229-a-04"></span><p>CQMMS=0 要求單一 queue 全在 CMB 或全在外；CQPDS=0 要求 CMB queue 實體連續。LISTS 控制 PRP／SGL list，其他 bits 再決定混放與 SQ 位置限制。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>PRP</dt><dd>Physical Region Page，描述資料頁位置的指標</dd></div><div><dt>SGL</dt><dd>Scatter Gather List，描述分散資料區段的清單</dd></div></dl>
 </section>
 <section class="qa-section" id="q-229-s-02" data-answer-section="2"><h3><span>2.</span> 用操作與結果理解</h3>
 <span class="qa-anchor" id="q-229-a-03"></span><p>查 CMBSZ.SQS、CQS、LISTS、RDS、WDS，以及 CMBLOC.CQMMS、CQPDS、CDPMLS、CDPCILS、CDMMMS。</p>
@@ -197,13 +206,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-229-a-16"></span><p>RDS／WDS 要按命令資料方向解讀，例如 Read 的結果是 controller 傳向 Host 的資料。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-hmb">Base 2.4 §5.2.30.2.3, 8.2.4</a> · <a href="#ref-cmb">Base 2.4 §8.2.1 (memory placement and lifetime)</a> · <a href="#ref-cmbreg">Base 2.4 §3.1.4 (CMBLOC, CMBSZ, CMBMSC, CMBSTS)</a> · <a href="#ref-pmr">Base 2.4 §8.2.5 (memory behavior; exclude PCIe packet detail)</a> · <a href="#ref-pmrreg">Base 2.4 §3.1.4 (PMR properties)</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-229-a-17"></span><span class="qa-anchor" id="q-229-a-08"></span><span class="qa-anchor" id="q-229-a-09"></span><span class="qa-anchor" id="q-229-a-10"></span><span class="qa-anchor" id="q-229-a-11"></span><span class="qa-anchor" id="q-229-a-12"></span><span class="qa-anchor" id="q-229-a-13"></span><span class="qa-anchor" id="q-229-a-14"></span><span class="qa-anchor" id="q-229-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-hmb">Base 2.4 §5.2.30.2.3, 8.2.4</a> · <a href="#ref-cmb">Base 2.4 §8.2.1 (memory placement and lifetime)</a> · <a href="#ref-cmbreg">Base 2.4 §3.1.4 (CMBLOC, CMBSZ, CMBMSC, CMBSTS)</a> · <a href="#ref-pmr">Base 2.4 §8.2.5 (memory behavior; exclude PCIe packet detail)</a> · <a href="#ref-pmrreg">Base 2.4 §3.1.4 (PMR properties)</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-230" data-question="230" data-answer-kind="error"><h2><a class="qa-qid" href="#q-230">Q230</a> CMB 超出範圍或用於不支援用途時如何處理？</h2>
-<p class="qa-prompt">先區分失敗條件，再判斷是否有規範明定的回報結果。</p>
-<details class="qa-answer" id="q-230-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-230-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-230-a-01">要分清無效 mapping、合法 mapping 中的用途違規，以及根本不被解讀成 CMB 的地址。</p><div class="qa-sections">
 <section class="qa-section" id="q-230-s-01" data-answer-section="1"><h3><span>1.</span> 先區分是哪一種失敗</h3>
 <span class="qa-anchor" id="q-230-a-02"></span><p>CBA 與大小決定 controller address range；CMSE=0 時 Host 提供的地址不被視為 CMB。</p>
@@ -220,20 +230,21 @@ nvme_qa: true
 <span class="qa-anchor" id="q-230-a-17"></span><p>先檢查範圍計算是否溢位，以及計算用的是 Host 還是 controller 地址。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-hmb">Base 2.4 §5.2.30.2.3, 8.2.4</a> · <a href="#ref-cmb">Base 2.4 §8.2.1 (memory placement and lifetime)</a> · <a href="#ref-cmbreg">Base 2.4 §3.1.4 (CMBLOC, CMBSZ, CMBMSC, CMBSTS)</a> · <a href="#ref-pmr">Base 2.4 §8.2.5 (memory behavior; exclude PCIe packet detail)</a> · <a href="#ref-pmrreg">Base 2.4 §3.1.4 (PMR properties)</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-230-a-08"></span><span class="qa-anchor" id="q-230-a-09"></span><span class="qa-anchor" id="q-230-a-10"></span><span class="qa-anchor" id="q-230-a-11"></span><span class="qa-anchor" id="q-230-a-12"></span><span class="qa-anchor" id="q-230-a-13"></span><span class="qa-anchor" id="q-230-a-14"></span><span class="qa-anchor" id="q-230-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-hmb">Base 2.4 §5.2.30.2.3, 8.2.4</a> · <a href="#ref-cmb">Base 2.4 §8.2.1 (memory placement and lifetime)</a> · <a href="#ref-cmbreg">Base 2.4 §3.1.4 (CMBLOC, CMBSZ, CMBMSC, CMBSTS)</a> · <a href="#ref-pmr">Base 2.4 §8.2.5 (memory behavior; exclude PCIe packet detail)</a> · <a href="#ref-pmrreg">Base 2.4 §3.1.4 (PMR properties)</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-231" data-question="231" data-answer-kind="lifecycle"><h2><a class="qa-qid" href="#q-231">Q231</a> Reset 後 CMB 設定與內容會保留嗎？</h2>
-<p class="qa-prompt">先指明重設或中斷的方式，再分別判斷設定、進行中的操作與資料。</p>
-<details class="qa-answer" id="q-231-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-231-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-231-a-01">位址保留與內容保留是兩件事，這是 CMB 恢復時最容易混淆的地方。</p><div class="qa-sections">
 <section class="qa-section" id="q-231-s-01" data-answer-section="1"><h3><span>1.</span> 先界定觸發方式與影響對象</h3>
-<span class="qa-anchor" id="q-231-a-02"></span><p>CC.EN 觸發的 CLR 與 FLR 有明確 CMBMSC 保留例外，其他來源須看對應 Register 規則。</p>
+<span class="qa-anchor" id="q-231-a-02"></span><p>CC.EN 觸發的 CLR 與 FLR 有明確 CMBMSC 保留例外，其他來源須看對應 Register 規則。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>FLR</dt><dd>Function Level Reset，以功能為範圍的重設</dd></div></dl>
 <span class="qa-anchor" id="q-231-a-03"></span><p>保存 Reset 來源、CMBMSC 與 CMBSTS，恢復後再讀取確認。</p>
 </section>
 <section class="qa-section" id="q-231-s-02" data-answer-section="2"><h3><span>2.</span> 哪些狀態改變，恢復後怎麼處理</h3>
-<span class="qa-anchor" id="q-231-a-04"></span><p>CMSE 由 0 轉 1、Controller Reset 或 FLR，都使 CMB 內容 undefined。</p>
+<span class="qa-anchor" id="q-231-a-04"></span><p>CMSE 由 0 轉 1、Controller Reset 或 FLR，都使 CMB 內容 undefined。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>FLR</dt><dd>Function Level Reset，以功能為範圍的重設</dd></div></dl>
 <span class="qa-anchor" id="q-231-a-05"></span><p>恢復 mapping 後重新初始化會用到的記憶體，再建立 queue；CQ 尤其要初始化 Phase，避免誤讀殘留完成。</p>
 <span class="qa-anchor" id="q-231-a-06"></span><p>新的使用期間從已初始化的內容開始，不能沿用舊 queue 指標或假定資料保存。</p>
 </section>
@@ -249,13 +260,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-231-a-17"></span><p>先檢查是否因 CMBMSC 沒變，就省略了 CQ 與 buffer 初始化。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-hmb">Base 2.4 §5.2.30.2.3, 8.2.4</a> · <a href="#ref-cmb">Base 2.4 §8.2.1 (memory placement and lifetime)</a> · <a href="#ref-cmbreg">Base 2.4 §3.1.4 (CMBLOC, CMBSZ, CMBMSC, CMBSTS)</a> · <a href="#ref-pmr">Base 2.4 §8.2.5 (memory behavior; exclude PCIe packet detail)</a> · <a href="#ref-pmrreg">Base 2.4 §3.1.4 (PMR properties)</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-231-a-08"></span><span class="qa-anchor" id="q-231-a-09"></span><span class="qa-anchor" id="q-231-a-10"></span><span class="qa-anchor" id="q-231-a-11"></span><span class="qa-anchor" id="q-231-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-hmb">Base 2.4 §5.2.30.2.3, 8.2.4</a> · <a href="#ref-cmb">Base 2.4 §8.2.1 (memory placement and lifetime)</a> · <a href="#ref-cmbreg">Base 2.4 §3.1.4 (CMBLOC, CMBSZ, CMBMSC, CMBSTS)</a> · <a href="#ref-pmr">Base 2.4 §8.2.5 (memory behavior; exclude PCIe packet detail)</a> · <a href="#ref-pmrreg">Base 2.4 §3.1.4 (PMR properties)</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-232" data-question="232" data-answer-kind="process"><h2><a class="qa-qid" href="#q-232">Q232</a> PMR 如何確認支援、啟用並等待 Ready？</h2>
-<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
-<details class="qa-answer" id="q-232-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-232-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-232-a-01">PMR 可獨立於 NVMe 命令處理環境啟用，Host 必須等其自己的 Ready 狀態。</p><div class="qa-sections">
 <section class="qa-section" id="q-232-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
 <span class="qa-anchor" id="q-232-a-02"></span><p>PMR 占用 PMRCAP.BIR 指定 BAR 的整個區域；controller 地址可另由 PMRMSC 設定。</p>
@@ -279,18 +291,19 @@ nvme_qa: true
 <span class="qa-anchor" id="q-232-a-07"></span><p>PMRTO 是 Host 應給的等待時間，不可直接寫成 controller 每筆命令的 timeout。CBA 無效另看 CBAI。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-hmb">Base 2.4 §5.2.30.2.3, 8.2.4</a> · <a href="#ref-cmb">Base 2.4 §8.2.1 (memory placement and lifetime)</a> · <a href="#ref-cmbreg">Base 2.4 §3.1.4 (CMBLOC, CMBSZ, CMBMSC, CMBSTS)</a> · <a href="#ref-pmr">Base 2.4 §8.2.5 (memory behavior; exclude PCIe packet detail)</a> · <a href="#ref-pmrreg">Base 2.4 §3.1.4 (PMR properties)</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-232-a-08"></span><span class="qa-anchor" id="q-232-a-09"></span><span class="qa-anchor" id="q-232-a-10"></span><span class="qa-anchor" id="q-232-a-11"></span><span class="qa-anchor" id="q-232-a-12"></span><span class="qa-anchor" id="q-232-a-13"></span><span class="qa-anchor" id="q-232-a-14"></span><span class="qa-anchor" id="q-232-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-hmb">Base 2.4 §5.2.30.2.3, 8.2.4</a> · <a href="#ref-cmb">Base 2.4 §8.2.1 (memory placement and lifetime)</a> · <a href="#ref-cmbreg">Base 2.4 §3.1.4 (CMBLOC, CMBSZ, CMBMSC, CMBSTS)</a> · <a href="#ref-pmr">Base 2.4 §8.2.5 (memory behavior; exclude PCIe packet detail)</a> · <a href="#ref-pmrreg">Base 2.4 §3.1.4 (PMR properties)</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-233" data-question="233" data-answer-kind="error"><h2><a class="qa-qid" href="#q-233">Q233</a> PMR 未 Ready、發生錯誤或過早存取時會怎樣？</h2>
-<p class="qa-prompt">先區分失敗條件，再判斷是否有規範明定的回報結果。</p>
-<details class="qa-answer" id="q-233-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-233-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-233-a-01">存取在傳輸層完成，不表示記憶體內容有效；PMR 必須同時檢查自身狀態。</p><div class="qa-sections">
 <section class="qa-section" id="q-233-s-01" data-answer-section="1"><h3><span>1.</span> 先區分是哪一種失敗</h3>
 <span class="qa-anchor" id="q-233-a-02"></span><p>直接 PMR 讀寫與 NVMe 命令使用 PMR buffer，兩者的錯誤觀察方式不同。</p>
 <span class="qa-anchor" id="q-233-a-04"></span><p>Not-ready 直接讀可成功卻回 undefined；直接寫可成功卻不更新內容。HSTS 可表示 Restore Error、Read Only 或 Unreliable。</p>
-<span class="qa-anchor" id="q-233-a-07"></span><p>若關聯 controller 偵測命令寫 PMR 未成功，應以 Data Transfer Error 中止；直接 MMIO 存取沒有可要求的 NVMe CQE。</p>
+<span class="qa-anchor" id="q-233-a-07"></span><p>若關聯 controller 偵測命令寫 PMR 未成功，應以 Data Transfer Error 中止；直接 MMIO 存取沒有可要求的 NVMe CQE。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>MMIO</dt><dd>Memory-Mapped I/O，記憶體映射輸入輸出</dd></div></dl>
 </section>
 <section class="qa-section" id="q-233-s-02" data-answer-section="2"><h3><span>2.</span> 用哪些資料確認原因</h3>
 <span class="qa-anchor" id="q-233-a-03"></span><p>檢查 EN、NRDY、HSTS、ERR；HSTS 在 not-ready 時清零，因此零 HSTS 不能單獨證明健康可用。</p>
@@ -302,13 +315,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-233-a-17"></span><p>先檢查存取當時 EN／NRDY，而不只看較晚恢復後的狀態。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-hmb">Base 2.4 §5.2.30.2.3, 8.2.4</a> · <a href="#ref-cmb">Base 2.4 §8.2.1 (memory placement and lifetime)</a> · <a href="#ref-cmbreg">Base 2.4 §3.1.4 (CMBLOC, CMBSZ, CMBMSC, CMBSTS)</a> · <a href="#ref-pmr">Base 2.4 §8.2.5 (memory behavior; exclude PCIe packet detail)</a> · <a href="#ref-pmrreg">Base 2.4 §3.1.4 (PMR properties)</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-233-a-08"></span><span class="qa-anchor" id="q-233-a-09"></span><span class="qa-anchor" id="q-233-a-10"></span><span class="qa-anchor" id="q-233-a-11"></span><span class="qa-anchor" id="q-233-a-12"></span><span class="qa-anchor" id="q-233-a-13"></span><span class="qa-anchor" id="q-233-a-14"></span><span class="qa-anchor" id="q-233-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-hmb">Base 2.4 §5.2.30.2.3, 8.2.4</a> · <a href="#ref-cmb">Base 2.4 §8.2.1 (memory placement and lifetime)</a> · <a href="#ref-cmbreg">Base 2.4 §3.1.4 (CMBLOC, CMBSZ, CMBMSC, CMBSTS)</a> · <a href="#ref-pmr">Base 2.4 §8.2.5 (memory behavior; exclude PCIe packet detail)</a> · <a href="#ref-pmrreg">Base 2.4 §3.1.4 (PMR properties)</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-234" data-question="234" data-answer-kind="process"><h2><a class="qa-qid" href="#q-234">Q234</a> Host 如何安全停用 PMR？</h2>
-<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
-<details class="qa-answer" id="q-234-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-234-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-234-a-01">停用前要先確認先前寫入已完成且持久，避免把仍在路上的寫入誤當成保存完成。</p><div class="qa-sections">
 <section class="qa-section" id="q-234-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
 <span class="qa-anchor" id="q-234-a-02"></span><p>包含直接 PMR 存取與仍以 PMR 為 buffer 的命令，所有使用者都要協調停止。</p>
@@ -324,13 +338,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-234-a-16"></span><p>用 barrier、健康與 EN／NRDY 的順序驗證，不只看最後 EN=0。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-hmb">Base 2.4 §5.2.30.2.3, 8.2.4</a> · <a href="#ref-cmb">Base 2.4 §8.2.1 (memory placement and lifetime)</a> · <a href="#ref-cmbreg">Base 2.4 §3.1.4 (CMBLOC, CMBSZ, CMBMSC, CMBSTS)</a> · <a href="#ref-pmr">Base 2.4 §8.2.5 (memory behavior; exclude PCIe packet detail)</a> · <a href="#ref-pmrreg">Base 2.4 §3.1.4 (PMR properties)</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-234-a-17"></span><span class="qa-anchor" id="q-234-a-08"></span><span class="qa-anchor" id="q-234-a-09"></span><span class="qa-anchor" id="q-234-a-10"></span><span class="qa-anchor" id="q-234-a-11"></span><span class="qa-anchor" id="q-234-a-12"></span><span class="qa-anchor" id="q-234-a-13"></span><span class="qa-anchor" id="q-234-a-14"></span><span class="qa-anchor" id="q-234-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-hmb">Base 2.4 §5.2.30.2.3, 8.2.4</a> · <a href="#ref-cmb">Base 2.4 §8.2.1 (memory placement and lifetime)</a> · <a href="#ref-cmbreg">Base 2.4 §3.1.4 (CMBLOC, CMBSZ, CMBMSC, CMBSTS)</a> · <a href="#ref-pmr">Base 2.4 §8.2.5 (memory behavior; exclude PCIe packet detail)</a> · <a href="#ref-pmrreg">Base 2.4 §3.1.4 (PMR properties)</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-235" data-question="235" data-answer-kind="lifecycle"><h2><a class="qa-qid" href="#q-235">Q235</a> Reset 與 Power Cycle 如何影響 PMR 狀態及持久資料？</h2>
-<p class="qa-prompt">先指明重設或中斷的方式，再分別判斷設定、進行中的操作與資料。</p>
-<details class="qa-answer" id="q-235-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-235-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-235-a-01">持久資料與目前可存取狀態不同；即使內容應保留，恢復期間仍可能尚未 Ready。</p><div class="qa-sections">
 <section class="qa-section" id="q-235-s-01" data-answer-section="1"><h3><span>1.</span> 先界定觸發方式與影響對象</h3>
 <span class="qa-anchor" id="q-235-a-02"></span><p>資料保留適用已完成且持久的 PMR 寫入，不擴張到 Host 尚未確認的寫入。</p>
@@ -353,13 +368,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-235-a-17"></span><p>先確認失去的是已持久內容，還是尚未完成的寫入或尚未恢復的讀取。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-hmb">Base 2.4 §5.2.30.2.3, 8.2.4</a> · <a href="#ref-cmb">Base 2.4 §8.2.1 (memory placement and lifetime)</a> · <a href="#ref-cmbreg">Base 2.4 §3.1.4 (CMBLOC, CMBSZ, CMBMSC, CMBSTS)</a> · <a href="#ref-pmr">Base 2.4 §8.2.5 (memory behavior; exclude PCIe packet detail)</a> · <a href="#ref-pmrreg">Base 2.4 §3.1.4 (PMR properties)</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-235-a-08"></span><span class="qa-anchor" id="q-235-a-09"></span><span class="qa-anchor" id="q-235-a-10"></span><span class="qa-anchor" id="q-235-a-11"></span><span class="qa-anchor" id="q-235-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-hmb">Base 2.4 §5.2.30.2.3, 8.2.4</a> · <a href="#ref-cmb">Base 2.4 §8.2.1 (memory placement and lifetime)</a> · <a href="#ref-cmbreg">Base 2.4 §3.1.4 (CMBLOC, CMBSZ, CMBMSC, CMBSTS)</a> · <a href="#ref-pmr">Base 2.4 §8.2.5 (memory behavior; exclude PCIe packet detail)</a> · <a href="#ref-pmrreg">Base 2.4 §3.1.4 (PMR properties)</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-236" data-question="236" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-236">Q236</a> Host Memory、HMB、CMB 與 PMR 的存取與生命週期如何比較？</h2>
-<p class="qa-prompt">先說出比較對象最重要的差別，並舉一個不能互相代用的例子。</p>
-<details class="qa-answer" id="q-236-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-236-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-236-a-01">同樣是資料地址，背後可能有不同擁有者、初始化責任與可回收條件。</p><div class="qa-sections">
 <section class="qa-section" id="q-236-s-01" data-answer-section="1"><h3><span>1.</span> 差別在哪裡</h3>
 <span class="qa-anchor" id="q-236-a-02"></span><p>普通 Host buffer 由 Host 管理，命令期間供 controller 存取；HMB 專供 controller；CMB 位於裝置；PMR 額外提供持久性機制。</p>
@@ -370,11 +386,12 @@ nvme_qa: true
 <span class="qa-anchor" id="q-236-a-05"></span><p>先畫出 Host 地址、controller 地址與實際記憶體的對應，再標註從何時開始可存取、何時才能回收。</p>
 <span class="qa-anchor" id="q-236-a-06"></span><p>例如一個成功 Write CQE 可結束其來源 Host buffer 使用，但不代表整塊 HMB 同時釋放，也不代表 PMR barrier 已執行。</p>
 </section>
-<section class="qa-section" id="q-236-s-03" data-answer-section="3"><h3><span>3.</span> 哪些結論不能互相套用</h3>
+<section class="qa-section" id="q-236-s-03" data-answer-section="3"><h3><span>3.</span> 比較時要保留的條件</h3>
 <span class="qa-anchor" id="q-236-a-07"></span><p>錯誤回應依違反哪個介面規則決定，不存在統一「記憶體錯誤」Status 可套用全部情況。</p>
 <span class="qa-anchor" id="q-236-a-16"></span><p>核對 ownership、mapping、命令完成與持久性各自的證據，避免用「還能讀到資料」代替全部驗證。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-hmb">Base 2.4 §5.2.30.2.3, 8.2.4</a> · <a href="#ref-cmb">Base 2.4 §8.2.1 (memory placement and lifetime)</a> · <a href="#ref-cmbreg">Base 2.4 §3.1.4 (CMBLOC, CMBSZ, CMBMSC, CMBSTS)</a> · <a href="#ref-pmr">Base 2.4 §8.2.5 (memory behavior; exclude PCIe packet detail)</a> · <a href="#ref-pmrreg">Base 2.4 §3.1.4 (PMR properties)</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-236-a-17"></span><span class="qa-anchor" id="q-236-a-08"></span><span class="qa-anchor" id="q-236-a-09"></span><span class="qa-anchor" id="q-236-a-10"></span><span class="qa-anchor" id="q-236-a-11"></span><span class="qa-anchor" id="q-236-a-12"></span><span class="qa-anchor" id="q-236-a-13"></span><span class="qa-anchor" id="q-236-a-14"></span><span class="qa-anchor" id="q-236-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-hmb">Base 2.4 §5.2.30.2.3, 8.2.4</a> · <a href="#ref-cmb">Base 2.4 §8.2.1 (memory placement and lifetime)</a> · <a href="#ref-cmbreg">Base 2.4 §3.1.4 (CMBLOC, CMBSZ, CMBMSC, CMBSTS)</a> · <a href="#ref-pmr">Base 2.4 §8.2.5 (memory behavior; exclude PCIe packet detail)</a> · <a href="#ref-pmrreg">Base 2.4 §3.1.4 (PMR properties)</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>

@@ -16,8 +16,10 @@ import sys
 
 try:
     from .pcie_teaching import expand_walks
+    from .spec_terms import explain_terms
 except ImportError:
     from pcie_teaching import expand_walks
+    from spec_terms import explain_terms
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / ".ai/pcie-course"
@@ -156,6 +158,9 @@ def curriculum_body(curriculum: dict) -> str:
     if 0 not in ready:
         raise ValueError('Chapter 0 must be ready before publishing the course')
     completed = '、'.join(f'Chapter {number}' for number in ready)
+    if ready == list(range(min(ready),max(ready)+1)):
+        completed = f'Chapter {min(ready)}–{max(ready)}'
+    planned = any(chapter['status']=='planned' for chapter in chapters)
     cards = []
     for chapter in chapters:
         number = chapter["number"]
@@ -176,10 +181,10 @@ def curriculum_body(curriculum: dict) -> str:
     return '\n'.join([
         '<section id="start"><h2>先把系統看懂，再深入各領域</h2>',
         '<p class="lead">這套課程從裝置在系統裡的角色出發。先理解軟體為什麼要查這個欄位，再沿著規格找出答案，逐步走進裝置發現、資源配置、傳輸與系統管理。</p>',
-        f'<p>目前可以完整閱讀 {completed}。下列其他章節是後續課程規劃，尚未完成教材；章節主題與順序仍可能隨來源查證結果調整。</p>',
+        f'<p>目前可閱讀 {completed}。'+('其他章節仍在規劃，尚未完成教材。' if planned else '先從系統觀建立共同基礎，再依需要選擇交易、實體層、虛擬化或管理主題。各章列出本次帶讀的條文與圖表位置。')+'</p>',
         '<p><a class="start-link" href="chapter-0.html">從 Chapter 0 開始 →</a></p></section>',
         '<section id="method"><h2>讀情境，也讀推理過程</h2>',
-        '<p>Chapter 7–9 已先採用新版圖解教學，其他已發布章節保留原版。這三章先從總覽圖看角色與路徑，再跟著正常流程閱讀。每一步都會指出相關的規格圖表、使用的欄位，以及接下來的動作。案例中的配置與讀值標明為作者假設，適用條件則在使用前交代。</p>',
+        '<p>課程先從總覽圖看角色與路徑，再跟著正常流程閱讀。每一步都會指出相關的規格圖表、使用的欄位，以及接下來的動作。案例中的配置與讀值標明為作者假設，適用條件則在使用前交代。</p>',
         '<ul><li><strong>跟著圖解走一遍：</strong>完整圖與文字持續顯示，可選擇步驟標出當下的元件與解說。</li><li><strong>接上本章需要的背景：</strong>前情提要只回顧接下來會使用的關係，延伸背景可就近展開。</li><li><strong>沿流程閱讀規格：</strong>先看簡短的閱讀路線，再逐步對照 Figure、Table 與相關條文。</li></ul></section>',
         '<section id="curriculum"><h2>課程安排</h2><p>章號提供一條漸進的閱讀路徑；已有相關基礎時，也可以依各章的先備知識選擇切入點。</p>',
         '<div class="chapter-list">' + '\n'.join(cards) + '</div></section>',
@@ -223,8 +228,10 @@ def post(css: str, body: str, language: str, chapter: dict) -> str:
         *(['last_modified_at: ' + chapter['revision_date'] + ' 00:00:00 +0800'] if chapter.get('revision_date') else []),
         f'permalink: /pcie/chapter-{number}-' + slug + '/',
         'categories: [PCIe]', 'tags: [PCIe, Specification]', 'lang: ' + ('zh-TW' if is_zh else 'en'),
+        'spec_teaching: true', 'spec_series: pcie',
+        'description: ' + json.dumps(chapter.get('description',chapter['question']),ensure_ascii=False),
         '---', '', '<style>', scoped_css.rstrip(), '</style>',
-        '<div class="pcie-article" lang="' + ('zh-Hant-TW' if is_zh else 'en') + '">',
+        '<div class="pcie-article spec-teaching" data-spec-series="pcie" lang="' + ('zh-Hant-TW' if is_zh else 'en') + '">',
         navigation, '<article class="lesson">', body.strip(), '</article>', navigation, '</div>', '',
     ])
 
@@ -259,7 +266,7 @@ def validate_outputs(outputs: dict[Path, str]) -> None:
 
 def build() -> dict[Path, str]:
     template = read(SOURCE / 'template.html')
-    css = read(SOURCE / 'course.css')
+    css = read(SOURCE / 'course.css') + '\n' + read(ROOT / 'assets/css/spec-teaching.css')
     curriculum = json.loads(read(SOURCE / 'curriculum.json'))
     index_body = curriculum_body(curriculum)
     ready = sorted((chapter for chapter in curriculum['chapters'] if chapter['status'] == 'ready'),
@@ -273,7 +280,7 @@ def build() -> dict[Path, str]:
     for chapter in ready:
         number = chapter['number']
         chapter_css = css + ('\n' + read(SOURCE / 'teaching.css') if chapter.get('teaching_revision') else '')
-        body = expand_walks(read(SOURCE / f'chapter{number}.zh.html'), SOURCE)
+        body = explain_terms(expand_walks(read(SOURCE / f'chapter{number}.zh.html'), SOURCE), 'pcie', 'zh')
         description = chapter.get('description', CHAPTER_DESCRIPTION if number == 0 else chapter['question'])
         outputs[OUTPUT / f'chapter-{number}.html'] = render(
             template, chapter_css, title=chapter['title'], description=description,
@@ -284,7 +291,7 @@ def build() -> dict[Path, str]:
             source = SOURCE / (f'post.{language}.html' if number == 0 else f'chapter{number}.post.{language}.html')
             slug = 'zh-tw' if language == 'zh' else 'en'
             publication_date = chapter.get('publication_date', DATE)
-            outputs[ROOT / f'_posts/{publication_date}-pcie-chapter-{number}-{slug}.md'] = post(chapter_css, expand_walks(read(source), SOURCE), language, chapter)
+            outputs[ROOT / f'_posts/{publication_date}-pcie-chapter-{number}-{slug}.md'] = post(chapter_css, explain_terms(expand_walks(read(source), SOURCE), 'pcie', language), language, chapter)
     validate_outputs(outputs)
     return outputs
 

@@ -1,0 +1,52 @@
+{
+  "walk_id": "ch32-overview",
+  "title": "IDE 開啟後，資料到底受到哪一段保護？",
+  "summary_html": "<p>IDE（Integrity and Data Encryption，完整性與資料加密）保護兩個Partner Ports之間的交易，提供機密性、完整性與重播防護。先畫出保護終點，再看Stream的配置與狀態；元件內部的資料、金鑰與隔離仍有另外的責任。</p>",
+  "svg": "<svg viewBox=\"0 0 900 420\" role=\"img\" aria-labelledby=\"ch32-zh-t ch32-zh-d\"><title id=\"ch32-zh-t\">本章角色與事件</title><desc id=\"ch32-zh-d\">IDE保護兩個終端Port之間的交易；元件內部另有隔離責任。</desc><g data-walk-target=\"a\"><rect x=\"25\" y=\"50\" width=\"250\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"150.0\" y=\"79\" text-anchor=\"middle\" font-size=\"16\">Partner Port A</text></g><g data-walk-target=\"wire\"><rect x=\"345\" y=\"50\" width=\"220\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"455.0\" y=\"79\" text-anchor=\"middle\" font-size=\"16\">保護中的 Stream</text></g><g data-walk-target=\"b\"><rect x=\"630\" y=\"50\" width=\"250\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"755.0\" y=\"79\" text-anchor=\"middle\" font-size=\"16\">Partner Port B</text></g><g data-walk-target=\"insecure\"><rect x=\"40\" y=\"300\" width=\"340\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"210.0\" y=\"329\" text-anchor=\"middle\" font-size=\"16\">Insecure：未建立／保護失效</text></g><g data-walk-target=\"secure\"><rect x=\"520\" y=\"300\" width=\"340\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"690.0\" y=\"329\" text-anchor=\"middle\" font-size=\"16\">Secure：依配置保護交易</text></g><g data-walk-target=\"x\"><path d=\"M275 84 L345 84\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"345,84 335.0,89.0 335.0,79.0\" fill=\"var(--accent)\"/><text x=\"310.0\" y=\"74.0\" text-anchor=\"middle\" font-size=\"16\"></text></g><g data-walk-target=\"y\"><path d=\"M565 84 L630 84\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"630,84 620.0,89.0 620.0,79.0\" fill=\"var(--accent)\"/><text x=\"597.5\" y=\"74.0\" text-anchor=\"middle\" font-size=\"16\"></text></g><g data-walk-target=\"start\"><path d=\"M380 334 L520 334\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"520,334 510.0,339.0 510.0,329.0\" fill=\"var(--accent)\"/><text x=\"450.0\" y=\"324.0\" text-anchor=\"middle\" font-size=\"16\">完成必要建立條件</text></g><g data-walk-target=\"stop\"><path d=\"M520 390 L380 390\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"380,390 390.0,385.0 390.0,395.0\" fill=\"var(--accent)\"/><text x=\"450.0\" y=\"380.0\" text-anchor=\"middle\" font-size=\"16\">停用或偵測安全失效</text></g></svg>",
+  "order_html": "<p>上半部表示保護範圍，下半部是精簡狀態關係；建立所需條件的順序可依規格允許方式合併或調整。</p>",
+  "caption_html": "<p>作者依 Base 6.0 繪製的教學示意；省略與本章無關的交換。</p>",
+  "steps": [
+    {
+      "title": "先定義保護終點",
+      "targets": [
+        "a",
+        "x",
+        "wire",
+        "y",
+        "b"
+      ],
+      "html": "<p>Figure 6-48對照Link IDE與Selective IDE；後者可在符合條件的路徑上穿越Switch保護指定流量。</p>",
+      "condition_html": "<p>IDE（在兩個終端Port間保護交易的機制）不延伸到終端Port之後的元件內部。</p>",
+      "source_html": "<p>Base 6.0 §6.33／Figure 6-48，pp.862–863。</p>",
+      "claim_ids": [
+        "PCIE-CH32-001"
+      ]
+    },
+    {
+      "title": "建立必要身分、金鑰與配置",
+      "targets": [
+        "insecure",
+        "start"
+      ],
+      "html": "<p>概念上先確認身分，再建立金鑰、配置安全連接並觸發Stream。Ready是軟體需要追蹤的概念子狀態。</p>",
+      "condition_html": "<p>不要求硬體一定能辨識或直接回報所有Ready條件。</p>",
+      "source_html": "<p>Base 6.0 §6.33.1，pp.866–867。</p>",
+      "claim_ids": [
+        "PCIE-CH32-002"
+      ]
+    },
+    {
+      "title": "持續維持Secure條件",
+      "targets": [
+        "secure",
+        "stop"
+      ],
+      "html": "<p>停用Stream或偵測安全遭破壞時，狀態必須回Insecure；原本需要安全保護的傳送必須受阻擋。</p>",
+      "condition_html": "<p>不能把安全失效寫成自動改用明文傳送的正常備援。</p>",
+      "source_html": "<p>Base 6.0 §6.33.1，p.867。</p>",
+      "claim_ids": [
+        "PCIE-CH32-002"
+      ]
+    }
+  ]
+}

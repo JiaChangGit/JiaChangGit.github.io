@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "course": "pcie-course",
+  "chapter": 24,
+  "updated": "2026-10-24",
+  "claims": [
+    {
+      "id": "PCIE-CH24-001",
+      "claim": "TPH用途、編碼、標籤與表格位置及既有存取規則。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.17",
+        "6.17.1",
+        "6.17.2"
+      ],
+      "document_pages": [
+        778,
+        779,
+        781
+      ],
+      "pdf_pages": [
+        778,
+        779,
+        781
+      ],
+      "figures": [],
+      "tables": [
+        "6-13"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH24-002",
+      "claim": "LTR用途、啟用順序、有效需求與比例及規範強度。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.18"
+      ],
+      "document_pages": [
+        781
+      ],
+      "pdf_pages": [
+        781
+      ],
+      "figures": [
+        "6-15"
+      ],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH24-003",
+      "claim": "OBFF方向、提示用途與D0限制。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.19"
+      ],
+      "document_pages": [
+        787
+      ],
+      "pdf_pages": [
+        787
+      ],
+      "figures": [],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    }
+  ]
+}

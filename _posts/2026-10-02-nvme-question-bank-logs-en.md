@@ -7,18 +7,21 @@ permalink: /nvme/question-bank/logs/en/
 lang: en
 nvme_quickref: true
 nvme_qa: true
+spec_teaching: true
+last_modified_at: 2026-10-23
 ---
 
-<div class="nvme-quickref nvme-qa">
+<div class="nvme-quickref nvme-qa spec-teaching" data-spec-series="nvme">
 <nav class="qr-top" aria-label="Bank and editions"><a href="#content">Skip to content</a><a href="/nvme/question-bank/en/">Question index</a><a href="/nvme/question-bank/logs/zh-tw/">繁體中文</a><a href="/DOCS/nvme-question-bank/logs.html">Chinese tutorial HTML</a></nav>
-<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–328</p>
-<header><p class="qa-range">Q69–Q81</p><h1>Get Log Page and data consistency</h1><p class="qr-intro">Logs expose state, history or capability, with different lifetimes and read effects. Choose the view and scope before length, pagination, acknowledgment and consistency.</p><p>Practice first, then reveal the explanation. Each question uses the prose, field interpretation, comparison or flow that suits it. All numerical examples are hypothetical. Status is written SCT/SC; h indicates hexadecimal.</p></header>
-<aside class="qa-glossary"><h2>Terms used in this volume</h2><dl><dt>Controller / namespace</dt><dd>A controller receives commands and manages access. A namespace is a logical storage space that commands can address. An NVM subsystem contains controllers and nonvolatile storage resources.</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission and Completion Queues carry command entries (SQEs) and completion entries (CQEs). QID identifies a queue, CID distinguishes outstanding commands in one SQ, and NSID identifies a namespace.</dd><dt>Register / Identify / Feature / Log</dt><dd>A register exposes control or state. Identify queries capabilities and attributes; features query or configure operation; log pages report specific state or records. FID, LID, CNS and CSI select features, logs, Identify structures and command sets.</dd><dt>index / offset / zero-based</dt><dd>An index selects an entry, usually starting at 0; an offset measures distance from an origin in specified units. A zero-based count encodes count−1, but not every zero-valued field is a count. A Dword is 4 bytes; a byte is 8 bits.</dd><dt>Scope / reset / retention</dt><dd>Scope names the affected objects; retention means preserving state. Controller Reset (clearing CC.EN) is one form of Controller Level Reset, or CLR. Different CLR triggers can retain different registers.</dd></dl></aside>
+<main id="content"><p class="qr-eyebrow">NVMe · Q1–328</p>
+<div class="st-specs" aria-label="Specification editions"><span>NVM Express Base 2.4</span><span>NVM Command Set 1.3</span><span>NVMe over PCIe Transport 1.4</span></div>
+<header><p class="qa-range">Q69–Q81</p><h1>Get Log Page and data consistency</h1><aside class="st-context"><p>Get Log Page retrieves a selected kind of state or record. LID (Log Page Identifier) selects the log, LPO (Log Page Offset) selects the retrieval position, and RAE (Retain Asynchronous Event) controls applicable event retention or acknowledgment. Establish the view and scope before pagination and consistency.</p></aside><p class="qr-intro">Logs expose state, history or capability, with different lifetimes and read effects. Choose the view and scope before length, pagination, acknowledgment and consistency.</p><p>Each question is followed by its explanation. Start with the volume overview, then follow the field interpretations, comparisons or processes. Essential conditions and the normal path are visible from the start. All numerical examples are hypothetical. Status is written SCT/SC; h indicates hexadecimal.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>SCT</dt><dd>Status Code Type</dd></div></dl></header>
 <section id="overview" class="qa-overview"><h2>Four separate questions when reading logs</h2><p class="qa-takeaway">Choose the evidence first; a successful read does not complete the operation being observed.</p>
-<div class="qr-table" tabindex="0" role="region" aria-label="Horizontally scrollable comparison table"><table><thead><tr><th scope="col">Evidence needed</th><th scope="col">View</th><th scope="col">Limitation</th></tr></thead><tbody><tr><td>Supported logs</td><td>LID 00h</td><td>Support does not imply a current event</td></tr><tr><td>Current health</td><td>SMART LID 02h</td><td>Current warnings and lifetime counters differ</td></tr><tr><td>Command error details</td><td>Error LID 01h</td><td>Correlate identity; old entries can disappear</td></tr><tr><td>Persistent event history</td><td>PEL LID 0Dh</td><td>Capacity and supported-event limits remain</td></tr></tbody></table></div>
+<div class="qr-table" tabindex="0" role="region" aria-label="Horizontally scrollable comparison table"><table><thead><tr><th scope="col">Evidence needed</th><th scope="col">View</th><th scope="col">Limitation</th></tr></thead><tbody><tr><td>Supported logs</td><td>LID 00h</td><td>Support does not imply a current event</td></tr><tr><td>Current health</td><td>SMART LID 02h</td><td>Current warnings and lifetime counters differ</td></tr><tr><td>Command error details</td><td>Error LID 01h</td><td>Correlate identity; old entries can disappear</td></tr><tr><td>Persistent event history</td><td>PEL LID 0Dh</td><td>Capacity and supported-event limits remain</td></tr></tbody></table><dl class="st-terms" aria-label="Terms in this passage"><div><dt>LID</dt><dd>Log Page Identifier</dd></div></dl></div>
 <p><strong>Worked interpretation: </strong>A 4096-byte read encodes NUMD1023. The next byte offset is 4096, but index-offset logs require their own entry progression.</p>
 <p class="qa-citations">Sources: <a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-pelcontext">Base 2.4 §5.2.13.1.14–5.2.13.1.14.2.5 (exclude PCIe link/packet decoding)</a></p>
 </section>
+<details class="qa-glossary st-glossary"><summary>Review the terminology when needed</summary><dl><dt>Controller / namespace</dt><dd>A controller receives commands and manages access. A namespace is a logical storage space that commands can address. An NVM subsystem contains controllers and nonvolatile storage resources.</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission and Completion Queues carry command entries (SQEs) and completion entries (CQEs). QID identifies a queue, CID distinguishes outstanding commands in one SQ, and NSID identifies a namespace.</dd><dt>Register / Identify / Feature / Log</dt><dd>A register exposes control or state. Identify queries capabilities and attributes; features query or configure operation; log pages report specific state or records. FID, LID, CNS and CSI select features, logs, Identify structures and command sets.</dd><dt>index / offset / zero-based</dt><dd>An index selects an entry, usually starting at 0; an offset measures distance from an origin in specified units. A zero-based count encodes count−1, but not every zero-valued field is a count. A Dword is 4 bytes; a byte is 8 bits.</dd><dt>Scope / reset / retention</dt><dd>Scope names the affected objects; retention means preserving state. Controller Reset (clearing CC.EN) is one form of Controller Level Reset, or CLR. Different CLR triggers can retain different registers.</dd></dl></details>
 <div class="qa-controls" hidden><label>Search this page <input type="search" id="qa-search" placeholder="Question number, field or keyword"></label><button type="button" data-expand="true">Expand all answers</button><button type="button" data-expand="false">Collapse all answers</button><output id="qa-count" aria-live="polite"></output></div>
 <section id="question-index"><h2>Questions in this volume</h2><ol class="qa-index">
 <li><a href="#q-069">Q69 · What does Supported Log Pages provide, and how should support be checked before reading another log?</a></li>
@@ -36,15 +39,15 @@ nvme_qa: true
 <li><a href="#q-081">Q81 · How does Commands Supported and Effects describe opcode support and impact?</a></li>
 </ol></section>
 <article class="qa-question" id="q-069" data-question="69" data-answer-kind="lookup"><h2><a class="qa-qid" href="#q-069">Q69</a> What does Supported Log Pages provide, and how should support be checked before reading another log?</h2>
-<p class="qa-prompt">Task: discover Sanitize Status support and whether it accepts index offsets. Do the two questions use the same bit? Find the directory and entry before revealing the answer.</p>
-<details class="qa-answer" id="q-069-answer"><summary>Reveal the explanation</summary>
+<p class="qa-prompt">Task: discover Sanitize Status support and whether it accepts index offsets. Locate the target directory entry, then read support and offset capabilities separately.</p>
+<details open class="qa-answer" id="q-069-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-069-a-01">Supported Log Pages is a directory of LIDs and index-offset support on the current interface. It distinguishes lack of support from zero-valued data. Reading it is a discovery method, not a mandatory command before every log request.</p><div class="qa-sections">
 <section class="qa-section" id="q-069-s-01" data-answer-section="1"><h3><span>1.</span> Select the target and information</h3>
-<span class="qa-anchor" id="q-069-a-02"></span><p>Results describe the receiving interface and controller. Interfaces can differ; with CC.CSS=110b, CSI and the enabled command-set profile also affect support. Another interface’s directory is not interchangeable.</p>
+<span class="qa-anchor" id="q-069-a-02"></span><p>Results describe the receiving interface and controller. Interfaces can differ; with CC.CSS=110b, CSI and the enabled command-set profile also affect support. Another interface’s directory is not interchangeable.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>CSI</dt><dd>Command Set Identifier</dd></div></dl>
 <span class="qa-anchor" id="q-069-a-03"></span><p>Use LID 00h. LPA.MLPS=1 guarantees Supported Log Pages, while MLPS=0 may still provide it and does not negate all logs. Figure 338 LPA.LPEDS bit 2 describes extended offsets/length; per-LID LSUPP and IOS describe log support and index-offset support.</p>
 <section class="qa-lookup" id="q-069-lookup"><h4>Worked lookup: log support versus permitted read modes</h4>
 <p>Assume one PCIe Admin interface, CC.CSS=000b, UUID Index 0, MLPS=1 and LPEDS=1. Discover Sanitize Status LID 81h, not Sanitize Namespace opcode 8Ch.</p>
-<div class="qr-table" tabindex="0" role="region" aria-label="Horizontally scrollable comparison table"><table><thead><tr><th scope="col">Step and source location</th><th scope="col">Information to retrieve</th><th scope="col">What this establishes</th></tr></thead><tbody><tr><td>1 · §5.2.13.1.1/Figure 210, printed 217/PDF 243</td><td>Get Log Page with LID 00h, NSID 0, NUMDL=00FFh, NUMDU=0, LPO=0, OT=0 and RAE=0.</td><td>Retrieves 256 four-byte entries (1024 bytes), not a declaration that every LID is supported.</td></tr><tr><td>2 · Figure 210, printed 217/PDF 243</td><td>LID 81h=129 selects offset 4×129=516=204h and bytes 516–519.</td><td>Index by LID; an opcode or FID with the same numeric value is a different identifier.</td></tr><tr><td>3 · Figure 211, printed 217–218/PDF 243–244</td><td>Assume entry 00000001h: LSUPP bit 0=1 and IOS bit 1=0.</td><td>Sanitize Status is supported, but its index-offset mode is not. General extended-read support does not override IOS=0.</td></tr><tr><td>4 · Figures 206/312, printed 214,313 onward/PDF 240,339 onward</td><td>Read LID 81h with OT=0 and the correct target NSID, then decode the returned status.</td><td>LSUPP establishes availability; operation progress/outcome requires the actual status. Unsupported OT=1 still requires Invalid Field despite LSUPP=1.</td></tr></tbody></table></div>
+<div class="qr-table" tabindex="0" role="region" aria-label="Horizontally scrollable comparison table"><table><thead><tr><th scope="col">Step and source location</th><th scope="col">Information to retrieve</th><th scope="col">What this establishes</th></tr></thead><tbody><tr><td>1 · §5.2.13.1.1/Figure 210, printed 217/PDF 243</td><td>Get Log Page with LID 00h, NSID 0, NUMDL=00FFh, NUMDU=0, LPO=0, OT=0 and RAE=0.</td><td>Retrieves 256 four-byte entries (1024 bytes), not a declaration that every LID is supported.</td></tr><tr><td>2 · Figure 210, printed 217/PDF 243</td><td>LID 81h=129 selects offset 4×129=516=204h and bytes 516–519.</td><td>Index by LID; an opcode or FID with the same numeric value is a different identifier.</td></tr><tr><td>3 · Figure 211, printed 217–218/PDF 243–244</td><td>Assume entry 00000001h: LSUPP bit 0=1 and IOS bit 1=0.</td><td>Sanitize Status is supported, but its index-offset mode is not. General extended-read support does not override IOS=0.</td></tr><tr><td>4 · Figures 206/312, printed 214,313 onward/PDF 240,339 onward</td><td>Read LID 81h with OT=0 and the correct target NSID, then decode the returned status.</td><td>LSUPP establishes availability; operation progress/outcome requires the actual status. Unsupported OT=1 still requires Invalid Field despite LSUPP=1.</td></tr></tbody></table><dl class="st-terms" aria-label="Terms in this passage"><div><dt>NSID</dt><dd>Namespace Identifier</dd></div><div><dt>FID</dt><dd>Feature Identifier</dd></div></dl></div>
 <p>An unavailable directory does not establish that every LID is unsupported; use log-specific specification requirements and Identify fields. A failed query’s buffer is not valid LSUPP evidence.</p>
 <p class="qa-citations">Sources: <a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-sanitizelog">Base 2.4 §5.2.13.1.38</a></p>
 </section>
@@ -57,39 +60,41 @@ nvme_qa: true
 <section class="qa-section" id="q-069-s-03" data-answer-section="3"><h3><span>3.</span> Handle missing or inconsistent evidence</h3>
 <span class="qa-anchor" id="q-069-a-07"></span><p>An unsupported LID normally returns Invalid Log Page (1/09h). Using unsupported OT=1 returns Invalid Field (0/02h), even when the LID is supported. These are different failures.</p>
 <span class="qa-anchor" id="q-069-a-16"></span><p>Compare LSUPP, IOS and LPA against a valid request. Supported logs need not support index offsets; an invalid request does not by itself contradict LSUPP.</p>
-<span class="qa-anchor" id="q-069-a-17"></span><p>First establish the same interface, CSI and configuration period, then verify four-byte entry addressing.</p>
+<span class="qa-anchor" id="q-069-a-17"></span><p>First establish the same interface, CSI and configuration period, then verify four-byte entry addressing.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>CSI</dt><dd>Command Set Identifier</dd></div></dl>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-profile">Base 2.4 §5.2.30.1.18</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-sanitizelog">Base 2.4 §5.2.13.1.38</a></p>
 <span class="qa-anchor" id="q-069-a-08"></span><span class="qa-anchor" id="q-069-a-09"></span><span class="qa-anchor" id="q-069-a-10"></span><span class="qa-anchor" id="q-069-a-11"></span><span class="qa-anchor" id="q-069-a-12"></span><span class="qa-anchor" id="q-069-a-13"></span><span class="qa-anchor" id="q-069-a-14"></span><span class="qa-anchor" id="q-069-a-15"></span>
 <p class="qa-related">Related mechanisms: <a href="/nvme/question-bank/logs/en/#q-081">Q81</a> · <a href="/nvme/question-bank/features/en/#q-054">Q54</a> · <a href="/nvme/question-bank/format-sanitize/en/#q-128">Q128</a></p>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-profile">Base 2.4 §5.2.30.1.18</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-sanitizelog">Base 2.4 §5.2.13.1.38</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-070" data-question="70" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-070">Q70</a> What do Error Information and SMART/Health Information record?</h2>
-<p class="qa-prompt">Identify the key difference and one case where the alternatives are not interchangeable.</p>
-<details class="qa-answer" id="q-070-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-070-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-070-a-01">Error Information explains individual errors; SMART/Health describes current warnings and lifetime usage. They answer different questions and are not substitutes.</p><div class="qa-sections">
 <section class="qa-section" id="q-070-s-01" data-answer-section="1"><h3><span>1.</span> What differs</h3>
 <span class="qa-anchor" id="q-070-a-02"></span><p>LID 01h is controller-scoped. LID 02h may accept namespace requests, but Base 2.4 defines no namespace-specific SMART information, so controller and namespace reports contain identical information rather than independent usage totals.</p>
-<span class="qa-anchor" id="q-070-a-04"></span><p>Each 01h entry is 64 bytes, with ECNT, SQID, CID, status, parameter location and NSID. The 512-byte 02h page contains warnings, temperature, spare, endurance estimate and cumulative usage/error counters.</p>
+<span class="qa-anchor" id="q-070-a-04"></span><p>Each 01h entry is 64 bytes, with ECNT, SQID, CID, status, parameter location and NSID. The 512-byte 02h page contains warnings, temperature, spare, endurance estimate and cumulative usage/error counters.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>SQID</dt><dd>Submission Queue Identifier</dd></div><div><dt>CID</dt><dd>Command Identifier, unique among outstanding commands in one SQ</dd></div></dl>
 </section>
 <section class="qa-section" id="q-070-s-02" data-answer-section="2"><h3><span>2.</span> How to choose and verify</h3>
 <span class="qa-anchor" id="q-070-a-03"></span><p>ELPE+1 gives the maximum Error Information entry count. The LPA SMART bit determines whether per-namespace requests are accepted; establish support before interpreting the data.</p>
-<span class="qa-anchor" id="q-070-a-05"></span><p>Preserve the CQE, correlate 01h to the command, then sample 02h for health context. Record times to avoid pairing an old error with an unrelated current warning.</p>
+<span class="qa-anchor" id="q-070-a-05"></span><p>Preserve the CQE, correlate 01h to the command, then sample 02h for health context. Record times to avoid pairing an old error with an unrelated current warning.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>CQE</dt><dd>Completion Queue Entry</dd></div></dl>
 <span class="qa-anchor" id="q-070-a-06"></span><p>A successful read does not mean an error-free device. ECNT=0 marks an invalid entry; Percentage Used=100 describes estimated endurance consumption, not necessarily device failure.</p>
 </section>
-<section class="qa-section" id="q-070-s-03" data-answer-section="3"><h3><span>3.</span> Where the comparison stops</h3>
+<section class="qa-section" id="q-070-s-03" data-answer-section="3"><h3><span>3.</span> Conditions that shape the comparison</h3>
 <span class="qa-anchor" id="q-070-a-07"></span><p>A specific-NSID SMART request without support returns Invalid Field (0/02h). Historical status in the log is distinct from the status of the current Get Log Page command.</p>
 <span class="qa-anchor" id="q-070-a-16"></span><p>The SMART Error Log Entries total is not the number of entries currently visible in 01h. Finite capacity and reset clearing can make the lifetime total larger.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-070-a-17"></span><span class="qa-anchor" id="q-070-a-08"></span><span class="qa-anchor" id="q-070-a-09"></span><span class="qa-anchor" id="q-070-a-10"></span><span class="qa-anchor" id="q-070-a-11"></span><span class="qa-anchor" id="q-070-a-12"></span><span class="qa-anchor" id="q-070-a-13"></span><span class="qa-anchor" id="q-070-a-14"></span><span class="qa-anchor" id="q-070-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-071" data-question="71" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-071">Q71</a> What do Firmware Slot, Changed Namespace and Commands Supported and Effects logs establish?</h2>
-<p class="qa-prompt">Identify the key difference and one case where the alternatives are not interchangeable.</p>
-<details class="qa-answer" id="q-071-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-071-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-071-a-01">These logs identify the running firmware slot, namespaces with reported changes, and command support/effects. None is a universal operation history.</p><div class="qa-sections">
 <section class="qa-section" id="q-071-s-01" data-answer-section="1"><h3><span>1.</span> What differs</h3>
 <span class="qa-anchor" id="q-071-a-02"></span><p>03h is domain or subsystem scoped; 04h describes attached-namespace changes for this controller; 05h describes its commands for the selected command set.</p>
@@ -100,18 +105,19 @@ nvme_qa: true
 <span class="qa-anchor" id="q-071-a-05"></span><p>Choose by purpose: compare 03h with Identify.FR after activation; read 04h and rediscover namespaces after notification; use 05h before a management operation and refresh affected capabilities afterward.</p>
 <span class="qa-anchor" id="q-071-a-06"></span><p>NAFS=2 identifies a slot awaiting an applicable CLR, not the currently running slot. NSID 7 in 04h signals change without specifying whether it was formatted or deleted.</p>
 </section>
-<section class="qa-section" id="q-071-s-03" data-answer-section="3"><h3><span>3.</span> Where the comparison stops</h3>
+<section class="qa-section" id="q-071-s-03" data-answer-section="3"><h3><span>3.</span> Conditions that shape the comparison</h3>
 <span class="qa-anchor" id="q-071-a-07"></span><p>Separate retrieval errors from reported state. Unsupported LIDs return 1/09h; invalid defined parameters follow 0/02h rules. Empty slots or empty change lists are not themselves retrieval failures.</p>
 <span class="qa-anchor" id="q-071-a-16"></span><p>Correlate the active slot with FR, changed IDs with fresh Identify, and CSUPP with valid command behavior. The three logs need not contain matching values.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-fwlog">Base 2.4 §5.2.13.1.4</a> · <a href="#ref-changedlog">Base 2.4 §5.2.13.1.5</a> · <a href="#ref-commandseffects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-071-a-17"></span><span class="qa-anchor" id="q-071-a-08"></span><span class="qa-anchor" id="q-071-a-09"></span><span class="qa-anchor" id="q-071-a-10"></span><span class="qa-anchor" id="q-071-a-11"></span><span class="qa-anchor" id="q-071-a-12"></span><span class="qa-anchor" id="q-071-a-13"></span><span class="qa-anchor" id="q-071-a-14"></span><span class="qa-anchor" id="q-071-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-fwlog">Base 2.4 §5.2.13.1.4</a> · <a href="#ref-changedlog">Base 2.4 §5.2.13.1.5</a> · <a href="#ref-commandseffects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-072" data-question="72" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-072">Q72</a> When should Device Self-test, Persistent Event and Sanitize Status logs be used?</h2>
-<p class="qa-prompt">Identify the key difference and one case where the alternatives are not interchangeable.</p>
-<details class="qa-answer" id="q-072-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-072-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-072-a-01">Self-test logs show progress and recent results; PEL provides supported historical events; Sanitize Status reports sanitization state and outcome. Choose the right evidence before equating acceptance with completion.</p><div class="qa-sections">
 <section class="qa-section" id="q-072-s-01" data-answer-section="1"><h3><span>1.</span> What differs</h3>
 <span class="qa-anchor" id="q-072-a-02"></span><p>Self-test scope depends on capabilities such as DSTO.SDSO. PEL is subsystem-scoped; 81h uses NSID to distinguish subsystem and namespace targets. The querying controller is not necessarily the full affected scope.</p>
@@ -122,18 +128,19 @@ nvme_qa: true
 <span class="qa-anchor" id="q-072-a-05"></span><p>Poll 81h after sanitize acceptance for background completion; inspect the newest valid 06h result after self-test; use PEL for supported historical reset or management events.</p>
 <span class="qa-anchor" id="q-072-a-06"></span><p>Successful Get establishes retrieval, not a passed test or successful sanitize. Missing PEL events require checking event support, logging conditions and retained history.</p>
 </section>
-<section class="qa-section" id="q-072-s-03" data-answer-section="3"><h3><span>3.</span> Where the comparison stops</h3>
-<span class="qa-anchor" id="q-072-a-07"></span><p>Unsupported LIDs return 1/09h; invalid PEL context sequencing can return 0/0Ch. Operation failures in returned data do not turn a successful retrieval CQE into failure.</p>
+<section class="qa-section" id="q-072-s-03" data-answer-section="3"><h3><span>3.</span> Conditions that shape the comparison</h3>
+<span class="qa-anchor" id="q-072-a-07"></span><p>Unsupported LIDs return 1/09h; invalid PEL context sequencing can return 0/0Ch. Operation failures in returned data do not turn a successful retrieval CQE into failure.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>CQE</dt><dd>Completion Queue Entry</dd></div></dl>
 <span class="qa-anchor" id="q-072-a-16"></span><p>Correlate target, time and latest results. An old test result or previous sanitize success is not proof of success for the current operation.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-dstlog">Base 2.4 §5.2.13.1.7</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a></p>
 <span class="qa-anchor" id="q-072-a-17"></span><span class="qa-anchor" id="q-072-a-08"></span><span class="qa-anchor" id="q-072-a-09"></span><span class="qa-anchor" id="q-072-a-10"></span><span class="qa-anchor" id="q-072-a-11"></span><span class="qa-anchor" id="q-072-a-12"></span><span class="qa-anchor" id="q-072-a-13"></span><span class="qa-anchor" id="q-072-a-14"></span><span class="qa-anchor" id="q-072-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-dstlog">Base 2.4 §5.2.13.1.7</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-073" data-question="73" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-073">Q73</a> What do Endurance Group, Predictable Latency, Lockdown, Boot Partition and Media Unit Status logs contain?</h2>
-<p class="qa-prompt">Identify the key difference and one case where the alternatives are not interchangeable.</p>
-<details class="qa-answer" id="q-073-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-073-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-073-a-01">These logs describe group endurance, predictable-latency state, prohibited operations, boot partitions and media-unit resources. They are not interchangeable health reports.</p><div class="qa-sections">
 <section class="qa-section" id="q-073-s-01" data-answer-section="1"><h3><span>1.</span> What differs</h3>
 <span class="qa-anchor" id="q-073-a-02"></span><p>Establish the management object: endurance group, NVM set, lockdown selection/scope, controller-accessed boot partitions, or domain/subsystem media units.</p>
@@ -144,18 +151,19 @@ nvme_qa: true
 <span class="qa-anchor" id="q-073-a-05"></span><p>Choose the LID by question, map resource IDs through Identify, then apply the log’s selectors and structure. Group-3 health requires ENDGID=3, not an arbitrary NSID substituted into LSI.</p>
 <span class="qa-anchor" id="q-073-a-06"></span><p>Results describe the selected object. One group warning does not establish identical media faults in every namespace; lockdown entries are prohibitions, not execution history.</p>
 </section>
-<section class="qa-section" id="q-073-s-03" data-answer-section="3"><h3><span>3.</span> Where the comparison stops</h3>
+<section class="qa-section" id="q-073-s-03" data-answer-section="3"><h3><span>3.</span> Conditions that shape the comparison</h3>
 <span class="qa-anchor" id="q-073-a-07"></span><p>Distinguish unsupported LIDs (1/09h) from invalid resource selectors governed by each log’s defined fields and specific status. Do not classify all selector failures as Invalid Namespace.</p>
 <span class="qa-anchor" id="q-073-a-16"></span><p>Correlate resource association, reported state and behavior. Prohibited FIDs should match lockdown policy; media-unit state must be related to namespace dependencies.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-073-a-17"></span><span class="qa-anchor" id="q-073-a-08"></span><span class="qa-anchor" id="q-073-a-09"></span><span class="qa-anchor" id="q-073-a-10"></span><span class="qa-anchor" id="q-073-a-11"></span><span class="qa-anchor" id="q-073-a-12"></span><span class="qa-anchor" id="q-073-a-13"></span><span class="qa-anchor" id="q-073-a-14"></span><span class="qa-anchor" id="q-073-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-074" data-question="74" data-answer-kind="lookup"><h2><a class="qa-qid" href="#q-074">Q74</a> How should NSID and other selectors follow a log’s scope?</h2>
-<p class="qa-prompt">Choose the interface and target, then identify the returned field that supports your conclusion.</p>
-<details class="qa-answer" id="q-074-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-074-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-074-a-01">Scope identifies the kind of object described; selectors identify its instance. A common NSID field does not make every log per-namespace.</p><div class="qa-sections">
 <section class="qa-section" id="q-074-s-01" data-answer-section="1"><h3><span>1.</span> Select the target and information</h3>
 <span class="qa-anchor" id="q-074-a-02"></span><p>Figure 209 lists scopes, while individual fields may define more specific ones. Read both the directory and the selected LID’s exceptions.</p>
@@ -172,13 +180,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-074-a-17"></span><p>Check the LID’s scope first; a nonzero NSID alone does not establish namespace-specific information.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-uuid">Base 2.4 §8.1.31.1–8.1.31.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-074-a-08"></span><span class="qa-anchor" id="q-074-a-09"></span><span class="qa-anchor" id="q-074-a-10"></span><span class="qa-anchor" id="q-074-a-11"></span><span class="qa-anchor" id="q-074-a-12"></span><span class="qa-anchor" id="q-074-a-13"></span><span class="qa-anchor" id="q-074-a-14"></span><span class="qa-anchor" id="q-074-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-uuid">Base 2.4 §8.1.31.1–8.1.31.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-075" data-question="75" data-answer-kind="process"><h2><a class="qa-qid" href="#q-075">Q75</a> How are large logs read in chunks, including offsets, lengths, overlaps and gaps?</h2>
-<p class="qa-prompt">Order the actions and identify which completion must precede the next action.</p>
-<details class="qa-answer" id="q-075-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-075-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-075-a-01">Chunking reads a large log with bounded buffers. Both coverage and consistency matter; individually successful reads do not establish a complete coherent file.</p><div class="qa-sections">
 <section class="qa-section" id="q-075-s-01" data-answer-section="1"><h3><span>1.</span> Prepare the operation</h3>
 <span class="qa-anchor" id="q-075-a-02"></span><p>Offsets locate data within the log, not host memory. OT=0 uses bytes; OT=1 uses log-defined entry indices. Do not mix their units.</p>
@@ -200,13 +209,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-075-a-16"></span><p>Verify total length, offsets/NUMD and generation or reporting context. Complete coverage and one coherent snapshot are separate requirements.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-telemetrylog">Base 2.4 §5.2.13.1.8–5.2.13.1.9</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-075-a-17"></span><span class="qa-anchor" id="q-075-a-08"></span><span class="qa-anchor" id="q-075-a-09"></span><span class="qa-anchor" id="q-075-a-10"></span><span class="qa-anchor" id="q-075-a-11"></span><span class="qa-anchor" id="q-075-a-12"></span><span class="qa-anchor" id="q-075-a-13"></span><span class="qa-anchor" id="q-075-a-14"></span><span class="qa-anchor" id="q-075-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-telemetrylog">Base 2.4 §5.2.13.1.8–5.2.13.1.9</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-076" data-question="76" data-answer-kind="fields"><h2><a class="qa-qid" href="#q-076">Q76</a> What are LSI, UUID Index and Retain Asynchronous Event used for?</h2>
-<p class="qa-prompt">Explain the units and encoding, then work through one set of values.</p>
-<details class="qa-answer" id="q-076-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-076-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-076-a-01">These fields select a resource, a data-definition context, and event retention. Their roles are independent.</p><div class="qa-sections">
 <section class="qa-section" id="q-076-s-01" data-answer-section="1"><h3><span>1.</span> Establish the source and scope</h3>
 <span class="qa-anchor" id="q-076-a-02"></span><p>LSI is LID-specific; UIDX selects a UUID-list definition; RAE controls the associated event. Not every log uses all three.</p>
@@ -222,13 +232,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-076-a-16"></span><p>Compare the target, UUID mapping and pending-event state. Identical returned bytes with different RAE can produce different subsequent notification behavior.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-uuid">Base 2.4 §8.1.31.1–8.1.31.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-076-a-17"></span><span class="qa-anchor" id="q-076-a-08"></span><span class="qa-anchor" id="q-076-a-09"></span><span class="qa-anchor" id="q-076-a-10"></span><span class="qa-anchor" id="q-076-a-11"></span><span class="qa-anchor" id="q-076-a-12"></span><span class="qa-anchor" id="q-076-a-13"></span><span class="qa-anchor" id="q-076-a-14"></span><span class="qa-anchor" id="q-076-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-uuid">Base 2.4 §8.1.31.1–8.1.31.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-077" data-question="77" data-answer-kind="diagnose"><h2><a class="qa-qid" href="#q-077">Q77</a> How can a host detect inconsistent log chunks when content changes?</h2>
-<p class="qa-prompt">Separate available evidence from missing information before judging conformance.</p>
-<details class="qa-answer" id="q-077-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-077-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-077-a-01">This prevents combining different times into an apparently complete report. Correct length and coverage do not establish a single capture.</p><div class="qa-sections">
 <section class="qa-section" id="q-077-s-01" data-answer-section="1"><h3><span>1.</span> Preserve the evidence first</h3>
 <span class="qa-anchor" id="q-077-a-02"></span><p>Consistency is log-specific: Telemetry has generations, PEL reporting contexts. Other dynamic logs do not gain cross-command atomic snapshots by assumption.</p>
@@ -239,19 +250,20 @@ nvme_qa: true
 <span class="qa-anchor" id="q-077-a-17"></span><p>Check generation/context continuity before blaming the parser.</p>
 <span class="qa-anchor" id="q-077-a-05"></span><p>Read the header, use the same capture/context and recheck the header where applicable. A changed generation requires reacquisition or an explicit consistency limitation, not just replacement of the header.</p>
 </section>
-<section class="qa-section" id="q-077-s-03" data-answer-section="3"><h3><span>3.</span> Decide what the evidence supports</h3>
+<section class="qa-section" id="q-077-s-03" data-answer-section="3"><h3><span>3.</span> Connect observations to specification conditions</h3>
 <span class="qa-anchor" id="q-077-a-06"></span><p>Initial TCDGN=10 and final=11 leave intervening chunks unproven even when all Gets succeed. Retain consistency evidence with the resulting report.</p>
 <span class="qa-anchor" id="q-077-a-07"></span><p>Content changes need not produce an error CQE. Invalid PEL context operations can produce 0/0Ch, which is distinct from a legitimate generation change.</p>
 <span class="qa-anchor" id="q-077-a-16"></span><p>Treat headers, chunks and query order as one evidence set. The last capability or generation value cannot retroactively validate every earlier chunk.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-telemetrylog">Base 2.4 §5.2.13.1.8–5.2.13.1.9</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a></p>
 <span class="qa-anchor" id="q-077-a-08"></span><span class="qa-anchor" id="q-077-a-09"></span><span class="qa-anchor" id="q-077-a-10"></span><span class="qa-anchor" id="q-077-a-11"></span><span class="qa-anchor" id="q-077-a-12"></span><span class="qa-anchor" id="q-077-a-13"></span><span class="qa-anchor" id="q-077-a-14"></span><span class="qa-anchor" id="q-077-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-telemetrylog">Base 2.4 §5.2.13.1.8–5.2.13.1.9</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-078" data-question="78" data-answer-kind="concept"><h2><a class="qa-qid" href="#q-078">Q78</a> How are old records handled when Error Information or PEL reaches capacity?</h2>
-<p class="qa-prompt">Explain the mechanism in your own words and identify a common misconception.</p>
-<details class="qa-answer" id="q-078-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-078-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-078-a-01">Finite logs cannot preserve unlimited history. Distinguish cumulative counts from currently readable records; a missing old entry does not prove the event never occurred.</p><div class="qa-sections">
 <section class="qa-section" id="q-078-s-01" data-answer-section="1"><h3><span>1.</span> Mechanism and scope</h3>
 <span class="qa-anchor" id="q-078-a-02"></span><p>Error Information is controller-scoped; PEL contains supported subsystem events accessed through reporting contexts. Capacity and read lifecycles differ.</p>
@@ -267,13 +279,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-078-a-16"></span><p>ECNT/SMART totals may diverge from visible entry counts. Explain the difference using capacity and retention, not an expectation of unlimited historical preservation.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a></p>
 <span class="qa-anchor" id="q-078-a-17"></span><span class="qa-anchor" id="q-078-a-08"></span><span class="qa-anchor" id="q-078-a-09"></span><span class="qa-anchor" id="q-078-a-10"></span><span class="qa-anchor" id="q-078-a-11"></span><span class="qa-anchor" id="q-078-a-12"></span><span class="qa-anchor" id="q-078-a-13"></span><span class="qa-anchor" id="q-078-a-14"></span><span class="qa-anchor" id="q-078-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-079" data-question="79" data-answer-kind="lifecycle"><h2><a class="qa-qid" href="#q-079">Q79</a> Which log data survives controller reset, subsystem reset or power cycling?</h2>
-<p class="qa-prompt">Name the reset or interruption, then assess settings, ongoing operations and data separately.</p>
-<details class="qa-answer" id="q-079-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-079-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-079-a-01">Separate the query command, temporary reporting state and retained history. An aborted Get does not imply erasure of all underlying data.</p><div class="qa-sections">
 <section class="qa-section" id="q-079-s-01" data-answer-section="1"><h3><span>1.</span> Identify the trigger and affected objects</h3>
 <span class="qa-anchor" id="q-079-a-02"></span><p>Retention may apply to a whole log or individual fields. Establish reset coverage in multi-controller and multi-domain configurations.</p>
@@ -296,36 +309,38 @@ nvme_qa: true
 <span class="qa-anchor" id="q-079-a-17"></span><p>First determine whether the discrepancy concerns stored content, an invalidated context or an interrupted query.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a></p>
 <span class="qa-anchor" id="q-079-a-08"></span><span class="qa-anchor" id="q-079-a-09"></span><span class="qa-anchor" id="q-079-a-10"></span><span class="qa-anchor" id="q-079-a-11"></span><span class="qa-anchor" id="q-079-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-080" data-question="80" data-answer-kind="diagnose"><h2><a class="qa-qid" href="#q-080">Q80</a> How should advertised log/command support be checked against actual behavior?</h2>
-<p class="qa-prompt">Separate available evidence from missing information before judging conformance.</p>
-<details class="qa-answer" id="q-080-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-080-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-080-a-01">Build a reproducible support-consistency check. Support establishes valid uses, not success for every parameter combination.</p><div class="qa-sections">
 <section class="qa-section" id="q-080-s-01" data-answer-section="1"><h3><span>1.</span> Preserve the evidence first</h3>
 <span class="qa-anchor" id="q-080-a-02"></span><p>Fix interface, controller, CSI, UUID selection and configuration time. With CC.CSS=110b, a command set not enabled by the profile is treated as unsupported.</p>
-<span class="qa-anchor" id="q-080-a-03"></span><p>Preserve LSUPP/IOS, CSUPP, Identify capability bits and FID 19h. Log support and opcode support are different declarations.</p>
-<span class="qa-anchor" id="q-080-a-04"></span><p>Retain all relevant selectors, length and data pointers, then decode CQE SCT/SC rather than only a tool’s error string.</p>
+<span class="qa-anchor" id="q-080-a-03"></span><p>Preserve LSUPP/IOS, CSUPP, Identify capability bits and FID 19h. Log support and opcode support are different declarations.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>FID</dt><dd>Feature Identifier</dd></div></dl>
+<span class="qa-anchor" id="q-080-a-04"></span><p>Retain all relevant selectors, length and data pointers, then decode CQE SCT/SC rather than only a tool’s error string.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>SCT</dt><dd>Status Code Type</dd></div></dl>
 </section>
 <section class="qa-section" id="q-080-s-02" data-answer-section="2"><h3><span>2.</span> Work through the possible causes</h3>
 <span class="qa-anchor" id="q-080-a-17"></span><p>First verify the same interface and command-set configuration on both sides of the comparison.</p>
 <span class="qa-anchor" id="q-080-a-05"></span><p>Construct a request meeting capability, scope and state requirements, execute, then exclude invalid fields, lockdown, namespace readiness and intervening changes before declaring a contradiction.</p>
 </section>
-<section class="qa-section" id="q-080-s-03" data-answer-section="3"><h3><span>3.</span> Decide what the evidence supports</h3>
+<section class="qa-section" id="q-080-s-03" data-answer-section="3"><h3><span>3.</span> Connect observations to specification conditions</h3>
 <span class="qa-anchor" id="q-080-a-06"></span><p>In a stable context, unsupported status for a valid advertised operation is a contradiction to investigate. A legitimate restrictive status is not equivalent to lack of support.</p>
 <span class="qa-anchor" id="q-080-a-07"></span><p>Unsupported LID uses 1/09h; unsupported opcode uses 0/01h; 0/02h calls for parameter review. Preserve specific exceptions and allowed choices for multiple errors.</p>
 <span class="qa-anchor" id="q-080-a-16"></span><p>Compare declarations, behavior and timing. After activation, rediscover support instead of imposing an old table on new firmware.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-commandseffects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-profile">Base 2.4 §5.2.30.1.18</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-080-a-08"></span><span class="qa-anchor" id="q-080-a-09"></span><span class="qa-anchor" id="q-080-a-10"></span><span class="qa-anchor" id="q-080-a-11"></span><span class="qa-anchor" id="q-080-a-12"></span><span class="qa-anchor" id="q-080-a-13"></span><span class="qa-anchor" id="q-080-a-14"></span><span class="qa-anchor" id="q-080-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-commandseffects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-profile">Base 2.4 §5.2.30.1.18</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-081" data-question="81" data-answer-kind="lookup"><h2><a class="qa-qid" href="#q-081">Q81</a> How does Commands Supported and Effects describe opcode support and impact?</h2>
-<p class="qa-prompt">Choose the interface and target, then identify the returned field that supports your conclusion.</p>
-<details class="qa-answer" id="q-081-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-081-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-081-a-01">The table describes support and possible effects on data, namespaces and controller capability. It reports overall possible effects, not effects guaranteed on every invocation.</p><div class="qa-sections">
 <section class="qa-section" id="q-081-s-01" data-answer-section="1"><h3><span>1.</span> Select the target and information</h3>
 <span class="qa-anchor" id="q-081-a-02"></span><p>Admin and I/O opcodes occupy separate regions; the I/O region also requires the correct command set. CSP can name several possible scopes because parameters affect actual impact.</p>
@@ -342,6 +357,7 @@ nvme_qa: true
 <span class="qa-anchor" id="q-081-a-17"></span><p>First establish Admin/I/O region, opcode, byte offset and query success. Log-relative position, segment-buffer position and entry bit position are distinct coordinates; confusing them can select another command or field.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-commandseffects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-profile">Base 2.4 §5.2.30.1.18</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-adminsupport">Base 2.4 §3.1.3.4 (Figure 28 PCIe I/O-controller rows and O/M/P note only)</a></p>
 <span class="qa-anchor" id="q-081-a-08"></span><span class="qa-anchor" id="q-081-a-09"></span><span class="qa-anchor" id="q-081-a-10"></span><span class="qa-anchor" id="q-081-a-11"></span><span class="qa-anchor" id="q-081-a-12"></span><span class="qa-anchor" id="q-081-a-13"></span><span class="qa-anchor" id="q-081-a-14"></span><span class="qa-anchor" id="q-081-a-15"></span>
 <p class="qa-related">Related mechanisms: <a href="/nvme/question-bank/format-sanitize/en/#q-118">Q118</a> · <a href="/nvme/question-bank/logs/en/#q-069">Q69</a> · <a href="/nvme/question-bank/features/en/#q-054">Q54</a></p>
 <details class="qa-source-links"><summary>Source locations for this question</summary>

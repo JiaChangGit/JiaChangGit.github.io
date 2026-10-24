@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "course": "pcie-course",
+  "chapter": 25,
+  "updated": "2026-10-24",
+  "claims": [
+    {
+      "id": "PCIE-CH25-001",
+      "claim": "PTM角色、時間域與Retimer精度限制。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.21.1"
+      ],
+      "document_pages": [
+        795,
+        796
+      ],
+      "pdf_pages": [
+        795,
+        796
+      ],
+      "figures": [
+        "6-21"
+      ],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH25-002",
+      "claim": "PTM交換方向、跨回合時間與公式。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.21.2"
+      ],
+      "document_pages": [
+        797
+      ],
+      "pdf_pages": [
+        797
+      ],
+      "figures": [
+        "6-22"
+      ],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH25-003",
+      "claim": "啟用順序、能力布局、ID與粒度。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.21.3",
+        "7.9.15",
+        "7.9.15.1",
+        "7.9.15.2",
+        "7.9.15.3"
+      ],
+      "document_pages": [
+        800,
+        1260,
+        1261,
+        1262,
+        1263
+      ],
+      "pdf_pages": [
+        800,
+        1260,
+        1261,
+        1262,
+        1263
+      ],
+      "figures": [
+        "7-310",
+        "7-311",
+        "7-312",
+        "7-313"
+      ],
+      "tables": [
+        "7-274",
+        "7-275",
+        "7-276"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "walk_id": "ch21-overview",
+  "title": "發送端符合規格，為什麼接收端還要另做測試？",
+  "summary_html": "<p>Rx（Receiver，接收端）看到的是訊號走過通道後的結果。接收能力要和通道損耗、等化及 Refclk（Reference Clock，參考時脈）一起檢查；單看發送端波形，還沒有走完整條訊號路徑。</p>",
+  "svg": "<svg viewBox=\"0 0 900 420\" role=\"img\" aria-labelledby=\"ch21-zh-t ch21-zh-d\"><title id=\"ch21-zh-t\">本章角色與事件</title><desc id=\"ch21-zh-d\">先建立通道與時脈模型，再判讀接收端壓力測試。</desc><g data-walk-target=\"tx\"><rect x=\"20\" y=\"60\" width=\"220\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"130.0\" y=\"89\" text-anchor=\"middle\" font-size=\"16\">發送設定／測試來源</text></g><g data-walk-target=\"channel\"><rect x=\"335\" y=\"60\" width=\"240\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"455.0\" y=\"89\" text-anchor=\"middle\" font-size=\"16\">通道：損耗與串擾</text></g><g data-walk-target=\"rx\"><rect x=\"650\" y=\"60\" width=\"230\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"765.0\" y=\"89\" text-anchor=\"middle\" font-size=\"16\">Rx：接收與等化</text></g><g data-walk-target=\"clock\"><rect x=\"30\" y=\"300\" width=\"300\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"180.0\" y=\"329\" text-anchor=\"middle\" font-size=\"16\">Refclk 架構與抖動模型</text></g><g data-walk-target=\"eye\"><rect x=\"480\" y=\"300\" width=\"390\" height=\"68\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"675.0\" y=\"329\" text-anchor=\"middle\" font-size=\"16\">規定參考點上的恢復眼圖</text><text x=\"675.0\" y=\"353\" text-anchor=\"middle\" font-size=\"16\">對照該速率的測試條件</text></g><g data-walk-target=\"a\"><path d=\"M240 94 L335 94\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"335,94 325.0,99.0 325.0,89.0\" fill=\"var(--accent)\"/><text x=\"287.5\" y=\"84.0\" text-anchor=\"middle\" font-size=\"16\">訊號</text></g><g data-walk-target=\"b\"><path d=\"M575 94 L650 94\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"650,94 640.0,99.0 640.0,89.0\" fill=\"var(--accent)\"/><text x=\"612.5\" y=\"84.0\" text-anchor=\"middle\" font-size=\"16\">退化後訊號</text></g><g data-walk-target=\"c\"><path d=\"M330 334 L480 334\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"480,334 470.0,339.0 470.0,329.0\" fill=\"var(--accent)\"/><text x=\"405.0\" y=\"324.0\" text-anchor=\"middle\" font-size=\"16\">時脈條件</text></g><g data-walk-target=\"d\"><path d=\"M765 128 L675 300\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"675,300 675.2060542107215,288.82155906835646 684.0663852717478,293.4577788095911\" fill=\"var(--accent)\"/><text x=\"720.0\" y=\"204.0\" text-anchor=\"middle\" font-size=\"16\">恢復後評估</text></g></svg>",
+  "order_html": "<p>順著訊號看通道與接收，再加入共同影響的時脈模型；箭頭表示影響關係，不是軟體執行順序。</p>",
+  "caption_html": "<p>作者依 Base 6.0 繪製的教學示意；省略與本章無關的交換。</p>",
+  "steps": [
+    {
+      "title": "先選擇通道模型",
+      "targets": [
+        "tx",
+        "a",
+        "channel"
+      ],
+      "html": "<p>§8.5.1 先分 captive channel（平台設計涵蓋的完整通道）與由外形規格分工的通道。</p>",
+      "condition_html": "<p>若通道不是 captive，須使用相應外形規格；Base 的這段模型不能自行覆蓋所有連接器與插卡條件。</p>",
+      "source_html": "<p>Base 6.0 §8.5.1，p.1400。</p>",
+      "claim_ids": [
+        "PCIE-CH21-001"
+      ]
+    },
+    {
+      "title": "確認接收端的觀察點",
+      "targets": [
+        "b",
+        "rx",
+        "d",
+        "eye"
+      ],
+      "html": "<p>§8.4.1 定義 stressed eye（加入指定壓力條件的眼圖）與恢復眼圖的參考點。不同速率是否包含行為接收等化，須分開讀。</p>",
+      "condition_html": "<p>量測接點與接收判決位置不同；不能把接點上閉合的眼圖直接當成接收器必然失效。</p>",
+      "source_html": "<p>Base 6.0 §8.4.1，p.1357。</p>",
+      "claim_ids": [
+        "PCIE-CH21-002"
+      ]
+    },
+    {
+      "title": "加上時脈架構及濾波條件",
+      "targets": [
+        "clock",
+        "c"
+      ],
+      "html": "<p>Refclk（提供系統參考的時脈）有共同與獨立架構；§8.6.5 說明原始資料須考慮哪些濾波。</p>",
+      "condition_html": "<p>濾波模型是用來描述符合性條件，不要求所有晶片採相同內部電路。</p>",
+      "source_html": "<p>Base 6.0 §8.6.4–§8.6.5，p.1426。</p>",
+      "claim_ids": [
+        "PCIE-CH21-003"
+      ]
+    }
+  ]
+}

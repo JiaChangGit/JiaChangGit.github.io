@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "course": "pcie-course",
+  "chapter": 26,
+  "updated": "2026-10-24",
+  "claims": [
+    {
+      "id": "PCIE-CH26-001",
+      "claim": "SR-IOV資源探索、頁面、BAR與啟用前配置。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "9.2.1",
+        "9.2.1.1.1",
+        "9.2.1.2"
+      ],
+      "document_pages": [
+        1445,
+        1446
+      ],
+      "pdf_pages": [
+        1445,
+        1446
+      ],
+      "figures": [
+        "9-9"
+      ],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH26-002",
+      "claim": "VF RID公式與欄位依賴。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "9.2.1.2",
+        "9.3.3.9",
+        "9.3.3.10"
+      ],
+      "document_pages": [
+        1446,
+        1447,
+        1461
+      ],
+      "pdf_pages": [
+        1446,
+        1447,
+        1461
+      ],
+      "figures": [],
+      "tables": [
+        "9-1"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH26-003",
+      "claim": "ARI身分解讀。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.13"
+      ],
+      "document_pages": [
+        762
+      ],
+      "pdf_pages": [
+        762
+      ],
+      "figures": [],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH26-004",
+      "claim": "ShadowFunctions借用交易資源。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.9.25"
+      ],
+      "document_pages": [
+        1299
+      ],
+      "pdf_pages": [
+        1299
+      ],
+      "figures": [],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    }
+  ]
+}

@@ -222,9 +222,154 @@
 
 /* Self-contained teaching diagrams use the same theme in standalone pages and posts. */
 .pcie-surface .course-diagram text { fill: var(--ink); font-family: inherit; font-size: 18px; }
+
+/* Applied only to explicitly authorized teaching roots. */
+html .spec-teaching[data-spec-series] .st-terms { margin:.35rem 0 1rem; padding:.5rem .8rem; border-inline-start:3px solid var(--st-accent); background:var(--st-soft); font-size:.88em; color:var(--st-muted); }
+html .spec-teaching[data-spec-series] .st-terms > div { display:flex; flex-wrap:wrap; gap:.2em .7em; }
+html .spec-teaching[data-spec-series] .st-terms dt { font-weight:650; }
+html .spec-teaching[data-spec-series] .st-terms dd { margin:0; flex:1 1 14em; }
+html .spec-teaching[data-spec-series] {
+ --st-diagram-width:900px;
+ --st-paper:#f2f6f8; --st-surface:#fff; --st-ink:#192d40; --st-muted:#4c6479;
+ --st-line:#cbd9e3; --st-accent:#145f9d; --st-soft:#edf5fc;
+ --paper:var(--st-paper); --surface:var(--st-surface); --surface-2:var(--st-soft); --surface-alt:var(--st-soft);
+ --ink:var(--st-ink); --muted:var(--st-muted); --line:var(--st-line);
+ --accent:var(--st-accent); --accent-2:var(--st-accent); --soft:var(--st-soft); --blue-soft:var(--st-soft); --teal-soft:var(--st-soft);
+ --qr-paper:var(--st-paper); --qr-surface:var(--st-surface); --qr-ink:var(--st-ink); --qr-muted:var(--st-muted);
+ --qr-line:var(--st-line); --qr-accent:var(--st-accent); --qr-soft:var(--st-soft);
+ color:var(--st-ink); background:var(--st-paper); font-size:17px; line-height:1.9;
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+}
+html .spec-teaching[data-spec-series="nvme"] { --st-accent:#086b56; --st-soft:#e7f4ee; }
+@media(prefers-color-scheme:dark) {
+ html:not([data-theme="light"]) .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+ html:not([data-theme="light"]) .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+}
+html[data-theme="dark"] .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+html[data-theme="dark"] .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+.spec-teaching * { box-sizing:border-box; }
+.spec-teaching :is(h1,h2,h3,h4,h5,p,li,td,th,summary,strong,figcaption) { color:var(--st-ink); }
+.spec-teaching svg text { font-family:inherit; }
+.spec-teaching h1 { font-size:clamp(1.8rem,3.2vw,2.65rem); line-height:1.4; }
+.spec-teaching h2 { font-size:clamp(1.3rem,2.5vw,1.7rem); line-height:1.55; }
+.spec-teaching h3 { font-size:1.15rem; line-height:1.65; }
+.spec-teaching h4 { font-size:1rem; line-height:1.7; }
+.spec-teaching :is(h1,h2,h3,h4) { overflow-wrap:anywhere; }
+.spec-teaching p { margin:.7rem 0 1.15rem; }
+.spec-teaching :is(a,summary) { text-underline-offset:.2em; }
+.spec-teaching :focus-visible { outline:3px solid var(--st-accent); outline-offset:4px; }
+.spec-teaching :is(.qa-takeaway,.qa-answer-lead,.st-takeaway) { color:var(--st-ink); font-weight:650; font-size:1.06rem; line-height:1.9; }
+.spec-teaching :is(.qa-question,.qr-card,.guided-walk) { border:1px solid var(--st-line); border-radius:12px; background:var(--st-surface); padding:clamp(18px,3vw,30px); margin:1.8rem 0; }
+.spec-teaching :is(.qa-flow,.qr-note,.qr-observations,.st-context,.st-route) { background:var(--st-soft); border-left:4px solid var(--st-accent); padding:1rem 1.2rem; margin:1.4rem 0; }
+.spec-teaching :is(.qr-step,.qa-qid,.st-label) { color:var(--st-accent); font-weight:700; }
+.spec-teaching :is(.qa-citations,.qa-source-links,.qr-case-sources,.walk-source,.st-source) { font-size:.84rem; line-height:1.75; color:var(--st-muted); overflow-wrap:anywhere; }
+.spec-teaching :is(.qr-table,.table-wrap) { overflow-x:auto; margin:1.4rem 0; border-radius:7px; }
+.spec-teaching :is(th,td) { line-height:1.8; vertical-align:top; min-width:120px; }
+.spec-teaching :is(table,td) { background:var(--st-surface); }
+.spec-teaching th { background:var(--st-soft); }
+.spec-teaching .st-step { border-left:3px solid var(--st-line); padding:.6rem 1rem; margin:1.2rem 0; }
+.spec-teaching .st-step:target { border-left-color:var(--st-accent); background:var(--st-soft); }
+.spec-teaching .st-glossary { border:1px solid var(--st-line); padding:.7rem 1rem; margin:1.4rem 0; border-radius:8px; }
+.spec-teaching .st-glossary > summary { min-height:44px; cursor:pointer; }
+.spec-teaching .st-specs { display:flex; flex-wrap:wrap; gap:.4rem 1rem; color:var(--st-muted); font-size:.8rem; line-height:1.8; margin:1rem 0; }
+.spec-teaching .st-specs span { border-bottom:2px solid var(--st-accent); padding:.2rem 0; }
+@media(max-width:620px) { .spec-teaching :is(.qa-question,.qr-card,.guided-walk) { padding:16px; } .spec-teaching .diagram svg { min-width:var(--st-diagram-width); } }
+@media print {
+ .spec-teaching { --st-paper:#fff!important; --st-surface:#fff!important; --st-ink:#000!important; --st-muted:#333!important; --st-line:#999!important; --st-accent:#000!important; --st-soft:#fff!important; }
+ .spec-teaching details > * { display:block!important; }
+ .spec-teaching details::details-content { content-visibility:visible!important; }
+ .spec-teaching .st-step { break-inside:avoid; }
+}
+
+/* Native reading guides: selection highlights; it never hides teaching content.
+   build_pcie_course.py changes .pcie-surface to .pcie-article for the posts. */
+.pcie-surface .guided-walk { margin: 1.8rem 0; padding: 1.2rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); min-width: 0; }
+.pcie-surface .guided-walk > h3 { margin-top: 0; }
+.pcie-surface .walk-help { color: var(--muted); font-size: .85rem; }
+.pcie-surface .walk-order { margin-bottom: 1.1rem; }
+/* Keep native radio semantics and keyboard handling; the associated label is
+   the visible control, so a radio cannot wrap away from its own label. */
+.pcie-surface .walk-choice { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.pcie-surface .walk-label { display: inline-flex; align-items: center; min-height: 44px; padding: .35rem .7rem; margin: .25rem .8rem .25rem 0; border: 2px solid var(--line); border-radius: 8px; cursor: pointer; font-size: .9rem; line-height: 1.5; color: var(--ink); background: var(--surface-alt); }
+.pcie-surface .walk-choice:checked + .walk-label { border-color: var(--accent); background: var(--blue-soft); font-weight: 700; }
+.pcie-surface .walk-choice:focus-visible + .walk-label { outline: 3px solid var(--focus); outline-offset: 3px; }
+.pcie-surface .walk-view { margin-top: 1rem; min-width: 0; }
+.pcie-surface .walk-diagram { margin: 0 0 1.2rem; }
+.pcie-surface .walk-diagram svg { width: 100%; height: auto; display: block; }
+.pcie-surface .walk-diagram svg a { cursor: pointer; }
+.pcie-surface .walk-diagram svg a:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
+.pcie-surface .walk-diagram figcaption { margin-top: .8rem; }
+.pcie-surface .walk-steps { max-width: none; padding-left: 1.6rem; }
+.pcie-surface .walk-step { padding: .6rem .9rem; margin: .7rem 0; border: 2px solid transparent; border-left: 5px solid var(--line); border-radius: 5px; background: var(--surface); }
+.pcie-surface .walk-step h4 { margin: .2rem 0 .5rem; }
+.pcie-surface .walk-condition { font-size: .9rem; color: var(--muted); }
+.pcie-surface .walk-source { border-top: 1px solid var(--line); padding-top: .35rem; color: var(--muted); font-size: .85rem; }
+.pcie-surface .walk-step p:last-child { margin-bottom: .3rem; }
+.pcie-surface .walk-components { border-top: 1px solid var(--line); margin-top: 1.4rem; padding-top: .4rem; }
+.pcie-surface .walk-component-links { display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; list-style: none; padding-left: 0; }
+.pcie-surface .walk-component-links a { min-height: 44px; min-width: 44px; }
+.pcie-surface .walk-component { padding: .7rem 1rem; margin: 1rem 0; border: 1px solid var(--line); border-radius: 8px; }
+.pcie-surface .walk-component > h4 { margin-top: .2rem; }
+.pcie-surface .walk-component:target { outline: 3px solid var(--accent-2); outline-offset: 3px; }
+.pcie-surface .walk-component details { margin-bottom: .3rem; }
+
+.pcie-surface .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-step[data-walk-step="1"],
+.pcie-surface .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-step[data-walk-step="2"],
+.pcie-surface .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-step[data-walk-step="3"],
+.pcie-surface .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-step[data-walk-step="4"],
+.pcie-surface .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-step[data-walk-step="5"],
+.pcie-surface .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-step[data-walk-step="6"],
+.pcie-surface .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-step[data-walk-step="7"],
+.pcie-surface .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-step[data-walk-step="8"] { border-color: var(--accent); background: var(--blue-soft); }
+
+.pcie-surface .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-node[data-walk-steps~="1"],
+.pcie-surface .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-node[data-walk-steps~="2"],
+.pcie-surface .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-node[data-walk-steps~="3"],
+.pcie-surface .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-node[data-walk-steps~="4"],
+.pcie-surface .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-node[data-walk-steps~="5"],
+.pcie-surface .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-node[data-walk-steps~="6"],
+.pcie-surface .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-node[data-walk-steps~="7"],
+.pcie-surface .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-node[data-walk-steps~="8"] { --walk-active-weight: 750; }
+.pcie-surface .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-node[data-walk-steps~="1"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-node[data-walk-steps~="2"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-node[data-walk-steps~="3"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-node[data-walk-steps~="4"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-node[data-walk-steps~="5"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-node[data-walk-steps~="6"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-node[data-walk-steps~="7"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-node[data-walk-steps~="8"] > :is(rect, circle, ellipse, polygon, path, line, polyline) { stroke: var(--accent); stroke-width: 3.5px; vector-effect: non-scaling-stroke; }
+.pcie-surface .walk-node text { font-weight: var(--walk-active-weight, inherit); }
+
+@media (max-width: 620px) {
+  .pcie-surface .guided-walk { padding: .8rem; }
+  .pcie-surface .walk-label { margin-right: .45rem; padding-left: .45rem; padding-right: .45rem; }
+  .pcie-surface .walk-steps { padding-left: 1.15rem; }
+  .pcie-surface .walk-step { padding: .5rem .6rem; }
+  .pcie-surface .walk-diagram { overflow-x: auto; }
+  .pcie-surface .walk-diagram svg { min-width: var(--st-diagram-width, 700px); }
+}
+@media (forced-colors: active) {
+  .pcie-surface .walk-choice:checked + .walk-label { border-color: Highlight; }
+  .pcie-surface .walk-step { border-color: CanvasText; }
+}
+@media print {
+  .pcie-surface .guided-walk { border: 1px solid #999; padding: .7rem; break-inside: auto; }
+  .pcie-surface .walk-choice, .pcie-surface .walk-label, .pcie-surface .walk-help { display: none; }
+  .pcie-surface .walk-step { display: list-item !important; border-color: #999 !important; background: transparent !important; }
+  .pcie-surface .walk-node { --walk-active-weight: 500 !important; }
+  .pcie-surface .walk-node > :is(rect, circle, ellipse, polygon, path, line, polyline) { stroke: #333 !important; stroke-width: 1.5px !important; }
+  .pcie-surface .walk-diagram { overflow: visible; }
+  .pcie-surface .walk-diagram svg { min-width: 0; }
+  .pcie-surface .walk-component details > * { display: block !important; }
+  .pcie-surface .walk-component details::details-content { content-visibility: visible !important; }
+}
+
+/* SVG text follows the selected reading theme. */
+.pcie-surface svg text { fill: var(--ink); }
+.pcie-surface .walk-summary { margin: 1rem 0 1.5rem; }
   </style>
 </head>
-<body class="pcie-surface">
+<body class="pcie-surface spec-teaching" data-spec-series="pcie">
   <a class="skip-link" href="#content">跳到正文</a>
   <div class="site-shell">
     <nav class="topbar" aria-label="課程導覽">
@@ -235,17 +380,47 @@
       <p class="eyebrow">PCIe · 系統與規格閱讀 / CHAPTER 12</p>
       <h1>錯誤證據、回報與隔離</h1>
       <p class="header-description">以 AER、Header Log、Root 記錄與 DPC 分清錯誤證據、回報路徑與隔離結果。</p>
-      <div class="edition"><span>繁體中文 · 規格與情境推演</span><span>2026-10-21</span></div>
+      <div class="edition"><span>繁體中文 · 規格與情境推演</span><span>2026-10-23</span></div>
     </header>
     <div class="reading-layout">
       <aside class="toc-panel" aria-label="本頁目錄">
         <p class="toc-label">本章閱讀路徑</p>
-        <nav aria-label="章節段落"><ol><li><a href="#evidence">1. 一個錯誤訊息，能告訴我們多少事情？</a></li><li><a href="#aer">2. Status 有兩個 bit，為什麼只回報一個錯誤？</a></li><li><a href="#header">3. Header Log 看起來像封包，就能直接解碼嗎？</a></li><li><a href="#root">4. Root Port 記錄 03:00.0，是否代表它就是故障來源？</a></li><li><a href="#preserve">5. 為什麼不能一開始就把所有 Status 寫 1 清掉？</a></li><li><a href="#dpc">6. 如果啟用 DPC，為什麼 Root 可能看不到原本的 ERR_NONFATAL？</a></li><li><a href="#questions">7. 根據證據回答，不補上沒有讀到的事</a></li></ol></nav>
+        <nav aria-label="章節段落"><ol><li><a href="#evidence">1. 一個錯誤訊息，能告訴我們多少事情？</a></li><li><a href="#aer">2. Status 有兩個 bit，為什麼只回報一個錯誤？</a></li><li><a href="#header">3. Header Log 看起來像封包，就能直接解碼嗎？</a></li><li><a href="#root">4. Root Port 記錄 03:00.0，是否代表它就是故障來源？</a></li><li><a href="#preserve">5. 為什麼不能一開始就把所有 Status 寫 1 清掉？</a></li><li><a href="#dpc">6. 如果啟用 DPC，為什麼 Root 可能看不到原本的 ERR_NONFATAL？</a></li><li><a href="#questions">7. 先保存，再逐項解讀錯誤</a></li></ol></nav>
       </aside>
       <main id="content" tabindex="-1">
         <article class="lesson">
-<p class="lead">收到 PCIe 錯誤通知時，最先要做的是保存能互相比對的證據。哪個 Function 偵測到錯誤、哪個訊息到達 Root Port，以及是否已啟動隔離，可能是三個不同問題。本章用 AER 與 DPC 的兩個獨立案例，練習從欄位推出有根據的結論。</p>
-<aside class="note"><strong>版本與假設</strong><p>本章依 PCI Express Base 6.0。數值與事件順序均為作者假設，採普通非 SR-IOV Function。AER 案例不支援 Flit Mode 或 End-End TLP Prefix，也未啟用 DPC；另一個 DPC 案例另列快照，不能把兩者當成同一次事件。範例假設管理者有權讀取與處理相關紀錄；控制權見 Chapter 13。</p></aside>
+<!-- pcie-walk: walks/chapter12-overview.json -->
+<div class="guided-walk" id="ch12-overview" role="group" aria-labelledby="ch12-overview-title" data-walk-version="1">
+<h3 id="ch12-overview-title">沿一次回報保存錯誤證據</h3>
+<p class="walk-help" id="ch12-overview-help">選擇步驟後，圖中對應的元件與下方解說會加上重點標示。完整圖與所有解說會持續顯示；也可用方向鍵切換步驟。</p>
+<div class="walk-order"><p>先走左上到右下的正常回報路徑，再看下方遮罩分支。DPC（Downstream Port Containment，下游連接埠隔離）在後文另行放大，不把兩條路徑畫成連續操作。</p></div>
+<input class="walk-choice" type="radio" name="ch12-overview-step" id="ch12-overview-choice-1" value="1" data-walk-step="1" aria-describedby="ch12-overview-help" aria-controls="ch12-overview-view ch12-overview-step-1" checked="checked">
+<label class="walk-label" for="ch12-overview-choice-1">1. 先核對結構版本及錯誤類別</label>
+<input class="walk-choice" type="radio" name="ch12-overview-step" id="ch12-overview-choice-2" value="2" data-walk-step="2" aria-describedby="ch12-overview-help" aria-controls="ch12-overview-view ch12-overview-step-2">
+<label class="walk-label" for="ch12-overview-choice-2">2. 沿控制條件判斷這次回報</label>
+<input class="walk-choice" type="radio" name="ch12-overview-step" id="ch12-overview-choice-3" value="3" data-walk-step="3" aria-describedby="ch12-overview-help" aria-controls="ch12-overview-view ch12-overview-step-3">
+<label class="walk-label" for="ch12-overview-choice-3">3. 把來源端與 Root 紀錄配起來</label>
+<input class="walk-choice" type="radio" name="ch12-overview-step" id="ch12-overview-choice-4" value="4" data-walk-step="4" aria-describedby="ch12-overview-help" aria-controls="ch12-overview-view ch12-overview-step-4">
+<label class="walk-label" for="ch12-overview-choice-4">4. 先保存，再處理清除與隔離分支</label>
+<div class="walk-view" id="ch12-overview-view">
+<figure class="diagram walk-diagram">
+<svg viewBox="0 0 900 500" role="img" aria-labelledby="ch12-guide-title ch12-guide-desc"><title id="ch12-guide-title">來源記錄狀態，符合條件時向 Root 回報；軟體先保存有效證據，再依規則清除。</title><desc id="ch12-guide-desc">來源記錄狀態，符合條件時向 Root 回報；軟體先保存有效證據，再依規則清除。</desc><g data-walk-target="status" class="walk-node" data-walk-steps="1 3"><rect x="30" y="20" width="360" height="70" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="210.0" y="45" text-anchor="middle" font-size="15">來源 Function：記錄錯誤狀態</text></g><g data-walk-target="control" class="walk-node" data-walk-steps="2"><rect x="30" y="170" width="360" height="75" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="210.0" y="195" text-anchor="middle" font-size="15">個別 Mask、Severity</text><text x="210.0" y="218" text-anchor="middle" font-size="15">及適用回報控制</text></g><g data-walk-target="record" class="walk-node" data-walk-steps="1"><path d="M210 90 L210 170" fill="none" stroke="var(--accent)" stroke-width="2" /><polygon points="210.0,170.0 215.0,160.0 205.0,160.0" fill="var(--accent)" /></g><a href="#ch12-overview-component-root" aria-label="Root 端的回報紀錄"><g data-walk-target="root" class="walk-node" data-walk-steps="3 4"><rect x="510" y="170" width="360" height="75" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="690.0" y="195" text-anchor="middle" font-size="15">Root：通知與來源紀錄</text></g></a><g data-walk-target="message" class="walk-node" data-walk-steps="2"><path d="M390 210 L510 210" fill="none" stroke="var(--accent)" stroke-width="2" /><polygon points="510.0,210.0 500.0,205.0 500.0,215.0" fill="var(--accent)" /><text x="450.0" y="201.0" text-anchor="middle" font-size="13">Error Message →</text></g><g data-walk-target="save" class="walk-node" data-walk-steps="3 4"><rect x="510" y="355" width="360" height="85" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="690.0" y="380" text-anchor="middle" font-size="15">軟體保存兩端證據</text><text x="690.0" y="403" text-anchor="middle" font-size="15">核對有效性與事件關聯</text></g><g data-walk-target="notify" class="walk-node" data-walk-steps="3"><path d="M690 245 L690 355" fill="none" stroke="var(--accent)" stroke-width="2" /><polygon points="690.0,355.0 695.0,345.0 685.0,345.0" fill="var(--accent)" /></g><g data-walk-target="masked" class="walk-node" data-walk-steps="2"><rect x="30" y="355" width="360" height="85" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="210.0" y="380" text-anchor="middle" font-size="15">狀態可保留，但本次不送訊息</text><text x="210.0" y="403" text-anchor="middle" font-size="15">Log 是否更新依各自規則</text></g><g data-walk-target="mask-path" class="walk-node" data-walk-steps="2"><path d="M210 245 L210 355" fill="none" stroke="var(--accent)" stroke-width="2" /><polygon points="210.0,355.0 215.0,345.0 205.0,345.0" fill="var(--accent)" /><text x="210.0" y="291.0" text-anchor="middle" font-size="13">本例被 Mask 的錯誤</text></g></svg>
+<figcaption><p>作者依本章案例繪製的證據關係圖。訊息來源識別與實體故障原因需依其他證據繼續判讀。</p></figcaption></figure>
+<div class="walk-summary"><p class="lead">AER（Advanced Error Reporting，進階錯誤回報）提供錯誤狀態、回報控制及相關紀錄。本章先走正常的錯誤回報路徑，再解釋遮罩與 DPC 隔離如何改變軟體看到的資訊。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>DPC</dt><dd>Downstream Port Containment，下游連接埠錯誤隔離</dd></div></dl><p>前情提要：Chapter 5 的交易識別用來解讀有效的 Header Log；Chapter 7 的通知概念用來理解 Root 端如何把事件交給軟體。</p><p><strong>規格路線：</strong>Figure 6-1 的分類 → Status／Mask／Severity → Figure 6-3 的回報路徑 → Root 紀錄 → 保存與清除 → DPC 分支。</p></div>
+<ol class="walk-steps">
+<li class="walk-step" id="ch12-overview-step-1" data-walk-step="1" data-walk-targets="status record"><h4>先核對結構版本及錯誤類別</h4><div class="walk-condition"><p>本章的主要算例使用非 Flit、無 Prefix 的條件；不能因 Base 版本較新而改套別種 Capability 布局。</p></div><div class="walk-explanation"><p>確認 AER Extended Capability 的版本與欄位布局，再依錯誤類型讀相關 Status。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>AER</dt><dd>Advanced Error Reporting，進階錯誤回報</dd></div></dl></div><div class="walk-source" data-source-claims="PCIE-CH12-CLASSIFICATION-001 PCIE-CH12-MASK-001"><p>Base 6.0 §6.2.1–§6.2.3／Figure 6-1，pp.669–673；Figure 7-154／Table 7-134，p.1112。</p></div></li>
+<li class="walk-step" id="ch12-overview-step-2" data-walk-step="2" data-walk-targets="control message masked mask-path"><h4>沿控制條件判斷這次回報</h4><div class="walk-condition"><p>這是本章特定錯誤案例的回報路徑；Unsupported Request、Advisory Non-Fatal 等另有規則。</p></div><div class="walk-explanation"><p>在本例中依 Status、個別 Mask、Severity 與回報 Enable 追蹤訊息。被遮罩的狀態仍有自己的保存規則。</p></div><div class="walk-source" data-source-claims="PCIE-CH12-MASK-001"><p>Base 6.0 §6.2.3.2.2、§6.2.6／Figure 6-3，pp.673、685；Figures 7-155–7-157，pp.1113–1117。</p></div></li>
+<li class="walk-step" id="ch12-overview-step-3" data-walk-step="3" data-walk-targets="root save status notify"><h4>把來源端與 Root 紀錄配起來</h4><div class="walk-condition"><p>回報的 Requester ID 是定位線索；只有 Log 非零，尚不足以確認它屬於這次事件。</p></div><div class="walk-explanation"><p>保存 Root Error Status／Source ID，再回到來源 Function 的 Status 與有效紀錄；用 First Error Pointer 等欄位確認關聯。</p></div><div class="walk-source" data-source-claims="PCIE-CH12-LOG-001 PCIE-CH12-ROOT-001"><p>Base 6.0 §7.8.4.7–§7.8.4.11／Figures 7-160–7-164，pp.1121–1127。</p></div></li>
+<li class="walk-step" id="ch12-overview-step-4" data-walk-step="4" data-walk-targets="save root"><h4>先保存，再處理清除與隔離分支</h4><div class="walk-condition"><p>RW1C 表示讀取可得值、寫 1 清除相應狀態；清除前先保留需要的證據。DPC 的觸發與恢復依其專屬條件。</p></div><div class="walk-explanation"><p>保存相關狀態、Header Log、控制值及時間資訊，再依 RW1C 等存取規則清除已處理狀態。接著比較啟用 DPC 時的不同觀察。</p></div><div class="walk-source" data-source-claims="PCIE-CH12-CLEAR-001 PCIE-CH12-DPC-001"><p>Base 6.0 §6.2.4.2／§6.2.7.1，pp.679–681、691；§6.2.11、§7.9.14，pp.694–697、1245–1254。</p></div></li>
+</ol></div>
+<div class="walk-components"><h4>圖中元件</h4><ul class="walk-component-links">
+<li><a href="#ch12-overview-component-root">Root 端的回報紀錄</a></li>
+</ul>
+<section class="walk-component" id="ch12-overview-component-root" data-component-target="root"><h4>Root 端的回報紀錄</h4><div class="walk-component-action"><p>本圖從 Root 端通知連回來源 Function 的狀態與紀錄。</p></div><details><summary>基本責任</summary><p>錯誤分類、來源識別、有效紀錄與故障原因是沿途要核對的資訊，不能只用一個識別值概括。</p></details></section>
+</div>
+</div>
+<!-- /pcie-walk -->
+<aside class="note"><strong>版本與假設</strong><p>本章依 PCI Express Base 6.0。數值與事件順序均為作者假設，採普通非 SR-IOV Function。AER 案例不支援 Flit Mode 或 End-End TLP Prefix，也未啟用 DPC；另一個 DPC 案例另列快照，不能把兩者當成同一次事件。範例假設管理者有權讀取與處理相關紀錄；控制權見 Chapter 13。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SR-IOV</dt><dd>Single Root I/O Virtualization，單根I/O虛擬化</dd></div><div><dt>TLP</dt><dd>Transaction Layer Packet，交易層封包</dd></div></dl></aside>
 <section id="evidence"><h2>1. 一個錯誤訊息，能告訴我們多少事情？</h2>
 <p>Correctable Error 表示協定可自行恢復的錯誤，仍可能降低效能；Uncorrectable Error 則影響功能，並分為 Non-Fatal 與 Fatal。Non-Fatal 不等於工作已成功，Fatal 也不是「一定已損壞某顆晶片」的硬體診斷。這些分類提供回報與處理政策所需的嚴重程度。</p>
 <div class="table-wrap"><table><caption>由近到遠整理錯誤證據</caption><thead><tr><th scope="col">紀錄位置</th><th scope="col">回答的問題</th><th scope="col">證據限制</th></tr></thead><tbody><tr><td>Function 的 Device Status／AER Status</td><td>這個 Function 記錄了哪類偵測結果？</td><td>不保證訊息已送達，也不是事件次數。</td></tr><tr><td>AER Mask／Severity／Device Control</td><td>偵測時如何記錄與回報？</td><td>事後讀值不一定等於事發當時設定。</td></tr><tr><td>Root Error Status／Source ID</td><td>Root Port 收到哪些類別，第一個回報者是誰？</td><td>回報者不一定是造成根本問題的元件。</td></tr><tr><td>Header Log／First Error Pointer</td><td>目前保存的錯誤對應哪個交易內容？</td><td>有有效性、容量、封包模式與錯誤種類限制。</td></tr><tr><td>DPC Status</td><td>是否已隔離下游，觸發原因是什麼？</td><td>不能替應用工作判定成功或復原完成。</td></tr></tbody></table></div>
@@ -255,7 +430,7 @@
 <p>先依 Chapter 2 的 Extended Capability 清單找 ID=0x0001，再用 Figure 7-154 解 Header。下面是 Endpoint 03:00.0 的快照；AER base 剛好是 0x100，不是固定位置。假設先前紀錄已清理、設定自事件前保持不變，期間沒有其他錯誤，且沿途的錯誤訊息轉送已正確啟用。</p>
 <div class="table-wrap"><table><caption>Endpoint AER 的教學讀值</caption><thead><tr><th scope="col">欄位與位置</th><th scope="col">值</th><th scope="col">閱讀入口</th></tr></thead><tbody><tr><td>Header，0x100，32 bits</td><td>0x00020001</td><td>Figure 7-154</td></tr><tr><td>Uncorrectable Error Status，0x104，32 bits</td><td>0x00044000</td><td>Figure 7-155</td></tr><tr><td>Uncorrectable Error Mask，0x108，32 bits</td><td>0x00040000</td><td>Figure 7-156</td></tr><tr><td>Uncorrectable Error Severity，0x10C，32 bits</td><td>0x00040000</td><td>Figure 7-157</td></tr><tr><td>Advanced Error Capabilities and Control，0x118，32 bits</td><td>0x0000100E</td><td>Figure 7-160</td></tr><tr><td>Device Control，PCIe base+0x08=0x78，16 bits</td><td>0x2816</td><td>Figure 7-25</td></tr></tbody></table></div>
 <p>Header 表示 ID=0x0001、Version=2、Next=0；即使讀的是 Base 6.0，也不能自行套用只適合較新 Capability／Flit 的佈局。本例沒有 Flit 或 Prefix，因此 Version=2 符合條件。</p>
-<p>Status 的 bit 14=1 是 Completion Timeout；bit 18=1 是 Malformed TLP。Mask bit 18=1、bit 14=0，因此這兩個已記錄的錯誤中，只有 Completion Timeout 未被遮罩：<code>0x00044000 &amp; ~0x00040000 = 0x00004000</code>。這個運算只挑出本例的未遮罩狀態，還不是完整的回報判定演算法。</p>
+<p>Status 的 bit 14=1 是 Completion Timeout；bit 18=1 是 Malformed TLP。Mask bit 18=1、bit 14=0，因此這兩個已記錄的錯誤中，只有 Completion Timeout 未被遮罩：<code>0x00044000 &amp; ~0x00040000 = 0x00004000</code>。這個運算只挑出本例的未遮罩狀態，還不是完整的回報判定演算法。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>TLP</dt><dd>Transaction Layer Packet，交易層封包</dd></div></dl>
 <p>個別錯誤被 Mask 時，Status 仍可設起來；但不會為該次錯誤發出 Error Message，也不會把它存進 Header Log、TLP Prefix Log 或 First Error Pointer。不能把「Mask=1」解成「沒有發生」，也不能把 Severity=Fatal 解成「無論 Mask 為何都必須送出 Fatal 訊息」。</p>
 <p>本例 Severity bit 14=0，Completion Timeout 被設定為 Non-Fatal；bit 18=1，Malformed TLP 被設定為 Fatal，但後者已 Mask。Device Control bit 1=1 允許 Non-Fatal 回報，所以在本例前提下，Completion Timeout 產生 ERR_NONFATAL。Device Control bit 2 也開啟 Fatal 回報，仍不會解除個別 Malformed TLP Mask。這是明確設定後的快照，不宣稱 Severity 值是重設預設值。</p>
 <p>完整通知還要經過沿途 Bridge 的轉送條件、Root Port primary interface 的傳送允許，以及 Root 端的中斷設定。實際查詢時，從 Figure 6-3 沿來源到 Root 的路徑檢查；不能只讀 Endpoint 的一個 Enable 就結案。Unsupported Request、Advisory Non-Fatal 等類型另有規則，不宜把本例簡化式照搬過去。</p>
@@ -263,15 +438,15 @@
 <section id="header"><h2>3. Header Log 看起來像封包，就能直接解碼嗎？</h2>
 <p>先檢查有效性。Advanced Error Capabilities and Control 的低五位為 0x0E，也就是 First Error Pointer（FEP）=14；它指向 Uncorrectable Error Status 的 bit 14。本例該 bit=1，因此 FEP 有效，對應 Completion Timeout。不是看到 Log 非零，就能認定它屬於目前關心的事件。</p>
 <p>Completion Timeout 也不能一律期待有 Request Header。本例 bit 12=1，表示 Completion Timeout Prefix/Header Log Capable；Multiple Header Recording Capable／Enable bits 9、10 均為 0。再加上沒有 Flit／End-End Prefix，這才得到本例的四個 DWORD Log 容量與解讀前提。</p>
-<div class="table-wrap"><table><caption>有效 FEP 所對應的 Non-Flit Header Log</caption><thead><tr><th scope="col">DWORD 讀取位置</th><th scope="col">讀值</th><th scope="col">由封包格式推出的內容</th></tr></thead><tbody><tr><td>0x11C</td><td>0x00000040</td><td>3 DW Memory Read Header，Length=64 DW。</td></tr><tr><td>0x120</td><td>0x030013FF</td><td>Requester ID=0x0300、Tag=0x13、First／Last DW BE 均為 0xF。</td></tr><tr><td>0x124</td><td>0x40001000</td><td>Request 起始位址。</td></tr><tr><td>0x128</td><td>不解讀</td><td>本例是 12-byte Header，第四個 DWORD 未定義。</td></tr></tbody></table></div>
+<div class="table-wrap"><table><caption>有效 FEP 所對應的 Non-Flit Header Log</caption><thead><tr><th scope="col">DWORD 讀取位置</th><th scope="col">讀值</th><th scope="col">由封包格式推出的內容</th></tr></thead><tbody><tr><td>0x11C</td><td>0x00000040</td><td>3 DW Memory Read Header，Length=64 DW。</td></tr><tr><td>0x120</td><td>0x030013FF</td><td>Requester ID=0x0300、Tag=0x13、First／Last DW BE 均為 0xF。</td></tr><tr><td>0x124</td><td>0x40001000</td><td>Request 起始位址。</td></tr><tr><td>0x128</td><td>不解讀</td><td>本例是 12-byte Header，第四個 DWORD 未定義。</td></tr></tbody></table><dl class="st-terms" aria-label="本段名詞"><div><dt>DW</dt><dd>Double Word，4 bytes的資料單位</dd></div></dl></div>
 <p>因此這筆未如期完成的 Request 要讀 64 × 4=256 bytes，範圍為 0x40001000–0x400010FF。Header 顯示的是等待 Completion 的 Request，不是「超時回來的 Completion」。這個案例延用 Chapter 5 的交易欄位，不重教 TLP 全部格式。</p>
-<p>Figure 7-161 特別規定 DWORD 讀取後的排列方式：封包 Header byte 0 位於第一個 Log DWORD 的 bits 31:24。上表已按 DWORD 數值解讀，不能再套一次普通 byte dump 的直覺而把位元組反轉。若是 Flit Mode，要改看 Logged TLP was Flit Mode、Header Log Size、Logged TLP Size，以及 Type／OHC，不能仍只拿前三個 DWORD 套本例。</p>
+<p>Figure 7-161 特別規定 DWORD 讀取後的排列方式：封包 Header byte 0 位於第一個 Log DWORD 的 bits 31:24。上表已按 DWORD 數值解讀，不能再套一次普通 byte dump 的直覺而把位元組反轉。若是 Flit Mode，要改看 Logged TLP was Flit Mode、Header Log Size、Logged TLP Size，以及 Type／OHC，不能仍只拿前三個 DWORD 套本例。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>OHC</dt><dd>Orthogonal Header Content，Flit模式的擴充標頭內容</dd></div></dl>
 <p>這份 Log 可以定位某筆 Request 及其等待結果；它不能單獨證明原因在 Endpoint、Completer、Link、路由或平台。Masked 的 Malformed TLP 沒有本次 Header 紀錄，也不能把現在這份 MRd Header 逕自歸給它。</p>
 <details class="source-note"><summary>先驗證 FEP，再選 Header 格式</summary><p>§6.2.4.2（pp.679–680）定義 FEP 有效性及多筆記錄；Figures 7-160、7-161／Tables 7-140、7-141（pp.1121–1123）定義能力、Log 格式與 byte 排列。Memory Request 格式見 §2.2.7、Figure 2-31（p.163），細部推導連回 <a href="chapter-5.html">Chapter 5</a>。</p></details></section>
 <section id="root"><h2>4. Root Port 記錄 03:00.0，是否代表它就是故障來源？</h2>
 <p>先區分「送出錯誤訊息的 Function」與「造成根本問題的元件」。Root Error Source Identification 記錄第一個相應類別訊息的 Requester ID；例如 Endpoint 等不到讀取回覆而回報 Timeout，Root 看到 Endpoint 的 ID 並不奇怪。</p>
 <div class="table-wrap"><table><caption>Root Port 收到單一 Non-Fatal 訊息的快照</caption><thead><tr><th scope="col">Root AER base=0x100 的位置</th><th scope="col">值</th><th scope="col">判讀</th></tr></thead><tbody><tr><td>Root Error Command，0x12C</td><td>0x00000002</td><td>開啟 Non-Fatal 中斷回報。</td></tr><tr><td>Root Error Status，0x130</td><td>0x00000024</td><td>bit 2、bit 5=1；Multiple、Fatal、Correctable 均未設。</td></tr><tr><td>Error Source Identification，0x134</td><td>0x03000000</td><td>高 16 bits=0x0300，是第一個 Uncorrectable 訊息的 Requester ID。</td></tr></tbody></table></div>
-<p><code>(0x03000000 &gt;&gt; 16) &amp; 0xFFFF = 0x0300</code>，依一般 BDF 編碼解為 03:00.0。本例 Root AER 的中斷向量編號設為 0，因此完整 Status 的高位沒有額外數值。Root primary interface 的傳送條件也已滿足；若要斷言 CPU 實際收到中斷，還要確認 MSI／MSI-X 或 INTx 的傳送與平台路由，不能只憑 0x24。</p>
+<p><code>(0x03000000 &gt;&gt; 16) &amp; 0xFFFF = 0x0300</code>，依一般 BDF 編碼解為 03:00.0。本例 Root AER 的中斷向量編號設為 0，因此完整 Status 的高位沒有額外數值。Root primary interface 的傳送條件也已滿足；若要斷言 CPU 實際收到中斷，還要確認 MSI／MSI-X 或 INTx 的傳送與平台路由，不能只憑 0x24。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>BDF</dt><dd>Bus／Device／Function，匯流排、裝置與功能識別</dd></div><div><dt>MSI</dt><dd>Message Signaled Interrupt，訊息中斷</dd></div><div><dt>MSI-X</dt><dd>Message Signaled Interrupts Extension，表格式訊息中斷</dd></div></dl>
 <p>Root Error Status 的更新不受 Root Error Command 或 Root Control 的值控制，但仍有前述 primary interface 傳送允許條件。假如後來又收到另一個 Uncorrectable Message，Multiple bit 會設起來，第一個 Source ID 仍保留；這個欄位不是完整的回報者清單。</p>
 <details class="source-note"><summary>Root 端的圖表路徑</summary><p>Figure 7-162／Table 7-142（pp.1123–1124）→ Figure 7-163／Table 7-143（pp.1124–1126）→ Figure 7-164／Table 7-144（pp.1126–1127）。先看類別有效狀態，再決定要讀 Source ID 的哪半邊。</p></details></section>
 <section id="preserve"><h2>5. 為什麼不能一開始就把所有 Status 寫 1 清掉？</h2>
@@ -286,10 +461,10 @@
 <p>Trigger Enable=10b 表示 Port 自己偵測到未遮罩的 Uncorrectable Error，或收到 ERR_NONFATAL／ERR_FATAL 時可觸發。Reason=<code>(0x000B &gt;&gt; 1) &amp; 3 = 1</code>，所以本次原因是收到 ERR_NONFATAL；此時 Source ID 才具有這裡要用的意義。若 Reason=00b 表示 Port 自己偵測到錯誤，就不能照用 Source ID 猜來源。</p>
 <p>觸發 DPC 的這個 ERR_NONFATAL 會被 Port 丟棄，不再往上游轉送。DPC 可另外以中斷或 ERR_COR 通知管理者，但本例 DPC ERR_COR Enable=0，只啟用 DPC 中斷；中斷是否到達仍要看向量與平台設定。因此不能要求 Root AER 一定同時出現上一節的 0x24 快照。</p>
 <figure class="diagram course-diagram"><svg viewBox="0 0 900 250" role="img" aria-labelledby="dpc-title dpc-desc"><title id="dpc-title">DPC 在下游 Port 截止觸發訊息</title><desc id="dpc-desc">Endpoint 的 ERR_NONFATAL 到達 Switch Downstream Port 後觸發 DPC。該訊息不再向 Root 轉送；Port 停止下游流量並用已啟用的 DPC 通知機制回報。</desc><g fill="var(--surface)" stroke="var(--accent)" stroke-width="2"><rect x="35" y="45" width="210" height="100" rx="10"/><rect x="335" y="45" width="240" height="100" rx="10"/><rect x="665" y="45" width="200" height="100" rx="10"/></g><g text-anchor="middle"><text x="140" y="85">Endpoint 03:00.0</text><text x="140" y="118">回報 ERR_NONFATAL</text><text x="455" y="85">Downstream 02:01.0</text><text x="455" y="118">DPC Trigger Status = 1</text><text x="765" y="85">Root Port</text><text x="765" y="118">不收到這筆原訊息</text><text x="455" y="205">下游 Link 進 Disabled；DPC 通知另行判斷</text></g><line x1="245" y1="95" x2="325" y2="95" stroke="var(--accent)" stroke-width="3"/><polygon points="325,95 312,88 312,102" fill="var(--accent)"/><line x1="575" y1="95" x2="630" y2="95" stroke="var(--muted)" stroke-dasharray="5 4"/><path d="M625 80 L645 110 M645 80 L625 110" stroke="var(--accent)" stroke-width="3"/></svg><figcaption>作者示意；箭頭表示這筆錯誤訊息的傳遞，不代表所有通知都被阻擋。</figcaption></figure>
-<p>Trigger Status=1 時，硬體要求 LTSSM 進入 Disabled。軟體必須讓 Port 留在 DPC，直到 Link Status 的 Data Link Layer Link Active 讀為 0；若是支援 RP Extensions 的 Root Port，還必須等 DPC RP Busy=0。本例是 Switch Port，不能把 Reserved 的 RP Busy 當成有效進度指標。</p>
-<p>對 Interrupt Status bit 3 寫 1 只是清中斷狀態；對 Trigger Status bit 0 寫 1 則會釋放 DPC，讓 LTSSM 回 Detect 嘗試訓練。後者須先符合上述條件與恢復政策，並在後續設定存取遵守 Conventional Reset 的時序。不能為了「消除錯誤」而先寫掉 Trigger Status，也不能把它清為 0 當成裝置、驅動與應用都已恢復。</p>
+<p>Trigger Status=1 時，硬體要求 LTSSM 進入 Disabled。軟體必須讓 Port 留在 DPC，直到 Link Status 的 Data Link Layer Link Active 讀為 0；若是支援 RP Extensions 的 Root Port，還必須等 DPC RP Busy=0。本例是 Switch Port，不能把 Reserved 的 RP Busy 當成有效進度指標。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>LTSSM</dt><dd>Link Training and Status State Machine，鏈結訓練與狀態機</dd></div></dl>
+<p>對 Interrupt Status bit 3 寫 1 只是清中斷狀態；對 Trigger Status bit 0 寫 1 則會釋放 DPC，讓 LTSSM 回 Detect 嘗試訓練。後者須先符合上述條件與恢復政策，並在後續設定存取遵守 Conventional Reset 的時序。不能為了「消除錯誤」而先寫掉 Trigger Status，也不能把它清為 0 當成裝置、驅動與應用都已恢復。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>LTSSM</dt><dd>Link Training and Status State Machine，鏈結訓練與狀態機</dd></div></dl>
 <details class="source-note"><summary>DPC 的查詢與釋放條件</summary><p>§6.2.11–§6.2.11.2（pp.694–697）；Figures 7-297–7-301、Tables 7-261–7-265（pp.1248–1254）。DPC 後的交易行為另見 §2.9.3（p.262 起）；控制權與 AER 的關係接 <a href="chapter-13.html#dependencies">Chapter 13</a>。</p></details></section>
-<section id="questions"><h2>7. 根據證據回答，不補上沒有讀到的事</h2><details class="question"><summary>AER Status=0，是否足以證明從開機至今都沒有錯誤？</summary><p>不足。紀錄可能已被清除或重設，部分欄位也取決於實作與偵測條件。應先確認蒐證時間範圍與清除紀錄。依據：§6.2.4.2、Table 7-135。</p></details><details class="question"><summary>FEP=14，但 Status bit 14 已清除，仍可把 Header Log 當成最新 Timeout 嗎？</summary><p>不可以。FEP 此時無效；Log 看起來合理並不能補足有效性條件。依據：§6.2.4.2、Table 7-140。</p></details><details class="question"><summary>DPC Source ID=03:00.0，能否斷言 03:00.0 的硬體必須更換？</summary><p>不能。先確認 Trigger Reason 允許解讀 Source ID；即使有效，也只識別觸發訊息的回報者。還需交易、相鄰元件與平台證據才能判斷原因。依據：Table 7-265。</p></details></section>
+<section id="questions"><h2>7. 先保存，再逐項解讀錯誤</h2><details open class="question"><summary>AER Status=0，是否足以證明從開機至今都沒有錯誤？</summary><p>不足。紀錄可能已被清除或重設，部分欄位也取決於實作與偵測條件。應先確認蒐證時間範圍與清除紀錄。依據：§6.2.4.2、Table 7-135。</p></details><details open class="question"><summary>FEP=14，但 Status bit 14 已清除，仍可把 Header Log 當成最新 Timeout 嗎？</summary><p>不可以。FEP 此時無效；Log 看起來合理並不能補足有效性條件。依據：§6.2.4.2、Table 7-140。</p></details><details open class="question"><summary>DPC Source ID=03:00.0，能否斷言 03:00.0 的硬體必須更換？</summary><p>不能。先確認 Trigger Reason 允許解讀 Source ID；即使有效，也只識別觸發訊息的回報者。還需交易、相鄰元件與平台證據才能判斷原因。依據：Table 7-265。</p></details></section>
         </article>
         <nav class="bottom-nav" aria-label="下一步"><a href="index.html">課程總覽</a><a href="chapter-11.html">← Chapter 11</a><a href="chapter-13.html">Chapter 13 →</a><a href="#content">回到本章開頭 ↑</a></nav>
       </main>

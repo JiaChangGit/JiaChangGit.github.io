@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "course": "pcie-course",
+  "chapter": 33,
+  "updated": "2026-10-24",
+  "claims": [
+    {
+      "id": "PCIE-CH33-001",
+      "claim": "PMUX用途、流量共存與分層及獨立資源可靠性。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "G"
+      ],
+      "document_pages": [
+        1561,
+        1562,
+        1563
+      ],
+      "pdf_pages": [
+        1561,
+        1562,
+        1563
+      ],
+      "figures": [
+        "G-1",
+        "G-2",
+        "G-3"
+      ],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH33-002",
+      "claim": "PMUX生命週期、啟用與變更條件。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "G.1",
+        "G.4"
+      ],
+      "document_pages": [
+        1563,
+        1564,
+        1573
+      ],
+      "pdf_pages": [
+        1563,
+        1564,
+        1573
+      ],
+      "figures": [],
+      "tables": [
+        "G-1",
+        "G-2"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH33-003",
+      "claim": "替代協定能力位置、數量與索引查詢。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.9.20",
+        "7.9.20.2",
+        "7.9.20.3",
+        "7.9.20.4"
+      ],
+      "document_pages": [
+        1282,
+        1283,
+        1284
+      ],
+      "pdf_pages": [
+        1282,
+        1283,
+        1284
+      ],
+      "figures": [
+        "7-336",
+        "7-338",
+        "7-339",
+        "7-340"
+      ],
+      "tables": [
+        "7-296",
+        "7-297",
+        "7-298"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    }
+  ]
+}

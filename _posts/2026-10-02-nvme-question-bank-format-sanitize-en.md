@@ -7,18 +7,21 @@ permalink: /nvme/question-bank/format-sanitize/en/
 lang: en
 nvme_quickref: true
 nvme_qa: true
+spec_teaching: true
+last_modified_at: 2026-10-23
 ---
 
-<div class="nvme-quickref nvme-qa">
+<div class="nvme-quickref nvme-qa spec-teaching" data-spec-series="nvme">
 <nav class="qr-top" aria-label="Bank and editions"><a href="#content">Skip to content</a><a href="/nvme/question-bank/en/">Question index</a><a href="/nvme/question-bank/format-sanitize/zh-tw/">繁體中文</a><a href="/DOCS/nvme-question-bank/format-sanitize.html">Chinese tutorial HTML</a></nav>
-<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–328</p>
-<header><p class="qa-range">Q118–Q135</p><h1>Format and sanitize</h1><p class="qr-intro">Format changes namespace format; sanitize removes data. Compare scope, completion and reset behavior across the operation lifecycle.</p><p>Practice first, then reveal the explanation. Each question uses the prose, field interpretation, comparison or flow that suits it. All numerical examples are hypothetical. Status is written SCT/SC; h indicates hexadecimal.</p></header>
-<aside class="qa-glossary"><h2>Terms used in this volume</h2><dl><dt>Controller / namespace</dt><dd>A controller receives commands and manages access. A namespace is a logical storage space that commands can address. An NVM subsystem contains controllers and nonvolatile storage resources.</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission and Completion Queues carry command entries (SQEs) and completion entries (CQEs). QID identifies a queue, CID distinguishes outstanding commands in one SQ, and NSID identifies a namespace.</dd><dt>Register / Identify / Feature / Log</dt><dd>A register exposes control or state. Identify queries capabilities and attributes; features query or configure operation; log pages report specific state or records. FID, LID, CNS and CSI select features, logs, Identify structures and command sets.</dd><dt>index / offset / zero-based</dt><dd>An index selects an entry, usually starting at 0; an offset measures distance from an origin in specified units. A zero-based count encodes count−1, but not every zero-valued field is a count. A Dword is 4 bytes; a byte is 8 bits.</dd><dt>Scope / reset / retention</dt><dd>Scope names the affected objects; retention means preserving state. Controller Reset (clearing CC.EN) is one form of Controller Level Reset, or CLR. Different CLR triggers can retain different registers.</dd></dl></aside>
+<main id="content"><p class="qr-eyebrow">NVMe · Q1–328</p>
+<div class="st-specs" aria-label="Specification editions"><span>NVM Express Base 2.4</span><span>NVM Command Set 1.3</span><span>NVMe over PCIe Transport 1.4</span></div>
+<header><p class="qa-range">Q118–Q135</p><h1>Format and sanitize</h1><aside class="st-context"><p>Format NVM, Sanitize and Sanitize Namespace have distinct operations and scopes. SANICAP (Sanitize Capabilities) describes sanitization-method capabilities; LID (Log Page Identifier) selects a progress or result log. Establish the intended operation and target before proceeding.</p></aside><p class="qr-intro">Format changes namespace format; sanitize removes data. Compare scope, completion and reset behavior across the operation lifecycle.</p><p>Each question is followed by its explanation. Start with the volume overview, then follow the field interpretations, comparisons or processes. Essential conditions and the normal path are visible from the start. All numerical examples are hypothetical. Status is written SCT/SC; h indicates hexadecimal.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>SCT</dt><dd>Status Code Type</dd></div></dl></header>
 <section id="overview" class="qa-overview"><h2>Three distinct operation paths</h2><p class="qa-takeaway">Subsystem overwrite support does not enable namespace overwrite.</p>
-<div class="qr-table" tabindex="0" role="region" aria-label="Horizontally scrollable comparison table"><table><thead><tr><th scope="col">Operation</th><th scope="col">Main selectors</th><th scope="col">Completion evidence</th></tr></thead><tbody><tr><td>Format NVM</td><td>Format, metadata, PI and SES</td><td>Format CQE and resulting format</td></tr><tr><td>Subsystem sanitize</td><td>Action and options</td><td>Initiation CQE followed by status</td></tr><tr><td>Namespace sanitize</td><td>NSID and crypto erase</td><td>Target namespace status</td></tr></tbody></table></div>
+<div class="qr-table" tabindex="0" role="region" aria-label="Horizontally scrollable comparison table"><table><thead><tr><th scope="col">Operation</th><th scope="col">Main selectors</th><th scope="col">Completion evidence</th></tr></thead><tbody><tr><td>Format NVM</td><td>Format, metadata, PI and SES</td><td>Format CQE and resulting format</td></tr><tr><td>Subsystem sanitize</td><td>Action and options</td><td>Initiation CQE followed by status</td></tr><tr><td>Namespace sanitize</td><td>NSID and crypto erase</td><td>Target namespace status</td></tr></tbody></table><dl class="st-terms" aria-label="Terms in this passage"><div><dt>PI</dt><dd>Protection Information</dd></div><div><dt>CQE</dt><dd>Completion Queue Entry</dd></div><div><dt>NSID</dt><dd>Namespace Identifier</dd></div></dl></div>
 <p><strong>Worked interpretation: </strong>OWS1 advertises subsystem overwrite. Base 2.4 namespace sanitize permits crypto erase, not copied SANACT3 overwrite.</p>
 <p class="qa-citations">Sources: <a href="#ref-format">Base 2.4 §5.1.1, 5.2.11</a> · <a href="#ref-nvmformat">NVM Command Set 1.3 §4.1.2</a> · <a href="#ref-sanitizecmd">Base 2.4 §5.2.26–5.2.27</a> · <a href="#ref-sanitizelog">Base 2.4 §5.2.13.1.38</a> · <a href="#ref-sanitizestate">Base 2.4 §8.1.27.1–8.1.27.5</a></p>
 </section>
+<details class="qa-glossary st-glossary"><summary>Review the terminology when needed</summary><dl><dt>Controller / namespace</dt><dd>A controller receives commands and manages access. A namespace is a logical storage space that commands can address. An NVM subsystem contains controllers and nonvolatile storage resources.</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission and Completion Queues carry command entries (SQEs) and completion entries (CQEs). QID identifies a queue, CID distinguishes outstanding commands in one SQ, and NSID identifies a namespace.</dd><dt>Register / Identify / Feature / Log</dt><dd>A register exposes control or state. Identify queries capabilities and attributes; features query or configure operation; log pages report specific state or records. FID, LID, CNS and CSI select features, logs, Identify structures and command sets.</dd><dt>index / offset / zero-based</dt><dd>An index selects an entry, usually starting at 0; an offset measures distance from an origin in specified units. A zero-based count encodes count−1, but not every zero-valued field is a count. A Dword is 4 bytes; a byte is 8 bits.</dd><dt>Scope / reset / retention</dt><dd>Scope names the affected objects; retention means preserving state. Controller Reset (clearing CC.EN) is one form of Controller Level Reset, or CLR. Different CLR triggers can retain different registers.</dd></dl></details>
 <div class="qa-controls" hidden><label>Search this page <input type="search" id="qa-search" placeholder="Question number, field or keyword"></label><button type="button" data-expand="true">Expand all answers</button><button type="button" data-expand="false">Collapse all answers</button><output id="qa-count" aria-live="polite"></output></div>
 <section id="question-index"><h2>Questions in this volume</h2><ol class="qa-index">
 <li><a href="#q-118">Q118 · How is support for Format, Sanitize and Sanitize Namespace discovered?</a></li>
@@ -41,15 +44,15 @@ nvme_qa: true
 <li><a href="#q-135">Q135 · How are invalid or unsupported namespace sanitize requests handled?</a></li>
 </ol></section>
 <article class="qa-question" id="q-118" data-question="118" data-answer-kind="lookup"><h2><a class="qa-qid" href="#q-118">Q118</a> How is support for Format, Sanitize and Sanitize Namespace discovered?</h2>
-<p class="qa-prompt">Task: determine Sanitize Namespace support using queries only. Identify the opcode, log, entry and support bit before revealing the answer.</p>
-<details class="qa-answer" id="q-118-answer"><summary>Reveal the explanation</summary>
+<p class="qa-prompt">Task: determine Sanitize Namespace support using queries only. Follow the command opcode into its supported-command entry and support bit.</p>
+<details open class="qa-answer" id="q-118-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-118-a-01">Opcode support, supported action and current permission are distinct; Sanitize support does not enable every erasure method.</p><div class="qa-sections">
 <section class="qa-section" id="q-118-s-01" data-answer-section="1"><h3><span>1.</span> Select the target and information</h3>
-<span class="qa-anchor" id="q-118-a-02"></span><p>Format scope depends on FNA, SES and NSID; subsystem and namespace sanitization use distinct commands and targets.</p>
-<span class="qa-anchor" id="q-118-a-03"></span><p>Use OACS/FNA for Format and SANICAP CES/BES/OWS for Sanitize. For the Sanitize Namespace command itself, find Admin opcode 8Ch in Figure 28, then decode bit 0 (CSUPP) of its Admin entry in LID 05h using Figure 217. CSUPP declares command support; CES and NVERS separately describe the method and namespace media-verification capability.</p>
+<span class="qa-anchor" id="q-118-a-02"></span><p>Format scope depends on FNA, SES and NSID; subsystem and namespace sanitization use distinct commands and targets.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>NSID</dt><dd>Namespace Identifier</dd></div></dl>
+<span class="qa-anchor" id="q-118-a-03"></span><p>Use OACS/FNA for Format and SANICAP CES/BES/OWS for Sanitize. For the Sanitize Namespace command itself, find Admin opcode 8Ch in Figure 28, then decode bit 0 (CSUPP) of its Admin entry in LID 05h using Figure 217. CSUPP declares command support; CES and NVERS separately describe the method and namespace media-verification capability.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>LID</dt><dd>Log Page Identifier</dd></div></dl>
 <section class="qa-lookup" id="q-118-lookup"><h4>Worked lookup: from Sanitize Namespace to CSUPP</h4>
 <p>All values below are hypothetical. Use one PCIe I/O controller, CC.CSS=000b and UUID Index 0; decode buffers only after successful queries. Figure 28 is the specification’s command catalog, not the device’s measured capability list.</p>
-<div class="qr-table" tabindex="0" role="region" aria-label="Horizontally scrollable comparison table"><table><thead><tr><th scope="col">Step and source location</th><th scope="col">Information to retrieve</th><th scope="col">What this establishes</th></tr></thead><tbody><tr><td>1 · Figure 28, printed 46/PDF 72</td><td>Sanitize Namespace → Admin opcode 8Ch; O means optional.</td><td>Identifies the command and encoding. Optional does not establish this controller’s support.</td></tr><tr><td>2 · Identify Controller, Figure 338, printed 355,361–362/PDF 381,387–388</td><td>CNS 01h; assume LPA.CSES=1, SANICAP.CES=1 and NVERS=0. CSES is LPA bit 1.</td><td>Effects log and Crypto Erase are supported; namespace media verification is not. CES alone does not replace 8Ch support discovery.</td></tr><tr><td>3 · Get Log Page, Figures 204–208, printed 213–215/PDF 239–241</td><td>Opcode 02h, LID 05h, NSID 0, NUMDL=03FFh, NUMDU=0, LPO=0, OT=0 and RAE=0 retrieve 4096 bytes.</td><td>NUMD encodes count−1: (03FFh+1)×4=4096 bytes. This reads a directory without submitting opcode 8Ch.</td></tr><tr><td>4 · Figure 216, printed 227/PDF 253</td><td>Admin entries begin at byte 0 and occupy 4 bytes each. 8Ch=140, so offset 4×140=560=230h selects bytes 560–563.</td><td>This Admin entry does not use the I/O region’s 1024-byte base. For a partial read, subtract that segment’s starting byte offset to find the buffer-relative position.</td></tr><tr><td>5 · Figure 217, printed 228–229/PDF 254–255</td><td>Hypothetical bytes 03h,00h,01h,00h form little-endian 00010003h; bit 0=1.</td><td>CSUPP=1 advertises 8Ch. LBCC=1 and CSE=001b additionally describe possible data change and same-namespace coordination recommendations, not an operation result.</td></tr><tr><td>6 · §5.2.27/Figure 454, printed 452–453/PDF 478–479</td><td>Namespace initiation uses SANACT100b (Crypto Erase);010b/011b are reserved. Check active NSID, protection and concurrency before execution.</td><td>Command support does not establish namespace Overwrite or current eligibility of every target. NVERS=0 also does not provide entry to Media Verification.</td></tr></tbody></table></div>
+<div class="qr-table" tabindex="0" role="region" aria-label="Horizontally scrollable comparison table"><table><thead><tr><th scope="col">Step and source location</th><th scope="col">Information to retrieve</th><th scope="col">What this establishes</th></tr></thead><tbody><tr><td>1 · Figure 28, printed 46/PDF 72</td><td>Sanitize Namespace → Admin opcode 8Ch; O means optional.</td><td>Identifies the command and encoding. Optional does not establish this controller’s support.</td></tr><tr><td>2 · Identify Controller, Figure 338, printed 355,361–362/PDF 381,387–388</td><td>CNS 01h; assume LPA.CSES=1, SANICAP.CES=1 and NVERS=0. CSES is LPA bit 1.</td><td>Effects log and Crypto Erase are supported; namespace media verification is not. CES alone does not replace 8Ch support discovery.</td></tr><tr><td>3 · Get Log Page, Figures 204–208, printed 213–215/PDF 239–241</td><td>Opcode 02h, LID 05h, NSID 0, NUMDL=03FFh, NUMDU=0, LPO=0, OT=0 and RAE=0 retrieve 4096 bytes.</td><td>NUMD encodes count−1: (03FFh+1)×4=4096 bytes. This reads a directory without submitting opcode 8Ch.</td></tr><tr><td>4 · Figure 216, printed 227/PDF 253</td><td>Admin entries begin at byte 0 and occupy 4 bytes each. 8Ch=140, so offset 4×140=560=230h selects bytes 560–563.</td><td>This Admin entry does not use the I/O region’s 1024-byte base. For a partial read, subtract that segment’s starting byte offset to find the buffer-relative position.</td></tr><tr><td>5 · Figure 217, printed 228–229/PDF 254–255</td><td>Hypothetical bytes 03h,00h,01h,00h form little-endian 00010003h; bit 0=1.</td><td>CSUPP=1 advertises 8Ch. LBCC=1 and CSE=001b additionally describe possible data change and same-namespace coordination recommendations, not an operation result.</td></tr><tr><td>6 · §5.2.27/Figure 454, printed 452–453/PDF 478–479</td><td>Namespace initiation uses SANACT100b (Crypto Erase);010b/011b are reserved. Check active NSID, protection and concurrency before execution.</td><td>Command support does not establish namespace Overwrite or current eligibility of every target. NVERS=0 also does not provide entry to Media Verification.</td></tr></tbody></table><dl class="st-terms" aria-label="Terms in this passage"><div><dt>CNS</dt><dd>Controller or Namespace Structure, selecting Identify data</dd></div></dl></div>
 <p>A valid entry with CSUPP=0 reports no command support and requires its other fields to be zero. CSES=0 or a failed log query instead leaves this route without valid support evidence; neither is an observed CSUPP=0.</p>
 <p class="qa-citations">Sources: <a href="#ref-adminsupport">Base 2.4 §3.1.3.4 (Figure 28 PCIe I/O-controller rows and O/M/P note only)</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idcmd">Base 2.4 §5.2.14.1</a> · <a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-commandseffects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-sanitizecmd">Base 2.4 §5.2.26–5.2.27</a></p>
 </section>
@@ -65,14 +68,15 @@ nvme_qa: true
 <span class="qa-anchor" id="q-118-a-17"></span><p>First confirm a successful LID 05h read and the Admin entry for 8Ch. Selecting 84h, using the wrong offset units or decoding a buffer from a failed query invalidates the support conclusion.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-commandseffects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-sanitizecmd">Base 2.4 §5.2.26–5.2.27</a> · <a href="#ref-format">Base 2.4 §5.1.1, 5.2.11</a> · <a href="#ref-nvmformat">NVM Command Set 1.3 §4.1.2</a> · <a href="#ref-formatpel">Base 2.4 §5.2.13.1.14.2.7–5.2.13.1.14.2.8</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-adminsupport">Base 2.4 §3.1.3.4 (Figure 28 PCIe I/O-controller rows and O/M/P note only)</a> · <a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-idcmd">Base 2.4 §5.2.14.1</a></p>
 <span class="qa-anchor" id="q-118-a-08"></span><span class="qa-anchor" id="q-118-a-09"></span><span class="qa-anchor" id="q-118-a-10"></span><span class="qa-anchor" id="q-118-a-11"></span><span class="qa-anchor" id="q-118-a-12"></span><span class="qa-anchor" id="q-118-a-13"></span><span class="qa-anchor" id="q-118-a-14"></span><span class="qa-anchor" id="q-118-a-15"></span>
 <p class="qa-related">Related mechanisms: <a href="/nvme/question-bank/logs/en/#q-081">Q81</a> · <a href="/nvme/question-bank/format-sanitize/en/#q-126">Q126</a> · <a href="/nvme/question-bank/format-sanitize/en/#q-134">Q134</a> · <a href="/nvme/question-bank/format-sanitize/en/#q-135">Q135</a></p>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-commandseffects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-sanitizecmd">Base 2.4 §5.2.26–5.2.27</a> · <a href="#ref-format">Base 2.4 §5.1.1, 5.2.11</a> · <a href="#ref-nvmformat">NVM Command Set 1.3 §4.1.2</a> · <a href="#ref-formatpel">Base 2.4 §5.2.13.1.14.2.7–5.2.13.1.14.2.8</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-adminsupport">Base 2.4 §3.1.3.4 (Figure 28 PCIe I/O-controller rows and O/M/P note only)</a> · <a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-idcmd">Base 2.4 §5.2.14.1</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-119" data-question="119" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-119">Q119</a> How do Format, secure erase and the two sanitize targets differ?</h2>
-<p class="qa-prompt">Identify the key difference and one case where the alternatives are not interchangeable.</p>
-<details class="qa-answer" id="q-119-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-119-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-119-a-01">Format changes media format and can request secure erase; Sanitize removes target user data rather than serving as an ordinary format change.</p><div class="qa-sections">
 <section class="qa-section" id="q-119-s-01" data-answer-section="1"><h3><span>1.</span> What differs</h3>
 <span class="qa-anchor" id="q-119-a-02"></span><p>Format scope is selected by FNA/SES/NSID; subsystem sanitize covers its defined user-data locations and namespace sanitize its selected target.</p>
@@ -83,19 +87,20 @@ nvme_qa: true
 <span class="qa-anchor" id="q-119-a-05"></span><p>Choose based on format change, target and required method. Sanitizing each namespace is not equivalent to covering every subsystem user-data location.</p>
 <span class="qa-anchor" id="q-119-a-06"></span><p>Format completion follows media formatting; successful Sanitize initiation still requires LID 81h monitoring.</p>
 </section>
-<section class="qa-section" id="q-119-s-03" data-answer-section="3"><h3><span>3.</span> Where the comparison stops</h3>
+<section class="qa-section" id="q-119-s-03" data-answer-section="3"><h3><span>3.</span> Conditions that shape the comparison</h3>
 <span class="qa-anchor" id="q-119-a-07"></span><p>Invalid formats and unsupported SANACT use their separate statuses, Invalid Format and Invalid Field.</p>
 <span class="qa-anchor" id="q-119-a-16"></span><p>Use Format to select 4 KiB LBAs; erasing one namespace and observing NDE does not establish subsystem GDE.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-sanitizecmd">Base 2.4 §5.2.26–5.2.27</a> · <a href="#ref-sanitizestate">Base 2.4 §8.1.27.1–8.1.27.5</a> · <a href="#ref-nvmsanitize">NVM Command Set 1.3 §4.1.7, 5.12</a> · <a href="#ref-format">Base 2.4 §5.1.1, 5.2.11</a> · <a href="#ref-nvmformat">NVM Command Set 1.3 §4.1.2</a> · <a href="#ref-formatpel">Base 2.4 §5.2.13.1.14.2.7–5.2.13.1.14.2.8</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-119-a-17"></span><span class="qa-anchor" id="q-119-a-08"></span><span class="qa-anchor" id="q-119-a-09"></span><span class="qa-anchor" id="q-119-a-10"></span><span class="qa-anchor" id="q-119-a-11"></span><span class="qa-anchor" id="q-119-a-12"></span><span class="qa-anchor" id="q-119-a-13"></span><span class="qa-anchor" id="q-119-a-14"></span><span class="qa-anchor" id="q-119-a-15"></span>
 <p class="qa-related">Related mechanisms: <a href="/nvme/question-bank/format-sanitize/en/#q-123">Q123</a> · <a href="/nvme/question-bank/format-sanitize/en/#q-130">Q130</a> · <a href="/nvme/question-bank/format-sanitize/en/#q-133">Q133</a></p>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-sanitizecmd">Base 2.4 §5.2.26–5.2.27</a> · <a href="#ref-sanitizestate">Base 2.4 §8.1.27.1–8.1.27.5</a> · <a href="#ref-nvmsanitize">NVM Command Set 1.3 §4.1.7, 5.12</a> · <a href="#ref-format">Base 2.4 §5.1.1, 5.2.11</a> · <a href="#ref-nvmformat">NVM Command Set 1.3 §4.1.2</a> · <a href="#ref-formatpel">Base 2.4 §5.2.13.1.14.2.7–5.2.13.1.14.2.8</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
-<article class="qa-question" id="q-120" data-question="120" data-answer-kind="process"><h2><a class="qa-qid" href="#q-120">Q120</a> How are Format data format, metadata, PI and SES selected?</h2>
-<p class="qa-prompt">Order the actions and identify which completion must precede the next action.</p>
-<details class="qa-answer" id="q-120-answer"><summary>Reveal the explanation</summary>
+<article class="qa-question" id="q-120" data-question="120" data-answer-kind="process"><h2><a class="qa-qid" href="#q-120">Q120</a> How are Format data format, metadata, PI and SES selected?</h2><dl class="st-terms" aria-label="Terms in this passage"><div><dt>PI</dt><dd>Protection Information</dd></div></dl>
+
+<details open class="qa-answer" id="q-120-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-120-a-01">Format selection determines I/O data and metadata layout; mismatches invalidate subsequent buffers and protection information.</p><div class="qa-sections">
 <section class="qa-section" id="q-120-s-01" data-answer-section="1"><h3><span>1.</span> Prepare the operation</h3>
 <span class="qa-anchor" id="q-120-a-02"></span><p>The selection configures namespaces in the format scope rather than only this command’s transfer.</p>
@@ -103,21 +108,22 @@ nvme_qa: true
 <span class="qa-anchor" id="q-120-a-04"></span><p>LBAFL plus enabled LBAFU select format; MSET selects extended or separate metadata, PI selects 0–3, and current NVM PIL must be 0. SES independently selects secure erase.</p>
 </section>
 <section class="qa-section" id="q-120-s-02" data-answer-section="2"><h3><span>2.</span> Sequence and completion conditions</h3>
-<span class="qa-anchor" id="q-120-a-05"></span><p>Select an advertised format and verify metadata/PI compatibility. For hypothetical LBAF2 with 4096+16 bytes, MSET=1 gives 4112 bytes per extended LBA.</p>
+<span class="qa-anchor" id="q-120-a-05"></span><p>Select an advertised format and verify metadata/PI compatibility. For hypothetical LBAF2 with 4096+16 bytes, MSET=1 gives 4112 bytes per extended LBA.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>LBA</dt><dd>Logical Block Address</dd></div></dl>
 <span class="qa-anchor" id="q-120-a-06"></span><p>On success FLBAS/DPS reflect the selection; changed logical-block size can alter NSZE/NCAP, requiring fresh reads.</p>
 </section>
 <section class="qa-section" id="q-120-s-03" data-answer-section="3"><h3><span>3.</span> Handle unmet conditions</h3>
-<span class="qa-anchor" id="q-120-a-07"></span><p>Unsupported formats use Invalid Format; formats disabled by missing LBAFEE use Invalid Namespace or Format. Shared FDP RUHs impose matching-format constraints.</p>
+<span class="qa-anchor" id="q-120-a-07"></span><p>Unsupported formats use Invalid Format; formats disabled by missing LBAFEE use Invalid Namespace or Format. Shared FDP RUHs impose matching-format constraints.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>FDP</dt><dd>Flexible Data Placement</dd></div></dl>
 <span class="qa-anchor" id="q-120-a-16"></span><p>Recalculate I/O data/metadata lengths rather than retaining the pre-format layout.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-behavior">Base 2.4 §5.2.30.1.15</a> · <a href="#ref-format">Base 2.4 §5.1.1, 5.2.11</a> · <a href="#ref-nvmformat">NVM Command Set 1.3 §4.1.2</a> · <a href="#ref-formatpel">Base 2.4 §5.2.13.1.14.2.7–5.2.13.1.14.2.8</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-120-a-17"></span><span class="qa-anchor" id="q-120-a-08"></span><span class="qa-anchor" id="q-120-a-09"></span><span class="qa-anchor" id="q-120-a-10"></span><span class="qa-anchor" id="q-120-a-11"></span><span class="qa-anchor" id="q-120-a-12"></span><span class="qa-anchor" id="q-120-a-13"></span><span class="qa-anchor" id="q-120-a-14"></span><span class="qa-anchor" id="q-120-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-behavior">Base 2.4 §5.2.30.1.15</a> · <a href="#ref-format">Base 2.4 §5.1.1, 5.2.11</a> · <a href="#ref-nvmformat">NVM Command Set 1.3 §4.1.2</a> · <a href="#ref-formatpel">Base 2.4 §5.2.13.1.14.2.7–5.2.13.1.14.2.8</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-121" data-question="121" data-answer-kind="error"><h2><a class="qa-qid" href="#q-121">Q121</a> How are invalid Format parameters and states reported?</h2>
-<p class="qa-prompt">Distinguish failure conditions before deciding whether a particular response is required.</p>
-<details class="qa-answer" id="q-121-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-121-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-121-a-01">Rejection can result from unsupported/disabled formats, protection or conflicting operations, requiring different fixes.</p><div class="qa-sections">
 <section class="qa-section" id="q-121-s-01" data-answer-section="1"><h3><span>1.</span> Distinguish the failure conditions</h3>
 <span class="qa-anchor" id="q-121-a-02"></span><p>Compute full format scope before checking protection across all affected namespaces.</p>
@@ -134,13 +140,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-121-a-17"></span><p>First check whether multiple defects make an exact-status assertion ambiguous.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-nwp">Base 2.4 §5.2.30.1.38, 8.1.18</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-format">Base 2.4 §5.1.1, 5.2.11</a> · <a href="#ref-nvmformat">NVM Command Set 1.3 §4.1.2</a> · <a href="#ref-formatpel">Base 2.4 §5.2.13.1.14.2.7–5.2.13.1.14.2.8</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-121-a-08"></span><span class="qa-anchor" id="q-121-a-09"></span><span class="qa-anchor" id="q-121-a-10"></span><span class="qa-anchor" id="q-121-a-11"></span><span class="qa-anchor" id="q-121-a-12"></span><span class="qa-anchor" id="q-121-a-13"></span><span class="qa-anchor" id="q-121-a-14"></span><span class="qa-anchor" id="q-121-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-nwp">Base 2.4 §5.2.30.1.38, 8.1.18</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-format">Base 2.4 §5.1.1, 5.2.11</a> · <a href="#ref-nvmformat">NVM Command Set 1.3 §4.1.2</a> · <a href="#ref-formatpel">Base 2.4 §5.2.13.1.14.2.7–5.2.13.1.14.2.8</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-122" data-question="122" data-answer-kind="concept"><h2><a class="qa-qid" href="#q-122">Q122</a> Which Admin operations can continue during Format?</h2>
-<p class="qa-prompt">Explain the mechanism in your own words and identify a common misconception.</p>
-<details class="qa-answer" id="q-122-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-122-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-122-a-01">Hosts still need status, notifications and queue management; Format does not universally block all Admin commands.</p><div class="qa-sections">
 <section class="qa-section" id="q-122-s-01" data-answer-section="1"><h3><span>1.</span> Mechanism and scope</h3>
 <span class="qa-anchor" id="q-122-a-02"></span><p>Restrictions depend on affected namespaces and Figure 144 command/log conditions.</p>
@@ -148,7 +155,7 @@ nvme_qa: true
 </section>
 <section class="qa-section" id="q-122-s-02" data-answer-section="2"><h3><span>2.</span> Understand it through actions and results</h3>
 <span class="qa-anchor" id="q-122-a-03"></span><p>Establish support first; the allowed-during-Format list does not enable unsupported optional commands.</p>
-<span class="qa-anchor" id="q-122-a-05"></span><p>Apply Figure 144 per entry: error-log LBA returns zero and only Controller DST should be allowed. Get Log permission does not extend to every LID.</p>
+<span class="qa-anchor" id="q-122-a-05"></span><p>Apply Figure 144 per entry: error-log LBA returns zero and only Controller DST should be allowed. Get Log permission does not extend to every LID.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>LBA</dt><dd>Logical Block Address</dd></div></dl>
 <span class="qa-anchor" id="q-122-a-06"></span><p>Permitted queries return state without establishing Format completion.</p>
 </section>
 <section class="qa-section" id="q-122-s-03" data-answer-section="3"><h3><span>3.</span> Avoid a misleading conclusion</h3>
@@ -156,13 +163,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-122-a-16"></span><p>Verify command permission, LID restrictions and returned fields separately.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-sanitizerestrict">Base 2.4 §5.1.1–5.1.2 (PCIe commands)</a> · <a href="#ref-format">Base 2.4 §5.1.1, 5.2.11</a> · <a href="#ref-nvmformat">NVM Command Set 1.3 §4.1.2</a> · <a href="#ref-formatpel">Base 2.4 §5.2.13.1.14.2.7–5.2.13.1.14.2.8</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-122-a-17"></span><span class="qa-anchor" id="q-122-a-08"></span><span class="qa-anchor" id="q-122-a-09"></span><span class="qa-anchor" id="q-122-a-10"></span><span class="qa-anchor" id="q-122-a-11"></span><span class="qa-anchor" id="q-122-a-12"></span><span class="qa-anchor" id="q-122-a-13"></span><span class="qa-anchor" id="q-122-a-14"></span><span class="qa-anchor" id="q-122-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-sanitizerestrict">Base 2.4 §5.1.1–5.1.2 (PCIe commands)</a> · <a href="#ref-format">Base 2.4 §5.1.1, 5.2.11</a> · <a href="#ref-nvmformat">NVM Command Set 1.3 §4.1.2</a> · <a href="#ref-formatpel">Base 2.4 §5.2.13.1.14.2.7–5.2.13.1.14.2.8</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-123" data-question="123" data-answer-kind="lifecycle"><h2><a class="qa-qid" href="#q-123">Q123</a> How is interrupted Format assessed after reset or power loss?</h2>
-<p class="qa-prompt">Name the reset or interruption, then assess settings, ongoing operations and data separately.</p>
-<details class="qa-answer" id="q-123-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-123-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-123-a-01">Lost completion means unknown outcome, not guaranteed non-execution or success; reconstruct it from current state and events.</p><div class="qa-sections">
 <section class="qa-section" id="q-123-s-01" data-answer-section="1"><h3><span>1.</span> Identify the trigger and affected objects</h3>
 <span class="qa-anchor" id="q-123-a-02"></span><p>Inspect all originally affected namespaces and their access through other controllers.</p>
@@ -185,13 +193,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-123-a-17"></span><p>First establish whether a trustworthy Format success CQE exists; do not infer it solely from INFO=0.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-format">Base 2.4 §5.1.1, 5.2.11</a> · <a href="#ref-nvmformat">NVM Command Set 1.3 §4.1.2</a> · <a href="#ref-formatpel">Base 2.4 §5.2.13.1.14.2.7–5.2.13.1.14.2.8</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-123-a-08"></span><span class="qa-anchor" id="q-123-a-09"></span><span class="qa-anchor" id="q-123-a-10"></span><span class="qa-anchor" id="q-123-a-11"></span><span class="qa-anchor" id="q-123-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-format">Base 2.4 §5.1.1, 5.2.11</a> · <a href="#ref-nvmformat">NVM Command Set 1.3 §4.1.2</a> · <a href="#ref-formatpel">Base 2.4 §5.2.13.1.14.2.7–5.2.13.1.14.2.8</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-124" data-question="124" data-answer-kind="process"><h2><a class="qa-qid" href="#q-124">Q124</a> Which namespace data must be refreshed after Format?</h2>
-<p class="qa-prompt">Order the actions and identify which completion must precede the next action.</p>
-<details class="qa-answer" id="q-124-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-124-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-124-a-01">Format changes I/O interpretation, requiring refreshed namespace caches rather than old block/PI settings.</p><div class="qa-sections">
 <section class="qa-section" id="q-124-s-01" data-answer-section="1"><h3><span>1.</span> Prepare the operation</h3>
 <span class="qa-anchor" id="q-124-a-02"></span><p>Refresh format and capacity for affected namespaces; Format is not namespace creation/deletion and does not inherently assign a new NSID.</p>
@@ -207,24 +216,25 @@ nvme_qa: true
 <span class="qa-anchor" id="q-124-a-16"></span><p>When changing 512-byte to 4096-byte LBAs, compare byte capacity under allowed behavior rather than block counts alone.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-nvmformat">NVM Command Set 1.3 §4.1.2</a> · <a href="#ref-changedlog">Base 2.4 §5.2.13.1.5</a> · <a href="#ref-format">Base 2.4 §5.1.1, 5.2.11</a> · <a href="#ref-formatpel">Base 2.4 §5.2.13.1.14.2.7–5.2.13.1.14.2.8</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-124-a-17"></span><span class="qa-anchor" id="q-124-a-08"></span><span class="qa-anchor" id="q-124-a-09"></span><span class="qa-anchor" id="q-124-a-10"></span><span class="qa-anchor" id="q-124-a-11"></span><span class="qa-anchor" id="q-124-a-12"></span><span class="qa-anchor" id="q-124-a-13"></span><span class="qa-anchor" id="q-124-a-14"></span><span class="qa-anchor" id="q-124-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-nvmformat">NVM Command Set 1.3 §4.1.2</a> · <a href="#ref-changedlog">Base 2.4 §5.2.13.1.5</a> · <a href="#ref-format">Base 2.4 §5.1.1, 5.2.11</a> · <a href="#ref-formatpel">Base 2.4 §5.2.13.1.14.2.7–5.2.13.1.14.2.8</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-125" data-question="125" data-answer-kind="diagnose"><h2><a class="qa-qid" href="#q-125">Q125</a> How are Format failures checked using CQE, Error Log and PEL?</h2>
-<p class="qa-prompt">Separate available evidence from missing information before judging conformance.</p>
-<details class="qa-answer" id="q-125-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-125-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-125-a-01">Distinguish validation rejection from failure after formatting began, which may already have changed data.</p><div class="qa-sections">
 <section class="qa-section" id="q-125-s-01" data-answer-section="1"><h3><span>1.</span> Preserve the evidence first</h3>
 <span class="qa-anchor" id="q-125-a-02"></span><p>Evidence must match the same Format and scope, not a neighboring namespace operation.</p>
-<span class="qa-anchor" id="q-125-a-03"></span><p>Preserve SCT/SC/M/DNR and PEL support/validity.</p>
+<span class="qa-anchor" id="q-125-a-03"></span><p>Preserve SCT/SC/M/DNR and PEL support/validity.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>SCT</dt><dd>Status Code Type</dd></div><div><dt>DNR</dt><dd>Do Not Retry, a completion retry indication</dd></div></dl>
 <span class="qa-anchor" id="q-125-a-04"></span><p>Correlate Error Log by IDs/count; Format Start preserves parameters and Completion carries FNVMS/INFO.</p>
 </section>
 <section class="qa-section" id="q-125-s-02" data-answer-section="2"><h3><span>2.</span> Work through the possible causes</h3>
 <span class="qa-anchor" id="q-125-a-17"></span><p>First establish whether execution began and whether corresponding Start/Completion events exist.</p>
 <span class="qa-anchor" id="q-125-a-05"></span><p>Read the CQE, additional information indicated by M, then PEL/current Identify; do not force one-to-one entries across all sources.</p>
 </section>
-<section class="qa-section" id="q-125-s-03" data-answer-section="3"><h3><span>3.</span> Decide what the evidence supports</h3>
+<section class="qa-section" id="q-125-s-03" data-answer-section="3"><h3><span>3.</span> Connect observations to specification conditions</h3>
 <span class="qa-anchor" id="q-125-a-06"></span><p>A diagnosis establishes failure cause and current usability; retain uncertainty rather than assuming rollback.</p>
 <span class="qa-anchor" id="q-125-a-07"></span><p>Simultaneous faults may permit different statuses; INFO=0 can mean no CQE, requiring FNVMS interpretation.</p>
 <span class="qa-anchor" id="q-125-a-16"></span><p>Compare parameters, result and current format to detect inconsistent controller or host interpretation.</p>
@@ -234,13 +244,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-125-a-11"></span><p>With supported PEL events, Format Start 07h records the request and Completion 08h the outcome. <a class="qa-rule-link" href="#common-format_op-11">Read the complete conditions in this volume</a></p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-format">Base 2.4 §5.1.1, 5.2.11</a> · <a href="#ref-nvmformat">NVM Command Set 1.3 §4.1.2</a> · <a href="#ref-formatpel">Base 2.4 §5.2.13.1.14.2.7–5.2.13.1.14.2.8</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-125-a-08"></span><span class="qa-anchor" id="q-125-a-09"></span><span class="qa-anchor" id="q-125-a-12"></span><span class="qa-anchor" id="q-125-a-13"></span><span class="qa-anchor" id="q-125-a-14"></span><span class="qa-anchor" id="q-125-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-format">Base 2.4 §5.1.1, 5.2.11</a> · <a href="#ref-nvmformat">NVM Command Set 1.3 §4.1.2</a> · <a href="#ref-formatpel">Base 2.4 §5.2.13.1.14.2.7–5.2.13.1.14.2.8</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-126" data-question="126" data-answer-kind="fields"><h2><a class="qa-qid" href="#q-126">Q126</a> How does SANICAP advertise sanitize methods?</h2>
-<p class="qa-prompt">Explain the units and encoding, then work through one set of values.</p>
-<details class="qa-answer" id="q-126-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-126-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-126-a-01">SANICAP advertises individual methods and extensions, not a Boolean enabling every sanitize action.</p><div class="qa-sections">
 <section class="qa-section" id="q-126-s-01" data-answer-section="1"><h3><span>1.</span> Establish the source and scope</h3>
 <span class="qa-anchor" id="q-126-a-02"></span><p>CES/BES/OWS advertise subsystem methods; namespace sanitization has separate support and only Crypto Erase in this revision.</p>
@@ -256,17 +267,18 @@ nvme_qa: true
 <span class="qa-anchor" id="q-126-a-16"></span><p>Controllers in the same subsystem must advertise consistent supported sanitize types for the corresponding command.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-sanitizecmd">Base 2.4 §5.2.26–5.2.27</a> · <a href="#ref-sanitizelog">Base 2.4 §5.2.13.1.38</a> · <a href="#ref-sanitizestate">Base 2.4 §8.1.27.1–8.1.27.5</a> · <a href="#ref-sanitizepel">Base 2.4 §5.2.13.1.14.2.9–5.2.13.1.14.2.10</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-126-a-17"></span><span class="qa-anchor" id="q-126-a-08"></span><span class="qa-anchor" id="q-126-a-09"></span><span class="qa-anchor" id="q-126-a-10"></span><span class="qa-anchor" id="q-126-a-11"></span><span class="qa-anchor" id="q-126-a-12"></span><span class="qa-anchor" id="q-126-a-13"></span><span class="qa-anchor" id="q-126-a-14"></span><span class="qa-anchor" id="q-126-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-sanitizecmd">Base 2.4 §5.2.26–5.2.27</a> · <a href="#ref-sanitizelog">Base 2.4 §5.2.13.1.38</a> · <a href="#ref-sanitizestate">Base 2.4 §8.1.27.1–8.1.27.5</a> · <a href="#ref-sanitizepel">Base 2.4 §5.2.13.1.14.2.9–5.2.13.1.14.2.10</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-127" data-question="127" data-answer-kind="fields"><h2><a class="qa-qid" href="#q-127">Q127</a> How do NDAS, overwrite pattern, passes and inversion work?</h2>
-<p class="qa-prompt">Explain the units and encoding, then work through one set of values.</p>
-<details class="qa-answer" id="q-127-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-127-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-127-a-01">Overwrite fields select pattern/passes while NDAS controls allocation release; erasure and deallocation are distinct.</p><div class="qa-sections">
 <section class="qa-section" id="q-127-s-01" data-answer-section="1"><h3><span>1.</span> Establish the source and scope</h3>
 <span class="qa-anchor" id="q-127-a-02"></span><p>These overwrite/NDAS fields belong to subsystem Sanitize, not the namespace command layout.</p>
-<span class="qa-anchor" id="q-127-a-03"></span><p>Check OWS, no-deallocate inhibition/media-modification attributes and FID 17h.NODRM.</p>
+<span class="qa-anchor" id="q-127-a-03"></span><p>Check OWS, no-deallocate inhibition/media-modification attributes and FID 17h.NODRM.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>FID</dt><dd>Feature Identifier</dd></div></dl>
 </section>
 <section class="qa-section" id="q-127-s-02" data-answer-section="2"><h3><span>2.</span> Fields, units and worked interpretation</h3>
 <span class="qa-anchor" id="q-127-a-04"></span><p>SANACT3 selects Overwrite; OVRPAT is 32-bit, OWPASS0 means 16 passes and 1–15 their literal count; OIPBP1 inverts between passes.</p>
@@ -278,13 +290,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-127-a-16"></span><p>Compare request fields and logged SCDW10/outcome; OWPASS0 does not mean zero work.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-sanitizeconfig">Base 2.4 §5.2.30.1.16</a> · <a href="#ref-nvmsanitize">NVM Command Set 1.3 §4.1.7, 5.12</a> · <a href="#ref-sanitizecmd">Base 2.4 §5.2.26–5.2.27</a> · <a href="#ref-sanitizelog">Base 2.4 §5.2.13.1.38</a> · <a href="#ref-sanitizestate">Base 2.4 §8.1.27.1–8.1.27.5</a> · <a href="#ref-sanitizepel">Base 2.4 §5.2.13.1.14.2.9–5.2.13.1.14.2.10</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-127-a-17"></span><span class="qa-anchor" id="q-127-a-08"></span><span class="qa-anchor" id="q-127-a-09"></span><span class="qa-anchor" id="q-127-a-10"></span><span class="qa-anchor" id="q-127-a-11"></span><span class="qa-anchor" id="q-127-a-12"></span><span class="qa-anchor" id="q-127-a-13"></span><span class="qa-anchor" id="q-127-a-14"></span><span class="qa-anchor" id="q-127-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-sanitizeconfig">Base 2.4 §5.2.30.1.16</a> · <a href="#ref-nvmsanitize">NVM Command Set 1.3 §4.1.7, 5.12</a> · <a href="#ref-sanitizecmd">Base 2.4 §5.2.26–5.2.27</a> · <a href="#ref-sanitizelog">Base 2.4 §5.2.13.1.38</a> · <a href="#ref-sanitizestate">Base 2.4 §8.1.27.1–8.1.27.5</a> · <a href="#ref-sanitizepel">Base 2.4 §5.2.13.1.14.2.9–5.2.13.1.14.2.10</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-128" data-question="128" data-answer-kind="fields"><h2><a class="qa-qid" href="#q-128">Q128</a> How are progress, status, state and erased-data flags interpreted together?</h2>
-<p class="qa-prompt">Explain the units and encoding, then work through one set of values.</p>
-<details class="qa-answer" id="q-128-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-128-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-128-a-01">Progress, outcome, state and continued erased-data condition answer different questions; neitherFFFFh nor GDE1 alone proves full completion.</p><div class="qa-sections">
 <section class="qa-section" id="q-128-s-01" data-answer-section="1"><h3><span>1.</span> Establish the source and scope</h3>
 <span class="qa-anchor" id="q-128-a-02"></span><p>LID 81h selects subsystem or namespace using NSID; NDE does not substitute for subsystem GDE.</p>
@@ -300,13 +313,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-128-a-16"></span><p>Match SCDW10 to the request and consider subsequent writes clearing GDE/NDE rather than mistaking an old result for the current operation.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-nvmsanitize">NVM Command Set 1.3 §4.1.7, 5.12</a> · <a href="#ref-sanitizecmd">Base 2.4 §5.2.26–5.2.27</a> · <a href="#ref-sanitizelog">Base 2.4 §5.2.13.1.38</a> · <a href="#ref-sanitizestate">Base 2.4 §8.1.27.1–8.1.27.5</a> · <a href="#ref-sanitizepel">Base 2.4 §5.2.13.1.14.2.9–5.2.13.1.14.2.10</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-128-a-17"></span><span class="qa-anchor" id="q-128-a-08"></span><span class="qa-anchor" id="q-128-a-09"></span><span class="qa-anchor" id="q-128-a-10"></span><span class="qa-anchor" id="q-128-a-11"></span><span class="qa-anchor" id="q-128-a-12"></span><span class="qa-anchor" id="q-128-a-13"></span><span class="qa-anchor" id="q-128-a-14"></span><span class="qa-anchor" id="q-128-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-nvmsanitize">NVM Command Set 1.3 §4.1.7, 5.12</a> · <a href="#ref-sanitizecmd">Base 2.4 §5.2.26–5.2.27</a> · <a href="#ref-sanitizelog">Base 2.4 §5.2.13.1.38</a> · <a href="#ref-sanitizestate">Base 2.4 §8.1.27.1–8.1.27.5</a> · <a href="#ref-sanitizepel">Base 2.4 §5.2.13.1.14.2.9–5.2.13.1.14.2.10</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-129" data-question="129" data-answer-kind="concept"><h2><a class="qa-qid" href="#q-129">Q129</a> Which commands are permitted during subsystem sanitization?</h2>
-<p class="qa-prompt">Explain the mechanism in your own words and identify a common misconception.</p>
-<details class="qa-answer" id="q-129-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-129-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-129-a-01">Sanitization restricts user-data access while preserving essential management; permissions apply to commands, options and logs.</p><div class="qa-sections">
 <section class="qa-section" id="q-129-s-01" data-answer-section="1"><h3><span>1.</span> Mechanism and scope</h3>
 <span class="qa-anchor" id="q-129-a-02"></span><p>Restrictions apply across subsystem controllers; another controller is not a bypass.</p>
@@ -322,13 +336,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-129-a-16"></span><p>Verify restrictions across controllers and permitted logs&#x27; sanitization of user-data fields.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-sanitizerestrict">Base 2.4 §5.1.1–5.1.2 (PCIe commands)</a> · <a href="#ref-nvmsanitize">NVM Command Set 1.3 §4.1.7, 5.12</a> · <a href="#ref-sanitizecmd">Base 2.4 §5.2.26–5.2.27</a> · <a href="#ref-sanitizelog">Base 2.4 §5.2.13.1.38</a> · <a href="#ref-sanitizestate">Base 2.4 §8.1.27.1–8.1.27.5</a> · <a href="#ref-sanitizepel">Base 2.4 §5.2.13.1.14.2.9–5.2.13.1.14.2.10</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-129-a-17"></span><span class="qa-anchor" id="q-129-a-08"></span><span class="qa-anchor" id="q-129-a-09"></span><span class="qa-anchor" id="q-129-a-10"></span><span class="qa-anchor" id="q-129-a-11"></span><span class="qa-anchor" id="q-129-a-12"></span><span class="qa-anchor" id="q-129-a-13"></span><span class="qa-anchor" id="q-129-a-14"></span><span class="qa-anchor" id="q-129-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-sanitizerestrict">Base 2.4 §5.1.1–5.1.2 (PCIe commands)</a> · <a href="#ref-nvmsanitize">NVM Command Set 1.3 §4.1.7, 5.12</a> · <a href="#ref-sanitizecmd">Base 2.4 §5.2.26–5.2.27</a> · <a href="#ref-sanitizelog">Base 2.4 §5.2.13.1.38</a> · <a href="#ref-sanitizestate">Base 2.4 §8.1.27.1–8.1.27.5</a> · <a href="#ref-sanitizepel">Base 2.4 §5.2.13.1.14.2.9–5.2.13.1.14.2.10</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-130" data-question="130" data-answer-kind="lifecycle"><h2><a class="qa-qid" href="#q-130">Q130</a> Does sanitization continue across reset or power loss?</h2>
-<p class="qa-prompt">Name the reset or interruption, then assess settings, ongoing operations and data separately.</p>
-<details class="qa-answer" id="q-130-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-130-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-130-a-01">Reset or power cycling must not provide an escape from sanitization; background processing continues across them.</p><div class="qa-sections">
 <section class="qa-section" id="q-130-s-01" data-answer-section="1"><h3><span>1.</span> Identify the trigger and affected objects</h3>
 <span class="qa-anchor" id="q-130-a-02"></span><p>What persists is the target operation/state machine, not old Admin Queues or AER requests.</p>
@@ -351,13 +366,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-130-a-17"></span><p>First ensure the post-reset query addresses the original target.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-sanitizecmd">Base 2.4 §5.2.26–5.2.27</a> · <a href="#ref-sanitizelog">Base 2.4 §5.2.13.1.38</a> · <a href="#ref-sanitizestate">Base 2.4 §8.1.27.1–8.1.27.5</a> · <a href="#ref-sanitizepel">Base 2.4 §5.2.13.1.14.2.9–5.2.13.1.14.2.10</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-130-a-08"></span><span class="qa-anchor" id="q-130-a-09"></span><span class="qa-anchor" id="q-130-a-10"></span><span class="qa-anchor" id="q-130-a-11"></span><span class="qa-anchor" id="q-130-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-sanitizecmd">Base 2.4 §5.2.26–5.2.27</a> · <a href="#ref-sanitizelog">Base 2.4 §5.2.13.1.38</a> · <a href="#ref-sanitizestate">Base 2.4 §8.1.27.1–8.1.27.5</a> · <a href="#ref-sanitizepel">Base 2.4 §5.2.13.1.14.2.9–5.2.13.1.14.2.10</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-131" data-question="131" data-answer-kind="diagnose"><h2><a class="qa-qid" href="#q-131">Q131</a> How do success, failure and failure mode differ in the log?</h2>
-<p class="qa-prompt">Separate available evidence from missing information before judging conformance.</p>
-<details class="qa-answer" id="q-131-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-131-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-131-a-01">Outcome and current state differ: leaving failure mode can return to Idle while the latest sanitize outcome remains failed.</p><div class="qa-sections">
 <section class="qa-section" id="q-131-s-01" data-answer-section="1"><h3><span>1.</span> Preserve the evidence first</h3>
 <span class="qa-anchor" id="q-131-a-02"></span><p>Use SOS/SANS for one target; namespace failure is not the subsystem’s last-operation result.</p>
@@ -368,19 +384,20 @@ nvme_qa: true
 <span class="qa-anchor" id="q-131-a-17"></span><p>First inspect SANS to distinguish current failure mode from historical failure outcome.</p>
 <span class="qa-anchor" id="q-131-a-05"></span><p>Inspect outcome and current restrictions; Idle with failed SOS can follow valid Exit Failure Mode.</p>
 </section>
-<section class="qa-section" id="q-131-s-03" data-answer-section="3"><h3><span>3.</span> Decide what the evidence supports</h3>
+<section class="qa-section" id="q-131-s-03" data-answer-section="3"><h3><span>3.</span> Connect observations to specification conditions</h3>
 <span class="qa-anchor" id="q-131-a-06"></span><p>Neither progress alone nor the initiation CQE establishes the final background outcome.</p>
 <span class="qa-anchor" id="q-131-a-07"></span><p>Restricted and Unrestricted Failure allow different recovery actions despite both reporting failure.</p>
 <span class="qa-anchor" id="q-131-a-16"></span><p>Correlate SOS, SANS, original AUSE and recovery requests to identify invalid transitions.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-sanitizecmd">Base 2.4 §5.2.26–5.2.27</a> · <a href="#ref-sanitizelog">Base 2.4 §5.2.13.1.38</a> · <a href="#ref-sanitizestate">Base 2.4 §8.1.27.1–8.1.27.5</a> · <a href="#ref-sanitizepel">Base 2.4 §5.2.13.1.14.2.9–5.2.13.1.14.2.10</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-131-a-08"></span><span class="qa-anchor" id="q-131-a-09"></span><span class="qa-anchor" id="q-131-a-10"></span><span class="qa-anchor" id="q-131-a-11"></span><span class="qa-anchor" id="q-131-a-12"></span><span class="qa-anchor" id="q-131-a-13"></span><span class="qa-anchor" id="q-131-a-14"></span><span class="qa-anchor" id="q-131-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-sanitizecmd">Base 2.4 §5.2.26–5.2.27</a> · <a href="#ref-sanitizelog">Base 2.4 §5.2.13.1.38</a> · <a href="#ref-sanitizestate">Base 2.4 §8.1.27.1–8.1.27.5</a> · <a href="#ref-sanitizepel">Base 2.4 §5.2.13.1.14.2.9–5.2.13.1.14.2.10</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-132" data-question="132" data-answer-kind="concept"><h2><a class="qa-qid" href="#q-132">Q132</a> What does Exit Failure Mode accomplish?</h2>
-<p class="qa-prompt">Explain the mechanism in your own words and identify a common misconception.</p>
-<details class="qa-answer" id="q-132-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-132-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-132-a-01">Where permitted, Exit Failure Mode releases failure-state restrictions; it neither finishes erasure nor converts failure into success.</p><div class="qa-sections">
 <section class="qa-section" id="q-132-s-01" data-answer-section="1"><h3><span>1.</span> Mechanism and scope</h3>
 <span class="qa-anchor" id="q-132-a-02"></span><p>The action applies to the selected subsystem or namespace target.</p>
@@ -396,13 +413,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-132-a-16"></span><p>Verify both restored state and retained failure history rather than demanding all-zero logs.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-sanitizecmd">Base 2.4 §5.2.26–5.2.27</a> · <a href="#ref-sanitizelog">Base 2.4 §5.2.13.1.38</a> · <a href="#ref-sanitizestate">Base 2.4 §8.1.27.1–8.1.27.5</a> · <a href="#ref-sanitizepel">Base 2.4 §5.2.13.1.14.2.9–5.2.13.1.14.2.10</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-132-a-17"></span><span class="qa-anchor" id="q-132-a-08"></span><span class="qa-anchor" id="q-132-a-09"></span><span class="qa-anchor" id="q-132-a-10"></span><span class="qa-anchor" id="q-132-a-11"></span><span class="qa-anchor" id="q-132-a-12"></span><span class="qa-anchor" id="q-132-a-13"></span><span class="qa-anchor" id="q-132-a-14"></span><span class="qa-anchor" id="q-132-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-sanitizecmd">Base 2.4 §5.2.26–5.2.27</a> · <a href="#ref-sanitizelog">Base 2.4 §5.2.13.1.38</a> · <a href="#ref-sanitizestate">Base 2.4 §8.1.27.1–8.1.27.5</a> · <a href="#ref-sanitizepel">Base 2.4 §5.2.13.1.14.2.9–5.2.13.1.14.2.10</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-133" data-question="133" data-answer-kind="events"><h2><a class="qa-qid" href="#q-133">Q133</a> When are sanitize AERs and persistent events generated?</h2>
-<p class="qa-prompt">Establish the event condition, then distinguish notification, acknowledgment and recording.</p>
-<details class="qa-answer" id="q-133-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-133-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-133-a-01">Notifications announce transitions and PEL retains history; neither is a second completion of the initiating command.</p><div class="qa-sections">
 <section class="qa-section" id="q-133-s-01" data-answer-section="1"><h3><span>1.</span> When the event exists and who observes it</h3>
 <span class="qa-anchor" id="q-133-a-02"></span><p>The initiating controller reports the AER; event parameters and PEL.NSID identify the target.</p>
@@ -423,13 +441,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-133-a-11"></span><p>Supported PEL logging records Start 09h on entering processing and Completion 0Ah on entering Idle or either failure state. <a class="qa-rule-link" href="#common-sanitize_op-11">Read the complete conditions in this volume</a></p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-aerfull">Base 2.4 §5.2.2 (PCIe-applicable events)</a> · <a href="#ref-aec">Base 2.4 §5.2.30.1.6</a> · <a href="#ref-sanitizecmd">Base 2.4 §5.2.26–5.2.27</a> · <a href="#ref-sanitizelog">Base 2.4 §5.2.13.1.38</a> · <a href="#ref-sanitizestate">Base 2.4 §8.1.27.1–8.1.27.5</a> · <a href="#ref-sanitizepel">Base 2.4 §5.2.13.1.14.2.9–5.2.13.1.14.2.10</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-133-a-08"></span><span class="qa-anchor" id="q-133-a-10"></span><span class="qa-anchor" id="q-133-a-12"></span><span class="qa-anchor" id="q-133-a-13"></span><span class="qa-anchor" id="q-133-a-14"></span><span class="qa-anchor" id="q-133-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-aerfull">Base 2.4 §5.2.2 (PCIe-applicable events)</a> · <a href="#ref-aec">Base 2.4 §5.2.30.1.6</a> · <a href="#ref-sanitizecmd">Base 2.4 §5.2.26–5.2.27</a> · <a href="#ref-sanitizelog">Base 2.4 §5.2.13.1.38</a> · <a href="#ref-sanitizestate">Base 2.4 §8.1.27.1–8.1.27.5</a> · <a href="#ref-sanitizepel">Base 2.4 §5.2.13.1.14.2.9–5.2.13.1.14.2.10</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-134" data-question="134" data-answer-kind="process"><h2><a class="qa-qid" href="#q-134">Q134</a> How is namespace sanitization targeted and isolated?</h2>
-<p class="qa-prompt">Order the actions and identify which completion must precede the next action.</p>
-<details class="qa-answer" id="q-134-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-134-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-134-a-01">Namespace Sanitize provides a narrower Crypto Erase target while shared management restrictions remain separate from data isolation.</p><div class="qa-sections">
 <section class="qa-section" id="q-134-s-01" data-answer-section="1"><h3><span>1.</span> Prepare the operation</h3>
 <span class="qa-anchor" id="q-134-a-02"></span><p>NSID selects one active namespace, with restrictions applying across all controllers accessing it.</p>
@@ -445,14 +464,15 @@ nvme_qa: true
 <span class="qa-anchor" id="q-134-a-16"></span><p>Validate non-target data, target I/O restrictions and shared firmware restrictions separately.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-sanitizerestrict">Base 2.4 §5.1.1–5.1.2 (PCIe commands)</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-nsid">Base 2.4 §3.2.1</a> · <a href="#ref-sanitizecmd">Base 2.4 §5.2.26–5.2.27</a> · <a href="#ref-sanitizelog">Base 2.4 §5.2.13.1.38</a> · <a href="#ref-sanitizestate">Base 2.4 §8.1.27.1–8.1.27.5</a> · <a href="#ref-sanitizepel">Base 2.4 §5.2.13.1.14.2.9–5.2.13.1.14.2.10</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-commandseffects">Base 2.4 §5.2.13.1.6</a></p>
 <span class="qa-anchor" id="q-134-a-17"></span><span class="qa-anchor" id="q-134-a-08"></span><span class="qa-anchor" id="q-134-a-09"></span><span class="qa-anchor" id="q-134-a-10"></span><span class="qa-anchor" id="q-134-a-11"></span><span class="qa-anchor" id="q-134-a-12"></span><span class="qa-anchor" id="q-134-a-13"></span><span class="qa-anchor" id="q-134-a-14"></span><span class="qa-anchor" id="q-134-a-15"></span>
 <p class="qa-related">Related mechanisms: <a href="/nvme/question-bank/format-sanitize/en/#q-118">Q118</a></p>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-sanitizerestrict">Base 2.4 §5.1.1–5.1.2 (PCIe commands)</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-nsid">Base 2.4 §3.2.1</a> · <a href="#ref-sanitizecmd">Base 2.4 §5.2.26–5.2.27</a> · <a href="#ref-sanitizelog">Base 2.4 §5.2.13.1.38</a> · <a href="#ref-sanitizestate">Base 2.4 §8.1.27.1–8.1.27.5</a> · <a href="#ref-sanitizepel">Base 2.4 §5.2.13.1.14.2.9–5.2.13.1.14.2.10</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-commandseffects">Base 2.4 §5.2.13.1.6</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-135" data-question="135" data-answer-kind="error"><h2><a class="qa-qid" href="#q-135">Q135</a> How are invalid or unsupported namespace sanitize requests handled?</h2>
-<p class="qa-prompt">Distinguish failure conditions before deciding whether a particular response is required.</p>
-<details class="qa-answer" id="q-135-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-135-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-135-a-01">Unsupported command, invalid target/action and exhausted concurrency are distinct failure causes.</p><div class="qa-sections">
 <section class="qa-section" id="q-135-s-01" data-answer-section="1"><h3><span>1.</span> Distinguish the failure conditions</h3>
 <span class="qa-anchor" id="q-135-a-02"></span><p>Check target and subsystem sanitize state; subsystem failure can block a new namespace operation.</p>
@@ -460,7 +480,7 @@ nvme_qa: true
 <span class="qa-anchor" id="q-135-a-07"></span><p>Invalid targets use Invalid Namespace/Format, actions Invalid Field and over-limit requests their named concurrency status. Figure 104 lists 3Ch while Figure 455 lists 12h: the source conflict prevents treating either as an undisputed sole acceptance value.</p>
 </section>
 <section class="qa-section" id="q-135-s-02" data-answer-section="2"><h3><span>2.</span> Establish the cause from evidence</h3>
-<span class="qa-anchor" id="q-135-a-03"></span><p>First use 8Ch CSUPP in LID 05h for command support, then SANICAP, namespace lists, protection and MNSOIP for method, target and concurrency conditions. These are distinct prerequisites.</p>
+<span class="qa-anchor" id="q-135-a-03"></span><p>Read CSUPP for Admin opcode 8Ch in LID 05h to establish command support. Then check SANICAP for the method, namespace lists and write protection for target state, and LID 81h.MNSOIP for concurrency limits. This connects support to current execution conditions; Q118 gives the full lookup.</p>
 <span class="qa-anchor" id="q-135-a-05"></span><p>Establish valid support, then isolate target, protection, action and concurrency negative tests with state snapshots.</p>
 </section>
 <section class="qa-section" id="q-135-s-03" data-answer-section="3"><h3><span>3.</span> Outcome and follow-up checks</h3>
@@ -469,6 +489,7 @@ nvme_qa: true
 <span class="qa-anchor" id="q-135-a-17"></span><p>First isolate the failed condition; preserve both source locations for the conflicting concurrency code.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-nsid">Base 2.4 §3.2.1</a> · <a href="#ref-nwp">Base 2.4 §5.2.30.1.38, 8.1.18</a> · <a href="#ref-sanitizecmd">Base 2.4 §5.2.26–5.2.27</a> · <a href="#ref-sanitizelog">Base 2.4 §5.2.13.1.38</a> · <a href="#ref-sanitizestate">Base 2.4 §8.1.27.1–8.1.27.5</a> · <a href="#ref-sanitizepel">Base 2.4 §5.2.13.1.14.2.9–5.2.13.1.14.2.10</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-commandseffects">Base 2.4 §5.2.13.1.6</a></p>
 <span class="qa-anchor" id="q-135-a-08"></span><span class="qa-anchor" id="q-135-a-09"></span><span class="qa-anchor" id="q-135-a-10"></span><span class="qa-anchor" id="q-135-a-11"></span><span class="qa-anchor" id="q-135-a-12"></span><span class="qa-anchor" id="q-135-a-13"></span><span class="qa-anchor" id="q-135-a-14"></span><span class="qa-anchor" id="q-135-a-15"></span>
 <p class="qa-related">Related mechanisms: <a href="/nvme/question-bank/format-sanitize/en/#q-118">Q118</a></p>
 <details class="qa-source-links"><summary>Source locations for this question</summary>

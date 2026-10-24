@@ -1,0 +1,50 @@
+{
+  "walk_id": "ch28-overview",
+  "title": "兩張卡在同一個 Switch 下，可以直接互相存取嗎？",
+  "summary_html": "<p>P2P（Peer-to-Peer，同儕對同儕）描述裝置間的交易路徑。是否直達，還要看拓樸支援、位址、存取權與 ACS（Access Control Services，存取控制服務）的有效設定。本章先走一筆要求，再分清導引、阻擋與 Multicast（多播）。</p>",
+  "svg": "<svg viewBox=\"0 0 900 420\" role=\"img\" aria-labelledby=\"ch28-zh-t ch28-zh-d\"><title id=\"ch28-zh-t\">本章角色與事件</title><desc id=\"ch28-zh-d\">同儕存取可直達、往上導引或被阻擋，須依有效ACS控制判斷。</desc><g data-walk-target=\"aep\"><rect x=\"20\" y=\"280\" width=\"260\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"150.0\" y=\"309\" text-anchor=\"middle\" font-size=\"16\">Endpoint A：要求者</text></g><g data-walk-target=\"sw\"><rect x=\"330\" y=\"40\" width=\"250\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"455.0\" y=\"69\" text-anchor=\"middle\" font-size=\"16\">Switch：ACS 控制點</text></g><g data-walk-target=\"bep\"><rect x=\"630\" y=\"280\" width=\"250\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"755.0\" y=\"309\" text-anchor=\"middle\" font-size=\"16\">Endpoint B：目的端</text></g><g data-walk-target=\"rc\"><rect x=\"630\" y=\"40\" width=\"250\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"755.0\" y=\"69\" text-anchor=\"middle\" font-size=\"16\">Root Complex：檢查</text></g><g data-walk-target=\"a\"><path d=\"M150 280 L330 108\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"330,108 326.22438194620037,118.52353117122871 319.3158042307372,111.29362425969754\" fill=\"var(--accent)\"/><text x=\"240.0\" y=\"184.0\" text-anchor=\"middle\" font-size=\"16\">要求</text></g><g data-walk-target=\"b\"><path d=\"M580 74 L630 74\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"630,74 620.0,79.0 620.0,69.0\" fill=\"var(--accent)\"/><text x=\"605.0\" y=\"64.0\" text-anchor=\"middle\" font-size=\"16\">Redirect</text></g><g data-walk-target=\"c\"><path d=\"M455 108 L755 280\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"755,280 743.8377751509651,279.36381101896694 748.8116162754055,270.68850673215223\" fill=\"var(--accent)\"/><text x=\"605.0\" y=\"184.0\" text-anchor=\"middle\" font-size=\"16\">允許的正常路由</text></g></svg>",
+  "order_html": "<p>從A的要求走到控制點，再依設定選路。兩個出口是條件分支，並非要求一定先直達再往上走。</p>",
+  "caption_html": "<p>作者依 Base 6.0 繪製的教學示意；省略與本章無關的交換。</p>",
+  "steps": [
+    {
+      "title": "先找到控制點",
+      "targets": [
+        "aep",
+        "a",
+        "sw"
+      ],
+      "html": "<p>ACS（決定正常路由、阻擋或導引的存取控制）依元件與方向檢查交易。先定位是哪個 Port 收到哪個方向的封包。</p>",
+      "condition_html": "<p>同一個Switch下方的拓樸位置，不會自動消除存取控制。</p>",
+      "source_html": "<p>Base 6.0 §6.12，p.751。</p>",
+      "claim_ids": [
+        "PCIE-CH28-001"
+      ]
+    },
+    {
+      "title": "再看要求是否被導引",
+      "targets": [
+        "b",
+        "rc"
+      ],
+      "html": "<p>啟用適用的 P2P Request Redirect 時，Switch 的下游Port會把同儕要求往Root Complex導引。</p>",
+      "condition_html": "<p>Request Redirect 不影響完成回覆；完成回覆另有自己的Redirect控制。</p>",
+      "source_html": "<p>Base 6.0 §6.12.1，p.753。</p>",
+      "claim_ids": [
+        "PCIE-CH28-002"
+      ]
+    },
+    {
+      "title": "依有效條件判讀直達路徑",
+      "targets": [
+        "c",
+        "bep"
+      ],
+      "html": "<p>確認沒有要求阻擋或導引條件，且路徑支援該交易後，才依正常路由送到目的端。</p>",
+      "condition_html": "<p>Root Port 宣告某個ACS導引能力，不等於Root Complex保證提供同儕傳輸。</p>",
+      "source_html": "<p>Base 6.0 §6.12.1，p.753，footnote 121。</p>",
+      "claim_ids": [
+        "PCIE-CH28-002"
+      ]
+    }
+  ]
+}

@@ -119,26 +119,85 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 .nvme-qa :focus-visible {outline:3px solid var(--qr-accent);outline-offset:3px;}
 @media(max-width:600px){.nvme-qa .qa-question{padding:1rem}.nvme-qa .qa-glossary{padding:1rem}.nvme-qa .qa-state{flex-direction:column}.nvme-qa .qa-flow{padding:.8rem}.nvme-qa .qa-flow-steps>li.qa-flow-branch{margin-left:.3rem}}
 @media print{.nvme-qa .qa-controls,.nvme-qa .qa-theme,.nvme-qa .qa-back{display:none}.nvme-qa details::details-content{display:block}.nvme-qa details>*{display:block!important}.nvme-qa .qa-question{break-inside:auto}.nvme-qa .qa-flow-steps>li{break-inside:avoid}}
+
+/* Applied only to explicitly authorized teaching roots. */
+html .spec-teaching[data-spec-series] .st-terms { margin:.35rem 0 1rem; padding:.5rem .8rem; border-inline-start:3px solid var(--st-accent); background:var(--st-soft); font-size:.88em; color:var(--st-muted); }
+html .spec-teaching[data-spec-series] .st-terms > div { display:flex; flex-wrap:wrap; gap:.2em .7em; }
+html .spec-teaching[data-spec-series] .st-terms dt { font-weight:650; }
+html .spec-teaching[data-spec-series] .st-terms dd { margin:0; flex:1 1 14em; }
+html .spec-teaching[data-spec-series] {
+ --st-diagram-width:900px;
+ --st-paper:#f2f6f8; --st-surface:#fff; --st-ink:#192d40; --st-muted:#4c6479;
+ --st-line:#cbd9e3; --st-accent:#145f9d; --st-soft:#edf5fc;
+ --paper:var(--st-paper); --surface:var(--st-surface); --surface-2:var(--st-soft); --surface-alt:var(--st-soft);
+ --ink:var(--st-ink); --muted:var(--st-muted); --line:var(--st-line);
+ --accent:var(--st-accent); --accent-2:var(--st-accent); --soft:var(--st-soft); --blue-soft:var(--st-soft); --teal-soft:var(--st-soft);
+ --qr-paper:var(--st-paper); --qr-surface:var(--st-surface); --qr-ink:var(--st-ink); --qr-muted:var(--st-muted);
+ --qr-line:var(--st-line); --qr-accent:var(--st-accent); --qr-soft:var(--st-soft);
+ color:var(--st-ink); background:var(--st-paper); font-size:17px; line-height:1.9;
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+}
+html .spec-teaching[data-spec-series="nvme"] { --st-accent:#086b56; --st-soft:#e7f4ee; }
+@media(prefers-color-scheme:dark) {
+ html:not([data-theme="light"]) .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+ html:not([data-theme="light"]) .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+}
+html[data-theme="dark"] .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+html[data-theme="dark"] .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+.spec-teaching * { box-sizing:border-box; }
+.spec-teaching :is(h1,h2,h3,h4,h5,p,li,td,th,summary,strong,figcaption) { color:var(--st-ink); }
+.spec-teaching svg text { font-family:inherit; }
+.spec-teaching h1 { font-size:clamp(1.8rem,3.2vw,2.65rem); line-height:1.4; }
+.spec-teaching h2 { font-size:clamp(1.3rem,2.5vw,1.7rem); line-height:1.55; }
+.spec-teaching h3 { font-size:1.15rem; line-height:1.65; }
+.spec-teaching h4 { font-size:1rem; line-height:1.7; }
+.spec-teaching :is(h1,h2,h3,h4) { overflow-wrap:anywhere; }
+.spec-teaching p { margin:.7rem 0 1.15rem; }
+.spec-teaching :is(a,summary) { text-underline-offset:.2em; }
+.spec-teaching :focus-visible { outline:3px solid var(--st-accent); outline-offset:4px; }
+.spec-teaching :is(.qa-takeaway,.qa-answer-lead,.st-takeaway) { color:var(--st-ink); font-weight:650; font-size:1.06rem; line-height:1.9; }
+.spec-teaching :is(.qa-question,.qr-card,.guided-walk) { border:1px solid var(--st-line); border-radius:12px; background:var(--st-surface); padding:clamp(18px,3vw,30px); margin:1.8rem 0; }
+.spec-teaching :is(.qa-flow,.qr-note,.qr-observations,.st-context,.st-route) { background:var(--st-soft); border-left:4px solid var(--st-accent); padding:1rem 1.2rem; margin:1.4rem 0; }
+.spec-teaching :is(.qr-step,.qa-qid,.st-label) { color:var(--st-accent); font-weight:700; }
+.spec-teaching :is(.qa-citations,.qa-source-links,.qr-case-sources,.walk-source,.st-source) { font-size:.84rem; line-height:1.75; color:var(--st-muted); overflow-wrap:anywhere; }
+.spec-teaching :is(.qr-table,.table-wrap) { overflow-x:auto; margin:1.4rem 0; border-radius:7px; }
+.spec-teaching :is(th,td) { line-height:1.8; vertical-align:top; min-width:120px; }
+.spec-teaching :is(table,td) { background:var(--st-surface); }
+.spec-teaching th { background:var(--st-soft); }
+.spec-teaching .st-step { border-left:3px solid var(--st-line); padding:.6rem 1rem; margin:1.2rem 0; }
+.spec-teaching .st-step:target { border-left-color:var(--st-accent); background:var(--st-soft); }
+.spec-teaching .st-glossary { border:1px solid var(--st-line); padding:.7rem 1rem; margin:1.4rem 0; border-radius:8px; }
+.spec-teaching .st-glossary > summary { min-height:44px; cursor:pointer; }
+.spec-teaching .st-specs { display:flex; flex-wrap:wrap; gap:.4rem 1rem; color:var(--st-muted); font-size:.8rem; line-height:1.8; margin:1rem 0; }
+.spec-teaching .st-specs span { border-bottom:2px solid var(--st-accent); padding:.2rem 0; }
+@media(max-width:620px) { .spec-teaching :is(.qa-question,.qr-card,.guided-walk) { padding:16px; } .spec-teaching .diagram svg { min-width:var(--st-diagram-width); } }
+@media print {
+ .spec-teaching { --st-paper:#fff!important; --st-surface:#fff!important; --st-ink:#000!important; --st-muted:#333!important; --st-line:#999!important; --st-accent:#000!important; --st-soft:#fff!important; }
+ .spec-teaching details > * { display:block!important; }
+ .spec-teaching details::details-content { content-visibility:visible!important; }
+ .spec-teaching .st-step { break-inside:avoid; }
+}
 </style></head><body class="qr-standalone">
-<div class="nvme-quickref nvme-qa">
+<div class="nvme-quickref nvme-qa spec-teaching" data-spec-series="nvme">
 <nav class="qr-top" aria-label="題庫與版本"><a href="#content">跳到內容</a><a href="index.html">題庫總索引</a><a href="/nvme/question-bank/errors/zh-tw/">Pages 中文</a><a href="/nvme/question-bank/errors/en/">English</a></nav>
 <button class="qa-theme" type="button" data-theme-toggle>切換明／暗色</button>
-<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–328</p>
-<header><p class="qa-range">Q93–Q106</p><h1>錯誤 Status 與 Error Information</h1><p class="qr-intro">本冊從一筆失敗命令出發，先判斷錯誤類型，再找補充記錄與恢復依據。重點是把原命令、完成狀態及歷史資料對回同一件事。</p><p>先練習，再展開解答。各題依需要使用文字、欄位判讀、比較或流程說明，不要求相同的回答項目。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p></header>
-<aside class="qa-glossary"><h2>先認識本文使用的字詞</h2><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></aside>
+<main id="content"><p class="qr-eyebrow">NVMe · Q1–328</p>
+<div class="st-specs" aria-label="Specification editions"><span>NVM Express Base 2.4</span><span>NVM Command Set 1.3</span><span>NVMe over PCIe Transport 1.4</span></div>
+<header><p class="qa-range">Q93–Q106</p><h1>錯誤 Status 與 Error Information</h1><aside class="st-context"><p>先用 SQID（Submission Queue Identifier）與 CID（Command Identifier）找回原命令，再讀 CQE（Completion Queue Entry，完成項目）的狀態。SCT（Status Code Type）選狀態類別，SC（Status Code）給該類別中的代碼；補充紀錄再依命令身分與時間對照。</p></aside><p class="qr-intro">本冊從一筆失敗命令出發，先判斷錯誤類型，再找補充記錄與恢復依據。重點是把原命令、完成狀態及歷史資料對回同一件事。</p><p>每個問題都接著完整解說，依內容帶讀欄位、比較機制或追蹤流程。先看本冊總覽，再沿問題閱讀；必要條件與正常路徑直接顯示。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SCT</dt><dd>Status Code Type，完成狀態代碼類型</dd></div></dl></header>
 <section id="overview" class="qa-overview"><h2>把三種證據分開讀</h2><p class="qa-takeaway">先確認命令身分，再比較錯誤；名稱相似的紀錄不一定描述相同事件。</p>
-<div class="qr-table" tabindex="0" role="region" aria-label="可橫向捲動的比較表"><table><thead><tr><th scope="col">證據</th><th scope="col">能回答什麼</th><th scope="col">不能直接推論什麼</th></tr></thead><tbody><tr><td>CQE</td><td>該命令的完成結果</td><td>所有媒體效果已撤銷</td></tr><tr><td>Error Information</td><td>錯誤補充欄位及參數位置</td><td>每個失敗都必有一筆</td></tr><tr><td>PEL</td><td>支援的持續事件</td><td>完整命令執行歷史</td></tr></tbody></table></div>
-<p><strong>舉例看懂：</strong>一筆命令同時有非法 NSID 與壞的 PRP，可能先檢出任一條件。若要驗證 Invalid Namespace，就應先修正指標，只保留一個錯誤原因。</p>
+<div class="qr-table" tabindex="0" role="region" aria-label="可橫向捲動的比較表"><table><thead><tr><th scope="col">證據</th><th scope="col">能回答什麼</th><th scope="col">不能直接推論什麼</th></tr></thead><tbody><tr><td>CQE</td><td>該命令的完成結果</td><td>所有媒體效果已撤銷</td></tr><tr><td>Error Information</td><td>錯誤補充欄位及參數位置</td><td>每個失敗都必有一筆</td></tr><tr><td>PEL</td><td>支援的持續事件</td><td>完整命令執行歷史</td></tr></tbody></table><dl class="st-terms" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry，佇列中的完成項目</dd></div></dl></div>
+<p><strong>舉例看懂：</strong>一筆命令同時有非法 NSID 與壞的 PRP，可能先檢出任一條件。若要驗證 Invalid Namespace，就應先修正指標，只保留一個錯誤原因。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>NSID</dt><dd>Namespace Identifier，邏輯儲存空間識別碼</dd></div><div><dt>PRP</dt><dd>Physical Region Page，描述資料頁位置的指標</dd></div></dl>
 <p class="qa-citations">來源：<a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-pelcontext">Base 2.4 §5.2.13.1.14–5.2.13.1.14.2.5 (exclude PCIe link/packet decoding)</a></p>
 </section>
 <section class="qa-lesson"><h2>先把觀念接起來</h2>
-<article><h3>教學 1 · Status 是分類，不是完整根因</h3><p>Invalid Field 告訴你要求中有不合法欄位，但不一定直接指出是哪一個。保存原始 SQE 後，再使用 Error Information 的 Parameter Error Location 等欄位縮小範圍。若該位置無效或沒有額外資訊，就應承認還無法定位，不要只靠 Status 名稱猜一個欄位。</p>
+<article><h3>教學 1 · Status 是分類，不是完整根因</h3><p>Invalid Field 告訴你要求中有不合法欄位，但不一定直接指出是哪一個。保存原始 SQE 後，再使用 Error Information 的 Parameter Error Location 等欄位縮小範圍。若該位置無效或沒有額外資訊，就應承認還無法定位，不要只靠 Status 名稱猜一個欄位。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SQE</dt><dd>Submission Queue Entry，佇列中的命令項目</dd></div></dl>
 </article>
-<article><h3>教學 2 · 重試前要先修正前提</h3><p>DNR=0 表示重試可能成功，不保證立刻原樣重送一定有效。如果原因是 namespace 還沒 ready，就需等狀態改變；如果是參數不合法，則需先修正參數。先問「哪個條件已經不同」，再決定重試，才能避免無意義的重複命令。</p>
+<article><h3>教學 2 · 重試前要先修正前提</h3><p>DNR=0 表示重試可能成功，不保證立刻原樣重送一定有效。如果原因是 namespace 還沒 ready，就需等狀態改變；如果是參數不合法，則需先修正參數。先問「哪個條件已經不同」，再決定重試，才能避免無意義的重複命令。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>DNR</dt><dd>Do Not Retry，命令重試的狀態提示</dd></div></dl>
 </article>
 <article><h3>教學 3 · 記錄容量會改變看得到的歷史</h3><p>錯誤紀錄的有效 entries 與累計 Error Count 不同。舊 entry 可能因容量或 reset 消失，但計數仍可保留。看到計數大於目前可讀筆數是合理情況；查不到原 entry 只能說證據不完整，不能反推那次錯誤沒發生。</p>
 </article>
 </section>
+<details class="qa-glossary st-glossary"><summary>需要時回顧本篇名詞</summary><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></details>
 <div class="qa-controls" hidden><label>搜尋本頁 <input type="search" id="qa-search" placeholder="題號、欄位或關鍵字"></label><button type="button" data-expand="true">展開全部解答</button><button type="button" data-expand="false">收合全部解答</button><output id="qa-count" aria-live="polite"></output></div>
 <section id="question-index"><h2>本冊題目</h2><ol class="qa-index">
 <li><a href="#q-093">Q93 · Invalid Opcode、Invalid Field、CID Conflict 與 Sequence Error 如何區分？</a></li>
@@ -156,75 +215,78 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <li><a href="#q-105">Q105 · 哪些嚴重情況可能設定 CSTS.CFS，Host 應怎麼判斷？</a></li>
 <li><a href="#q-106">Q106 · 如何交叉比對 CQE、Error Information 與 Persistent Event？</a></li>
 </ol></section>
-<article class="qa-question" id="q-093" data-question="93" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-093">Q93</a> Invalid Opcode、Invalid Field、CID Conflict 與 Sequence Error 如何區分？</h2>
-<p class="qa-prompt">先說出比較對象最重要的差別，並舉一個不能互相代用的例子。</p>
-<details class="qa-answer" id="q-093-answer"><summary>展開解答與推導</summary>
-<p class="qa-answer-lead" id="q-093-a-01">先判斷錯誤發生在哪一層，才知道要修改命令內容，還是修正 Host 的命令管理。例如 Opcode 不受支援，與同一條 SQ 重複使用尚未完成的 CID，是兩種不同問題。</p><div class="qa-sections">
+<article class="qa-question" id="q-093" data-question="93" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-093">Q93</a> Invalid Opcode、Invalid Field、CID Conflict 與 Sequence Error 如何區分？</h2><dl class="st-terms" aria-label="本段名詞"><div><dt>CID</dt><dd>Command Identifier，同一提交佇列內的命令識別碼</dd></div></dl>
+
+<details open class="qa-answer" id="q-093-answer"><summary>跟著解說理解</summary>
+<p class="qa-answer-lead" id="q-093-a-01">先判斷錯誤發生在哪一層，才知道要修改命令內容，還是修正 Host 的命令管理。例如 Opcode 不受支援，與同一條 SQ 重複使用尚未完成的 CID，是兩種不同問題。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SQ</dt><dd>Submission Queue，提交佇列</dd></div></dl><div class="qa-sections">
 <section class="qa-section" id="q-093-s-01" data-answer-section="1"><h3><span>1.</span> 差別在哪裡</h3>
-<span class="qa-anchor" id="q-093-a-02"></span><p>Status 描述指定 SQID／CID 的完成；除非另外發現 queue 或 controller 故障，不應把單一命令的參數錯誤擴大成整個裝置失效。</p>
-<span class="qa-anchor" id="q-093-a-04"></span><p>SCT=0：SC=01h 是 Invalid Command Opcode；02h 是 Invalid Field in Command；03h 是 Command ID Conflict；0Ch 是 Command Sequence Error。CID 的唯一性以同一條 SQ 的未完成命令為範圍。</p>
+<span class="qa-anchor" id="q-093-a-02"></span><p>Status 描述指定 SQID／CID 的完成；除非另外發現 queue 或 controller 故障，不應把單一命令的參數錯誤擴大成整個裝置失效。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SQID</dt><dd>Submission Queue Identifier，提交佇列識別碼</dd></div></dl>
+<span class="qa-anchor" id="q-093-a-04"></span><p>SCT=0：SC=01h 是 Invalid Command Opcode；02h 是 Invalid Field in Command；03h 是 Command ID Conflict；0Ch 是 Command Sequence Error。CID 的唯一性以同一條 SQ 的未完成命令為範圍。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SQ</dt><dd>Submission Queue，提交佇列</dd></div></dl>
 </section>
 <section class="qa-section" id="q-093-s-02" data-answer-section="2"><h3><span>2.</span> 如何選擇與確認</h3>
 <span class="qa-anchor" id="q-093-a-03"></span><p>先以 Identify 與 Commands Supported and Effects 確認 Opcode，再查該命令的欄位與順序要求。CID 是否重複，則要查看 Host 的 outstanding 清單。</p>
-<span class="qa-anchor" id="q-093-a-05"></span><p>保留原始 SQE，確認命令集與支援能力，逐一檢查指定欄位，再重建命令先後順序。一次只改一個已確認的問題，才能知道哪項修正有效。</p>
+<span class="qa-anchor" id="q-093-a-05"></span><p>保留原始 SQE，確認命令集與支援能力，逐一檢查指定欄位，再重建命令先後順序。一次只改一個已確認的問題，才能知道哪項修正有效。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SQE</dt><dd>Submission Queue Entry，佇列中的命令項目</dd></div></dl>
 <span class="qa-anchor" id="q-093-a-06"></span><p>合法且成功執行的命令回成功 CQE；如果測試故意製造錯誤，正確結果則是符合該條件的錯誤完成，不能要求所有測試都回成功。</p>
 </section>
-<section class="qa-section" id="q-093-s-03" data-answer-section="3"><h3><span>3.</span> 哪些結論不能互相套用</h3>
+<section class="qa-section" id="q-093-s-03" data-answer-section="3"><h3><span>3.</span> 比較時要保留的條件</h3>
 <span class="qa-anchor" id="q-093-a-07"></span><p>Invalid Field 應在沒有更明確指定 Status 時使用。若同時存在多個錯誤，除非另有優先規則，controller 可選擇其中一個；CID Conflict 的搜尋深度也是實作相關。</p>
-<span class="qa-anchor" id="q-093-a-16"></span><p>將支援宣告、SQE 與 CQE 對在一起。若用一筆同時有非法 Opcode、非法 NSID 的命令驗證精確 Status，測試本身就無法隔離原因。</p>
+<span class="qa-anchor" id="q-093-a-16"></span><p>將支援宣告、SQE 與 CQE 對在一起。若用一筆同時有非法 Opcode、非法 NSID 的命令驗證精確 Status，測試本身就無法隔離原因。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>NSID</dt><dd>Namespace Identifier，邏輯儲存空間識別碼</dd></div></dl>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-sqe">Base 2.4 §4.1.1</a> · <a href="#ref-order">Base 2.4 §3.4.1–3.4.5</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-093-a-17"></span><span class="qa-anchor" id="q-093-a-08"></span><span class="qa-anchor" id="q-093-a-09"></span><span class="qa-anchor" id="q-093-a-10"></span><span class="qa-anchor" id="q-093-a-11"></span><span class="qa-anchor" id="q-093-a-12"></span><span class="qa-anchor" id="q-093-a-13"></span><span class="qa-anchor" id="q-093-a-14"></span><span class="qa-anchor" id="q-093-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-sqe">Base 2.4 §4.1.1</a> · <a href="#ref-order">Base 2.4 §3.4.1–3.4.5</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-094" data-question="94" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-094">Q94</a> Namespace、Log、Queue、Queue Size 與 Interrupt Vector 錯誤如何定位？</h2>
-<p class="qa-prompt">先說出比較對象最重要的差別，並舉一個不能互相代用的例子。</p>
-<details class="qa-answer" id="q-094-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-094-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-094-a-01">這些錯誤都與識別或範圍有關，但所指的物件不同。先知道命令要查或建立哪個物件，才能判斷數值是否存在、是否有效，以及是否允許在這裡使用。</p><div class="qa-sections">
 <section class="qa-section" id="q-094-s-01" data-answer-section="1"><h3><span>1.</span> 差別在哪裡</h3>
-<span class="qa-anchor" id="q-094-a-02"></span><p>NSID 指 namespace，LID 指 Log 類型，QID 指 queue；QSIZE 是深度的編碼，IV 是中斷向量。它們不能因為都是數字，就共用同一套有效範圍。</p>
-<span class="qa-anchor" id="q-094-a-04"></span><p>常見對照為 Invalid Namespace or Format 0/0Bh、Invalid Log Page 1/09h、Invalid Queue Identifier 1/01h、Invalid Queue Size 1/02h、Invalid Interrupt Vector 1/08h；Create SQ 的無效 CQID 則有 Completion Queue Invalid 1/00h。</p>
+<span class="qa-anchor" id="q-094-a-02"></span><p>NSID 指 namespace，LID 指 Log 類型，QID 指 queue；QSIZE 是深度的編碼，IV 是中斷向量。它們不能因為都是數字，就共用同一套有效範圍。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>LID</dt><dd>Log Page Identifier，紀錄頁識別碼</dd></div></dl>
+<span class="qa-anchor" id="q-094-a-04"></span><p>常見對照為 Invalid Namespace or Format 0/0Bh、Invalid Log Page 1/09h、Invalid Queue Identifier 1/01h、Invalid Queue Size 1/02h、Invalid Interrupt Vector 1/08h；Create SQ 的無效 CQID 則有 Completion Queue Invalid 1/00h。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CQID</dt><dd>Completion Queue Identifier，完成佇列識別碼</dd></div></dl>
 </section>
 <section class="qa-section" id="q-094-s-02" data-answer-section="2"><h3><span>2.</span> 如何選擇與確認</h3>
 <span class="qa-anchor" id="q-094-a-03"></span><p>使用 Active／Allocated Namespace List、Supported Log Pages、CAP.MQES、Number of Queues 與可用中斷資源，建立測試前的配置快照。</p>
 <span class="qa-anchor" id="q-094-a-05"></span><p>先建立合法基準命令，再只替換目標欄位。例如測 QSIZE 超限時，應保留合法 QID、位址及 IV，避免另一個錯誤先被回報。</p>
 <span class="qa-anchor" id="q-094-a-06"></span><p>合法建立成功後，Host 才能將 queue 視為存在。錯誤測試完成後，還要確認沒有留下可使用的半完成 queue 配置。</p>
 </section>
-<section class="qa-section" id="q-094-s-03" data-answer-section="3"><h3><span>3.</span> 哪些結論不能互相套用</h3>
+<section class="qa-section" id="q-094-s-03" data-answer-section="3"><h3><span>3.</span> 比較時要保留的條件</h3>
 <span class="qa-anchor" id="q-094-a-07"></span><p>上述代碼只適用於對應命令及條件。對 Get Log 使用錯誤 NSID，可能依該 Log 的 scope 規則回 Invalid Field；不能一律要求 Invalid Namespace。</p>
 <span class="qa-anchor" id="q-094-a-16"></span><p>把命令專屬完成表與當時配置共同驗證，而不是只用通用 Status 名稱比對。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-nsid">Base 2.4 §3.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-094-a-17"></span><span class="qa-anchor" id="q-094-a-08"></span><span class="qa-anchor" id="q-094-a-09"></span><span class="qa-anchor" id="q-094-a-10"></span><span class="qa-anchor" id="q-094-a-11"></span><span class="qa-anchor" id="q-094-a-12"></span><span class="qa-anchor" id="q-094-a-13"></span><span class="qa-anchor" id="q-094-a-14"></span><span class="qa-anchor" id="q-094-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-nsid">Base 2.4 §3.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-095" data-question="95" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-095">Q95</a> Firmware、Format 與容量錯誤為何不能只看名稱？</h2>
-<p class="qa-prompt">先說出比較對象最重要的差別，並舉一個不能互相代用的例子。</p>
-<details class="qa-answer" id="q-095-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-095-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-095-a-01">目的在區分映像、格式與資源問題，避免將不同命令回傳的「容量不足」混成同一件事。修正 slot 選擇，不會解決 namespace 配置容量不足。</p><div class="qa-sections">
 <section class="qa-section" id="q-095-s-01" data-answer-section="1"><h3><span>1.</span> 差別在哪裡</h3>
 <span class="qa-anchor" id="q-095-a-02"></span><p>Firmware Commit 影響韌體映像與啟用安排；Format 改變目標 namespace 的格式；Namespace Management 與 Capacity Management 分別管理不同層級的容量。</p>
 <span class="qa-anchor" id="q-095-a-04"></span><p>Invalid Firmware Slot=1/06h，Invalid Firmware Image=1/07h，Invalid Format=1/0Ah。Namespace Insufficient Capacity=1/15h；Capacity Management 的 Insufficient Capacity=1/26h；一般 Capacity Exceeded=0/81h。</p>
 </section>
 <section class="qa-section" id="q-095-s-02" data-answer-section="2"><h3><span>2.</span> 如何選擇與確認</h3>
-<span class="qa-anchor" id="q-095-a-03"></span><p>檢查 FRMW／Firmware Slot Information、支援的 LBA formats、總容量與未配置容量，以及命令的操作範圍。</p>
+<span class="qa-anchor" id="q-095-a-03"></span><p>檢查 FRMW／Firmware Slot Information、支援的 LBA formats、總容量與未配置容量，以及命令的操作範圍。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>LBA</dt><dd>Logical Block Address，邏輯區塊位址</dd></div></dl>
 <span class="qa-anchor" id="q-095-a-05"></span><p>先確認 Opcode，再讀它的錯誤條件；重算要求的 bytes、logical blocks 或配置單位。只有單位一致，要求量與可用量才有比較意義。</p>
 <span class="qa-anchor" id="q-095-a-06"></span><p>正向測試應得到該操作的完成結果；負向測試則確認錯誤被拒絕，且原先有效的配置仍符合該命令的失敗處理規則。</p>
 </section>
-<section class="qa-section" id="q-095-s-03" data-answer-section="3"><h3><span>3.</span> 哪些結論不能互相套用</h3>
+<section class="qa-section" id="q-095-s-03" data-answer-section="3"><h3><span>3.</span> 比較時要保留的條件</h3>
 <span class="qa-anchor" id="q-095-a-07"></span><p>不要把 1/15h 與 0/81h 視為可任意替換。也不要將 Firmware Activation Requires Reset 類型的狀態直接當成映像損壞，它可能是啟用還需要另一個步驟。</p>
 <span class="qa-anchor" id="q-095-a-16"></span><p>比較配置前後 Identify 與 Log，並保留完整 SCT／SC；只儲存 SC 會遺失類別資訊。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-nsmanage">Base 2.4 §5.2.24–5.2.25, 8.1.17</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-095-a-17"></span><span class="qa-anchor" id="q-095-a-08"></span><span class="qa-anchor" id="q-095-a-09"></span><span class="qa-anchor" id="q-095-a-10"></span><span class="qa-anchor" id="q-095-a-11"></span><span class="qa-anchor" id="q-095-a-12"></span><span class="qa-anchor" id="q-095-a-13"></span><span class="qa-anchor" id="q-095-a-14"></span><span class="qa-anchor" id="q-095-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-nsmanage">Base 2.4 §5.2.24–5.2.25, 8.1.17</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-096" data-question="96" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-096">Q96</a> Data Transfer Error、Internal Error 與 Namespace Not Ready 有何不同？</h2>
-<p class="qa-prompt">先說出比較對象最重要的差別，並舉一個不能互相代用的例子。</p>
-<details class="qa-answer" id="q-096-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-096-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-096-a-01">三者分別指出資料傳輸、controller 內部處理及 namespace 可存取狀態。區分原因，才能選擇修正記憶體映射、處理裝置錯誤，或等待狀態改變。</p><div class="qa-sections">
 <section class="qa-section" id="q-096-s-01" data-answer-section="1"><h3><span>1.</span> 差別在哪裡</h3>
 <span class="qa-anchor" id="q-096-a-02"></span><p>Data Transfer Error 與 Internal Error 通常針對該命令；Namespace Not Ready 針對所選 namespace 的可用性。任何一項都不能單憑名稱推論全部 namespace 已毀損。</p>
@@ -235,7 +297,7 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-096-a-05"></span><p>先保存 CQE，再檢查資料位址與 buffer 使用期間；若位址正確，結合 Error Log、CSTS 及 namespace 狀態定位。失敗的 Read buffer 不應當成有效讀取結果。</p>
 <span class="qa-anchor" id="q-096-a-06"></span><p>恢復後的成功命令才提供有效結果；看到 RDY=1，只表示對應 controller ready 條件成立，不保證每個 namespace 可立即存取。</p>
 </section>
-<section class="qa-section" id="q-096-s-03" data-answer-section="3"><h3><span>3.</span> 哪些結論不能互相套用</h3>
+<section class="qa-section" id="q-096-s-03" data-answer-section="3"><h3><span>3.</span> 比較時要保留的條件</h3>
 <span class="qa-anchor" id="q-096-a-07"></span><p>Namespace Not Ready 不用來取代已定義的 ANA 狀態錯誤。Internal Error 也不必然要求 CFS=1；只有更嚴重的 controller 情況才另行判定。</p>
 <span class="qa-anchor" id="q-096-a-16"></span><p>確認錯誤種類與證據一致：合法資料指標不排除裝置內部錯誤；namespace 暫時不可用也不表示 Opcode 不受支援。</p>
 </section>
@@ -243,13 +305,14 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-096-a-09"></span><p>Internal Error 的細節建議透過對應錯誤 AER 回報；Data Transfer Error 或 Namespace Not Ready 則不能一律要求同樣的事件。仍需區分事件發生、回報條件與是否有 AER 可用。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a> · <a href="#ref-ready">Base 2.4 §3.5.3–3.5.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-096-a-17"></span><span class="qa-anchor" id="q-096-a-08"></span><span class="qa-anchor" id="q-096-a-10"></span><span class="qa-anchor" id="q-096-a-11"></span><span class="qa-anchor" id="q-096-a-12"></span><span class="qa-anchor" id="q-096-a-13"></span><span class="qa-anchor" id="q-096-a-14"></span><span class="qa-anchor" id="q-096-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a> · <a href="#ref-ready">Base 2.4 §3.5.3–3.5.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-097" data-question="97" data-answer-kind="error"><h2><a class="qa-qid" href="#q-097">Q97</a> Power Loss、Abort、SQ Deletion 與 Fused 失敗如何反映於完成？</h2>
-<p class="qa-prompt">先區分失敗條件，再判斷是否有規範明定的回報結果。</p>
-<details class="qa-answer" id="q-097-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-097-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-097-a-01">中止原因決定 Status，也決定 Host 能否期待 CQE。尤其突然斷電或 Reset 可能讓完成通道消失，不能要求裝置在無法通訊後仍逐筆回報。</p><div class="qa-sections">
 <section class="qa-section" id="q-097-s-01" data-answer-section="1"><h3><span>1.</span> 先區分是哪一種失敗</h3>
 <span class="qa-anchor" id="q-097-a-02"></span><p>Abort 指向一筆命令，SQ Deletion 涵蓋該 SQ 的未完成命令，Fused 失敗涉及配對操作；電源及 Reset 的範圍則可能更大。</p>
@@ -266,13 +329,14 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-097-a-17"></span><p>先確認是否真的收到 Power Loss Notification，或其實是突然失去電源；這會改變對完成回報的期待。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-abort">Base 2.4 §5.2.1</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-order">Base 2.4 §3.4.1–3.4.5</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-097-a-08"></span><span class="qa-anchor" id="q-097-a-09"></span><span class="qa-anchor" id="q-097-a-10"></span><span class="qa-anchor" id="q-097-a-11"></span><span class="qa-anchor" id="q-097-a-12"></span><span class="qa-anchor" id="q-097-a-13"></span><span class="qa-anchor" id="q-097-a-14"></span><span class="qa-anchor" id="q-097-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-abort">Base 2.4 §5.2.1</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-order">Base 2.4 §3.4.1–3.4.5</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
-<article class="qa-question" id="q-098" data-question="98" data-answer-kind="diagnose"><h2><a class="qa-qid" href="#q-098">Q98</a> Host 如何依 Status、More、DNR 與 CRD 決定下一步？</h2>
-<p class="qa-prompt">先列出已知證據與仍缺少的資訊，再決定能不能判定韌體違規。</p>
-<details class="qa-answer" id="q-098-answer"><summary>展開解答與推導</summary>
+<article class="qa-question" id="q-098" data-question="98" data-answer-kind="diagnose"><h2><a class="qa-qid" href="#q-098">Q98</a> Host 如何依 Status、More、DNR 與 CRD 決定下一步？</h2><dl class="st-terms" aria-label="本段名詞"><div><dt>DNR</dt><dd>Do Not Retry，命令重試的狀態提示</dd></div></dl>
+
+<details open class="qa-answer" id="q-098-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-098-a-01">復原要先找出失敗原因，再決定重試是否合理。DNR=0 只是相同命令可能成功，不代表可以忽略資料是否已部分執行，或無限立即重送。</p><div class="qa-sections">
 <section class="qa-section" id="q-098-s-01" data-answer-section="1"><h3><span>1.</span> 先保留哪些證據</h3>
 <span class="qa-anchor" id="q-098-a-02"></span><p>這些欄位屬於單一命令完成；Abort、刪 queue 或 Reset 則會擴大處理範圍，應以失敗影響與通道可用性決定。</p>
@@ -283,22 +347,23 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-098-a-17"></span><p>先檢查測試是否把 DNR=0 誤寫成「必須立即重試成功」。</p>
 <span class="qa-anchor" id="q-098-a-05"></span><p>先解析錯誤與補充資訊，修正非法參數或等待必要狀態，再判斷命令是否適合重試。若 queue 失效，才進入 queue 復原；Admin 通道失效則考慮 controller 復原。</p>
 </section>
-<section class="qa-section" id="q-098-s-03" data-answer-section="3"><h3><span>3.</span> 什麼結果足以支持結論</h3>
+<section class="qa-section" id="q-098-s-03" data-answer-section="3"><h3><span>3.</span> 把觀察結果接回規格條件</h3>
 <span class="qa-anchor" id="q-098-a-06"></span><p>成功的復原包含有效的新結果，以及不再受舊命令後續動作影響；單純重試回 Success，仍不足以證明先前命令未重複寫入。</p>
 <span class="qa-anchor" id="q-098-a-07"></span><p>Command Interrupted=0/21h 只能在 ACRE=1 時回傳，且 DNR 必須為 0。Format In Progress 也要求 DNR=0；其他錯誤不能只憑名稱自行指定 DNR。</p>
 <span class="qa-anchor" id="q-098-a-16"></span><p>將 Host 的重試時間與 CRD／CRDT 比較；規範建議至少等待該時間，但提早重試本身不算錯誤。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-behavior">Base 2.4 §5.2.30.1.15</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-098-a-08"></span><span class="qa-anchor" id="q-098-a-09"></span><span class="qa-anchor" id="q-098-a-10"></span><span class="qa-anchor" id="q-098-a-11"></span><span class="qa-anchor" id="q-098-a-12"></span><span class="qa-anchor" id="q-098-a-13"></span><span class="qa-anchor" id="q-098-a-14"></span><span class="qa-anchor" id="q-098-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-behavior">Base 2.4 §5.2.30.1.15</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-099" data-question="99" data-answer-kind="concept"><h2><a class="qa-qid" href="#q-099">Q99</a> 哪些錯誤需要 Error Information？</h2>
-<p class="qa-prompt">先用自己的話解釋機制，再舉一個常見誤解。</p>
-<details class="qa-answer" id="q-099-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-099-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-099-a-01">Error Information 補充 CQE 無法容納的錯誤資訊，也能記錄不屬於特定命令的錯誤。它不是全部命令失敗的逐筆交易明細。</p><div class="qa-sections">
 <section class="qa-section" id="q-099-s-01" data-answer-section="1"><h3><span>1.</span> 機制與適用範圍</h3>
-<span class="qa-anchor" id="q-099-a-02"></span><p>LID 01h 的範圍是 controller；entry 是否能對應命令，要看 SQID、CID 及其有效條件。</p>
+<span class="qa-anchor" id="q-099-a-02"></span><p>LID 01h 的範圍是 controller；entry 是否能對應命令，要看 SQID、CID 及其有效條件。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>LID</dt><dd>Log Page Identifier，紀錄頁識別碼</dd></div></dl>
 <span class="qa-anchor" id="q-099-a-04"></span><p>讀 Get Log Page LID=01h，保留 ECNT、SQID、CID、STS、Parameter Error Location、NSID 與 LPVER。</p>
 </section>
 <section class="qa-section" id="q-099-s-02" data-answer-section="2"><h3><span>2.</span> 用操作與結果理解</h3>
@@ -314,17 +379,18 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-099-a-10"></span><p>成功 CQE 不會單憑成功這件事，就要求新增 Error Information entry。 <a class="qa-rule-link" href="#common-command-10">完整條件見本冊說明</a></p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-aerfull">Base 2.4 §5.2.2 (PCIe-applicable events)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-099-a-17"></span><span class="qa-anchor" id="q-099-a-08"></span><span class="qa-anchor" id="q-099-a-09"></span><span class="qa-anchor" id="q-099-a-11"></span><span class="qa-anchor" id="q-099-a-12"></span><span class="qa-anchor" id="q-099-a-13"></span><span class="qa-anchor" id="q-099-a-14"></span><span class="qa-anchor" id="q-099-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-aerfull">Base 2.4 §5.2.2 (PCIe-applicable events)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-100" data-question="100" data-answer-kind="fields"><h2><a class="qa-qid" href="#q-100">Q100</a> 如何從 Error Information 對回原始命令與錯誤欄位？</h2>
-<p class="qa-prompt">先試著說明欄位的單位與編碼，再用一組數值推導結果。</p>
-<details class="qa-answer" id="q-100-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-100-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-100-a-01">關聯紀錄可把「哪個欄位錯了」轉成可驗證的原始 bytes。只看自然語言 Status，通常不足以找到 Host 真正送出的錯誤參數。</p><div class="qa-sections">
 <section class="qa-section" id="q-100-s-01" data-answer-section="1"><h3><span>1.</span> 先確認資料的來源與範圍</h3>
 <span class="qa-anchor" id="q-100-a-02"></span><p>SQID＋CID 對應同一個 queue 使用期間的命令；因為 CID 會重用，還必須搭配 ECNT、時間與當時的命令快照。</p>
-<span class="qa-anchor" id="q-100-a-03"></span><p>確認 LPVER，Base 2.4 的 entry 設為 1；CSI／OPC 在 LPVER≥1 才有效。</p>
+<span class="qa-anchor" id="q-100-a-03"></span><p>確認 LPVER，Base 2.4 的 entry 設為 1；CSI／OPC 在 LPVER≥1 才有效。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CSI</dt><dd>Command Set Identifier，命令集識別碼</dd></div></dl>
 </section>
 <section class="qa-section" id="q-100-s-02" data-answer-section="2"><h3><span>2.</span> 欄位、單位與判讀例子</h3>
 <span class="qa-anchor" id="q-100-a-04"></span><p>Parameter Error Location 的 bits 7:0 是 SQE byte offset，10:8 是該 byte 的 bit；多 byte／bit 欄位指向最低有效位置。此 PEL 縮寫不要與 Persistent Event Log 混淆。</p>
@@ -333,16 +399,17 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 </section>
 <section class="qa-section" id="q-100-s-03" data-answer-section="3"><h3><span>3.</span> 判讀時要保留的條件</h3>
 <span class="qa-anchor" id="q-100-a-07"></span><p>非命令錯誤的 SQID、CID、Parameter Error Location 應為 FFFFh；不能把 FFFFh 當成合法命令的資料偏移去讀記憶體。</p>
-<span class="qa-anchor" id="q-100-a-16"></span><p>比對 namespace 與命令集後再解讀 LBA／CSINFO，因為這些欄位的意義取決於命令，而不是每個錯誤都一定有 failing LBA。</p>
+<span class="qa-anchor" id="q-100-a-16"></span><p>比對 namespace 與命令集後再解讀 LBA／CSINFO，因為這些欄位的意義取決於命令，而不是每個錯誤都一定有 failing LBA。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>LBA</dt><dd>Logical Block Address，邏輯區塊位址</dd></div></dl>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-sqe">Base 2.4 §4.1.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-100-a-17"></span><span class="qa-anchor" id="q-100-a-08"></span><span class="qa-anchor" id="q-100-a-09"></span><span class="qa-anchor" id="q-100-a-10"></span><span class="qa-anchor" id="q-100-a-11"></span><span class="qa-anchor" id="q-100-a-12"></span><span class="qa-anchor" id="q-100-a-13"></span><span class="qa-anchor" id="q-100-a-14"></span><span class="qa-anchor" id="q-100-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-sqe">Base 2.4 §4.1.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-101" data-question="101" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-101">Q101</a> Error Log 的 Status 必須與 CQE 完全逐 bit 相同嗎？</h2>
-<p class="qa-prompt">先說出比較對象最重要的差別，並舉一個不能互相代用的例子。</p>
-<details class="qa-answer" id="q-101-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-101-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-101-a-01">需要區分命令狀態與 Phase。若把包含 Phase 的整個 word 直接比較，可能將合法紀錄判成不一致。</p><div class="qa-sections">
 <section class="qa-section" id="q-101-s-01" data-answer-section="1"><h3><span>1.</span> 差別在哪裡</h3>
 <span class="qa-anchor" id="q-101-a-02"></span><p>只對同一筆命令的 entry 與 CQE 做比較；非命令錯誤並沒有原始 CQE 可逐 bit 對照。</p>
@@ -353,18 +420,19 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-101-a-05"></span><p>保存原始 CQE 與 entry，先抽出 SCT／SC／DNR／M／CRD，再獨立處理 Phase；並確認 ECNT、SQID 與 CID。</p>
 <span class="qa-anchor" id="q-101-a-06"></span><p>同一命令的 Status 應一致；Phase 依其「可回報」的定義處理，不要求所有記錄格式的完整 word 一樣。</p>
 </section>
-<section class="qa-section" id="q-101-s-03" data-answer-section="3"><h3><span>3.</span> 哪些結論不能互相套用</h3>
+<section class="qa-section" id="q-101-s-03" data-answer-section="3"><h3><span>3.</span> 比較時要保留的條件</h3>
 <span class="qa-anchor" id="q-101-a-07"></span><p>非命令錯誤使用最適合的 Status，不是缺少 CQE 就代表錯誤。多個錯誤條件時，也要以實際選定的完成 Status 比對。</p>
 <span class="qa-anchor" id="q-101-a-16"></span><p>同時檢查解析程式是否把 SC、SCT 或 Phase 錯移一位；錯誤的 decoder 會讓所有 entry 都看似不符。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-101-a-17"></span><span class="qa-anchor" id="q-101-a-08"></span><span class="qa-anchor" id="q-101-a-09"></span><span class="qa-anchor" id="q-101-a-10"></span><span class="qa-anchor" id="q-101-a-11"></span><span class="qa-anchor" id="q-101-a-12"></span><span class="qa-anchor" id="q-101-a-13"></span><span class="qa-anchor" id="q-101-a-14"></span><span class="qa-anchor" id="q-101-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-102" data-question="102" data-answer-kind="concept"><h2><a class="qa-qid" href="#q-102">Q102</a> 多個錯誤、Log 容量與 Error Count 如何處理？</h2>
-<p class="qa-prompt">先用自己的話解釋機制，再舉一個常見誤解。</p>
-<details class="qa-answer" id="q-102-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-102-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-102-a-01">Error Count 用來辨識錯誤紀錄，而 Log 容量決定目前看得到多少歷史。兩者不同，所以有限的 Log 可以包含很大的累計序號。</p><div class="qa-sections">
 <section class="qa-section" id="q-102-s-01" data-answer-section="1"><h3><span>1.</span> 機制與適用範圍</h3>
 <span class="qa-anchor" id="q-102-a-02"></span><p>容量與 entry 排序以 controller 的 Error Information 為範圍，不是每個 namespace 各自建立相同數量的 entry。</p>
@@ -380,13 +448,14 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-102-a-16"></span><p>比較 SMART Error Information Log Entries 時，要分清累計值與目前 entry 數；它們的數值不需要相同。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-102-a-17"></span><span class="qa-anchor" id="q-102-a-08"></span><span class="qa-anchor" id="q-102-a-09"></span><span class="qa-anchor" id="q-102-a-10"></span><span class="qa-anchor" id="q-102-a-11"></span><span class="qa-anchor" id="q-102-a-12"></span><span class="qa-anchor" id="q-102-a-13"></span><span class="qa-anchor" id="q-102-a-14"></span><span class="qa-anchor" id="q-102-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-103" data-question="103" data-answer-kind="concept"><h2><a class="qa-qid" href="#q-103">Q103</a> 非 Success CQE 沒有新增 Error Entry，一定違規嗎？</h2>
-<p class="qa-prompt">先用自己的話解釋機制，再舉一個常見誤解。</p>
-<details class="qa-answer" id="q-103-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-103-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-103-a-01">這題練習判斷證據是否足夠。命令失敗與必須提供額外錯誤資訊不是同一項要求，不能只看非零 Status 就宣告韌體違規。</p><div class="qa-sections">
 <section class="qa-section" id="q-103-s-01" data-answer-section="1"><h3><span>1.</span> 機制與適用範圍</h3>
 <span class="qa-anchor" id="q-103-a-02"></span><p>判斷限於這筆命令與其對應的記錄條件，不能用另一筆命令的新 entry 填補這筆命令的證據。</p>
@@ -405,21 +474,22 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-103-a-10"></span><p>成功 CQE 不會單憑成功這件事，就要求新增 Error Information entry。 <a class="qa-rule-link" href="#common-command-10">完整條件見本冊說明</a></p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-103-a-17"></span><span class="qa-anchor" id="q-103-a-08"></span><span class="qa-anchor" id="q-103-a-09"></span><span class="qa-anchor" id="q-103-a-11"></span><span class="qa-anchor" id="q-103-a-12"></span><span class="qa-anchor" id="q-103-a-13"></span><span class="qa-anchor" id="q-103-a-14"></span><span class="qa-anchor" id="q-103-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-104" data-question="104" data-answer-kind="concept"><h2><a class="qa-qid" href="#q-104">Q104</a> 一般命令錯誤後，其他命令是否可以繼續？</h2>
-<p class="qa-prompt">先用自己的話解釋機制，再舉一個常見誤解。</p>
-<details class="qa-answer" id="q-104-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-104-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-104-a-01">多數命令錯誤不會破壞 queue，因此復原可以限制在失敗命令。這能避免為了單一非法參數，無故中止其他正常工作。</p><div class="qa-sections">
 <section class="qa-section" id="q-104-s-01" data-answer-section="1"><h3><span>1.</span> 機制與適用範圍</h3>
 <span class="qa-anchor" id="q-104-a-02"></span><p>先區分命令、queue 與 controller 三層。只有發現更廣泛的故障證據，才擴大復原範圍。</p>
-<span class="qa-anchor" id="q-104-a-04"></span><p>Base 9.1 說明大多數命令錯誤仍應繼續處理命令；嚴重 queue 錯誤則建議刪除並重建相關 SQ／CQ。</p>
+<span class="qa-anchor" id="q-104-a-04"></span><p>Base 9.1 說明大多數命令錯誤仍應繼續處理命令；嚴重 queue 錯誤則建議刪除並重建相關 SQ／CQ。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CQ</dt><dd>Completion Queue，完成佇列</dd></div></dl>
 </section>
 <section class="qa-section" id="q-104-s-02" data-answer-section="2"><h3><span>2.</span> 用操作與結果理解</h3>
 <span class="qa-anchor" id="q-104-a-03"></span><p>檢查 CQE、CSTS.CFS、queue 指標及其他命令是否仍正常完成；Error Information 用來補充原因。</p>
-<span class="qa-anchor" id="q-104-a-05"></span><p>保存失敗命令，確認 queue 沒有損壞後繼續合法命令；若 queue 受損，停止使用並依 SQ→CQ 的相依關係復原。</p>
+<span class="qa-anchor" id="q-104-a-05"></span><p>保存失敗命令，確認 queue 沒有損壞後繼續合法命令；若 queue 受損，停止使用並依 SQ→CQ 的相依關係復原。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CQ</dt><dd>Completion Queue，完成佇列</dd></div></dl>
 <span class="qa-anchor" id="q-104-a-06"></span><p>後續合法命令可以成功完成，同時先前失敗仍保留為一次独立結果。不能因後續成功，就抹去原本的錯誤。</p>
 </section>
 <section class="qa-section" id="q-104-s-03" data-answer-section="3"><h3><span>3.</span> 容易誤判的地方</h3>
@@ -427,13 +497,14 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-104-a-16"></span><p>驗證錯誤隔離能力時，分別觀察同 SQ、共享 CQ 與其他 CQ 的命令，避免將資源壅塞誤認為全部停止。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-104-a-17"></span><span class="qa-anchor" id="q-104-a-08"></span><span class="qa-anchor" id="q-104-a-09"></span><span class="qa-anchor" id="q-104-a-10"></span><span class="qa-anchor" id="q-104-a-11"></span><span class="qa-anchor" id="q-104-a-12"></span><span class="qa-anchor" id="q-104-a-13"></span><span class="qa-anchor" id="q-104-a-14"></span><span class="qa-anchor" id="q-104-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-105" data-question="105" data-answer-kind="diagnose"><h2><a class="qa-qid" href="#q-105">Q105</a> 哪些嚴重情況可能設定 CSTS.CFS，Host 應怎麼判斷？</h2>
-<p class="qa-prompt">先列出已知證據與仍缺少的資訊，再決定能不能判定韌體違規。</p>
-<details class="qa-answer" id="q-105-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-105-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-105-a-01">CFS 提供 Host 在正常完成通道可能失效時仍可查看的嚴重狀態。它不是每筆失敗命令都必須設定的錯誤總旗標。</p><div class="qa-sections">
 <section class="qa-section" id="q-105-s-01" data-answer-section="1"><h3><span>1.</span> 先保留哪些證據</h3>
 <span class="qa-anchor" id="q-105-a-02"></span><p>CFS 屬於 controller。共享 subsystem 的其他 controller 是否受影響，必須另外觀察，不能只靠一個 CFS 位元推論。</p>
@@ -444,7 +515,7 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-105-a-17"></span><p>先確認這是不是 Offline 的 Secondary Controller，避免把預期的管理狀態誤判成硬體損壞。</p>
 <span class="qa-anchor" id="q-105-a-05"></span><p>遇到 timeout 或重複錯誤時讀 CFS；確認是需復原的 fatal 狀態後，先做該 controller 的 Reset 與重新初始化，仍無法清除才評估支援且平台適用的 Subsystem Reset。</p>
 </section>
-<section class="qa-section" id="q-105-s-03" data-answer-section="3"><h3><span>3.</span> 什麼結果足以支持結論</h3>
+<section class="qa-section" id="q-105-s-03" data-answer-section="3"><h3><span>3.</span> 把觀察結果接回規格條件</h3>
 <span class="qa-anchor" id="q-105-a-06"></span><p>復原後應恢復可用狀態與正常命令處理。僅 CFS 清為 0，仍不足以省略 Admin Queue、Ready 與 I/O queue 的重新建立。</p>
 <span class="qa-anchor" id="q-105-a-07"></span><p>CFS 本身不是 CQE，也不以中斷表示此狀態。若 controller 已無法回 CQE，就不能再要求每筆未完成命令都有 Internal Error CQE。</p>
 <span class="qa-anchor" id="q-105-a-16"></span><p>比對 controller 角色、虛擬化狀態、實際通訊能力與 Reset 結果，才可區分預期 Offline 與真正 fatal 問題。</p>
@@ -453,13 +524,14 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-105-a-08"></span><p>讀取 CFS 沒有 CQE，因此 DNR／More 不適用於這個 Register 讀取。只有另外收到命令 CQE 時，才解讀該 CQE 的位元。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-virtual">Base 2.4 §8.2.7</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-105-a-09"></span><span class="qa-anchor" id="q-105-a-10"></span><span class="qa-anchor" id="q-105-a-11"></span><span class="qa-anchor" id="q-105-a-12"></span><span class="qa-anchor" id="q-105-a-13"></span><span class="qa-anchor" id="q-105-a-14"></span><span class="qa-anchor" id="q-105-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-virtual">Base 2.4 §8.2.7</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-106" data-question="106" data-answer-kind="diagnose"><h2><a class="qa-qid" href="#q-106">Q106</a> 如何交叉比對 CQE、Error Information 與 Persistent Event？</h2>
-<p class="qa-prompt">先列出已知證據與仍缺少的資訊，再決定能不能判定韌體違規。</p>
-<details class="qa-answer" id="q-106-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-106-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-106-a-01">三份證據的粒度不同：CQE 是單一命令結果，Error Information 是補充錯誤，PEL 是重要事件歷史。交叉比對能補足資訊，但不應要求一對一出現。</p><div class="qa-sections">
 <section class="qa-section" id="q-106-s-01" data-answer-section="1"><h3><span>1.</span> 先保留哪些證據</h3>
 <span class="qa-anchor" id="q-106-a-02"></span><p>先標明 controller、namespace、queue 使用期間與事件範圍；不同範圍的紀錄可以有關聯，卻不一定代表同一筆命令。</p>
@@ -470,12 +542,13 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-106-a-17"></span><p>先確認三份紀錄的取樣時間與 controller 身分一致，再分析看似矛盾的值。</p>
 <span class="qa-anchor" id="q-106-a-05"></span><p>先對回命令與 Error entry，再找同一操作或時段的 PEL；若 Timestamp 曾變更，先重建時間關係，再下事件順序的結論。</p>
 </section>
-<section class="qa-section" id="q-106-s-03" data-answer-section="3"><h3><span>3.</span> 什麼結果足以支持結論</h3>
+<section class="qa-section" id="q-106-s-03" data-answer-section="3"><h3><span>3.</span> 把觀察結果接回規格條件</h3>
 <span class="qa-anchor" id="q-106-a-06"></span><p>成功的判讀會說明哪份證據支持哪個結論，以及哪些部分仍無法確認。例如有 Format Start，不代表已有 Format Completion。</p>
 <span class="qa-anchor" id="q-106-a-07"></span><p>缺少 PEL entry 不一定違規，先檢查該事件是否受支援及應記錄。另一方面，不能以「Log 選配」否定已宣告支援後的必要行為。</p>
 <span class="qa-anchor" id="q-106-a-16"></span><p>將能力、事件條件、CQE 與各自保留規則放在同一條時間線；Reset 後 entry 消失與計數保留可以同時成立。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-timestamp">Base 2.4 §5.2.30.1.8</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a></p>
 <span class="qa-anchor" id="q-106-a-08"></span><span class="qa-anchor" id="q-106-a-09"></span><span class="qa-anchor" id="q-106-a-10"></span><span class="qa-anchor" id="q-106-a-11"></span><span class="qa-anchor" id="q-106-a-12"></span><span class="qa-anchor" id="q-106-a-13"></span><span class="qa-anchor" id="q-106-a-14"></span><span class="qa-anchor" id="q-106-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-timestamp">Base 2.4 §5.2.30.1.8</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a></p>

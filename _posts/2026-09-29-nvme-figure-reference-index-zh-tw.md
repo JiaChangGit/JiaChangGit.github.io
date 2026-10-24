@@ -6,19 +6,21 @@ categories: ["nvme"]
 tags: ["NVMe", "Reference"]
 permalink: "/nvme/figure-reference/zh-tw/"
 nvme_quickref: true
-last_modified_at: "2026-10-01"
+spec_teaching: true
+last_modified_at: "2026-10-23"
 lang: "zh-Hant-TW"
 description: "NVMe 情境練習與圖表速查：查詢路徑、欄位推導、完整解答及 Spec 位置。"
 ---
 
-<div class="nvme-quickref">
+<div class="nvme-quickref spec-teaching" data-spec-series="nvme">
 <nav class="qr-top" aria-label="版本與索引"><a href="#content">跳到內容</a><a href="/nvme/figure-reference/zh-tw/">總索引</a><a href="/nvme/figure-reference/en/">English</a><a href="/DOCS/nvme-quick-reference/index.html">繁中 HTML</a></nav>
 <main id="content">
-<header><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4</p><h1>NVMe 圖表判讀與情境練習總索引</h1><p class="qr-intro">從問題、欄位或圖號，找到需要核對的原始定義。七冊整合 45 道情境練習與 117 張常用圖表，從需求走到查詢介面、欄位與可驗證的結論。每題及每張圖均有固定位置，其他入口直接連回。</p></header>
-<aside class="qr-note"><p>每張原圖都有用途、欄位和判讀例子。例子中的數值用於說明，不代表你的裝置設定；原文另有條件時，依該欄位與命令定義判斷。</p><p>用瀏覽器「在頁面中尋找」搜尋欄位、FID、LID、CNS 或 Figure。bit／byte 位置沿用原圖：bit 是位元，byte 是 8 bits，Dword 是 4 bytes；index 是第幾筆，offset 是相對起點的偏移，須看當處使用的單位。</p><p>FID（Feature Identifier）選擇功能；LID（Log Page Identifier）選擇紀錄頁；CNS（Controller or Namespace Structure）選擇 Identify 回傳的資料結構。</p></aside>
+<div class="st-specs" aria-label="Specification editions"><span>NVM Express Base 2.4</span><span>NVM Command Set 1.3</span><span>NVMe over PCIe Transport 1.4</span></div>
+<header><p class="qr-eyebrow">NVMe · BASE 2.4 / NVM 1.3 / TRANSPORT 1.4</p><h1>NVMe 圖表判讀與情境練習總索引</h1><p class="qr-intro">從問題、欄位或圖號，找到需要核對的原始定義。七冊整合 45 道情境練習與 117 張常用圖表，從需求走到查詢介面、欄位與可驗證的結論。每題及每張圖均有固定位置，其他入口直接連回。</p></header>
+<aside class="qr-note"><p>每張原圖都有用途、欄位和判讀例子。例子中的數值用於說明，不代表你的裝置設定；原文另有條件時，依該欄位與命令定義判斷。</p><p>用瀏覽器「在頁面中尋找」搜尋欄位、FID、LID、CNS 或 Figure。bit／byte 位置沿用原圖：bit 是位元，byte 是 8 bits，Dword 是 4 bytes；index 是第幾筆，offset 是相對起點的偏移，須看當處使用的單位。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>FID</dt><dd>Feature Identifier，功能識別碼</dd></div><div><dt>LID</dt><dd>Log Page Identifier，紀錄頁識別碼</dd></div><div><dt>CNS</dt><dd>Controller or Namespace Structure，選擇Identify回傳結構</dd></div></dl><p>FID（Feature Identifier）選擇功能；LID（Log Page Identifier）選擇紀錄頁；CNS（Controller or Namespace Structure）選擇 Identify 回傳的資料結構。</p></aside>
 <section class="qr-series">
 <article><h2><a href="/nvme/figure-reference/init/zh-tw/">01 · 初始化、佇列與 PCIe</a></h2><p>先確認位址與能力，再看啟用狀態、佇列位置與中斷。PCIe link 和錯誤暫存器用來區分傳輸問題與命令回覆。</p><p class="qr-tags">20 張原圖</p></article>
-<article><h2><a href="/nvme/figure-reference/command/zh-tw/">02 · 命令格式、資料指標與完成狀態</a></h2><p>先用 SQID／CID 對回命令，再解 SCT／SC。資料搬移異常時，分清 PRP 的頁面指標與 SGL 的位址、長度和描述子類型。</p><p class="qr-tags">21 張原圖</p></article>
+<article><h2><a href="/nvme/figure-reference/command/zh-tw/">02 · 命令格式、資料指標與完成狀態</a></h2><p>先用 SQID／CID 對回命令，再解 SCT／SC。資料搬移異常時，分清 PRP 的頁面指標與 SGL 的位址、長度和描述子類型。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SQID</dt><dd>Submission Queue Identifier，提交佇列識別碼</dd></div><div><dt>CID</dt><dd>Command Identifier，同一提交佇列內的命令識別碼</dd></div><div><dt>SCT</dt><dd>Status Code Type，完成狀態代碼類型</dd></div><div><dt>PRP</dt><dd>Physical Region Page，描述資料頁位置的指標</dd></div><div><dt>SGL</dt><dd>Scatter Gather List，描述分散資料區段的清單</dd></div></dl><p class="qr-tags">21 張原圖</p></article>
 <article><h2><a href="/nvme/figure-reference/identify/zh-tw/">03 · Identify、Namespace 與資料格式</a></h2><p>CNS 決定回傳哪一種 Identify 結構；controller 能力、namespace 格式和選定格式的大小要分開查，再組合成可用設定。</p><p class="qr-tags">10 張原圖</p></article>
 <article><h2><a href="/nvme/figure-reference/io/zh-tw/">04 · I/O 命令與資料完整性</a></h2><p>由命令的位址與數量走到 metadata、保護資訊和原子性。相同欄位寬度不代表相同計數方式，命令成功也不等於所有持久性與原子性保證都成立。</p><p class="qr-tags">17 張原圖</p></article>
 <article><h2><a href="/nvme/figure-reference/features/zh-tw/">05 · Features、電源、效能與資源</a></h2><p>先分辨支援能力、目前值、預設值與保存值，再查各 Feature。電源延遲、排程權重、佇列數與回收資源各有單位，不能互相替代。</p><p class="qr-tags">17 張原圖</p></article>
@@ -26,8 +28,8 @@ description: "NVMe 情境練習與圖表速查：查詢路徑、欄位推導、�
 <article><h2><a href="/nvme/figure-reference/maintenance/zh-tw/">07 · 維護與管理操作</a></h2><p>把要求的動作、命令完成與背景操作結果分開看。韌體提交、namespace 建立和 Sanitize 接受命令，各自都還有不同的後續狀態需要核對。</p><p class="qr-tags">16 張原圖</p></article>
 </section>
 <section id="exercise-index"><h2>從情境選擇查詢方法</h2>
-<p>下面 45 題整合在原有七冊，不另外複製欄位教學。先選問題，作答後再沿解答連到原圖判讀；同一題只有一個固定位置。</p>
-<div class="qr-table"><table class=""><thead><tr><th scope="col">查詢介面</th><th scope="col">能取得的資訊</th></tr></thead><tbody><tr><td>Identify</td><td>能力、識別、資料格式與限制，包括 OACS、SANICAP、CTRATT 等 controller attributes；先選 CNS，再確認 NSID／CSI。</td></tr><tr><td>Controller properties</td><td>CAP、CC、CSTS 等 NVMe 暫存器：能力、配置與就緒狀態。PCIe 使用記憶體映射存取。</td></tr><tr><td>PCIe configuration space</td><td>BAR、PCI CMD、Link Status、MSI-X、PCIe AER；回答傳輸與 function 組態問題。</td></tr><tr><td>Get Features</td><td>目前、預設、保存值或可變更能力；必須保留 FID 與 SEL。</td></tr><tr><td>Get Log Page</td><td>狀態、累計量、事件與快照；每個 LID 的 target、讀取與確認規則不同。</td></tr><tr><td>SMART / Health</td><td>透過 Get Log Page LID=02h 取得，不是另一種通用查詢命令；其統計範圍由能力與 NSID 決定。</td></tr></tbody></table></div>
+<p>七冊共 45 個情境。每冊先完整帶讀一個情境，沿途連起需要的圖表與欄位，再接其他情境及圖表索引。每個情境與圖表都有固定位置，可由不同入口連回。</p>
+<div class="qr-table"><table class=""><thead><tr><th scope="col">查詢介面</th><th scope="col">能取得的資訊</th></tr></thead><tbody><tr><td>Identify</td><td>能力、識別、資料格式與限制，包括 OACS、SANICAP、CTRATT 等 controller attributes；先選 CNS，再確認 NSID／CSI。</td></tr><tr><td>Controller properties</td><td>CAP、CC、CSTS 等 NVMe 暫存器：能力、配置與就緒狀態。PCIe 使用記憶體映射存取。</td></tr><tr><td>PCIe configuration space</td><td>BAR、PCI CMD、Link Status、MSI-X、PCIe AER；回答傳輸與 function 組態問題。</td></tr><tr><td>Get Features</td><td>目前、預設、保存值或可變更能力；必須保留 FID 與 SEL。</td></tr><tr><td>Get Log Page</td><td>狀態、累計量、事件與快照；每個 LID 的 target、讀取與確認規則不同。</td></tr><tr><td>SMART / Health</td><td>透過 Get Log Page LID=02h 取得，不是另一種通用查詢命令；其統計範圍由能力與 NSID 決定。</td></tr></tbody></table><dl class="st-terms" aria-label="本段名詞"><div><dt>NSID</dt><dd>Namespace Identifier，邏輯儲存空間識別碼</dd></div><div><dt>CSI</dt><dd>Command Set Identifier，命令集識別碼</dd></div><div><dt>BAR</dt><dd>Base Address Register，基底位址暫存器</dd></div><div><dt>MSI-X</dt><dd>Message Signaled Interrupts Extension，表格式訊息中斷</dd></div></dl></div>
 <h3>初始化、佇列與 PCIe</h3><ol class="qr-exercise-list">
 <li><a href="/nvme/figure-reference/init/zh-tw/#exercise-init-01">能枚舉 PCIe 裝置，為什麼還不能開始 I/O？</a></li>
 <li><a href="/nvme/figure-reference/init/zh-tw/#exercise-init-02">64-bit BAR 與 doorbell offset 要怎麼合起來？</a></li>

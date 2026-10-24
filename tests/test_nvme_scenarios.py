@@ -5,6 +5,7 @@ import json
 import unittest
 from scripts import build_nvme_quickref as qr
 from scripts.nvme_scenario_render import CASES, refs
+from scripts.nvme_scenario_lessons import LEAD_CASES
 
 class Exercises(HTMLParser):
     def __init__(self, text):
@@ -16,7 +17,7 @@ class Exercises(HTMLParser):
             self.current=dict(id=a['data-scenario'],steps=[],answers=0)
             self.cases.append(self.current)
         if tag=='details' and a.get('class')=='qr-answer':
-            assert 'open' not in a, 'Answers must start collapsed'
+            assert 'open' in a, 'Core explanations must be visible from the start'
             self.in_answer=True; self.current['answers']+=1
         if 'data-reasoning' in a:
             assert self.in_answer, 'Reasoning leaked outside the answer'
@@ -33,12 +34,12 @@ class ScenarioTests(unittest.TestCase):
         self.assertEqual({c['topic'] for c in CASES},{t[0] for t in qr.TOPICS})
         self.assertEqual(len(CASES),len({c['id'] for c in CASES}))
 
-    def test_every_case_has_equivalent_collapsed_answers_and_one_home(self):
+    def test_every_case_has_equivalent_visible_answers_and_one_home(self):
         for topic,*_ in qr.TOPICS:
             editions=[Exercises(qr.body(topic,lang,offline)[1]).cases
                       for lang,offline in [('zh',True),('zh',False),('en',False)]]
             self.assertEqual(editions[0],editions[1]);self.assertEqual(editions[1],editions[2])
-            self.assertEqual([c['id'] for c in editions[0]],[c['id'] for c in CASES if c['topic']==topic])
+            self.assertEqual([c['id'] for c in editions[0]],[c['id'] for c in sorted((c for c in CASES if c['topic']==topic),key=lambda c:c['id']!=LEAD_CASES[topic])])
             for c in editions[0]:
                 self.assertEqual(c['answers'],1)
                 self.assertEqual(len(c['steps']),3)

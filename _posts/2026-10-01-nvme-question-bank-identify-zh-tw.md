@@ -7,18 +7,21 @@ permalink: /nvme/question-bank/identify/zh-tw/
 lang: zh-TW
 nvme_quickref: true
 nvme_qa: true
+spec_teaching: true
+last_modified_at: 2026-10-23
 ---
 
-<div class="nvme-quickref nvme-qa">
+<div class="nvme-quickref nvme-qa spec-teaching" data-spec-series="nvme">
 <nav class="qr-top" aria-label="題庫與版本"><a href="#content">跳到內容</a><a href="/nvme/question-bank/zh-tw/">題庫總索引</a><a href="/nvme/question-bank/identify/en/">English</a><a href="/DOCS/nvme-question-bank/identify.html">繁中教學 HTML</a></nav>
-<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–328</p>
-<header><p class="qa-range">Q44–Q53</p><h1>Identify 與能力探索</h1><p class="qr-intro">Identify 提供多種查詢結構。先確定要查哪個物件、需要哪一種資訊，再選擇 CNS、CSI、NSID 及其他欄位。本冊分別說明能力、目前配置與清單變更，讓你知道不同回覆如何互相補充，以及哪些差異才可能構成矛盾。</p><p>先練習，再展開解答。各題依需要使用文字、欄位判讀、比較或流程說明，不要求相同的回答項目。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p></header>
-<aside class="qa-glossary"><h2>先認識本文使用的字詞</h2><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></aside>
+<main id="content"><p class="qr-eyebrow">NVMe · Q1–328</p>
+<div class="st-specs" aria-label="Specification editions"><span>NVM Express Base 2.4</span><span>NVM Command Set 1.3</span><span>NVMe over PCIe Transport 1.4</span></div>
+<header><p class="qa-range">Q44–Q53</p><h1>Identify 與能力探索</h1><aside class="st-context"><p>Identify 是查詢物件能力與屬性的命令。CNS（Controller or Namespace Structure）選擇回覆結構，NSID（Namespace Identifier）識別 namespace；需要命令集專屬資料時，還會用到 CSI（Command Set Identifier）。namespace 是可由命令指定的邏輯儲存空間。</p></aside><p class="qr-intro">Identify 提供多種查詢結構。先確定要查哪個物件、需要哪一種資訊，再選擇 CNS、CSI、NSID 及其他欄位。本冊分別說明能力、目前配置與清單變更，讓你知道不同回覆如何互相補充，以及哪些差異才可能構成矛盾。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CNS</dt><dd>Controller or Namespace Structure，選擇Identify回傳結構</dd></div><div><dt>CSI</dt><dd>Command Set Identifier，命令集識別碼</dd></div><div><dt>NSID</dt><dd>Namespace Identifier，邏輯儲存空間識別碼</dd></div></dl><p>每個問題都接著完整解說，依內容帶讀欄位、比較機制或追蹤流程。先看本冊總覽，再沿問題閱讀；必要條件與正常路徑直接顯示。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SCT</dt><dd>Status Code Type，完成狀態代碼類型</dd></div></dl></header>
 <section id="overview" class="qa-overview"><h2>先選問題，再選 Identify 結構</h2><p class="qa-takeaway">每個 CNS 回答的問題不同。namespace 已配置，只表示它存在，不能直接推論目前這個 controller 已能存取它。</p>
-<div class="qr-table" tabindex="0" role="region" aria-label="可橫向捲動的比較表"><table><thead><tr><th scope="col">想知道什麼</th><th scope="col">查詢入口</th><th scope="col">回覆如何使用</th></tr></thead><tbody><tr><td>controller 宣告的能力</td><td>CNS=01h</td><td>讀取 OACS、ONCS、MDTS 等欄位，並依各欄位的有效條件判讀</td></tr><tr><td>目前可存取的 namespaces</td><td>CNS=02h</td><td>取得此 controller 的 Active List；這不是全部已配置 namespace 的清單</td></tr><tr><td>已配置的 namespaces</td><td>支援 Namespace Management 時用 CNS=10h</td><td>清單可包含未 attach 到此 controller 的 namespace</td></tr><tr><td>單一 NVM namespace 的格式</td><td>CNS=00h；需要時加 CNS=05h、CSI=00h</td><td>NSZE／NCAP、FLBAS、LBAF 與 PI 格式共同解讀</td></tr><tr><td>不依賴命令集的 namespace 屬性</td><td>CNS=08h</td><td>使用此結構解讀共通屬性，不要套用 NVM 特定 LBA 格式結構的欄位位置</td></tr></tbody></table></div>
+<div class="qr-table" tabindex="0" role="region" aria-label="可橫向捲動的比較表"><table><thead><tr><th scope="col">想知道什麼</th><th scope="col">查詢入口</th><th scope="col">回覆如何使用</th></tr></thead><tbody><tr><td>controller 宣告的能力</td><td>CNS=01h</td><td>讀取 OACS、ONCS、MDTS 等欄位，並依各欄位的有效條件判讀</td></tr><tr><td>目前可存取的 namespaces</td><td>CNS=02h</td><td>取得此 controller 的 Active List；這不是全部已配置 namespace 的清單</td></tr><tr><td>已配置的 namespaces</td><td>支援 Namespace Management 時用 CNS=10h</td><td>清單可包含未 attach 到此 controller 的 namespace</td></tr><tr><td>單一 NVM namespace 的格式</td><td>CNS=00h；需要時加 CNS=05h、CSI=00h</td><td>NSZE／NCAP、FLBAS、LBAF 與 PI 格式共同解讀</td></tr><tr><td>不依賴命令集的 namespace 屬性</td><td>CNS=08h</td><td>使用此結構解讀共通屬性，不要套用 NVM 特定 LBA 格式結構的欄位位置</td></tr></tbody></table><dl class="st-terms" aria-label="本段名詞"><div><dt>PI</dt><dd>Protection Information，資料保護資訊</dd></div><div><dt>LBA</dt><dd>Logical Block Address，邏輯區塊位址</dd></div></dl></div>
 <p><strong>舉例看懂：</strong>假設 Allocated List={1,2}，而目前 controller 的 Active List={1}。這表示 namespace 2 不在此 controller 的 Active List 中，但不能據此判定它已被刪除。下一步應確認附加關係及適用狀態，並保留 controller 身分與查詢時間，讓前後資料可以正確比較。</p>
 <p class="qa-citations">來源：<a href="#ref-idcmd">Base 2.4 §5.2.14.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-nsmanage">Base 2.4 §5.2.24–5.2.25, 8.1.17</a></p>
 </section>
+<details class="qa-glossary st-glossary"><summary>需要時回顧本篇名詞</summary><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></details>
 <div class="qa-controls" hidden><label>搜尋本頁 <input type="search" id="qa-search" placeholder="題號、欄位或關鍵字"></label><button type="button" data-expand="true">展開全部解答</button><button type="button" data-expand="false">收合全部解答</button><output id="qa-count" aria-live="polite"></output></div>
 <section id="question-index"><h2>本冊題目</h2><ol class="qa-index">
 <li><a href="#q-044">Q44 · Identify Controller 與 Identify Namespace 分別提供哪些重要資訊？</a></li>
@@ -33,8 +36,8 @@ nvme_qa: true
 <li><a href="#q-053">Q53 · Identify、Feature、Log Page 與實際 Command 行為不一致時，應如何定位問題？</a></li>
 </ol></section>
 <article class="qa-question" id="q-044" data-question="44" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-044">Q44</a> Identify Controller 與 Identify Namespace 分別提供哪些重要資訊？</h2>
-<p class="qa-prompt">先說出比較對象最重要的差別，並舉一個不能互相代用的例子。</p>
-<details class="qa-answer" id="q-044-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-044-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-044-a-01">Identify Controller 用來了解 controller 支援哪些能力；Identify Namespace 則用來了解指定 namespace 的容量、格式及資料保護設定。先分清楚查詢對象，才知道該讀哪一組欄位。</p><div class="qa-sections">
 <section class="qa-section" id="q-044-s-01" data-answer-section="1"><h3><span>1.</span> 差別在哪裡</h3>
 <span class="qa-anchor" id="q-044-a-02"></span><p>Identify Controller 以接收命令的 controller 為查詢入口。Namespace 資料則要搭配 NSID、CNS 及 CSI，確認要查的是哪個 namespace，以及哪一種資料結構。</p>
@@ -42,21 +45,22 @@ nvme_qa: true
 </section>
 <section class="qa-section" id="q-044-s-02" data-answer-section="2"><h3><span>2.</span> 如何選擇與確認</h3>
 <span class="qa-anchor" id="q-044-a-03"></span><p>基本查詢入口是 CNS01h 的 Controller 資料，以及 CNS00h 的 NVM Namespace 資料。CNS05h／06h 查詢命令集特定的補充結構，CNS08h 則提供不依賴特定命令集的 Namespace 資料。</p>
-<span class="qa-anchor" id="q-044-a-05"></span><p>先查 Controller 資料及 Active Namespace ID List，再逐一查詢各 namespace 適用的資料結構。計算容量時，使用目前選定的 LBA format，將 block 數換算成 bytes。</p>
-<span class="qa-anchor" id="q-044-a-06"></span><p>Identify 回傳 4096-byte 結構與成功 CQE。例：NSZE=8192、LBADS=12，邏輯位址空間為 8192×4096=32 MiB。</p>
+<span class="qa-anchor" id="q-044-a-05"></span><p>先查 Controller 資料及 Active Namespace ID List，再逐一查詢各 namespace 適用的資料結構。計算容量時，使用目前選定的 LBA format，將 block 數換算成 bytes。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>LBA</dt><dd>Logical Block Address，邏輯區塊位址</dd></div></dl>
+<span class="qa-anchor" id="q-044-a-06"></span><p>Identify 回傳 4096-byte 結構與成功 CQE。例：NSZE=8192、LBADS=12，邏輯位址空間為 8192×4096=32 MiB。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry，佇列中的完成項目</dd></div></dl>
 </section>
-<section class="qa-section" id="q-044-s-03" data-answer-section="3"><h3><span>3.</span> 哪些結論不能互相套用</h3>
+<section class="qa-section" id="q-044-s-03" data-answer-section="3"><h3><span>3.</span> 比較時要保留的條件</h3>
 <span class="qa-anchor" id="q-044-a-07"></span><p>不支援 CNS 時，回報 Invalid Field（0/02h）；namespace 所屬命令集不支援該 CNS 時，回報 Invalid I/O Command Set（1/2Ch）。至於 NSID 是否合法，則依該 CNS 的使用規則判斷。</p>
 <span class="qa-anchor" id="q-044-a-16"></span><p>controller 宣告支援某個命令，不代表每個 namespace 都具備適合的格式，或目前都能由此 controller 存取。因此，驗證時必須同時確認 controller 能力與目標 namespace 的條件。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-idcmd">Base 2.4 §5.2.14.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-044-a-17"></span><span class="qa-anchor" id="q-044-a-08"></span><span class="qa-anchor" id="q-044-a-09"></span><span class="qa-anchor" id="q-044-a-10"></span><span class="qa-anchor" id="q-044-a-11"></span><span class="qa-anchor" id="q-044-a-12"></span><span class="qa-anchor" id="q-044-a-13"></span><span class="qa-anchor" id="q-044-a-14"></span><span class="qa-anchor" id="q-044-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-idcmd">Base 2.4 §5.2.14.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-045" data-question="45" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-045">Q45</a> Active Namespace ID List、Allocated Namespace ID List 及 Namespace Descriptor List 有什麼差異？</h2>
-<p class="qa-prompt">先說出比較對象最重要的差別，並舉一個不能互相代用的例子。</p>
-<details class="qa-answer" id="q-045-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-045-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-045-a-01">這三種查詢分別回答：哪些 namespace 可由此 controller 使用、哪些 namespace 已經配置，以及某個 namespace 有哪些識別資料。它們不是同一份清單的不同名稱。</p><div class="qa-sections">
 <section class="qa-section" id="q-045-s-01" data-answer-section="1"><h3><span>1.</span> 差別在哪裡</h3>
 <span class="qa-anchor" id="q-045-a-02"></span><p>Active List 反映此 controller 可使用的 namespace；Allocated List 可以包含已配置但尚未附加的 namespace。Descriptor List 則不是 namespace 名單，而是單一 NSID 的識別屬性集合。</p>
@@ -67,18 +71,19 @@ nvme_qa: true
 <span class="qa-anchor" id="q-045-a-05"></span><p>讀取 ID List 時，先以 NSID=0 查詢，再依回傳的遞增 ID 繼續讀取下一批。查詢 Descriptor List 時，NSID 改為指定要查的 namespace。因此，同一個 NSID 欄位在這兩類查詢中的用途不同。</p>
 <span class="qa-anchor" id="q-045-a-06"></span><p>例如 Allocated={1,3,8}，而 Active={1,8}，表示 namespace 3 已配置，但目前不在此 controller 的 Active List 中。這個差異本身不代表 namespace 3 已損壞。</p>
 </section>
-<section class="qa-section" id="q-045-s-03" data-answer-section="3"><h3><span>3.</span> 哪些結論不能互相套用</h3>
+<section class="qa-section" id="q-045-s-03" data-answer-section="3"><h3><span>3.</span> 比較時要保留的條件</h3>
 <span class="qa-anchor" id="q-045-a-07"></span><p>CNS02h 或 CNS10h 若將起點設為 FFFFFFFEh 或 FFFFFFFFh，必須回報 Invalid Namespace or Format（0/0Bh）。若問題是 controller 不支援所選 CNS，則回報 0/02h。</p>
 <span class="qa-anchor" id="q-045-a-16"></span><p>跨時間比對 namespace 時，使用 Descriptor 提供的穩定識別資料，不要假設 NSID 永遠不變。如果分頁讀取期間發生配置變更，則需重新取得彼此一致的清單內容。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nsid">Base 2.4 §3.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-045-a-17"></span><span class="qa-anchor" id="q-045-a-08"></span><span class="qa-anchor" id="q-045-a-09"></span><span class="qa-anchor" id="q-045-a-10"></span><span class="qa-anchor" id="q-045-a-11"></span><span class="qa-anchor" id="q-045-a-12"></span><span class="qa-anchor" id="q-045-a-13"></span><span class="qa-anchor" id="q-045-a-14"></span><span class="qa-anchor" id="q-045-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nsid">Base 2.4 §3.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-046" data-question="46" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-046">Q46</a> Controller List、UUID List 及 I/O Command Set Identify 資料分別有什麼用途？</h2>
-<p class="qa-prompt">先說出比較對象最重要的差別，並舉一個不能互相代用的例子。</p>
-<details class="qa-answer" id="q-046-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-046-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-046-a-01">這些資料分別回答三個問題：哪些 controller 與 namespace 有存取關係、應使用哪一套廠商定義解讀資料，以及哪些 I/O command sets 可以同時使用。</p><div class="qa-sections">
 <section class="qa-section" id="q-046-s-01" data-answer-section="1"><h3><span>1.</span> 差別在哪裡</h3>
 <span class="qa-anchor" id="q-046-a-02"></span><p>Controller List 描述 controller 的名單或附加關係。UUID List 則讓 Host 選擇廠商特定資料所使用的定義；它與 namespace 自身的 UUID Descriptor 是不同資訊。</p>
@@ -89,18 +94,19 @@ nvme_qa: true
 <span class="qa-anchor" id="q-046-a-05"></span><p>先依查詢目的選擇 CNS，再設定它使用的選擇欄位。若從 CNS1Ch 選定一組命令集組合，設定 FID19h 時，IOCSCI 要填該組合的索引，不能直接填入 CSI bitmap。</p>
 <span class="qa-anchor" id="q-046-a-06"></span><p>Controller List 回傳 controller 識別值及數量；UUID List 回傳依規定順序排列的 entries；命令集組合 vectors 則列出 Host 可選的配置。查到某個組合，不表示它已自動啟用。</p>
 </section>
-<section class="qa-section" id="q-046-s-03" data-answer-section="3"><h3><span>3.</span> 哪些結論不能互相套用</h3>
+<section class="qa-section" id="q-046-s-03" data-answer-section="3"><h3><span>3.</span> 比較時要保留的條件</h3>
 <span class="qa-anchor" id="q-046-a-07"></span><p>不支援 CNS 時，回報 0/02h；CNS12h 使用 NSID=FFFFFFFFh 時，也回報 0/02h。UUID 選擇錯誤則依 §8.1.31 判斷，不能一律解釋為 namespace 不存在。</p>
 <span class="qa-anchor" id="q-046-a-16"></span><p>先核對 CNTID 與 NSID 在所選 CNS 中各自的用途，不要把 Controller List 當成 Active Namespace ID List。設定命令集組合後，另以 FID19h 的 Current 值確認是否選到預期的 vector。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-idcmd">Base 2.4 §5.2.14.1</a> · <a href="#ref-uuid">Base 2.4 §8.1.31.1–8.1.31.2</a> · <a href="#ref-profile">Base 2.4 §5.2.30.1.18</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-046-a-17"></span><span class="qa-anchor" id="q-046-a-08"></span><span class="qa-anchor" id="q-046-a-09"></span><span class="qa-anchor" id="q-046-a-10"></span><span class="qa-anchor" id="q-046-a-11"></span><span class="qa-anchor" id="q-046-a-12"></span><span class="qa-anchor" id="q-046-a-13"></span><span class="qa-anchor" id="q-046-a-14"></span><span class="qa-anchor" id="q-046-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-idcmd">Base 2.4 §5.2.14.1</a> · <a href="#ref-uuid">Base 2.4 §8.1.31.1–8.1.31.2</a> · <a href="#ref-profile">Base 2.4 §5.2.30.1.18</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-047" data-question="47" data-answer-kind="lookup"><h2><a class="qa-qid" href="#q-047">Q47</a> NVM Set、Endurance Group、Domain 及 Secondary Controller 資訊應從哪種 Identify 資料取得？</h2>
-<p class="qa-prompt">先選查詢介面與目標，再說明哪個回傳欄位能支持你的結論。</p>
-<details class="qa-answer" id="q-047-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-047-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-047-a-01">這些 Identify 資料用來建立資源歸屬關係。NVM Set、Endurance Group、Domain 與 controller 分別描述不同的管理對象，不能當成同一層的物件。</p><div class="qa-sections">
 <section class="qa-section" id="q-047-s-01" data-answer-section="1"><h3><span>1.</span> 要查哪個對象、哪份資料</h3>
 <span class="qa-anchor" id="q-047-a-02"></span><p>每種清單都有自己的 ID、容量或資源欄位。本題著重查明它們的關係與屬性，不涉及修改容量配置或虛擬化資源。</p>
@@ -117,13 +123,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-047-a-17"></span><p>先確認查詢是送到哪個 Primary Controller，再確認清單的查詢起點是否符合預期。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-virtual">Base 2.4 §8.2.7</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-047-a-08"></span><span class="qa-anchor" id="q-047-a-09"></span><span class="qa-anchor" id="q-047-a-10"></span><span class="qa-anchor" id="q-047-a-11"></span><span class="qa-anchor" id="q-047-a-12"></span><span class="qa-anchor" id="q-047-a-13"></span><span class="qa-anchor" id="q-047-a-14"></span><span class="qa-anchor" id="q-047-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-virtual">Base 2.4 §8.2.7</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-048" data-question="48" data-answer-kind="error"><h2><a class="qa-qid" href="#q-048">Q48</a> CNS、CSI、NSID 或 UUID Index 不支援或不合法時，Controller 應如何回應？</h2>
-<p class="qa-prompt">先區分失敗條件，再判斷是否有規範明定的回報結果。</p>
-<details class="qa-answer" id="q-048-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-048-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-048-a-01">Identify 失敗時，必須先看哪個選擇欄位不符合使用規則。CNS、CSI、NSID 與 UUID Index 的用途不同，不能將所有失敗都歸為 Invalid Namespace。</p><div class="qa-sections">
 <section class="qa-section" id="q-048-s-01" data-answer-section="1"><h3><span>1.</span> 先區分是哪一種失敗</h3>
 <span class="qa-anchor" id="q-048-a-02"></span><p>相同的 NSID 或 CSI，用在不同 CNS 時，合法性可能不同。因此，測試某個欄位前，必須固定 CNS 及相關前提。</p>
@@ -136,17 +143,18 @@ nvme_qa: true
 </section>
 <section class="qa-section" id="q-048-s-03" data-answer-section="3"><h3><span>3.</span> 結果與後續驗證</h3>
 <span class="qa-anchor" id="q-048-a-06"></span><p>有效查詢回傳 4096 bytes。例如，CNS11h 對符合定義的未配置 NSID，可以回傳全零資料；這與指定無效 NSID 而回報錯誤，是不同情況。</p>
-<span class="qa-anchor" id="q-048-a-16"></span><p>保留 CQE 及原命令的 CDW10、CDW11、CDW14。不同欄位錯誤都可能得到 0/02h，只有 Status 數值不足以指出是哪個參數造成失敗。</p>
+<span class="qa-anchor" id="q-048-a-16"></span><p>保留 CQE 及原命令的 CDW10、CDW11、CDW14。不同欄位錯誤都可能得到 0/02h，只有 Status 數值不足以指出是哪個參數造成失敗。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry，佇列中的完成項目</dd></div></dl>
 <span class="qa-anchor" id="q-048-a-17"></span><p>先確認這個 CNS 是否使用待測欄位。若規範要求或允許忽略該欄位，controller 沒有因它報錯，就不能直接判為漏做檢查。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-idcmd">Base 2.4 §5.2.14.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-uuid">Base 2.4 §8.1.31.1–8.1.31.2</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-048-a-08"></span><span class="qa-anchor" id="q-048-a-09"></span><span class="qa-anchor" id="q-048-a-10"></span><span class="qa-anchor" id="q-048-a-11"></span><span class="qa-anchor" id="q-048-a-12"></span><span class="qa-anchor" id="q-048-a-13"></span><span class="qa-anchor" id="q-048-a-14"></span><span class="qa-anchor" id="q-048-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-idcmd">Base 2.4 §5.2.14.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-uuid">Base 2.4 §8.1.31.1–8.1.31.2</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-049" data-question="49" data-answer-kind="fields"><h2><a class="qa-qid" href="#q-049">Q49</a> Serial Number、Model Number、Firmware Revision、MDTS 及 Optional Admin Command 欄位應如何解讀？</h2>
-<p class="qa-prompt">先試著說明欄位的單位與編碼，再用一組數值推導結果。</p>
-<details class="qa-answer" id="q-049-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-049-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-049-a-01">Identify Controller 同時包含識別字串、傳輸限制及能力 bitmap。這些欄位的資料型態不同，必須各自解讀，不能全部當成一般整數。</p><div class="qa-sections">
 <section class="qa-section" id="q-049-s-01" data-answer-section="1"><h3><span>1.</span> 先確認資料的來源與範圍</h3>
 <span class="qa-anchor" id="q-049-a-02"></span><p>SN 與 MN 識別 NVM subsystem，FR 描述目前啟用的韌體版本。MDTS 限制單次資料傳輸大小，OACS 則宣告選配 Admin 功能的支援能力。</p>
@@ -162,13 +170,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-049-a-16"></span><p>將 FR 與 Firmware Slot Information 中目前 active slot 的版本比對，不要誤拿尚待啟用的 slot 比較。OACS 宣告的能力，則應與 Commands Supported and Effects Log 中對應命令的支援欄位一致。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-cap">Base 2.4 §3.1.4 (CAP, VS)</a> · <a href="#ref-conventions">Base 2.4 §1.4.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-049-a-17"></span><span class="qa-anchor" id="q-049-a-08"></span><span class="qa-anchor" id="q-049-a-09"></span><span class="qa-anchor" id="q-049-a-10"></span><span class="qa-anchor" id="q-049-a-11"></span><span class="qa-anchor" id="q-049-a-12"></span><span class="qa-anchor" id="q-049-a-13"></span><span class="qa-anchor" id="q-049-a-14"></span><span class="qa-anchor" id="q-049-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-cap">Base 2.4 §3.1.4 (CAP, VS)</a> · <a href="#ref-conventions">Base 2.4 §1.4.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-050" data-question="50" data-answer-kind="lookup"><h2><a class="qa-qid" href="#q-050">Q50</a> Identify 宣告支援某功能後，應如何透過對應 Command 及 Commands Supported and Effects Log 驗證？</h2>
-<p class="qa-prompt">先選查詢介面與目標，再說明哪個回傳欄位能支持你的結論。</p>
-<details class="qa-answer" id="q-050-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-050-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-050-a-01">驗證能力時，要確認 Host 能在合法條件下使用該功能，不能只確認 Identify 的支援位為 1，就認定功能已驗證完成。</p><div class="qa-sections">
 <section class="qa-section" id="q-050-s-01" data-answer-section="1"><h3><span>1.</span> 要查哪個對象、哪份資料</h3>
 <span class="qa-anchor" id="q-050-a-02"></span><p>查詢與測試應針對同一 controller、命令集及 namespace 配置，並注意資料取得的時間。不同配置或不同時點的結果，不能直接當成同一狀態比較。</p>
@@ -185,13 +194,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-050-a-17"></span><p>先檢查拿的是 Admin 還是 I/O opcode entry，以及 CSI 是否選對。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-effects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idcmd">Base 2.4 §5.2.14.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-050-a-08"></span><span class="qa-anchor" id="q-050-a-09"></span><span class="qa-anchor" id="q-050-a-10"></span><span class="qa-anchor" id="q-050-a-11"></span><span class="qa-anchor" id="q-050-a-12"></span><span class="qa-anchor" id="q-050-a-13"></span><span class="qa-anchor" id="q-050-a-14"></span><span class="qa-anchor" id="q-050-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-effects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idcmd">Base 2.4 §5.2.14.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-051" data-question="51" data-answer-kind="process"><h2><a class="qa-qid" href="#q-051">Q51</a> Namespace 建立、刪除、Attach、Detach 或 Format 後，哪些 Identify 資料與 Namespace List 應更新？</h2>
-<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
-<details class="qa-answer" id="q-051-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-051-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-051-a-01">namespace 配置改變後，Host 必須重新取得受影響的資訊，才能避免沿用舊容量、舊格式或舊的附加關係。</p><div class="qa-sections">
 <section class="qa-section" id="q-051-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
 <span class="qa-anchor" id="q-051-a-02"></span><p>Create／Delete 改變 namespace 是否存在；Attach／Detach 改變 controller 是否能使用它；Format 則改變操作範圍內的資料格式。不同操作需要檢查的資料也不同。</p>
@@ -207,17 +217,18 @@ nvme_qa: true
 <span class="qa-anchor" id="q-051-a-16"></span><p>將管理命令結果、相關清單、Namespace 資料結構，以及適用的 Changed Namespace 通知一起比對。事件用來通知變更，不能代替 Identify 所提供的完整配置資料。</p>
 </section>
 <section class="qa-section" id="q-051-s-04" data-answer-section="4"><h3><span>4.</span> 用 Log 補充哪些證據</h3>
-<span class="qa-anchor" id="q-051-a-10"></span><p>將 Changed Namespace List（LID 04h）與重新讀取的 Identify 一起檢查。前者指出哪些 NSID 曾經變更，後者提供目前配置，兩者不能互相代替。讀取 Log 時的 RAE 會影響事件確認，因此先保存原事件與清單，再進行後續查詢。</p>
+<span class="qa-anchor" id="q-051-a-10"></span><p>將 Changed Namespace List（LID 04h）與重新讀取的 Identify 一起檢查。前者指出哪些 NSID 曾經變更，後者提供目前配置，兩者不能互相代替。讀取 Log 時的 RAE 會影響事件確認，因此先保存原事件與清單，再進行後續查詢。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>LID</dt><dd>Log Page Identifier，紀錄頁識別碼</dd></div></dl>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-nsmanage">Base 2.4 §5.2.24–5.2.25, 8.1.17</a> · <a href="#ref-effects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-nschange">Base 2.4 §5.2.13.1.5, 5.2.13.1.14.2.6–5.2.13.1.14.2.8</a></p>
 <span class="qa-anchor" id="q-051-a-17"></span><span class="qa-anchor" id="q-051-a-08"></span><span class="qa-anchor" id="q-051-a-09"></span><span class="qa-anchor" id="q-051-a-11"></span><span class="qa-anchor" id="q-051-a-12"></span><span class="qa-anchor" id="q-051-a-13"></span><span class="qa-anchor" id="q-051-a-14"></span><span class="qa-anchor" id="q-051-a-15"></span>
 <p class="qa-related">相關機制：<a href="/nvme/question-bank/namespace-management/zh-tw/#q-167">Q167</a></p>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-nsmanage">Base 2.4 §5.2.24–5.2.25, 8.1.17</a> · <a href="#ref-effects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-nschange">Base 2.4 §5.2.13.1.5, 5.2.13.1.14.2.6–5.2.13.1.14.2.8</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-052" data-question="52" data-answer-kind="lifecycle"><h2><a class="qa-qid" href="#q-052">Q52</a> Firmware Activation、Reset 及 Power Cycle 後，哪些 Identify 資料可能改變，哪些應保持不變？</h2>
-<p class="qa-prompt">先指明重設或中斷的方式，再分別判斷設定、進行中的操作與資料。</p>
-<details class="qa-answer" id="q-052-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-052-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-052-a-01">是否允許 Identify 資料改變，要逐欄依性質判斷。不能將整個 4096-byte buffer 一律要求完全相同，因為其中包含動態狀態及可能更新的能力。</p><div class="qa-sections">
 <section class="qa-section" id="q-052-s-01" data-answer-section="1"><h3><span>1.</span> 先界定觸發方式與影響對象</h3>
 <span class="qa-anchor" id="q-052-a-02"></span><p>可先分成固定身分、韌體宣告能力、持續配置與動態狀態四類。這四類資料允許改變的原因不同，因此比較時也要使用不同的判斷條件。</p>
@@ -234,29 +245,31 @@ nvme_qa: true
 <span class="qa-anchor" id="q-052-a-17"></span><p>先確認這次 Reset 是否同時啟用了待啟用的韌體，或查詢是否實際送到另一個 controller／namespace。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-identity">Base 2.4 §4.7.1</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-effects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-052-a-08"></span><span class="qa-anchor" id="q-052-a-09"></span><span class="qa-anchor" id="q-052-a-10"></span><span class="qa-anchor" id="q-052-a-11"></span><span class="qa-anchor" id="q-052-a-12"></span><span class="qa-anchor" id="q-052-a-13"></span><span class="qa-anchor" id="q-052-a-14"></span><span class="qa-anchor" id="q-052-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-identity">Base 2.4 §4.7.1</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-effects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-053" data-question="53" data-answer-kind="diagnose"><h2><a class="qa-qid" href="#q-053">Q53</a> Identify、Feature、Log Page 與實際 Command 行為不一致時，應如何定位問題？</h2>
-<p class="qa-prompt">先列出已知證據與仍缺少的資訊，再決定能不能判定韌體違規。</p>
-<details class="qa-answer" id="q-053-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-053-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-053-a-01">判定不一致時，要把能力、設定、當下狀態及命令結果連起來檢查。不能只因某個介面顯示支援，就忽略實際使用所需的其他條件。</p><div class="qa-sections">
 <section class="qa-section" id="q-053-s-01" data-answer-section="1"><h3><span>1.</span> 先保留哪些證據</h3>
 <span class="qa-anchor" id="q-053-a-02"></span><p>比對前，先固定 controller、NSID、CSI、時間及配置。來自不同 controller 或不同時點的資料，可能本來就在描述不同狀態。</p>
 <span class="qa-anchor" id="q-053-a-03"></span><p>Identify 描述能力與屬性；Get Features 查詢設定；Log Page 則依種類提供狀態、事件或命令效果。三者用途不同，數值不相同本身不代表矛盾。</p>
-<span class="qa-anchor" id="q-053-a-04"></span><p>保留原 SQE、CQE、Identify 原始 buffer，以及 Get Features 使用的 SEL、Get Log Page 使用的 LID 和其他選擇欄位。尤其要分清楚讀到的是 Current 值，還是 Supported Capabilities。</p>
+<span class="qa-anchor" id="q-053-a-04"></span><p>保留原 SQE、CQE、Identify 原始 buffer，以及 Get Features 使用的 SEL、Get Log Page 使用的 LID 和其他選擇欄位。尤其要分清楚讀到的是 Current 值，還是 Supported Capabilities。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SQE</dt><dd>Submission Queue Entry，佇列中的命令項目</dd></div><div><dt>LID</dt><dd>Log Page Identifier，紀錄頁識別碼</dd></div></dl>
 </section>
 <section class="qa-section" id="q-053-s-02" data-answer-section="2"><h3><span>2.</span> 依什麼順序排除原因</h3>
 <span class="qa-anchor" id="q-053-a-17"></span><p>第一步先確認這些資料是否來自同一 controller／namespace、同一設定期間，並且使用相同或互相對應的選擇欄位。</p>
 <span class="qa-anchor" id="q-053-a-05"></span><p>先確認規格版本與解碼方式，再檢查操作範圍及選擇欄位。接著確認參數合法、目前狀態允許執行，而且先後順序正確，最後才判斷結果。若仍有矛盾，可用每次只改一項條件的情境重現。</p>
 </section>
-<section class="qa-section" id="q-053-s-03" data-answer-section="3"><h3><span>3.</span> 什麼結果足以支持結論</h3>
+<section class="qa-section" id="q-053-s-03" data-answer-section="3"><h3><span>3.</span> 把觀察結果接回規格條件</h3>
 <span class="qa-anchor" id="q-053-a-06"></span><p>一致是指各介面符合規範定義的關係，不是回傳值必須全部相同。例如 CHANG=1 表示 Feature 可變更，Current=0 表示目前設定為 0，兩者可以同時正確。</p>
-<span class="qa-anchor" id="q-053-a-07"></span><p>先依原命令的 SCT／SC 決定下一步；More=1 時，再查可與命令關聯的 Error Information。如果只有 Host timeout 而沒有 CQE，則先追查命令是否提交及完成，不能直接套用某個 Status 的處理方式。</p>
+<span class="qa-anchor" id="q-053-a-07"></span><p>先依原命令的 SCT／SC 決定下一步；More=1 時，再查可與命令關聯的 Error Information。如果只有 Host timeout 而沒有 CQE，則先追查命令是否提交及完成，不能直接套用某個 Status 的處理方式。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SCT</dt><dd>Status Code Type，完成狀態代碼類型</dd></div></dl>
 <span class="qa-anchor" id="q-053-a-16"></span><p>只有確認必要前提成立、資料來自同一物件，而且時間順序一致後，結果仍違反明確規定，才能提出可驗證的不符合規範結論。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-idcmd">Base 2.4 §5.2.14.1</a> · <a href="#ref-effects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-getfeat">Base 2.4 §5.2.12</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-053-a-08"></span><span class="qa-anchor" id="q-053-a-09"></span><span class="qa-anchor" id="q-053-a-10"></span><span class="qa-anchor" id="q-053-a-11"></span><span class="qa-anchor" id="q-053-a-12"></span><span class="qa-anchor" id="q-053-a-13"></span><span class="qa-anchor" id="q-053-a-14"></span><span class="qa-anchor" id="q-053-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-idcmd">Base 2.4 §5.2.14.1</a> · <a href="#ref-effects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-getfeat">Base 2.4 §5.2.12</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>

@@ -17367,8 +17367,8 @@
       "zh_tw": "Compare 比較媒體資料與 host 提供的 buffer；Verify 檢查已儲存資料完整性而不把資料或 metadata 回傳 host。兩者要求 PRACT=0；Verify 與 Read 偵測到的失敗不必使用相同錯誤碼。",
       "en": "Compare compares media data with a host-supplied buffer. Verify checks stored-data integrity without returning data or metadata to the host. Both require PRACT=0; Verify and Read need not report an identical error code for a detected failure.",
       "scope_entry_id": "NVMCS13-INCLUDE",
-      "heading_zh_tw": "Compare 與 Verify 解決不同問題",
-      "heading_en": "Compare and Verify answer different questions",
+      "heading_zh_tw": "Compare 比對內容，Verify 檢查完整性",
+      "heading_en": "Compare content and verify integrity",
       "citation_zh_tw": "來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.1; 3.3.5, 文件頁 27-30,51-53, PDF 頁 27-30,51-53",
       "citation_en": "Source: NVME-NVM-CS-1.3, Rev. 1.3, §3.3.1; 3.3.5, printed pages 27-30,51-53, PDF pages 27-30,51-53"
     },
@@ -23737,7 +23737,7 @@
       "pdf_pages": "171-172",
       "normative_keyword": "none",
       "zh_tw": "Status 欄位必須把類型、代碼與附加控制資訊一起解釋。",
-      "en": "Figure 101, \"Completion Queue Entry: Status Field\": Interpret SCT/SC together, DNR for retry guidance, and phase for a new completion; these fields answer different questions.",
+      "en": "Figure 101, \"Completion Queue Entry: Status Field\": Use phase to identify a new completion, associate CID with the command, then interpret SCT/SC for the result. For retry handling, check DNR and the command-specific rules.",
       "scope_entry_id": "NVMCS13-BASE-DEPENDENCY",
       "source_keywords": [
         "shall",

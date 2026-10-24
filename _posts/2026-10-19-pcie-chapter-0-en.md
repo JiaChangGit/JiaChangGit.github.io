@@ -2,10 +2,14 @@
 layout: post
 title: "PCIe Chapter 0: From the System View to Your First Specification Query"
 date: 2026-10-19 00:00:00 +0800
+last_modified_at: 2026-10-23 00:00:00 +0800
 permalink: /pcie/chapter-0-en/
 categories: [PCIe]
 tags: [PCIe, Specification]
 lang: en
+spec_teaching: true
+spec_series: pcie
+description: "一個 PCIe 裝置如何被系統認識並使用？又該如何查出它支援什麼？"
 ---
 
 <style>
@@ -220,38 +224,185 @@ lang: en
 /* Self-contained teaching diagrams use the same theme in standalone pages and posts. */
 .pcie-article .course-diagram text { fill: var(--ink); font-family: inherit; font-size: 18px; }
 
+/* Applied only to explicitly authorized teaching roots. */
+html .spec-teaching[data-spec-series] .st-terms { margin:.35rem 0 1rem; padding:.5rem .8rem; border-inline-start:3px solid var(--st-accent); background:var(--st-soft); font-size:.88em; color:var(--st-muted); }
+html .spec-teaching[data-spec-series] .st-terms > div { display:flex; flex-wrap:wrap; gap:.2em .7em; }
+html .spec-teaching[data-spec-series] .st-terms dt { font-weight:650; }
+html .spec-teaching[data-spec-series] .st-terms dd { margin:0; flex:1 1 14em; }
+html .spec-teaching[data-spec-series] {
+ --st-diagram-width:900px;
+ --st-paper:#f2f6f8; --st-surface:#fff; --st-ink:#192d40; --st-muted:#4c6479;
+ --st-line:#cbd9e3; --st-accent:#145f9d; --st-soft:#edf5fc;
+ --paper:var(--st-paper); --surface:var(--st-surface); --surface-2:var(--st-soft); --surface-alt:var(--st-soft);
+ --ink:var(--st-ink); --muted:var(--st-muted); --line:var(--st-line);
+ --accent:var(--st-accent); --accent-2:var(--st-accent); --soft:var(--st-soft); --blue-soft:var(--st-soft); --teal-soft:var(--st-soft);
+ --qr-paper:var(--st-paper); --qr-surface:var(--st-surface); --qr-ink:var(--st-ink); --qr-muted:var(--st-muted);
+ --qr-line:var(--st-line); --qr-accent:var(--st-accent); --qr-soft:var(--st-soft);
+ color:var(--st-ink); background:var(--st-paper); font-size:17px; line-height:1.9;
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+}
+html .spec-teaching[data-spec-series="nvme"] { --st-accent:#086b56; --st-soft:#e7f4ee; }
+@media(prefers-color-scheme:dark) {
+ html:not([data-theme="light"]) .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+ html:not([data-theme="light"]) .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+}
+html[data-theme="dark"] .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+html[data-theme="dark"] .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+.spec-teaching * { box-sizing:border-box; }
+.spec-teaching :is(h1,h2,h3,h4,h5,p,li,td,th,summary,strong,figcaption) { color:var(--st-ink); }
+.spec-teaching svg text { font-family:inherit; }
+.spec-teaching h1 { font-size:clamp(1.8rem,3.2vw,2.65rem); line-height:1.4; }
+.spec-teaching h2 { font-size:clamp(1.3rem,2.5vw,1.7rem); line-height:1.55; }
+.spec-teaching h3 { font-size:1.15rem; line-height:1.65; }
+.spec-teaching h4 { font-size:1rem; line-height:1.7; }
+.spec-teaching :is(h1,h2,h3,h4) { overflow-wrap:anywhere; }
+.spec-teaching p { margin:.7rem 0 1.15rem; }
+.spec-teaching :is(a,summary) { text-underline-offset:.2em; }
+.spec-teaching :focus-visible { outline:3px solid var(--st-accent); outline-offset:4px; }
+.spec-teaching :is(.qa-takeaway,.qa-answer-lead,.st-takeaway) { color:var(--st-ink); font-weight:650; font-size:1.06rem; line-height:1.9; }
+.spec-teaching :is(.qa-question,.qr-card,.guided-walk) { border:1px solid var(--st-line); border-radius:12px; background:var(--st-surface); padding:clamp(18px,3vw,30px); margin:1.8rem 0; }
+.spec-teaching :is(.qa-flow,.qr-note,.qr-observations,.st-context,.st-route) { background:var(--st-soft); border-left:4px solid var(--st-accent); padding:1rem 1.2rem; margin:1.4rem 0; }
+.spec-teaching :is(.qr-step,.qa-qid,.st-label) { color:var(--st-accent); font-weight:700; }
+.spec-teaching :is(.qa-citations,.qa-source-links,.qr-case-sources,.walk-source,.st-source) { font-size:.84rem; line-height:1.75; color:var(--st-muted); overflow-wrap:anywhere; }
+.spec-teaching :is(.qr-table,.table-wrap) { overflow-x:auto; margin:1.4rem 0; border-radius:7px; }
+.spec-teaching :is(th,td) { line-height:1.8; vertical-align:top; min-width:120px; }
+.spec-teaching :is(table,td) { background:var(--st-surface); }
+.spec-teaching th { background:var(--st-soft); }
+.spec-teaching .st-step { border-left:3px solid var(--st-line); padding:.6rem 1rem; margin:1.2rem 0; }
+.spec-teaching .st-step:target { border-left-color:var(--st-accent); background:var(--st-soft); }
+.spec-teaching .st-glossary { border:1px solid var(--st-line); padding:.7rem 1rem; margin:1.4rem 0; border-radius:8px; }
+.spec-teaching .st-glossary > summary { min-height:44px; cursor:pointer; }
+.spec-teaching .st-specs { display:flex; flex-wrap:wrap; gap:.4rem 1rem; color:var(--st-muted); font-size:.8rem; line-height:1.8; margin:1rem 0; }
+.spec-teaching .st-specs span { border-bottom:2px solid var(--st-accent); padding:.2rem 0; }
+@media(max-width:620px) { .spec-teaching :is(.qa-question,.qr-card,.guided-walk) { padding:16px; } .spec-teaching .diagram svg { min-width:var(--st-diagram-width); } }
+@media print {
+ .spec-teaching { --st-paper:#fff!important; --st-surface:#fff!important; --st-ink:#000!important; --st-muted:#333!important; --st-line:#999!important; --st-accent:#000!important; --st-soft:#fff!important; }
+ .spec-teaching details > * { display:block!important; }
+ .spec-teaching details::details-content { content-visibility:visible!important; }
+ .spec-teaching .st-step { break-inside:avoid; }
+}
+
+/* Native reading guides: selection highlights; it never hides teaching content.
+   build_pcie_course.py changes .pcie-article to .pcie-article for the posts. */
+.pcie-article .guided-walk { margin: 1.8rem 0; padding: 1.2rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); min-width: 0; }
+.pcie-article .guided-walk > h3 { margin-top: 0; }
+.pcie-article .walk-help { color: var(--muted); font-size: .85rem; }
+.pcie-article .walk-order { margin-bottom: 1.1rem; }
+/* Keep native radio semantics and keyboard handling; the associated label is
+   the visible control, so a radio cannot wrap away from its own label. */
+.pcie-article .walk-choice { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.pcie-article .walk-label { display: inline-flex; align-items: center; min-height: 44px; padding: .35rem .7rem; margin: .25rem .8rem .25rem 0; border: 2px solid var(--line); border-radius: 8px; cursor: pointer; font-size: .9rem; line-height: 1.5; color: var(--ink); background: var(--surface-alt); }
+.pcie-article .walk-choice:checked + .walk-label { border-color: var(--accent); background: var(--blue-soft); font-weight: 700; }
+.pcie-article .walk-choice:focus-visible + .walk-label { outline: 3px solid var(--focus); outline-offset: 3px; }
+.pcie-article .walk-view { margin-top: 1rem; min-width: 0; }
+.pcie-article .walk-diagram { margin: 0 0 1.2rem; }
+.pcie-article .walk-diagram svg { width: 100%; height: auto; display: block; }
+.pcie-article .walk-diagram svg a { cursor: pointer; }
+.pcie-article .walk-diagram svg a:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
+.pcie-article .walk-diagram figcaption { margin-top: .8rem; }
+.pcie-article .walk-steps { max-width: none; padding-left: 1.6rem; }
+.pcie-article .walk-step { padding: .6rem .9rem; margin: .7rem 0; border: 2px solid transparent; border-left: 5px solid var(--line); border-radius: 5px; background: var(--surface); }
+.pcie-article .walk-step h4 { margin: .2rem 0 .5rem; }
+.pcie-article .walk-condition { font-size: .9rem; color: var(--muted); }
+.pcie-article .walk-source { border-top: 1px solid var(--line); padding-top: .35rem; color: var(--muted); font-size: .85rem; }
+.pcie-article .walk-step p:last-child { margin-bottom: .3rem; }
+.pcie-article .walk-components { border-top: 1px solid var(--line); margin-top: 1.4rem; padding-top: .4rem; }
+.pcie-article .walk-component-links { display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; list-style: none; padding-left: 0; }
+.pcie-article .walk-component-links a { min-height: 44px; min-width: 44px; }
+.pcie-article .walk-component { padding: .7rem 1rem; margin: 1rem 0; border: 1px solid var(--line); border-radius: 8px; }
+.pcie-article .walk-component > h4 { margin-top: .2rem; }
+.pcie-article .walk-component:target { outline: 3px solid var(--accent-2); outline-offset: 3px; }
+.pcie-article .walk-component details { margin-bottom: .3rem; }
+
+.pcie-article .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-step[data-walk-step="1"],
+.pcie-article .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-step[data-walk-step="2"],
+.pcie-article .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-step[data-walk-step="3"],
+.pcie-article .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-step[data-walk-step="4"],
+.pcie-article .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-step[data-walk-step="5"],
+.pcie-article .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-step[data-walk-step="6"],
+.pcie-article .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-step[data-walk-step="7"],
+.pcie-article .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-step[data-walk-step="8"] { border-color: var(--accent); background: var(--blue-soft); }
+
+.pcie-article .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-node[data-walk-steps~="1"],
+.pcie-article .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-node[data-walk-steps~="2"],
+.pcie-article .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-node[data-walk-steps~="3"],
+.pcie-article .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-node[data-walk-steps~="4"],
+.pcie-article .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-node[data-walk-steps~="5"],
+.pcie-article .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-node[data-walk-steps~="6"],
+.pcie-article .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-node[data-walk-steps~="7"],
+.pcie-article .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-node[data-walk-steps~="8"] { --walk-active-weight: 750; }
+.pcie-article .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-node[data-walk-steps~="1"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-node[data-walk-steps~="2"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-node[data-walk-steps~="3"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-node[data-walk-steps~="4"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-node[data-walk-steps~="5"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-node[data-walk-steps~="6"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-node[data-walk-steps~="7"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-node[data-walk-steps~="8"] > :is(rect, circle, ellipse, polygon, path, line, polyline) { stroke: var(--accent); stroke-width: 3.5px; vector-effect: non-scaling-stroke; }
+.pcie-article .walk-node text { font-weight: var(--walk-active-weight, inherit); }
+
+@media (max-width: 620px) {
+  .pcie-article .guided-walk { padding: .8rem; }
+  .pcie-article .walk-label { margin-right: .45rem; padding-left: .45rem; padding-right: .45rem; }
+  .pcie-article .walk-steps { padding-left: 1.15rem; }
+  .pcie-article .walk-step { padding: .5rem .6rem; }
+  .pcie-article .walk-diagram { overflow-x: auto; }
+  .pcie-article .walk-diagram svg { min-width: var(--st-diagram-width, 700px); }
+}
+@media (forced-colors: active) {
+  .pcie-article .walk-choice:checked + .walk-label { border-color: Highlight; }
+  .pcie-article .walk-step { border-color: CanvasText; }
+}
+@media print {
+  .pcie-article .guided-walk { border: 1px solid #999; padding: .7rem; break-inside: auto; }
+  .pcie-article .walk-choice, .pcie-article .walk-label, .pcie-article .walk-help { display: none; }
+  .pcie-article .walk-step { display: list-item !important; border-color: #999 !important; background: transparent !important; }
+  .pcie-article .walk-node { --walk-active-weight: 500 !important; }
+  .pcie-article .walk-node > :is(rect, circle, ellipse, polygon, path, line, polyline) { stroke: #333 !important; stroke-width: 1.5px !important; }
+  .pcie-article .walk-diagram { overflow: visible; }
+  .pcie-article .walk-diagram svg { min-width: 0; }
+  .pcie-article .walk-component details > * { display: block !important; }
+  .pcie-article .walk-component details::details-content { content-visibility: visible !important; }
+}
+
+/* SVG text follows the selected reading theme. */
+.pcie-article svg text { fill: var(--ink); }
+.pcie-article .walk-summary { margin: 1rem 0 1.5rem; }
+
 html:not([data-theme="dark"]) .pcie-article { color-scheme: light; }
 html[data-theme="dark"] .pcie-article { color-scheme: dark; }
 
 .pcie-article { background: transparent; margin: 1.5rem 0; }
 .pcie-article .lesson { padding: 0; border: 0; background: transparent; }
 </style>
-<div class="pcie-article" lang="en">
+<div class="pcie-article spec-teaching" data-spec-series="pcie" lang="en">
 <nav class="bottom-nav" aria-label="Course and editions"><a href="/DOCS/pcie-course/index.html">Course overview</a><a href="/DOCS/pcie-course/chapter-0.html">Full Chinese tutorial</a><a href="/pcie/chapter-0-zh-tw/">繁體中文</a></nav>
 <article class="lesson">
-<p class="lead">A system can list a PCIe device before that device is ready to move data. Likewise, a feature defined in a specification is not necessarily supported by the device in front of you. This chapter establishes the system context, then works through one query: locating capability fields in Configuration Space and separating supported behavior from current operation.</p>
+<p class="lead">PCI Express (PCIe) carries requests and data between the host and peripheral devices. This chapter locates the system roles, then follows a capability list to read supported Link speeds separately from the current operating result.</p>
+<figure class="diagram"><svg viewBox="0 0 840 565" class="course-diagram" role="img" aria-labelledby="ch0-system-en-svg-title ch0-system-en-svg-desc"><title id="ch0-system-en-svg-title">System roles</title><desc id="ch0-system-en-svg-desc">A logical topology, not an execution timeline.</desc><g><rect x="30" y="25" width="245" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2"/><text x="152.5" y="52" text-anchor="middle" fill="var(--ink)" font-size="18">CPU / memory</text><text x="152.5" y="77" text-anchor="middle" fill="var(--ink)" font-size="16">Prepare and use data</text></g><g><rect x="335" y="25" width="280" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2"/><text x="475" y="52" text-anchor="middle" fill="var(--ink)" font-size="18">Root Complex</text><text x="475" y="77" text-anchor="middle" fill="var(--ink)" font-size="16">Connect the host to I/O</text></g><g><rect x="335" y="155" width="280" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2"/><text x="475" y="182" text-anchor="middle" fill="var(--ink)" font-size="18">Root Port</text><text x="475" y="207" text-anchor="middle" fill="var(--ink)" font-size="16">Interface to the Link</text></g><g><rect x="335" y="305" width="280" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2"/><text x="475" y="332" text-anchor="middle" fill="var(--ink)" font-size="18">Switch</text><text x="475" y="357" text-anchor="middle" fill="var(--ink)" font-size="16">Extend downstream paths</text></g><g><rect x="335" y="455" width="280" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2"/><text x="475" y="482" text-anchor="middle" fill="var(--ink)" font-size="18">Endpoint</text><text x="475" y="507" text-anchor="middle" fill="var(--ink)" font-size="16">Provide device functions</text></g><g><path d="M275 65 H335" fill="none" stroke="var(--accent)" stroke-width="2.5"/></g><g><path d="M475 105 V155" fill="none" stroke="var(--accent)" stroke-width="2.5"/></g><g><path d="M475 235 V305" fill="none" stroke="var(--accent)" stroke-width="2.5"/><text x="525" y="278" text-anchor="middle" fill="var(--ink)" font-size="15">Link</text></g><g><path d="M475 385 V455" fill="none" stroke="var(--accent)" stroke-width="2.5"/><text x="525" y="428" text-anchor="middle" fill="var(--ink)" font-size="15">Link</text></g></svg><figcaption>An authored system view. The Root Complex connects the host to I/O; the Root Port establishes a Link, the Switch extends paths, and the Endpoint provides device functions. Base 6.0 Figure 1-2, printed/PDF p.103.</figcaption></figure>
+
 <p><a href="/DOCS/pcie-course/chapter-0.html">Full Chinese tutorial and diagrams</a> · <a href="/DOCS/pcie-course/index.html">Course roadmap</a> · <a href="/pcie/chapter-0-zh-tw/">繁體中文</a></p>
 <aside class="note"><strong>Version scope</strong><p>Register definitions follow PCI Express Base Specification Revision 6.0; firmware context follows PCI Firmware Specification Revision 3.3. The latter references Base 5.0 in §1.2 (p.7), so these documents must not be treated as a matched revision set. All page numbers below refer to the PDFs used for this course; printed and PDF page numbers coincide.</p></aside>
 
 <section id="system">
 <h2>What must happen after a device is connected?</h2>
 <p>A Root Complex connects the CPU/memory subsystem to the I/O hierarchy. A Root Port establishes an outward Link, a Switch extends the connection paths, and an Endpoint provides device functionality. A Link connects two adjacent ends; Lanes make up that Link. x4 means four Lanes, not four devices.</p>
-<p>The basic object identified and configured by software is a Function. One card can expose multiple Functions. The example notation <code>0000:03:00.0</code> identifies a Segment, Bus, Device, and Function; Bus, Device, and Function are commonly abbreviated as BDF. A Segment is a logical grouping, not an additional hardware component, and this identifier is not a memory address.</p>
+<p>The basic object identified and configured by software is a Function. One card can expose multiple Functions. The example notation <code>0000:03:00.0</code> identifies a Segment, Bus, Device, and Function; Bus, Device, and Function are commonly abbreviated as BDF (Bus, Device, and Function identifier). A Segment is a logical grouping, not an additional hardware component, and this identifier is not a memory address.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>BDF</dt><dd>Bus/Device/Function</dd></div></dl>
 <p>Hardware at both ends must first meet the conditions for establishing a Link. System software discovers Functions and assigns resources; the device driver prepares the device-specific working interface. This is a teaching model of dependencies, and a platform may perform the work in stages. Firmware 3.3 §3.5 requires firmware to configure the complete paths to boot and console devices, as well as all Host Bridges. It does not guarantee that every Endpoint has been configured.</p>
 <div class="table-wrap"><table><caption>Three kinds of access that may participate in one operation</caption><thead><tr><th scope="col">Purpose</th><th scope="col">Information to locate</th></tr></thead><tbody>
 <tr><td>Identify a Function or query PCIe capabilities</td><td>The headers and Capability structures in Configuration Space.</td></tr>
 <tr><td>Operate the device interface from the CPU</td><td>Resources described by BARs and the device's register definitions. Access through memory mapping is MMIO (Memory-Mapped I/O).</td></tr>
 <tr><td>Move working data through device-initiated accesses</td><td>DMA (Direct Memory Access) buffers, device-visible addresses, and access conditions. The CPU still prepares the work.</td></tr>
 </tbody></table></div>
-<p>A BAR is a Base Address Register in Configuration Space, not the data buffer itself. Readable Configuration Space alone does not establish that MMIO or DMA is ready.</p>
+<p>A BAR is a Base Address Register in Configuration Space, not the data buffer itself. Readable Configuration Space alone does not establish that MMIO or DMA is ready.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>MMIO</dt><dd>Memory-Mapped I/O, mapped device-register access</dd></div><div><dt>DMA</dt><dd>Direct Memory Access, device access to memory</dd></div></dl>
 <details class="source-note"><summary>Specification locations for the system context</summary><p>Base 6.0 §1.2–§1.4, pp.100–109 (Figure 1-2: p.103); §2.1.1, pp.116–117; BARs: §7.5.1.2.1, pp.928–930. Firmware 3.3 §1.3, pp.8–9; §3.1–§3.2, pp.32–33; handoff requirements: §3.5, pp.34–35.</p></details>
 </section>
 
 <section id="query">
 <h2>Why does current speed not tell us which speeds are supported?</h2>
-<p>Capability fields describe supported behavior, control fields describe related settings, and status fields describe the current result. This query first checks the local Port's supported set and then the Link's current speed. Neither answer substitutes for the other.</p>
+<p>Capability fields describe supported behavior, control fields provide settings, and status fields report the current result. Follow the local Port query in that order of purpose: first locate the supported-speed set, then inspect the Link status. A control-setting query is a separate next step.</p>
 <p>Each Function has 4096 bytes of PCIe Configuration Space. The PCI Express Capability is in the conventional Capability list within the first 256 bytes. Its name does not mean that it belongs to the separate Extended Capability list. (Base 6.0 §7.2 / Figure 7-3, pp.905–906; §7.5.3, p.951.)</p>
-<aside class="example"><strong>Teaching assumptions</strong><p>The topology, locations, and values below are author-created, not hardware measurements. The target is an already discovered, ordinary PCI Express Endpoint, not a Root Complex Integrated Endpoint (RCiEP) or a Virtual Function (VF) used in virtualization. Conventional Bus/Device/Function (BDF) addressing is used, without Alternative Routing-ID Interpretation (ARI), which interprets Function identifiers differently. All configuration reads succeed. The Link is up and remains stable throughout the query, and the Link Capabilities 2 speed vector used here is implemented. Every offset is a byte offset within this Function's Configuration Space, not a CPU physical address.</p></aside>
+<aside class="example"><strong>Teaching assumptions</strong><p>The topology, locations, and values below are author-created, not hardware measurements. The target is an already discovered, ordinary PCI Express Endpoint, not a Root Complex Integrated Endpoint (RCiEP) or a Virtual Function (VF) used in virtualization. Conventional Bus/Device/Function (BDF (Bus, Device, and Function identifier)) addressing is used, without Alternative Routing-ID Interpretation (ARI), which interprets Function identifiers differently. All configuration reads succeed. The Link is up and remains stable throughout the query, and the Link Capabilities 2 speed vector used here is implemented. Every offset is a byte offset within this Function's Configuration Space, not a CPU physical address.</p></aside>
 <div class="table-wrap"><table><caption>Follow the list, then check the structure version and component type</caption><thead><tr><th scope="col">Step</th><th scope="col">Assumed read and interpretation</th><th scope="col">Base 6.0 reading location</th></tr></thead><tbody>
 <tr><td>Identify the header</td><td>An 8-bit read at <code>0x0E</code> returns <code>0x00</code>; <code>0x00 &amp; 0x7F = 0</code> selects Type 0. A 16-bit read at <code>0x06</code> returns <code>0x0010</code>, with Status bit 4 set.</td><td>Figure 7-8 / Table 7-7, pp.924–925; Figure 7-10, p.928; Figure 7-6 / Table 7-5, pp.921–922.</td></tr>
 <tr><td>Find the list entry</td><td>An 8-bit read at <code>0x34</code> returns <code>0x40</code>. Mask the low two bits first: <code>0x40 &amp; 0xFC = 0x40</code>.</td><td>§7.5.1.1.11, p.926.</td></tr>
@@ -266,6 +417,7 @@ html[data-theme="dark"] .pcie-article { color-scheme: dark; }
 
 <section id="decode">
 <h2>How do the register values become an answer?</h2>
+<figure class="diagram"><svg viewBox="0 0 840 355" class="course-diagram" role="img" aria-labelledby="ch0-query-en-svg-title ch0-query-en-svg-desc"><title id="ch0-query-en-svg-title">A capability query</title><desc id="ch0-query-en-svg-desc">Both field offsets are relative to the located PCIe Capability.</desc><g><rect x="20" y="35" width="230" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2"/><text x="135" y="62" text-anchor="middle" fill="var(--ink)" font-size="18">Header</text><text x="135" y="87" text-anchor="middle" fill="var(--ink)" font-size="16">0x34 → 0x40</text></g><g><rect x="305" y="35" width="230" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2"/><text x="420" y="62" text-anchor="middle" fill="var(--ink)" font-size="18">PM capability</text><text x="420" y="87" text-anchor="middle" fill="var(--ink)" font-size="16">ID=0x01; Next=0x70</text></g><g><rect x="590" y="35" width="230" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2"/><text x="705" y="62" text-anchor="middle" fill="var(--ink)" font-size="18">PCIe capability</text><text x="705" y="87" text-anchor="middle" fill="var(--ink)" font-size="16">ID=0x10; base=0x70</text></g><g><rect x="120" y="240" width="270" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2"/><text x="255" y="267" text-anchor="middle" fill="var(--ink)" font-size="18">Supported speeds</text><text x="255" y="292" text-anchor="middle" fill="var(--ink)" font-size="16">base+0x2C → 0x9C</text></g><g><rect x="450" y="240" width="270" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2"/><text x="585" y="267" text-anchor="middle" fill="var(--ink)" font-size="18">Current Link state</text><text x="585" y="292" text-anchor="middle" fill="var(--ink)" font-size="16">base+0x12 → 0x82</text></g><g><path d="M250 75 H305" fill="none" stroke="var(--accent)" stroke-width="2.5"/><path d="M296 70 L305 75 L296 80" fill="none" stroke="var(--accent)" stroke-width="2.5"/></g><g><path d="M535 75 H590" fill="none" stroke="var(--accent)" stroke-width="2.5"/><path d="M581 70 L590 75 L581 80" fill="none" stroke="var(--accent)" stroke-width="2.5"/></g><g><path d="M705 115 V175 H255 V240 M585 175 V240" fill="none" stroke="var(--accent)" stroke-width="2.5"/><text x="440" y="160" text-anchor="middle" fill="var(--ink)" font-size="15">Check version and type first</text></g></svg><figcaption>Locate the structure before adding field offsets. This is a reading route, not a hardware state machine. Base 6.0 Figure 7-21, printed/PDF p.952.</figcaption></figure>
 <p>Start with Figure 7-21 (p.952) and add each register's relative offset to the Capability base. Then consult the capability definition in Figure 7-38 / Table 7-35 (pp.998–1000), followed by the status definition in Figure 7-29 / Table 7-26 (pp.978–979). The question determines the reading order. Figures locate fields; tables and surrounding requirements explain their interpretation. Check the revision and applicable component at every step rather than inferring meaning from a field name alone.</p>
 <pre><code>Link Capabilities 2: 0x70 + 0x2C = 0x9C; read 32 bits → 0x0180001E
 Link Status:         0x70 + 0x12 = 0x82; read 16 bits → 0x0043</code></pre>
@@ -281,11 +433,12 @@ Negotiated Link Width: (0x0043 &amp; 0x03F0) &gt;&gt; 4 = 4</code></pre>
 
 <section id="limits">
 <h2>Does operating at only 8 GT/s prove a fault?</h2>
-<p><strong>Example deduction:</strong> Under the stated assumptions, the local Port advertises speeds up to 16 GT/s, while its Link currently operates at 8 GT/s and x4. These reads do not explain the lower speed. The partner's capabilities, relevant settings, and Link state must also be checked. x4 is not evidence of the maximum supported width, and GT/s is not application GB/s. Useful throughput also depends on Lane count, encoding, packet overhead, and workload (Base 6.0 §1.2, pp.101–102).</p>
+<p>Figure 7-21 (p.952) locates the fields relative to the Capability base. Read Figure 7-38/Table 7-35 (pp.998–1000) to interpret the supported-speed vector, then Figure 7-29/Table 7-26 (pp.978–979) for the current speed and width. At each step the table supplies the encoding and applicability that the layout alone cannot provide.</p>
 </section>
 
 <section id="self-check">
 <h2>Does the same conclusion survive a changed condition?</h2>
+<p>The complete query selects a Function, follows its list, checks the structure, and interprets two separate fields. The following variations show which part of that route must be checked again.</p>
 <details class="question"><summary>If the Capability base moves to 0x90, can the capability still be read at 0x9C?</summary><p>No. From Figure 7-21 (p.952), Link Capabilities 2 moves to <code>0x90 + 0x2C = 0xBC</code>, and Link Status to <code>0x90 + 0x12 = 0xA2</code>. The new base is a teaching assumption; the relative offsets stay the same.</p></details>
 <details class="question"><summary>If Current Link Speed is 4, does that mean two speeds are supported simultaneously?</summary><p>No. With valid Link-state conditions, code 4 means a current speed of 16 GT/s. The supported set still requires a separate vector read. (Table 7-26 and Table 7-35, pp.978 and 998.)</p></details>
 <details class="question"><summary>If the Link is down and a previously obtained value is 0x0043, can it describe the current speed and width?</summary><p>No. Table 7-26 (p.978) defines speed and width as undefined when the Link is not up. Plausible numbers do not replace the required validity condition.</p></details>

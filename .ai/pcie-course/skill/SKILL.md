@@ -5,7 +5,7 @@ description: Create and revise the PCIe course in JiaChangGit.github.io using gu
 
 # PCIe 規格教學
 
-本 skill 用於此專案的 PCIe 系列。依當次使用者授權處理章節；本次完成 Chapter 7–9 三版本與配套 skill／腳本後停止，等待使用者確認教學方式。其他章節維持既有內容，不繼續修訂或新增。不修改其他系列。只讀要求優先於任何產生或發布步驟。
+本 skill 是 PCIe 編輯入口。最新共同教學規則及範圍以 repository 的 `.ai/spec-teaching/skill/SKILL.md` 與當次使用者要求為準；先讀該檔及相關 references。本次使用者已授權修訂全系列並補足 Base 6.0 全文。只讀或先確認的當次要求仍優先。
 
 ## 開始前
 

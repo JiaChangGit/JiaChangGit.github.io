@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "course": "pcie-course",
+  "chapter": 16,
+  "updated": "2026-10-24",
+  "claims": [
+    {
+      "id": "PCIE-CH16-001",
+      "claim": "通道資源、TC0固定映射與單一Link兩端一致規則。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.5",
+        "2.5.2"
+      ],
+      "document_pages": [
+        229,
+        233
+      ],
+      "pdf_pages": [
+        229,
+        233
+      ],
+      "figures": [
+        "2-88"
+      ],
+      "tables": [
+        "2-43"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH16-002",
+      "claim": "Flit共享流量控制與非Flit獨立資源區別。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.6"
+      ],
+      "document_pages": [
+        235
+      ],
+      "pdf_pages": [
+        235
+      ],
+      "figures": [
+        "2-89"
+      ],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH16-003",
+      "claim": "映射與仲裁須配合全路徑等時性資源保留與流量調節。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.3.2",
+        "6.3.3",
+        "A.1",
+        "A.2"
+      ],
+      "document_pages": [
+        703,
+        705,
+        1521,
+        1522,
+        1523
+      ],
+      "pdf_pages": [
+        703,
+        705,
+        1521,
+        1522,
+        1523
+      ],
+      "figures": [
+        "A-1",
+        "A-2"
+      ],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    }
+  ]
+}

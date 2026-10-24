@@ -1,42 +1,63 @@
-<p class="lead">電腦能列出一個 PCIe 裝置，不代表裝置已經可以傳資料；規格定義了某項功能，也不代表眼前的裝置一定支援。本章從這兩個差別出發，先認識系統裡的角色，再帶你完成一次查詢：一個裝置端的 Port 支援哪些連線速率，而這條 Link 現在使用哪個速率？</p>
-<p>你只需要懂基本程式、CPU 與記憶體概念。讀到最後，應該能說明查詢的對象、資料的位置、欄位的意義，以及證據還不足以回答哪些問題。先理解每一步的理由，圖號可以在需要時再查。</p>
+<!-- pcie-walk: walks/chapter0-system.json -->
+<div class="guided-walk" id="ch0-system" role="group" aria-labelledby="ch0-system-title" data-walk-version="1">
+<h3 id="ch0-system-title">先在系統中找到本章的裝置</h3>
+<p class="walk-help" id="ch0-system-help">選擇步驟後，圖中對應的元件與下方解說會加上重點標示。完整圖與所有解說會持續顯示；也可用方向鍵切換步驟。</p>
+<div class="walk-order"><p>先定位 CPU／記憶體，再沿連線走到裝置。這三步是閱讀順序；實際初始化的依賴關係在正文另行說明。</p></div>
+<input class="walk-choice" type="radio" name="ch0-system-step" id="ch0-system-choice-1" value="1" data-walk-step="1" aria-describedby="ch0-system-help" aria-controls="ch0-system-view ch0-system-step-1" checked="checked">
+<label class="walk-label" for="ch0-system-choice-1">1. 主機準備工作</label>
+<input class="walk-choice" type="radio" name="ch0-system-step" id="ch0-system-choice-2" value="2" data-walk-step="2" aria-describedby="ch0-system-help" aria-controls="ch0-system-view ch0-system-step-2">
+<label class="walk-label" for="ch0-system-choice-2">2. 沿相鄰連線找到裝置</label>
+<input class="walk-choice" type="radio" name="ch0-system-step" id="ch0-system-choice-3" value="3" data-walk-step="3" aria-describedby="ch0-system-help" aria-controls="ch0-system-view ch0-system-step-3">
+<label class="walk-label" for="ch0-system-choice-3">3. 由軟體選定設定對象</label>
+<div class="walk-view" id="ch0-system-view">
+<figure class="diagram walk-diagram">
+<svg viewBox="0 0 840 565" class="course-diagram" role="img" aria-labelledby="ch0-system-svg-title ch0-system-svg-desc"><title id="ch0-system-svg-title">從 CPU／記憶體定位 PCIe 角色</title><desc id="ch0-system-svg-desc">CPU與記憶體經Root Complex、Root Port及Switch連到Endpoint；連線不代表所有初始化均已完成。</desc><g data-walk-target="host" class="walk-node" data-walk-steps="1 3"><rect x="30" y="25" width="245" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2" /><text x="152.5" y="52" text-anchor="middle" fill="var(--ink)" font-size="18">CPU／記憶體</text><text x="152.5" y="77" text-anchor="middle" fill="var(--ink)" font-size="16">準備與使用工作資料</text></g><a href="#ch0-system-component-root" aria-label="Root Complex：連接主機與 I/O"><g data-walk-target="root" class="walk-node" data-walk-steps="1 3"><rect x="335" y="25" width="280" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2" /><text x="475" y="52" text-anchor="middle" fill="var(--ink)" font-size="18">Root Complex</text><text x="475" y="77" text-anchor="middle" fill="var(--ink)" font-size="16">連接主機與 I/O 階層</text></g></a><g data-walk-target="port" class="walk-node" data-walk-steps="2 3"><rect x="335" y="155" width="280" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2" /><text x="475" y="182" text-anchor="middle" fill="var(--ink)" font-size="18">Root Port</text><text x="475" y="207" text-anchor="middle" fill="var(--ink)" font-size="16">對外連線的介面</text></g><a href="#ch0-system-component-switch" aria-label="Switch：延伸路徑"><g data-walk-target="switch" class="walk-node" data-walk-steps="2 3"><rect x="335" y="305" width="280" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2" /><text x="475" y="332" text-anchor="middle" fill="var(--ink)" font-size="18">Switch</text><text x="475" y="357" text-anchor="middle" fill="var(--ink)" font-size="16">延伸下游連接路徑</text></g></a><a href="#ch0-system-component-endpoint" aria-label="Endpoint：提供裝置功能"><g data-walk-target="endpoint" class="walk-node" data-walk-steps="2 3"><rect x="335" y="455" width="280" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2" /><text x="475" y="482" text-anchor="middle" fill="var(--ink)" font-size="18">Endpoint</text><text x="475" y="507" text-anchor="middle" fill="var(--ink)" font-size="16">提供裝置功能</text></g></a><g data-walk-target="host-root" class="walk-node" data-walk-steps="1"><path d="M275 65 H335" fill="none" stroke="var(--accent)" stroke-width="2.5" /></g><g data-walk-target="root-port" class="walk-node" data-walk-steps="2"><path d="M475 105 V155" fill="none" stroke="var(--accent)" stroke-width="2.5" /></g><g data-walk-target="first-link" class="walk-node" data-walk-steps="2"><path d="M475 235 V305" fill="none" stroke="var(--accent)" stroke-width="2.5" /><text x="525" y="278" text-anchor="middle" fill="var(--ink)" font-size="15">Link</text></g><g data-walk-target="second-link" class="walk-node" data-walk-steps="2"><path d="M475 385 V455" fill="none" stroke="var(--accent)" stroke-width="2.5" /><text x="525" y="428" text-anchor="middle" fill="var(--ink)" font-size="15">Link</text></g></svg>
+<figcaption>作者依 Base 6.0 Figure 1-2 重繪的系統關係。Port 是連接介面；Link 是相鄰連線。線條只表示連接，不指定初始化時序。</figcaption></figure>
+<div class="walk-summary"><p class="lead">PCI Express（PCIe）讓 CPU／記憶體子系統與周邊裝置交換要求和資料。本章先沿系統拓樸認識各角色，再選定一個裝置端的連接介面，查出它支援的連線速率與目前運作結果。</p></div>
+<ol class="walk-steps">
+<li class="walk-step" id="ch0-system-step-1" data-walk-step="1" data-walk-targets="host host-root root"><h4>主機準備工作</h4><div class="walk-condition"><p>這是作者簡化的邏輯拓樸；數個角色可能整合在同一顆晶片。</p></div><div class="walk-explanation"><p>CPU 與記憶體保存工作資料。Root Complex 是把這個主機子系統接到 I/O（輸入輸出）階層的角色；圖中先依連接關係閱讀。</p></div><div class="walk-source" data-source-claims="PCIE-ARCH-TOPOLOGY-001"><p>Base 6.0 §1.3.1／Figure 1-2，文件頁／PDF 頁 102–103。</p></div></li>
+<li class="walk-step" id="ch0-system-step-2" data-walk-step="2" data-walk-targets="root-port port first-link switch second-link endpoint"><h4>沿相鄰連線找到裝置</h4><div class="walk-condition"><p>Endpoint 是提供裝置功能的端點；此圖省略 Switch 內部的個別 Port。</p></div><div class="walk-explanation"><p>Root Port 是對外建立連線的介面；Switch 是延伸下游路徑的交換器。每條 Link 只連接相鄰兩端，圖中沒有把整條路徑當成同一條連線。</p></div><div class="walk-source" data-source-claims="PCIE-ARCH-LINK-001 PCIE-ARCH-TOPOLOGY-001"><p>Base 6.0 §1.2–§1.3／Figures 1-1–1-3，文件頁／PDF 頁 100–107。</p></div></li>
+<li class="walk-step" id="ch0-system-step-3" data-walk-step="3" data-walk-targets="host root port switch endpoint"><h4>由軟體選定設定對象</h4><div class="walk-condition"><p>兩端建立 Link 後，資源配置與驅動程式的工作準備仍各有條件。</p></div><div class="walk-explanation"><p>系統軟體讀取 Function，也就是可個別辨識與設定的功能。後面的查詢會在裝置端選定一個 Function，沿設定空間清單找到連線欄位。</p></div><div class="walk-source" data-source-claims="PCIE-ARCH-CONFIGURATION-001"><p>Base 6.0 §1.4，文件頁／PDF 頁 108–109。</p></div></li>
+</ol></div>
+<div class="walk-components"><h4>圖中元件</h4><ul class="walk-component-links">
+<li><a href="#ch0-system-component-root">Root Complex：連接主機與 I/O</a></li>
+<li><a href="#ch0-system-component-switch">Switch：延伸路徑</a></li>
+<li><a href="#ch0-system-component-endpoint">Endpoint：提供裝置功能</a></li>
+</ul>
+<section class="walk-component" id="ch0-system-component-root" data-component-target="root"><h4>Root Complex：連接主機與 I/O</h4><div class="walk-component-action"><p>本圖把 CPU／記憶體所在的主機子系統接到下游路徑。</p></div><details><summary>基本責任</summary><p>Root Complex 是邏輯角色，不能據此推定它是一顆獨立晶片。</p></details></section>
+<section class="walk-component" id="ch0-system-component-switch" data-component-target="switch"><h4>Switch：延伸路徑</h4><div class="walk-component-action"><p>本圖把上游連接帶到裝置所在的下游路徑。</p></div><details><summary>基本責任</summary><p>Switch 對設定軟體呈現為多個邏輯橋接功能；下一章會放大其內部關係。</p></details></section>
+<section class="walk-component" id="ch0-system-component-endpoint" data-component-target="endpoint"><h4>Endpoint：提供裝置功能</h4><div class="walk-component-action"><p>本章接著在裝置端選定一個 Function，讀它的設定空間。</p></div><details><summary>基本責任</summary><p>Endpoint 是提供裝置功能的端點；實體卡與 Function 的數量可能不同。</p></details></section>
+</div>
+</div>
+<!-- /pcie-walk -->
+
+<p>從你熟悉的 CPU 與記憶體出發，先看資料要送到哪個裝置，再看軟體如何找到查詢欄位。每一步都會交代執行者、讀取位置與有效條件；圖號用來帶你回到規格的相應位置。</p>
 <aside class="note"><strong>本章採用的版本</strong><p>欄位與圖表以 PCI Express Base Specification Revision 6.0 為準；韌體與作業系統的關係以 PCI Firmware Specification Revision 3.3 為主要依據。Firmware 3.3 §1.2（文件頁／PDF 頁 7）的參考文件列的是 Base 5.0，兩份文件的版本不能視為同一組配套。另附 UEFI 2.11 與 ACPI 6.6 的官方背景閱讀；它們不取代本章引用的 Base 6.0 欄位定義。</p></aside>
 
 <section id="purpose">
 <h2>1. CPU 已經能存取記憶體，為什麼還需要 PCIe？</h2>
-<p>先想一個需求：程式準備好一塊記憶體，希望網路裝置把資料送出去。CPU 必須告訴裝置要做什麼，裝置必須取得資料，工作完成後還要讓軟體知道結果。這些互動需要共同的傳輸方式與軟體介面。</p>
-<p>PCI Express，簡稱 PCIe，是連接系統與周邊裝置的互連架構。它定義如何發現與設定裝置，也定義元件之間如何以封包傳遞讀取、寫入及其他要求。至於「傳送哪一種網路封包」或「讀取哪一個儲存區塊」，還需要裝置本身的介面規格與驅動程式。</p>
+<p>假設程式已在記憶體中準備好要傳送的資料。CPU 先安排工作，網路裝置再取得資料並執行傳送，軟體最後依裝置介面取得結果。PCIe（PCI Express，周邊互連） 提供元件交換要求與資料的共同方式；工作內容仍由裝置介面決定。</p>
+<p>PCI Express，簡稱 PCIe（PCI Express，周邊互連），是連接系統與周邊裝置的互連架構。它定義如何發現與設定裝置，也定義元件之間如何以封包傳遞讀取、寫入及其他要求。至於「傳送哪一種網路封包」或「讀取哪一個儲存區塊」，還需要裝置本身的介面規格與驅動程式。</p>
 <aside class="example"><strong>教學情境</strong><p>本章用網路裝置說明角色，用一個簡化的 PCIe Endpoint 練習讀欄位。這些情境由作者設計；沒有假設特定廠牌，也沒有把任何一組讀值當成實機量測。</p></aside>
-<p>因此，學 PCIe 可以先分成三個問題：系統如何認識這個裝置、軟體如何使用它，以及底層如何把要求送到對方。後續課程會沿著這三個問題展開。</p>
+<p>接下來沿這項工作分三層閱讀：先確認系統中的角色，再了解軟體查詢與配置的對象，最後追蹤要求如何到達對方。這一章先完成前兩層所需的背景，並用連線速率查詢把它們接起來。</p>
 <details class="source-note"><summary>規格依據：Base 6.0 §1.1、§1.4、§1.5</summary><p>PCI Express Base Specification Revision 6.0，文件頁／PDF 頁 99–100、108–113。這裡的網路工作情境是教學舉例；互連、設定模型與分層功能依上述章節。</p></details>
 </section>
 
 <section id="topology">
 <h2>2. 從 CPU 到裝置，途中有哪些角色？</h2>
-<p>先看一個簡化系統。Root Complex 把 CPU／記憶體子系統接到 I/O 階層；Root Port 是這個階層向外建立 PCIe Link 的介面。Endpoint 則是執行裝置功能的端點。若需要接出更多路徑，中間可以加入 Switch。</p>
-<figure class="diagram">
-<svg viewBox="0 0 760 490" role="img" aria-labelledby="topology-title topology-desc" xmlns="http://www.w3.org/2000/svg">
-<title id="topology-title">簡化的 PCIe 系統關係圖</title><desc id="topology-desc">CPU 與系統記憶體連接 Root Complex。左側 Root Port 直接連接 Endpoint A；右側 Root Port 經過 Switch 連接 Endpoint B 與 C。每條標示 Link 的線只連接相鄰的兩個 Port。</desc>
-<g fill="none" stroke="var(--line)" stroke-width="2.5"><path d="M190 76V112M570 76V112M185 226V350M575 226V273M520 330V350H460V395M630 330V350H660V395"/></g>
-<g fill="var(--surface-alt)" stroke="var(--line)" stroke-width="1.5"><rect x="90" y="20" width="200" height="56" rx="12"/><rect x="470" y="20" width="200" height="56" rx="12"/><rect x="60" y="112" width="640" height="114" rx="14"/><rect x="440" y="273" width="270" height="57" rx="12"/></g>
-<g fill="var(--blue-soft)" stroke="var(--accent)" stroke-width="1.5"><rect x="95" y="166" width="180" height="42" rx="9"/><rect x="485" y="166" width="180" height="42" rx="9"/></g>
-<g fill="var(--teal-soft)" stroke="var(--accent-2)" stroke-width="1.5"><rect x="90" y="350" width="190" height="60" rx="12"/><rect x="375" y="395" width="170" height="60" rx="12"/><rect x="575" y="395" width="170" height="60" rx="12"/></g>
-<g fill="var(--ink)" font-family="system-ui,sans-serif" font-size="19" text-anchor="middle"><text x="190" y="55">CPU</text><text x="570" y="55">系統記憶體</text><text x="380" y="145">Root Complex</text><text x="185" y="194">Root Port</text><text x="575" y="194">Root Port</text><text x="575" y="309">Switch</text><text x="185" y="386">Endpoint A</text><text x="460" y="431">Endpoint B</text><text x="660" y="431">Endpoint C</text></g>
-<g fill="var(--muted)" font-family="system-ui,sans-serif" font-size="17"><text x="200" y="294">Link</text><text x="589" y="254">Link</text><text x="472" y="379">Link</text><text x="672" y="379">Link</text></g>
-</svg>
-<figcaption>教學重繪，依 Base 6.0 Figure 1-2 的角色關係簡化；不是主機板的實際佈線圖。Switch 的個別 Port 與內部橋接結構先省略。</figcaption>
-</figure>
+<p>沿開頭的圖往下看：Root Complex 負責把主機子系統接到 I/O 階層，Root Port 提供向外的連接介面，Switch 延伸下游路徑，Endpoint 提供裝置功能。先固定這組角色，後文再把觀察範圍縮到裝置端的設定資料。</p>
+
 <dl class="term-note"><dt>I/O</dt><dd>Input/Output，輸入與輸出。在這裡指系統與周邊裝置之間的互動。</dd><dt>Port、Link 與 Lane</dt><dd>Port 是連接介面；Link 是相鄰兩端之間的連線；Lane 是構成 Link 的傳輸通道。每個 Lane 各有一組傳送與接收差動訊號對。x4 表示這條 Link 使用 4 個 Lane，不表示接了 4 個裝置。</dd></dl>
-<p>圖中的 CPU、Root Complex 與記憶體只是邏輯角色。實際產品可以把其中幾個角色整合在同一顆晶片內，所以看到 Root Complex 這個名稱時，不要先假設它一定是主機板上另一顆獨立晶片。</p>
+<p>圖中分開畫出的 CPU、Root Complex 與記憶體是邏輯角色。實際產品可以將其中幾個角色整合在同一顆晶片內；讀拓樸時，先追蹤它們的連接與職責，再另查產品的實體配置。</p>
 <h3>一張卡就是一個 Function 嗎？</h3>
-<p>不一定。軟體辨識與設定的基本對象是 <strong>Function</strong>。一個實體裝置可以提供多個 Function，各自有設定空間。傳統編址會用 Bus、Device、Function 三個號碼定位，常合稱 BDF；如果系統有多個 Segment，還要先指定 Segment。Segment 是由韌體管理、供 OS 使用的邏輯分組；不同 Segment 可以重複使用相同的 Bus 號碼，但同一個 Segment 內的 Bus 號碼必須唯一。它不是圖上額外插入的一個硬體元件。</p>
-<aside class="example"><strong>教學假設</strong><p>後面的查詢對象記成 <code>0000:03:00.0</code>，依序表示 Segment 0000、Bus 03、Device 00、Function 0。這只是方便閱讀的定位記法，號碼由本例假設；它不是 BAR 位址，也不能拿來直接當成記憶體位址。</p></aside>
-<details class="source-note"><summary>規格依據：Base 6.0 §1.2–§1.3、§7.1；Firmware 3.3 §1.3</summary><p>Base 6.0，文件頁／PDF 頁 100–108，Figure 1-2 位於 103；§7.1 位於 903–904。PCI Firmware Specification Revision 3.3，§1.3，文件頁／PDF 頁 8–9，說明 Bus／Device／Function 與 Segment。圖中的實際配置與 BDF 都是教學假設。</p></details>
+<p>不一定。軟體辨識與設定的基本對象是 <strong>Function</strong>。一個實體裝置可以提供多個 Function，各自有設定空間。傳統編址會用 Bus、Device、Function 三個號碼定位，常合稱 BDF（Bus、Device、Function 識別號）；如果系統有多個 Segment（匯流排的邏輯分組），還要先指定 Segment（匯流排的邏輯分組）。Segment 是由韌體管理、供 OS 使用的邏輯分組；不同 Segment 可以重複使用相同的 Bus 號碼，但同一個 Segment 內的 Bus 號碼必須唯一。它不是圖上額外插入的一個硬體元件。</p>
+<aside class="example"><strong>教學假設</strong><p>後面的查詢對象記成 <code>0000:03:00.0</code>，依序表示 Segment 0000、Bus 03、Device 00、Function 0。這只是方便閱讀的定位記法，號碼由本例假設；它不是 BAR（描述裝置位址資源的基底位址暫存器） 位址，也不能拿來直接當成記憶體位址。</p></aside>
+<details class="source-note"><summary>規格依據：Base 6.0 §1.2–§1.3、§7.1；Firmware 3.3 §1.3</summary><p>Base 6.0，文件頁／PDF 頁 100–108，Figure 1-2 位於 103；§7.1 位於 903–904。PCI Firmware Specification Revision 3.3，§1.3，文件頁／PDF 頁 8–9，說明 Bus／Device／Function 與 Segment。圖中的實際配置與 BDF（Bus、Device、Function 識別號） 都是教學假設。</p></details>
 </section>
 
 <section id="startup">
 <h2>3. 裝置接上以後，為什麼還不能立刻使用？</h2>
-<p>連線建立、裝置被發現、資源完成配置，以及驅動程式準備好，是不同的事情。下表以一個需要在開機時使用的裝置為例，整理各項工作之間的依賴；實際平台可能分階段處理，也可能由韌體與 OS 分別完成一部分。</p>
+<p>沿路徑找到裝置後，還要依序檢查連線、發現、資源配置與驅動準備。下表用開機時需要使用的裝置整理這些工作的依賴關係；實際平台可以分階段處理，韌體與 OS 也可能各完成一部分。</p>
 <div class="table-wrap"><table><caption>教學流程：從連線到工作</caption><thead><tr><th scope="col">先要完成的工作</th><th scope="col">誰在處理</th><th scope="col">完成後能說明什麼</th></tr></thead><tbody>
 <tr><td>電源、重置與就緒條件適當，兩端建立 Link</td><td>平台與裝置硬體；Link 的初始速率與寬度協商由兩端硬體處理</td><td>相鄰兩端具備通訊條件；尚未證明驅動程式已可使用裝置</td></tr>
 <tr><td>讀取設定空間，發現 Function 並辨識其結構</td><td>韌體或 OS 的系統軟體</td><td>系統知道有哪些 Function；這個過程通常稱為 enumeration，亦即枚舉</td></tr>
@@ -51,22 +72,22 @@
 
 <section id="spaces">
 <h2>4. 讀設定空間、讀裝置暫存器與 DMA，有什麼不同？</h2>
-<p>暫存器可以先理解成硬體提供給軟體讀取或設定的欄位集合。設定空間裡有暫存器，裝置自己的操作介面也可能有暫存器；看到「register」這個字，還需要確認它位於哪種空間。</p>
+<p>軟體會在不同位置讀取或設定硬體欄位。先看這次操作的目的：查裝置能力時讀設定空間，操作裝置工作介面時使用其資源位址，裝置搬移資料時則使用準備好的記憶體映射。規格中的 register 指暫存器；它所屬的空間決定了查找方法。</p>
 <div class="table-wrap"><table><caption>從目的分辨三種存取</caption><thead><tr><th scope="col">現在想做什麼</th><th scope="col">讀取或操作的對象</th><th scope="col">應先找哪一類資料</th></tr></thead><tbody>
 <tr><td>辨識 Function，查詢 PCIe 能力與連線狀態</td><td>該 Function 的 Configuration Space，設定空間</td><td>設定標頭、Capability 結構與欄位定義</td></tr>
 <tr><td>透過記憶體映射介面操作裝置</td><td>分配給裝置的記憶體位址範圍</td><td>BAR 描述的資源與裝置本身的暫存器規格</td></tr>
 <tr><td>讓裝置搬移工作資料</td><td>軟體準備並映射給裝置使用的記憶體</td><td>DMA 緩衝區、裝置可用位址及存取條件</td></tr>
 </tbody></table></div>
 <dl class="term-note"><dt>BAR</dt><dd>Base Address Register，基底位址暫存器，位於設定空間，用來描述或設定裝置的位址資源。BAR 不是資料緩衝區本身。</dd><dt>MMIO</dt><dd>Memory-Mapped I/O，記憶體映射 I/O。CPU 透過被映射的位址存取裝置介面；這種存取不能一概視為普通 RAM 讀寫。</dd><dt>DMA</dt><dd>Direct Memory Access，直接記憶體存取。在本章的情境中，由裝置發起資料存取；CPU 仍需先安排工作、緩衝區與必要設定。</dd></dl>
-<p>例如，讀取 Link Status 是在查設定空間；寫入網路裝置的工作暫存器，則可能走 BAR 所對應的 MMIO 範圍。裝置接著讀取傳送資料，是另一筆由裝置發起的存取。這三件事可能出現在同一項工作裡，但它們回答的問題不同。</p>
-<p>本章只讀設定空間，不做資源配置或實際 DMA。CPU 看到的位址和裝置使用的位址也不保證相同；後續談資源配置與位址轉譯時，會把這個差別展開。</p>
+<p>例如，讀取 Link Status 是在查設定空間；寫入網路裝置的工作暫存器，則可能走 BAR（描述裝置位址資源的基底位址暫存器） 所對應的 MMIO（以記憶體映射操作裝置） 範圍。裝置接著讀取傳送資料，是另一筆由裝置發起的存取。這三件事可能出現在同一項工作裡，但它們回答的問題不同。</p>
+<p>本章只讀設定空間，不做資源配置或實際 DMA（由裝置直接存取記憶體）。CPU 看到的位址和裝置使用的位址也不保證相同；後續談資源配置與位址轉譯時，會把這個差別展開。</p>
 <details class="source-note"><summary>規格依據：位址空間與裝置存取</summary><p>Base 6.0 §1.4–§1.5.1，文件頁／PDF 頁 108–110；§2.1.1，頁 116–117；§7.5.1.2.1，頁 928–930，說明 BAR 的資源配置用途與欄位（Figure 7-11、Figure 7-12 位於 929）。Firmware 3.3 §3.1，頁 32–33，區分 CPU 與 PCI 位址視角及 UEFI PCI 存取服務。網路工作的操作順序屬教學情境，不是某款網卡的程式設計規範。</p></details>
 </section>
 
 <section id="reading">
 <h2>5. 打開規格後，怎麼知道該先看哪裡？</h2>
-<p>先把需求寫成一句能查證的問題。本章要問的是：「指定 Port 宣告支援哪些速率？它所在的 Link 目前使用哪個速率？」前半句在問能力，後半句在問狀態。如果另外問「軟體希望它使用哪個速率」，才需要再查看相關控制欄位；三者不能互相代替。</p>
-<p>PCIe 每個 Function 的設定空間擴充為 4096 bytes。前 256 bytes 保留 PCI 相容區域，其中有設定標頭與傳統 Capability 清單；後面的區域可放 PCI Express Extended Capabilities。<strong>PCI Express Capability 本身位於前 256 bytes 的清單裡</strong>，不要因為名稱帶有 PCI Express，就直接跳去找 Extended Capability。</p>
+<p>現在把問題限定為同一個裝置端的 Port：它宣告支援哪些速率，而相鄰 Link 目前使用哪個速率？先查能力，再查狀態。若要了解軟體設定的速率上限，還要另外查看控制欄位；這個延伸問題會在連線章處理。</p>
+<p>PCIe 每個 Function 的設定空間擴充為 4096 bytes。前 256 bytes 保留 PCI 相容區域，其中有設定標頭與傳統 Capability（描述或控制能力的結構） 清單；後面的區域可放 PCI Express Extended Capabilities。<strong>PCI Express Capability（描述或控制能力的結構） 本身位於前 256 bytes 的清單裡</strong>，不要因為名稱帶有 PCI Express，就直接跳去找 Extended Capability。</p>
 <p>Capability 是一組用來描述或控制特定能力的結構。它在設定空間中的起點不必固定；軟體要先沿指標找到它，再加上結構內的相對位移。因此，規格標示的「Offset 2Ch」還不是本例的最終存取位置。</p>
 <aside class="note"><strong>讀欄位前的三個記法</strong><p><code>0x2C</code> 與規格常用的 <code>2Ch</code> 都表示十六進位；一個十六進位數字對應 4 個 bits。bit 0 是最低位元，<code>bits 7:1</code> 包含 7、6、5、4、3、2、1，共 7 個位元。位移若以 byte 為單位，就不能把它當成 bit 數來相加。</p><p><code>&amp;</code> 表示位元 AND，用遮罩保留指定位置；<code>&gt;&gt;</code> 表示向右位移。後面的例子會把每次運算的目的寫出來。</p></aside>
 <div class="table-wrap"><table><caption>這個問題的規格閱讀路徑（Base 6.0）</caption><thead><tr><th scope="col">閱讀位置</th><th scope="col">要從這裡取得什麼</th><th scope="col">下一步為什麼需要它</th></tr></thead><tbody>
@@ -83,6 +104,28 @@
 
 <section id="case">
 <h2>6. 完整案例：支援哪些速率，現在又跑多少？</h2>
+<!-- pcie-walk: walks/chapter0-query.json -->
+<div class="guided-walk" id="ch0-query" role="group" aria-labelledby="ch0-query-title" data-walk-version="1">
+<h3 id="ch0-query-title">把查詢位置與欄位意思接起來</h3>
+<p class="walk-help" id="ch0-query-help">選擇步驟後，圖中對應的元件與下方解說會加上重點標示。完整圖與所有解說會持續顯示；也可用方向鍵切換步驟。</p>
+<div class="walk-order"><p>依箭頭讀取清單，再分別查能力與狀態；兩個分支是不同查詢目的，不是硬體狀態轉移。</p></div>
+<input class="walk-choice" type="radio" name="ch0-query-step" id="ch0-query-choice-1" value="1" data-walk-step="1" aria-describedby="ch0-query-help" aria-controls="ch0-query-view ch0-query-step-1" checked="checked">
+<label class="walk-label" for="ch0-query-choice-1">1. 從設定標頭取得入口</label>
+<input class="walk-choice" type="radio" name="ch0-query-step" id="ch0-query-choice-2" value="2" data-walk-step="2" aria-describedby="ch0-query-help" aria-controls="ch0-query-view ch0-query-step-2">
+<label class="walk-label" for="ch0-query-choice-2">2. 沿下一項指標找到能力結構</label>
+<input class="walk-choice" type="radio" name="ch0-query-step" id="ch0-query-choice-3" value="3" data-walk-step="3" aria-describedby="ch0-query-help" aria-controls="ch0-query-view ch0-query-step-3">
+<label class="walk-label" for="ch0-query-choice-3">3. 確認結構適用，再讀兩個欄位</label>
+<div class="walk-view" id="ch0-query-view">
+<figure class="diagram walk-diagram">
+<svg viewBox="0 0 840 355" class="course-diagram" role="img" aria-labelledby="ch0-query-svg-title ch0-query-svg-desc"><title id="ch0-query-svg-title">先找到結構，再分別讀能力與狀態</title><desc id="ch0-query-svg-desc">從傳統清單找到0x70，再分別加上能力與狀態欄位的相對位移。</desc><g data-walk-target="header" class="walk-node" data-walk-steps="1"><rect x="20" y="35" width="230" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2" /><text x="135" y="62" text-anchor="middle" fill="var(--ink)" font-size="18">設定標頭</text><text x="135" y="87" text-anchor="middle" fill="var(--ink)" font-size="16">0x34 → 0x40</text></g><g data-walk-target="pm" class="walk-node" data-walk-steps="2"><rect x="305" y="35" width="230" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2" /><text x="420" y="62" text-anchor="middle" fill="var(--ink)" font-size="18">電源管理結構</text><text x="420" y="87" text-anchor="middle" fill="var(--ink)" font-size="16">ID=0x01；Next=0x70</text></g><g data-walk-target="cap" class="walk-node" data-walk-steps="2 3"><rect x="590" y="35" width="230" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2" /><text x="705" y="62" text-anchor="middle" fill="var(--ink)" font-size="18">PCIe 能力結構</text><text x="705" y="87" text-anchor="middle" fill="var(--ink)" font-size="16">ID=0x10；起點=0x70</text></g><g data-walk-target="supported" class="walk-node" data-walk-steps="3"><rect x="120" y="240" width="270" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2" /><text x="255" y="267" text-anchor="middle" fill="var(--ink)" font-size="18">支援速率</text><text x="255" y="292" text-anchor="middle" fill="var(--ink)" font-size="16">起點+0x2C → 0x9C</text></g><g data-walk-target="current" class="walk-node" data-walk-steps="3"><rect x="450" y="240" width="270" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2" /><text x="585" y="267" text-anchor="middle" fill="var(--ink)" font-size="18">目前連線狀態</text><text x="585" y="292" text-anchor="middle" fill="var(--ink)" font-size="16">起點+0x12 → 0x82</text></g><g data-walk-target="to-pm" class="walk-node" data-walk-steps="1"><path d="M250 75 H305" fill="none" stroke="var(--accent)" stroke-width="2.5" /><path d="M296 70 L305 75 L296 80" fill="none" stroke="var(--accent)" stroke-width="2.5" /></g><g data-walk-target="to-cap" class="walk-node" data-walk-steps="2"><path d="M535 75 H590" fill="none" stroke="var(--accent)" stroke-width="2.5" /><path d="M581 70 L590 75 L581 80" fill="none" stroke="var(--accent)" stroke-width="2.5" /></g><g data-walk-target="to-fields" class="walk-node" data-walk-steps="3"><path d="M705 115 V175 H255 V240 M585 175 V240" fill="none" stroke="var(--accent)" stroke-width="2.5" /><text x="440" y="160" text-anchor="middle" fill="var(--ink)" font-size="15">先核對版本與適用類型</text></g></svg>
+<figcaption>作者的查詢閱讀圖。Next Pointer 從 Function 起點計算；欄位的相對位移從已找到的能力結構起點計算。</figcaption></figure>
+<ol class="walk-steps">
+<li class="walk-step" id="ch0-query-step-1" data-walk-step="1" data-walk-targets="header to-pm"><h4>從設定標頭取得入口</h4><div class="walk-condition"><p>本例設定讀取成功；所有位置以該 Function 設定空間為起點。</p></div><div class="walk-explanation"><p>確認標頭形式與清單存在後，讀 0x34，遮罩低位元取得第一個結構的位置 0x40。</p></div><div class="walk-source" data-source-claims="PCIE-CONFIG-TYPE0-001 PCIE-CAP-POINTER-001"><p>Base 6.0 Figures 7-8／7-10、Table 7-7、§7.5.1.1.11，文件頁／PDF 頁 924–928。</p></div></li>
+<li class="walk-step" id="ch0-query-step-2" data-walk-step="2" data-walk-targets="pm to-cap cap"><h4>沿下一項指標找到能力結構</h4><div class="walk-condition"><p>0x70 是作者假設；其他裝置的清單順序與起點可以不同。</p></div><div class="walk-explanation"><p>先辨識電源管理結構，再沿 Next Pointer（下一項位置）到 0x70，確認 ID=0x10。這個起點由本次清單取得。</p></div><div class="walk-source" data-source-claims="PCIE-CAP-PM-FIRST-001 PCIE-CAP-ID-001"><p>Base 6.0 Figure 7-18／Table 7-14、Figure 7-22／Table 7-18，文件頁／PDF 頁 945、953。</p></div></li>
+<li class="walk-step" id="ch0-query-step-3" data-walk-step="3" data-walk-targets="cap to-fields supported current"><h4>確認結構適用，再讀兩個欄位</h4><div class="walk-condition"><p>本例是一般 Endpoint，排除 RCiEP 與 VF；速率向量已實作，Link 已建立且穩定。</p></div><div class="walk-explanation"><p>先核對 Capability Version（結構版本）與 Device/Port Type（功能類型），再由起點加上相對位移。能力向量回答支援集合，狀態編碼回答目前速率與寬度。</p></div><div class="walk-source" data-source-claims="PCIE-CAP-VERSION-TYPE-001 PCIE-CAP-LAYOUT-001 PCIE-LINK-SUPPORTED-SPEEDS-001 PCIE-LINK-CURRENT-SPEED-001 PCIE-LINK-CURRENT-WIDTH-001"><p>Base 6.0 Figures 7-21／7-23／7-38／7-29、Tables 7-19／7-35／7-26，文件頁／PDF 頁 952–954、998–1000、978–979。</p></div></li>
+</ol></div>
+</div>
+<!-- /pcie-walk -->
 <aside class="example"><strong>教學假設，不是規格原文或實機讀值</strong><p>系統已找到 <code>0000:03:00.0</code>，可正常讀取它的設定空間。目標是有實體 Link 的一般 PCI Express Endpoint，不是 Root Complex Integrated Endpoint（整合於 Root Complex 的端點，簡稱 RCiEP），也不是虛擬化的 Virtual Function（VF）。本例使用傳統 BDF 編址，不使用 Alternative Routing-ID Interpretation（ARI，另一種解讀 Function 識別號的方式）。Link 已建立，而且查詢期間沒有重新訓練或狀態變動；本題使用的 Link Capabilities 2 速率向量也已實作。以下數值由作者設計，並依 Base 6.0 的欄位規則檢查。</p><p>本例從「已找到要查的 Function」開始；如何枚舉出這個 BDF，屬於後續的裝置發現課程。以下 offset 全部以該 Function 設定空間的起點為基準，單位是 byte，並不是 CPU 實體位址。</p></aside>
 <div class="table-wrap"><table><caption>本例取得的設定資料</caption><thead><tr><th scope="col">設定空間 offset</th><th scope="col">讀取寬度</th><th scope="col">假設讀值</th><th scope="col">資料用途</th></tr></thead><tbody>
 <tr><td><code>0x0E</code></td><td>8 bits</td><td><code>0x00</code></td><td>Header Type</td></tr>
@@ -112,7 +155,7 @@
 <p>Base 6.0 §7.5.3 會依元件類型說明哪些暫存器適用。RCiEP 就不能照本例套用一般外部 Link 的欄位。另外，Version 2 本身不保證較早期硬體已實作 Link Capabilities 2 的速率向量；§7.5.3.18 的實作說明（p.1000）另外交代舊硬體的判讀方式。本例假設該欄位已實作，後面也會取得非零的向量值，因此不需要在此展開舊硬體分支。</p>
 
 <h3>第四步：怎麼從結構起點算出讀取位置？</h3>
-<p>Figure 7-21 把 Link Capabilities 2 放在相對位移 <code>0x2C</code>，Link Status 放在 <code>0x12</code>。兩個值都要加到剛找到的 <code>cap_base</code>：</p>
+<p>Figure 7-21 把 Link Capabilities 2 放在相對位移 <code>0x2C</code>，Link Status（連線狀態暫存器） 放在 <code>0x12</code>。兩個值都要加到剛找到的 <code>cap_base</code>：</p>
 <pre><code>Link Capabilities 2：0x70 + 0x2C = 0x9C（讀 32 bits）
 Link Status        ：0x70 + 0x12 = 0x82（讀 16 bits）</code></pre>
 <p><code>0x70 + 0x0C = 0x7C</code> 是另一個 Register：Link Capabilities。名稱相近，位置卻不同。本題要列出支援速率集合，因此使用 Link Capabilities 2 裡的 Supported Link Speeds Vector。</p>
@@ -142,12 +185,12 @@ Link Status        ：0x70 + 0x12 = 0x82（讀 16 bits）</code></pre>
 </section>
 
 <section id="self-check">
-<h2>7. 換一個條件，你還能做出相同判斷嗎？</h2>
-<p>先自己回答，再展開解說。這幾題分別檢查位置、編碼、有效條件與證據範圍，不需要背圖號。</p>
-<details class="question"><summary>如果 PCIe Capability 改從 0x90 開始，還能去 0x9C 讀 Link Capabilities 2 嗎？</summary><div class="answer"><p>不能沿用本例的絕對 offset。應重新計算 <code>0x90 + 0x2C = 0xBC</code>；Link Status 則是 <code>0x90 + 0x12 = 0xA2</code>。結構內位移不變，清單找到的起點變了，最終讀取位置也會改變。</p><p class="source-ref">依據：Base 6.0 Figure 7-21，p.952；起點 0x90 是新的教學假設。</p></div></details>
-<details class="question"><summary>如果 Current Link Speed 讀到 4，可以說它同時支援兩種速率嗎？</summary><div class="answer"><p>不可以。這是編碼欄位；在 Link 已建立等前提成立時，代碼 4 指向速率向量的欄位內 bit 3，表示目前為 16.0 GT/s。支援集合仍須讀取 Supported Link Speeds Vector。</p><p class="source-ref">依據：Base 6.0 Table 7-26、Table 7-35，pp.978、998；代碼 4 是本題假設。</p></div></details>
-<details class="question"><summary>Link 已經中斷，手上仍有 0x0043 這筆讀值，可以把它報成目前的 8.0 GT/s、x4 嗎？</summary><div class="answer"><p>不可以。兩個欄位在 Link 未建立時沒有可用來描述當前連線的有效語意。應先確認連線狀態，再決定是否採用這次速率與寬度讀值；數字看起來合理，並不會讓無效條件消失。</p><p class="source-ref">依據：Base 6.0 Table 7-26，p.978。</p></div></details>
-<details class="question"><summary>系統已能讀取網路裝置的設定空間，是否表示裝置已能從記憶體取走封包資料？</summary><div class="answer"><p>還不能這樣判斷。設定空間可讀，只說明目前已能進行這種設定存取。裝置自己的工作介面、記憶體映射、資料緩衝區及發起存取所需條件，仍可能尚未準備完成。要證明資料工作可執行，需要往資源配置與驅動程式初始化繼續查。</p><p class="source-ref">依據：Base 6.0 §1.4，pp.108–109；Firmware 3.3 §3.1–§3.2、§3.5，pp.32–35。情境由作者設計。</p></div></details>
+<h2>7. 把完整查詢帶到不同條件</h2>
+<p>把剛才的查詢接成一條完整路徑：選定 Function，取得清單入口，找到能力結構，核對版本與類型，再分別解碼支援集合與目前狀態。以下延伸說明沿用這條路徑，只改動一項條件，指出應重新檢查的位置。</p>
+<details open class="question"><summary>如果 PCIe Capability 改從 0x90 開始，還能去 0x9C 讀 Link Capabilities 2 嗎？</summary><div class="answer"><p>不能沿用本例的絕對 offset。應重新計算 <code>0x90 + 0x2C = 0xBC</code>；Link Status 則是 <code>0x90 + 0x12 = 0xA2</code>。結構內位移不變，清單找到的起點變了，最終讀取位置也會改變。</p><p class="source-ref">依據：Base 6.0 Figure 7-21，p.952；起點 0x90 是新的教學假設。</p></div></details>
+<details open class="question"><summary>如果 Current Link Speed 讀到 4，可以說它同時支援兩種速率嗎？</summary><div class="answer"><p>不可以。這是編碼欄位；在 Link 已建立等前提成立時，代碼 4 指向速率向量的欄位內 bit 3，表示目前為 16.0 GT/s。支援集合仍須讀取 Supported Link Speeds Vector。</p><p class="source-ref">依據：Base 6.0 Table 7-26、Table 7-35，pp.978、998；代碼 4 是本題假設。</p></div></details>
+<details open class="question"><summary>Link 已經中斷，手上仍有 0x0043 這筆讀值，可以把它報成目前的 8.0 GT/s、x4 嗎？</summary><div class="answer"><p>不可以。兩個欄位在 Link 未建立時沒有可用來描述當前連線的有效語意。應先確認連線狀態，再決定是否採用這次速率與寬度讀值；數字看起來合理，並不會讓無效條件消失。</p><p class="source-ref">依據：Base 6.0 Table 7-26，p.978。</p></div></details>
+<details open class="question"><summary>系統已能讀取網路裝置的設定空間，是否表示裝置已能從記憶體取走封包資料？</summary><div class="answer"><p>還不能這樣判斷。設定空間可讀，只說明目前已能進行這種設定存取。裝置自己的工作介面、記憶體映射、資料緩衝區及發起存取所需條件，仍可能尚未準備完成。要證明資料工作可執行，需要往資源配置與驅動程式初始化繼續查。</p><p class="source-ref">依據：Base 6.0 §1.4，pp.108–109；Firmware 3.3 §3.1–§3.2、§3.5，pp.32–35。情境由作者設計。</p></div></details>
 </section>
 
 <section id="next">

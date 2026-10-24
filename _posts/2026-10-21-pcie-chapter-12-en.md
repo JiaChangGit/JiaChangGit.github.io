@@ -2,10 +2,14 @@
 layout: post
 title: "PCIe Chapter 12: Error Evidence, Reporting, and Containment"
 date: 2026-10-21 00:00:00 +0800
+last_modified_at: 2026-10-23 00:00:00 +0800
 permalink: /pcie/chapter-12-en/
 categories: [PCIe]
 tags: [PCIe, Specification]
 lang: en
+spec_teaching: true
+spec_series: pcie
+description: "以 AER、Header Log、Root 記錄與 DPC 分清錯誤證據、回報路徑與隔離結果。"
 ---
 
 <style>
@@ -220,20 +224,166 @@ lang: en
 /* Self-contained teaching diagrams use the same theme in standalone pages and posts. */
 .pcie-article .course-diagram text { fill: var(--ink); font-family: inherit; font-size: 18px; }
 
+/* Applied only to explicitly authorized teaching roots. */
+html .spec-teaching[data-spec-series] .st-terms { margin:.35rem 0 1rem; padding:.5rem .8rem; border-inline-start:3px solid var(--st-accent); background:var(--st-soft); font-size:.88em; color:var(--st-muted); }
+html .spec-teaching[data-spec-series] .st-terms > div { display:flex; flex-wrap:wrap; gap:.2em .7em; }
+html .spec-teaching[data-spec-series] .st-terms dt { font-weight:650; }
+html .spec-teaching[data-spec-series] .st-terms dd { margin:0; flex:1 1 14em; }
+html .spec-teaching[data-spec-series] {
+ --st-diagram-width:900px;
+ --st-paper:#f2f6f8; --st-surface:#fff; --st-ink:#192d40; --st-muted:#4c6479;
+ --st-line:#cbd9e3; --st-accent:#145f9d; --st-soft:#edf5fc;
+ --paper:var(--st-paper); --surface:var(--st-surface); --surface-2:var(--st-soft); --surface-alt:var(--st-soft);
+ --ink:var(--st-ink); --muted:var(--st-muted); --line:var(--st-line);
+ --accent:var(--st-accent); --accent-2:var(--st-accent); --soft:var(--st-soft); --blue-soft:var(--st-soft); --teal-soft:var(--st-soft);
+ --qr-paper:var(--st-paper); --qr-surface:var(--st-surface); --qr-ink:var(--st-ink); --qr-muted:var(--st-muted);
+ --qr-line:var(--st-line); --qr-accent:var(--st-accent); --qr-soft:var(--st-soft);
+ color:var(--st-ink); background:var(--st-paper); font-size:17px; line-height:1.9;
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+}
+html .spec-teaching[data-spec-series="nvme"] { --st-accent:#086b56; --st-soft:#e7f4ee; }
+@media(prefers-color-scheme:dark) {
+ html:not([data-theme="light"]) .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+ html:not([data-theme="light"]) .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+}
+html[data-theme="dark"] .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+html[data-theme="dark"] .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+.spec-teaching * { box-sizing:border-box; }
+.spec-teaching :is(h1,h2,h3,h4,h5,p,li,td,th,summary,strong,figcaption) { color:var(--st-ink); }
+.spec-teaching svg text { font-family:inherit; }
+.spec-teaching h1 { font-size:clamp(1.8rem,3.2vw,2.65rem); line-height:1.4; }
+.spec-teaching h2 { font-size:clamp(1.3rem,2.5vw,1.7rem); line-height:1.55; }
+.spec-teaching h3 { font-size:1.15rem; line-height:1.65; }
+.spec-teaching h4 { font-size:1rem; line-height:1.7; }
+.spec-teaching :is(h1,h2,h3,h4) { overflow-wrap:anywhere; }
+.spec-teaching p { margin:.7rem 0 1.15rem; }
+.spec-teaching :is(a,summary) { text-underline-offset:.2em; }
+.spec-teaching :focus-visible { outline:3px solid var(--st-accent); outline-offset:4px; }
+.spec-teaching :is(.qa-takeaway,.qa-answer-lead,.st-takeaway) { color:var(--st-ink); font-weight:650; font-size:1.06rem; line-height:1.9; }
+.spec-teaching :is(.qa-question,.qr-card,.guided-walk) { border:1px solid var(--st-line); border-radius:12px; background:var(--st-surface); padding:clamp(18px,3vw,30px); margin:1.8rem 0; }
+.spec-teaching :is(.qa-flow,.qr-note,.qr-observations,.st-context,.st-route) { background:var(--st-soft); border-left:4px solid var(--st-accent); padding:1rem 1.2rem; margin:1.4rem 0; }
+.spec-teaching :is(.qr-step,.qa-qid,.st-label) { color:var(--st-accent); font-weight:700; }
+.spec-teaching :is(.qa-citations,.qa-source-links,.qr-case-sources,.walk-source,.st-source) { font-size:.84rem; line-height:1.75; color:var(--st-muted); overflow-wrap:anywhere; }
+.spec-teaching :is(.qr-table,.table-wrap) { overflow-x:auto; margin:1.4rem 0; border-radius:7px; }
+.spec-teaching :is(th,td) { line-height:1.8; vertical-align:top; min-width:120px; }
+.spec-teaching :is(table,td) { background:var(--st-surface); }
+.spec-teaching th { background:var(--st-soft); }
+.spec-teaching .st-step { border-left:3px solid var(--st-line); padding:.6rem 1rem; margin:1.2rem 0; }
+.spec-teaching .st-step:target { border-left-color:var(--st-accent); background:var(--st-soft); }
+.spec-teaching .st-glossary { border:1px solid var(--st-line); padding:.7rem 1rem; margin:1.4rem 0; border-radius:8px; }
+.spec-teaching .st-glossary > summary { min-height:44px; cursor:pointer; }
+.spec-teaching .st-specs { display:flex; flex-wrap:wrap; gap:.4rem 1rem; color:var(--st-muted); font-size:.8rem; line-height:1.8; margin:1rem 0; }
+.spec-teaching .st-specs span { border-bottom:2px solid var(--st-accent); padding:.2rem 0; }
+@media(max-width:620px) { .spec-teaching :is(.qa-question,.qr-card,.guided-walk) { padding:16px; } .spec-teaching .diagram svg { min-width:var(--st-diagram-width); } }
+@media print {
+ .spec-teaching { --st-paper:#fff!important; --st-surface:#fff!important; --st-ink:#000!important; --st-muted:#333!important; --st-line:#999!important; --st-accent:#000!important; --st-soft:#fff!important; }
+ .spec-teaching details > * { display:block!important; }
+ .spec-teaching details::details-content { content-visibility:visible!important; }
+ .spec-teaching .st-step { break-inside:avoid; }
+}
+
+/* Native reading guides: selection highlights; it never hides teaching content.
+   build_pcie_course.py changes .pcie-article to .pcie-article for the posts. */
+.pcie-article .guided-walk { margin: 1.8rem 0; padding: 1.2rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); min-width: 0; }
+.pcie-article .guided-walk > h3 { margin-top: 0; }
+.pcie-article .walk-help { color: var(--muted); font-size: .85rem; }
+.pcie-article .walk-order { margin-bottom: 1.1rem; }
+/* Keep native radio semantics and keyboard handling; the associated label is
+   the visible control, so a radio cannot wrap away from its own label. */
+.pcie-article .walk-choice { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.pcie-article .walk-label { display: inline-flex; align-items: center; min-height: 44px; padding: .35rem .7rem; margin: .25rem .8rem .25rem 0; border: 2px solid var(--line); border-radius: 8px; cursor: pointer; font-size: .9rem; line-height: 1.5; color: var(--ink); background: var(--surface-alt); }
+.pcie-article .walk-choice:checked + .walk-label { border-color: var(--accent); background: var(--blue-soft); font-weight: 700; }
+.pcie-article .walk-choice:focus-visible + .walk-label { outline: 3px solid var(--focus); outline-offset: 3px; }
+.pcie-article .walk-view { margin-top: 1rem; min-width: 0; }
+.pcie-article .walk-diagram { margin: 0 0 1.2rem; }
+.pcie-article .walk-diagram svg { width: 100%; height: auto; display: block; }
+.pcie-article .walk-diagram svg a { cursor: pointer; }
+.pcie-article .walk-diagram svg a:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
+.pcie-article .walk-diagram figcaption { margin-top: .8rem; }
+.pcie-article .walk-steps { max-width: none; padding-left: 1.6rem; }
+.pcie-article .walk-step { padding: .6rem .9rem; margin: .7rem 0; border: 2px solid transparent; border-left: 5px solid var(--line); border-radius: 5px; background: var(--surface); }
+.pcie-article .walk-step h4 { margin: .2rem 0 .5rem; }
+.pcie-article .walk-condition { font-size: .9rem; color: var(--muted); }
+.pcie-article .walk-source { border-top: 1px solid var(--line); padding-top: .35rem; color: var(--muted); font-size: .85rem; }
+.pcie-article .walk-step p:last-child { margin-bottom: .3rem; }
+.pcie-article .walk-components { border-top: 1px solid var(--line); margin-top: 1.4rem; padding-top: .4rem; }
+.pcie-article .walk-component-links { display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; list-style: none; padding-left: 0; }
+.pcie-article .walk-component-links a { min-height: 44px; min-width: 44px; }
+.pcie-article .walk-component { padding: .7rem 1rem; margin: 1rem 0; border: 1px solid var(--line); border-radius: 8px; }
+.pcie-article .walk-component > h4 { margin-top: .2rem; }
+.pcie-article .walk-component:target { outline: 3px solid var(--accent-2); outline-offset: 3px; }
+.pcie-article .walk-component details { margin-bottom: .3rem; }
+
+.pcie-article .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-step[data-walk-step="1"],
+.pcie-article .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-step[data-walk-step="2"],
+.pcie-article .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-step[data-walk-step="3"],
+.pcie-article .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-step[data-walk-step="4"],
+.pcie-article .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-step[data-walk-step="5"],
+.pcie-article .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-step[data-walk-step="6"],
+.pcie-article .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-step[data-walk-step="7"],
+.pcie-article .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-step[data-walk-step="8"] { border-color: var(--accent); background: var(--blue-soft); }
+
+.pcie-article .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-node[data-walk-steps~="1"],
+.pcie-article .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-node[data-walk-steps~="2"],
+.pcie-article .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-node[data-walk-steps~="3"],
+.pcie-article .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-node[data-walk-steps~="4"],
+.pcie-article .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-node[data-walk-steps~="5"],
+.pcie-article .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-node[data-walk-steps~="6"],
+.pcie-article .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-node[data-walk-steps~="7"],
+.pcie-article .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-node[data-walk-steps~="8"] { --walk-active-weight: 750; }
+.pcie-article .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-node[data-walk-steps~="1"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-node[data-walk-steps~="2"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-node[data-walk-steps~="3"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-node[data-walk-steps~="4"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-node[data-walk-steps~="5"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-node[data-walk-steps~="6"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-node[data-walk-steps~="7"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-node[data-walk-steps~="8"] > :is(rect, circle, ellipse, polygon, path, line, polyline) { stroke: var(--accent); stroke-width: 3.5px; vector-effect: non-scaling-stroke; }
+.pcie-article .walk-node text { font-weight: var(--walk-active-weight, inherit); }
+
+@media (max-width: 620px) {
+  .pcie-article .guided-walk { padding: .8rem; }
+  .pcie-article .walk-label { margin-right: .45rem; padding-left: .45rem; padding-right: .45rem; }
+  .pcie-article .walk-steps { padding-left: 1.15rem; }
+  .pcie-article .walk-step { padding: .5rem .6rem; }
+  .pcie-article .walk-diagram { overflow-x: auto; }
+  .pcie-article .walk-diagram svg { min-width: var(--st-diagram-width, 700px); }
+}
+@media (forced-colors: active) {
+  .pcie-article .walk-choice:checked + .walk-label { border-color: Highlight; }
+  .pcie-article .walk-step { border-color: CanvasText; }
+}
+@media print {
+  .pcie-article .guided-walk { border: 1px solid #999; padding: .7rem; break-inside: auto; }
+  .pcie-article .walk-choice, .pcie-article .walk-label, .pcie-article .walk-help { display: none; }
+  .pcie-article .walk-step { display: list-item !important; border-color: #999 !important; background: transparent !important; }
+  .pcie-article .walk-node { --walk-active-weight: 500 !important; }
+  .pcie-article .walk-node > :is(rect, circle, ellipse, polygon, path, line, polyline) { stroke: #333 !important; stroke-width: 1.5px !important; }
+  .pcie-article .walk-diagram { overflow: visible; }
+  .pcie-article .walk-diagram svg { min-width: 0; }
+  .pcie-article .walk-component details > * { display: block !important; }
+  .pcie-article .walk-component details::details-content { content-visibility: visible !important; }
+}
+
+/* SVG text follows the selected reading theme. */
+.pcie-article svg text { fill: var(--ink); }
+.pcie-article .walk-summary { margin: 1rem 0 1.5rem; }
+
 html:not([data-theme="dark"]) .pcie-article { color-scheme: light; }
 html[data-theme="dark"] .pcie-article { color-scheme: dark; }
 
 .pcie-article { background: transparent; margin: 1.5rem 0; }
 .pcie-article .lesson { padding: 0; border: 0; background: transparent; }
 </style>
-<div class="pcie-article" lang="en">
+<div class="pcie-article spec-teaching" data-spec-series="pcie" lang="en">
 <nav class="bottom-nav" aria-label="Course and editions"><a href="/DOCS/pcie-course/index.html">Course overview</a><a href="/DOCS/pcie-course/chapter-12.html">Full Chinese tutorial</a><a href="/pcie/chapter-12-zh-tw/">繁體中文</a></nav>
 <article class="lesson">
-<p class="lead">PCIe error analysis connects detection, reporting, reception, and containment. Status does not prove that a message arrived; Source ID identifies a reporter rather than the physical root cause. Two separate AER and DPC examples show how to respect those boundaries.</p><aside class="note"><strong>Version and assumptions</strong><p>Based on PCIe Base 6.0. All values and event sequences are author-created, using ordinary non-SR-IOV Functions. The AER example supports neither Flit Mode nor End-End TLP Prefixes and has DPC disabled. The later DPC example is a separate event. The manager has appropriate ownership, and no unspecified concurrent events occur.</p></aside>
+<section id="chapter-overview"><h2>Preserve evidence along an error-reporting path</h2><figure class="diagram"><svg viewBox="0 0 900 500" role="img" aria-labelledby="ch12-guide-title ch12-guide-desc"><title id="ch12-guide-title">First follow normal reporting toward the root, then inspect the masked branch. DPC (Downstream Port Containment) is expanded separately. The reported identifier is a locator, not a complete physical-cause diagnosis.</title><desc id="ch12-guide-desc">First follow normal reporting toward the root, then inspect the masked branch. DPC (Downstream Port Containment) is expanded separately. The reported identifier is a locator, not a complete physical-cause diagnosis.</desc><g data-walk-target="status"><rect x="30" y="20" width="360" height="70" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="210.0" y="45" text-anchor="middle" font-size="16">Source function: records error status</text></g><g data-walk-target="control"><rect x="30" y="170" width="360" height="75" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="210.0" y="195" text-anchor="middle" font-size="16">Per-error mask and severity</text><text x="210.0" y="218" text-anchor="middle" font-size="16">and applicable reporting controls</text></g><g data-walk-target="record"><path d="M210 90 L210 170" fill="none" stroke="var(--accent)" stroke-width="2" /><polygon points="210.0,170.0 215.0,160.0 205.0,160.0" fill="var(--accent)" /></g><g data-walk-target="root"><rect x="510" y="170" width="360" height="75" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="690.0" y="195" text-anchor="middle" font-size="16">Root: notification and source records</text></g><g data-walk-target="message"><path d="M390 210 L510 210" fill="none" stroke="var(--accent)" stroke-width="2" /><polygon points="510.0,210.0 500.0,205.0 500.0,215.0" fill="var(--accent)" /><text x="450.0" y="201.0" text-anchor="middle" font-size="16">Error Message →</text></g><g data-walk-target="save"><rect x="510" y="355" width="360" height="85" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="690.0" y="380" text-anchor="middle" font-size="16">Software preserves evidence at both ends</text><text x="690.0" y="403" text-anchor="middle" font-size="16">Check validity and event correlation</text></g><g data-walk-target="notify"><path d="M690 245 L690 355" fill="none" stroke="var(--accent)" stroke-width="2" /><polygon points="690.0,355.0 695.0,345.0 685.0,345.0" fill="var(--accent)" /></g><g data-walk-target="masked"><rect x="30" y="355" width="360" height="85" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="210.0" y="380" text-anchor="middle" font-size="16">Status may remain without a message</text><text x="210.0" y="403" text-anchor="middle" font-size="16">Log updates follow their specific rules</text></g><g data-walk-target="mask-path"><path d="M210 245 L210 355" fill="none" stroke="var(--accent)" stroke-width="2" /><polygon points="210.0,355.0 215.0,345.0 205.0,345.0" fill="var(--accent)" /><text x="210.0" y="291.0" text-anchor="middle" font-size="16">The masked error in this example</text></g></svg><figcaption>First follow normal reporting toward the root, then inspect the masked branch. DPC (Downstream Port Containment) is expanded separately. The reported identifier is a locator, not a complete physical-cause diagnosis.</figcaption></figure><p class="lead">AER (Advanced Error Reporting) supplies error status, reporting controls and related records. Follow normal error reporting before comparing masked errors and DPC containment. Chapter 5 provides transaction context and Chapter 7 provides notification context.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>DPC</dt><dd>Downstream Port Containment</dd></div></dl><p><strong>Specification route:</strong> Classification in Figure 6-1 → status, mask and severity → reporting in Figure 6-3 → root records → preservation and clearing → DPC.</p></section>
+<p class="lead">PCIe error analysis connects detection, reporting, reception, and containment. Status does not prove that a message arrived; Source ID identifies a reporter rather than the physical root cause. Two separate AER and DPC examples show how to respect those boundaries.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>AER</dt><dd>Advanced Error Reporting</dd></div></dl><aside class="note"><strong>Version and assumptions</strong><p>Based on PCIe Base 6.0. All values and event sequences are author-created, using ordinary non-SR-IOV Functions. The AER example supports neither Flit Mode nor End-End TLP Prefixes and has DPC disabled. The later DPC example is a separate event. The manager has appropriate ownership, and no unspecified concurrent events occur.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>TLP</dt><dd>Transaction Layer Packet</dd></div></dl></aside>
 <section id="model"><h2>Connect evidence from the Function to the Root</h2><p>Correctable Errors can be recovered by the protocol but may affect performance. Uncorrectable Errors affect functionality and are classified Non-Fatal or Fatal. Non-Fatal does not establish successful work, and Fatal does not directly diagnose a failed chip. AER adds detailed status, masks, severity, and logs to baseline reporting; absence of AER does not imply absence of all reporting.</p><p>Inspect source Status, the Mask/Severity/Device Control settings at detection, valid Header Logs, and then Root Error Status/Source ID. Check DPC separately if containment is possible. Later configuration reads do not automatically reconstruct earlier settings. Sources: §6.2.1–§6.2.4 (pp.669–679), Figure 6-1 (p.670).</p></section>
-<section id="aer"><h2>Two status bits, one unmasked error</h2><p>Traverse Extended Capabilities on 03:00.0 and use Figure 7-154 to identify AER ID=0x0001. This example has base=0x100, Version=2, Next=0; Base 6.0 does not imply this Function implements all Flit features. Earlier records were cleared, settings remained unchanged, and forwarding along the path is enabled.</p><div class="table-wrap"><table><caption>Source Function reads</caption><thead><tr><th scope="col">Register / offset</th><th scope="col">Value</th><th scope="col">Interpretation</th></tr></thead><tbody><tr><td>Header / 0x100</td><td>0x00020001</td><td>AER, Version 2.</td></tr><tr><td>Uncorrectable Status / 0x104</td><td>0x00044000</td><td>Completion Timeout bit 14; Malformed TLP bit 18.</td></tr><tr><td>Mask / 0x108</td><td>0x00040000</td><td>Masks the recorded Malformed TLP error.</td></tr><tr><td>Severity / 0x10C</td><td>0x00040000</td><td>Non-Fatal Timeout; Fatal Malformed TLP.</td></tr><tr><td>AER Capabilities and Control / 0x118</td><td>0x0000100E</td><td>FEP=14; Timeout Header Log Capable=1.</td></tr><tr><td>Device Control / 0x78, 16 bits</td><td>0x2816</td><td>Non-Fatal and Fatal Reporting Enables set.</td></tr></tbody></table></div>
+<section id="aer"><h2>Two status bits, one unmasked error</h2><p>Traverse Extended Capabilities on 03:00.0 and use Figure 7-154 to identify AER ID=0x0001. This example has base=0x100, Version=2, Next=0; Base 6.0 does not imply this Function implements all Flit features. Earlier records were cleared, settings remained unchanged, and forwarding along the path is enabled.</p><div class="table-wrap"><table><caption>Source Function reads</caption><thead><tr><th scope="col">Register / offset</th><th scope="col">Value</th><th scope="col">Interpretation</th></tr></thead><tbody><tr><td>Header / 0x100</td><td>0x00020001</td><td>AER, Version 2.</td></tr><tr><td>Uncorrectable Status / 0x104</td><td>0x00044000</td><td>Completion Timeout bit 14; Malformed TLP bit 18.</td></tr><tr><td>Mask / 0x108</td><td>0x00040000</td><td>Masks the recorded Malformed TLP error.</td></tr><tr><td>Severity / 0x10C</td><td>0x00040000</td><td>Non-Fatal Timeout; Fatal Malformed TLP.</td></tr><tr><td>AER Capabilities and Control / 0x118</td><td>0x0000100E</td><td>FEP=14; Timeout Header Log Capable=1.</td></tr><tr><td>Device Control / 0x78, 16 bits</td><td>0x2816</td><td>Non-Fatal and Fatal Reporting Enables set.</td></tr></tbody></table><dl class="st-terms" aria-label="Terms in this passage"><div><dt>TLP</dt><dd>Transaction Layer Packet</dd></div></dl></div>
 <p><code>0x00044000 &amp; ~0x00040000 = 0x00004000</code>: only the recorded Timeout is unmasked. A masked error can set Status but does not generate its Error Message or update the Header Log, TLP Prefix Log, or FEP. Fatal severity does not override masking. Under these assumptions, Timeout produces ERR_NONFATAL according to Severity and Device Control. These are configured values, not reset defaults.</p><p>The complete path also includes Bridge forwarding, Root primary-interface transmission controls, and interrupt conditions. Follow Figure 6-3 through the path. Unsupported Request and Advisory Non-Fatal errors have additional rules; the example's arithmetic is not a general reporting algorithm.</p><details class="source-note"><summary>Fields and reporting</summary><p>Figures 7-154–7-157/Tables 7-134–7-137 (pp.1112–1117); Figure 7-25/Table 7-21 (pp.958–962); §6.2.3.2.2 (p.673), §6.2.6/Figure 6-3 (pp.683–685), §6.2.8.1 (p.692).</p></details></section>
-<section id="log"><h2>Validate the log before decoding the transaction</h2><p>FEP=14 is valid because Status bit 14 is set. Completion Timeout Header Log Capable bit 12 supports recording the timed-out Request. Multiple Header Recording bits 9 and 10 are clear; there is no Flit or Prefix support. The example has four DWORDs of log capacity but uses a three-DWORD Header.</p><div class="table-wrap"><table><caption>Request Header associated with the Timeout</caption><thead><tr><th scope="col">Offset</th><th scope="col">DWORD value</th><th scope="col">Content</th></tr></thead><tbody><tr><td>0x11C</td><td>0x00000040</td><td>3 DW Memory Read, Length=64 DW.</td></tr><tr><td>0x120</td><td>0x030013FF</td><td>Requester=0x0300, Tag=0x13, both Byte Enables=0xF.</td></tr><tr><td>0x124</td><td>0x40001000</td><td>Starting address.</td></tr><tr><td>0x128</td><td>Not interpreted</td><td>The fourth DWORD is undefined for this 12-byte Header.</td></tr></tbody></table></div><p>The Request covers 0x40001000–0x400010FF, or 256 bytes. It is the Request that did not complete in time, not a timed-out Completion. Figure 7-161 places Header byte 0 at bits 31:24 for DWORD reads; do not reverse these values again. Flit logs require Logged TLP was Flit Mode, Header Log Size, Logged TLP Size, and Type/OHC interpretation.</p><p>This locates a transaction and its timeout, not the responsible Endpoint, Completer, Link, or platform component. It cannot be assigned to the masked Malformed TLP event, which did not create this log.</p><details class="source-note"><summary>Validity and format</summary><p>§6.2.4.2 (pp.679–680); Figures 7-160/7-161, Tables 7-140/7-141 (pp.1121–1123). Memory Requests: <a href="/pcie/chapter-5-en/">Chapter 5</a>.</p></details></section>
+<section id="log"><h2>Validate the log before decoding the transaction</h2><p>FEP=14 is valid because Status bit 14 is set. Completion Timeout Header Log Capable bit 12 supports recording the timed-out Request. Multiple Header Recording bits 9 and 10 are clear; there is no Flit or Prefix support. The example has four DWORDs of log capacity but uses a three-DWORD Header.</p><div class="table-wrap"><table><caption>Request Header associated with the Timeout</caption><thead><tr><th scope="col">Offset</th><th scope="col">DWORD value</th><th scope="col">Content</th></tr></thead><tbody><tr><td>0x11C</td><td>0x00000040</td><td>3 DW Memory Read, Length=64 DW.</td></tr><tr><td>0x120</td><td>0x030013FF</td><td>Requester=0x0300, Tag=0x13, both Byte Enables=0xF.</td></tr><tr><td>0x124</td><td>0x40001000</td><td>Starting address.</td></tr><tr><td>0x128</td><td>Not interpreted</td><td>The fourth DWORD is undefined for this 12-byte Header.</td></tr></tbody></table><dl class="st-terms" aria-label="Terms in this passage"><div><dt>DW</dt><dd>Double Word, a four-byte unit</dd></div></dl></div><p>The Request covers 0x40001000–0x400010FF, or 256 bytes. It is the Request that did not complete in time, not a timed-out Completion. Figure 7-161 places Header byte 0 at bits 31:24 for DWORD reads; do not reverse these values again. Flit logs require Logged TLP was Flit Mode, Header Log Size, Logged TLP Size, and Type/OHC interpretation.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>OHC</dt><dd>Orthogonal Header Content</dd></div></dl><p>This locates a transaction and its timeout, not the responsible Endpoint, Completer, Link, or platform component. It cannot be assigned to the masked Malformed TLP event, which did not create this log.</p><details class="source-note"><summary>Validity and format</summary><p>§6.2.4.2 (pp.679–680); Figures 7-160/7-161, Tables 7-140/7-141 (pp.1121–1123). Memory Requests: <a href="/pcie/chapter-5-en/">Chapter 5</a>.</p></details></section>
 <section id="root"><h2>The Root Source ID identifies the first reporter</h2><div class="table-wrap"><table><caption>Root Port snapshot for the same AER example</caption><thead><tr><th scope="col">Root AER base=0x100</th><th scope="col">Value</th><th scope="col">Meaning</th></tr></thead><tbody><tr><td>Root Error Command / 0x12C</td><td>0x00000002</td><td>Non-Fatal interrupt reporting enabled.</td></tr><tr><td>Root Error Status / 0x130</td><td>0x00000024</td><td>Uncorrectable Received and Non-Fatal Received.</td></tr><tr><td>Error Source ID / 0x134</td><td>0x03000000</td><td>Upper 16 bits=0x0300, or 03:00.0.</td></tr></tbody></table></div><p>The Root interrupt message number is 0 and primary-interface transmission conditions are satisfied. Source ID identifies the Endpoint reporting Timeout, not the physical cause. A second message in the same category sets Multiple without replacing the first Source ID.</p><p>Root Status updates independently of Root Error Command/Root Control, but still requires applicable primary-interface transmission enables. CPU interrupt delivery additionally requires vector and routing evidence. Sources: Figures 7-162–7-164/Tables 7-142–7-144 (pp.1123–1127).</p></section>
 <section id="preserve"><h2>Preserve correlated records before clearing</h2><p>The author recommends saving status, configuration, FEP, valid logs, and Root/DPC evidence while checking for concurrency. Separate register reads are not automatically an atomic snapshot. Clearing the status indicated by FEP can advance hardware to another log, destroying the original association if done before capture.</p><p>With Multiple Header Recording enabled and valid FEP, the specification recommends processing records through FEP rather than clearing unrelated status; it lists an exception for masked errors known to lack recorded headers. PCI Status and AER Status are also cleared independently. Sources: §6.2.4.2 (pp.679–681, footnote 108), §6.2.7.1 (p.691).</p></section>
 <section id="dpc"><h2>DPC can contain the error before its original message reaches the Root</h2><p>Now consider a separate event on Switch Downstream Port 02:01.0, with DPC base=0x300 and no RP Extensions.</p><div class="table-wrap"><table><caption>Separate DPC example</caption><thead><tr><th scope="col">Field / offset</th><th scope="col">Value</th><th scope="col">Meaning</th></tr></thead><tbody><tr><td>Header / 0x300</td><td>0x0001001D</td><td>ID=0x001D, Version=1.</td></tr><tr><td>Control / 0x306, 16 bits</td><td>0x000A</td><td>Trigger Enable=10b; Interrupt Enable=1.</td></tr><tr><td>Status / 0x308, 16 bits</td><td>0x000B</td><td>Triggered, Reason=01b, Interrupt Status=1.</td></tr><tr><td>Error Source ID / 0x30A, 16 bits</td><td>0x0300</td><td>The triggering ERR_NONFATAL came from 03:00.0.</td></tr></tbody></table></div>

@@ -1,0 +1,115 @@
+{
+  "schema_version": 1,
+  "course": "pcie-course",
+  "chapter": 32,
+  "updated": "2026-10-24",
+  "claims": [
+    {
+      "id": "PCIE-CH32-001",
+      "claim": "IDE保護範圍、Link/Selective並存與內部邊界。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.33"
+      ],
+      "document_pages": [
+        862,
+        863,
+        865,
+        866
+      ],
+      "pdf_pages": [
+        862,
+        863,
+        865,
+        866
+      ],
+      "figures": [
+        "6-48"
+      ],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH32-002",
+      "claim": "IDE概念建立、Ready、Secure失效與TEE要求。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.33.1"
+      ],
+      "document_pages": [
+        866,
+        867,
+        868
+      ],
+      "pdf_pages": [
+        866,
+        867,
+        868
+      ],
+      "figures": [
+        "6-49",
+        "6-50"
+      ],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH32-003",
+      "claim": "IDE管理角色、KM與能力位置。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.33.2",
+        "6.33.3",
+        "7.9.26"
+      ],
+      "document_pages": [
+        868,
+        869,
+        1303
+      ],
+      "pdf_pages": [
+        868,
+        869,
+        1303
+      ],
+      "figures": [
+        "7-370"
+      ],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH32-004",
+      "claim": "附錄範例的輸入封包與輸出關係。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "L"
+      ],
+      "document_pages": [
+        1903
+      ],
+      "pdf_pages": [
+        1903
+      ],
+      "figures": [
+        "L-1"
+      ],
+      "tables": [
+        "L-1"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    }
+  ]
+}

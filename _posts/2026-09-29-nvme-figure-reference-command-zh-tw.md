@@ -6,19 +6,21 @@ categories: ["nvme"]
 tags: ["NVMe", "Reference"]
 permalink: "/nvme/figure-reference/command/zh-tw/"
 nvme_quickref: true
-last_modified_at: "2026-10-01"
+spec_teaching: true
+last_modified_at: "2026-10-23"
 lang: "zh-Hant-TW"
 description: "NVMe 情境練習與圖表速查：查詢路徑、欄位推導、完整解答及 Spec 位置。"
 ---
 
-<div class="nvme-quickref">
+<div class="nvme-quickref spec-teaching" data-spec-series="nvme">
 <nav class="qr-top" aria-label="版本與索引"><a href="#content">跳到內容</a><a href="/nvme/figure-reference/zh-tw/">總索引</a><a href="/nvme/figure-reference/command/en/">English</a><a href="/DOCS/nvme-quick-reference/command.html">繁中 HTML</a></nav>
 <main id="content">
-<header><p class="qr-eyebrow">反覆查詢 · 欄位判讀 · 原文定位</p><h1>NVMe 圖表判讀與情境練習 02 · 命令格式、資料指標與完成狀態</h1><p class="qr-intro">先用 SQID／CID 對回命令，再解 SCT／SC。資料搬移異常時，分清 PRP 的頁面指標與 SGL 的位址、長度和描述子類型。</p></header>
-<aside class="qr-note"><p>每張原圖都有用途、欄位和判讀例子。例子中的數值用於說明，不代表你的裝置設定；原文另有條件時，依該欄位與命令定義判斷。</p><p>用瀏覽器「在頁面中尋找」搜尋欄位、FID、LID、CNS 或 Figure。bit／byte 位置沿用原圖：bit 是位元，byte 是 8 bits，Dword 是 4 bytes；index 是第幾筆，offset 是相對起點的偏移，須看當處使用的單位。</p><p>FID（Feature Identifier）選擇功能；LID（Log Page Identifier）選擇紀錄頁；CNS（Controller or Namespace Structure）選擇 Identify 回傳的資料結構。</p></aside>
+<div class="st-specs" aria-label="Specification editions"><span>NVM Express Base 2.4</span><span>NVM Command Set 1.3</span><span>NVMe over PCIe Transport 1.4</span></div>
+<header><p class="qr-eyebrow">反覆查詢 · 欄位判讀 · 原文定位</p><h1>NVMe 圖表判讀與情境練習 02 · 命令格式、資料指標與完成狀態</h1><p class="qr-intro">先用 SQID／CID 對回命令，再解 SCT／SC。資料搬移異常時，分清 PRP 的頁面指標與 SGL 的位址、長度和描述子類型。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SQID</dt><dd>Submission Queue Identifier，提交佇列識別碼</dd></div><div><dt>CID</dt><dd>Command Identifier，同一提交佇列內的命令識別碼</dd></div><div><dt>SCT</dt><dd>Status Code Type，完成狀態代碼類型</dd></div><div><dt>PRP</dt><dd>Physical Region Page，描述資料頁位置的指標</dd></div><div><dt>SGL</dt><dd>Scatter Gather List，描述分散資料區段的清單</dd></div></dl></header>
+<aside class="qr-note"><p>每張原圖都有用途、欄位和判讀例子。例子中的數值用於說明，不代表你的裝置設定；原文另有條件時，依該欄位與命令定義判斷。</p><p>用瀏覽器「在頁面中尋找」搜尋欄位、FID、LID、CNS 或 Figure。bit／byte 位置沿用原圖：bit 是位元，byte 是 8 bits，Dword 是 4 bytes；index 是第幾筆，offset 是相對起點的偏移，須看當處使用的單位。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>FID</dt><dd>Feature Identifier，功能識別碼</dd></div><div><dt>LID</dt><dd>Log Page Identifier，紀錄頁識別碼</dd></div><div><dt>CNS</dt><dd>Controller or Namespace Structure，選擇Identify回傳結構</dd></div></dl><p>FID（Feature Identifier）選擇功能；LID（Log Page Identifier）選擇紀錄頁；CNS（Controller or Namespace Structure）選擇 Identify 回傳的資料結構。</p></aside>
 <nav class="qr-top" aria-label="本冊閱讀入口"><a href="#exercises">從情境練習開始</a><a href="#figure-index">直接查圖表</a></nav>
-<section id="exercises"><h2>先做情境練習</h2>
-<p>每題資料均為教學假設，不是實際裝置回傳。先寫下查詢介面、目標、欄位與可支持的結論，再展開解答。題目只做 Spec 推導，不會執行命令。</p>
+<section id="exercises"><h2>先跟著一個情境讀規格</h2>
+<p>以下回傳資料均為教學假設。先看需求與已知條件，再沿閱讀路線找到相關欄位，接著一起判讀結果。完整解說直接顯示，來源細節可另外展開。</p>
 <nav class="qr-toc" id="exercise-toc" aria-label="情境索引"><ol>
 <li><a href="#exercise-command-01">同一個 CID 出現兩次，是重複完成嗎？</a></li>
 <li><a href="#exercise-command-02">Invalid Field 指的是哪一個 bit？</a></li>
@@ -27,77 +29,93 @@ description: "NVMe 情境練習與圖表速查：查詢路徑、欄位推導、�
 <li><a href="#exercise-command-05">要從 offset 1024 讀 3 KiB，NUMD 應填多少？</a></li>
 <li><a href="#exercise-command-06">Effects log 說會改 namespace，就表示剛剛新增了嗎？</a></li>
 </ol></nav>
-<article class="qr-card qr-case" id="exercise-command-01" data-scenario="command-01"><h3><span class="qr-number">練習 01</span>同一個 CID 出現兩次，是重複完成嗎？</h3>
+<article class="qr-card qr-case" id="exercise-command-01" data-scenario="command-01"><h3><span class="qr-number">練習 01</span>同一個 CID 出現兩次，是重複完成嗎？</h3><dl class="st-terms" aria-label="本段名詞"><div><dt>CID</dt><dd>Command Identifier，同一提交佇列內的命令識別碼</dd></div></dl>
 <p class="qr-case-question">除錯工具只以 CID 比對命令，看到兩筆 CID=12h 就報重複完成。請設計正確的比對順序。</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
 <li>兩筆新 CQE 的 SQID 分別為 2、5，CID 都是 12h；兩個 SQ 各有一筆該 CID 的 outstanding command。</li>
 <li>另有一個 CQ slot 的 phase 不符合本輪 host 預期值；讀取記憶體的同步條件已滿足。</li>
-</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
-<p class="qr-route"><strong>查詢次序：</strong>先檢查預期 phase → 只對新 CQE 讀 SQID／CID → 找回原 SQE → 再解 SCT／SC。</p>
-<p data-reasoning="command-01-1"><span class="qr-step">推導 1</span>CID 的唯一性是針對同一 SQ 的 outstanding commands，不是全 controller 的永久流水號。因此 (SQID=2, CID=12h) 與 (SQID=5, CID=12h) 可以代表不同命令。</p>
-<p data-reasoning="command-01-2"><span class="qr-step">推導 2</span>phase 不符合預期的 slot 不能當本輪的新完成項目。若先掃 CID 再看 phase，可能把上輪殘留 bytes 誤判成重複完成；CQ wrap 後 host 也要更新預期 phase。</p>
+</ul></div><section class="st-route" id="route-command-01"><h4>這個情境要連起哪些規格圖表？</h4>
+<p class="st-route-help">下面是閱讀規格的順序；實際操作的先後與等待條件，會在情境解說中另外交代。</p>
+<ol class="st-reading-route">
+<li><strong>先看這筆完成項目是否有效</strong><p>先從 CQE 的 DW3 找到 Phase Tag，依這一輪預期值判讀。只有本輪的新完成項目才接著配對命令。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry，佇列中的完成項目</dd></div></dl>
+<a href="#figure-b97">Base 2.4 · Figure 97</a>
+<a href="#figure-b99">Base 2.4 · Figure 99</a>
+</li>
+<li><strong>用 SQID 與 CID 找回命令</strong><p>由 DW2 取得提交佇列識別值，再由 DW3 取得命令識別值。兩者一起定位同一佇列內尚未完成的命令。</p>
+<a href="#figure-b98">Base 2.4 · Figure 98</a>
+<a href="#figure-b99">Base 2.4 · Figure 99</a>
+</li>
+<li><strong>回到原命令及生命週期</strong><p>對照原 SQE 的 CID 與當時的佇列配置，再讀完成狀態；保留佇列重建與 CID 重用的時間資訊。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SQE</dt><dd>Submission Queue Entry，佇列中的命令項目</dd></div></dl>
+<a href="#figure-b92">Base 2.4 · Figure 92</a>
+<a href="#figure-b97">Base 2.4 · Figure 97</a>
+</li>
+</ol></section><details open class="qr-answer"><summary>沿著欄位一步步理解</summary>
+<p class="qr-route"><strong>查詢次序：</strong>先檢查預期 phase → 只對新 CQE 讀 SQID／CID → 找回原 SQE → 再解 SCT／SC。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry，佇列中的完成項目</dd></div><div><dt>SQID</dt><dd>Submission Queue Identifier，提交佇列識別碼</dd></div><div><dt>SQE</dt><dd>Submission Queue Entry，佇列中的命令項目</dd></div><div><dt>SCT</dt><dd>Status Code Type，完成狀態代碼類型</dd></div></dl>
+<p data-reasoning="command-01-1"><span class="qr-step">推導 1</span>CID 的唯一性是針對同一 SQ 的 outstanding commands，不是全 controller 的永久流水號。因此 (SQID=2, CID=12h) 與 (SQID=5, CID=12h) 可以代表不同命令。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SQ</dt><dd>Submission Queue，提交佇列</dd></div></dl>
+<p data-reasoning="command-01-2"><span class="qr-step">推導 2</span>phase 不符合預期的 slot 不能當本輪的新完成項目。若先掃 CID 再看 phase，可能把上輪殘留 bytes 誤判成重複完成；CQ wrap 後 host 也要更新預期 phase。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CQ</dt><dd>Completion Queue，完成佇列</dd></div></dl>
 <p data-reasoning="command-01-3"><span class="qr-step">推導 3</span>即使 SQID／CID 一致，跨 queue 刪除重建或命令結束後重用 CID，仍需要生命週期與時間資訊。留下完整 SQE／CQE 及 queue 身分，才有足夠資料追查。</p>
 <div class="qr-related">需要重看欄位時，接著查：<a href="/nvme/figure-reference/command/zh-tw/#figure-b92">Base 2.4 Figure 92 · CDW0：先辨認命令與資料指標格式</a><a href="/nvme/figure-reference/command/zh-tw/#figure-b97">Base 2.4 Figure 97 · CQE：完成結果的外框</a><a href="/nvme/figure-reference/command/zh-tw/#figure-b98">Base 2.4 Figure 98 · CQE DW2：對回 SQ 與已消耗的位置</a><a href="/nvme/figure-reference/command/zh-tw/#figure-b99">Base 2.4 Figure 99 · CQE DW3：新舊判別、CID 與狀態</a></div>
-<h4>本題原文定位</h4><ul class="qr-case-sources"><li>Base 2.4 · §4.1.1 · Figure 92 · Command Dword 0 · 文件頁 139–140 · PDF 165–166</li><li>Base 2.4 · §4.2.1 · Figure 97 · Common Completion Queue Entry Layout – Admin and All I/O Command Sets · 文件頁 144 · PDF 170</li><li>Base 2.4 · §4.2.1 · Figure 98 · Completion Queue Entry: DW 2 · 文件頁 144 · PDF 170</li><li>Base 2.4 · §4.2.1 · Figure 99 · Completion Queue Entry: DW 3 · 文件頁 145 · PDF 171</li></ul></details>
+<details class="st-source"><summary>完整原文定位</summary><ul class="qr-case-sources"><li>Base 2.4 · §4.1.1 · Figure 92 · Command Dword 0 · 文件頁 139–140 · PDF 165–166</li><li>Base 2.4 · §4.2.1 · Figure 97 · Common Completion Queue Entry Layout – Admin and All I/O Command Sets · 文件頁 144 · PDF 170</li><li>Base 2.4 · §4.2.1 · Figure 98 · Completion Queue Entry: DW 2 · 文件頁 144 · PDF 170</li><li>Base 2.4 · §4.2.1 · Figure 99 · Completion Queue Entry: DW 3 · 文件頁 145 · PDF 171</li></ul></details></details>
 <a href="#exercise-toc">回情境索引</a></article>
+<h3>接著看其他情境</h3>
 <article class="qr-card qr-case" id="exercise-command-02" data-scenario="command-02"><h3><span class="qr-number">練習 02</span>Invalid Field 指的是哪一個 bit？</h3>
 <p class="qr-case-question">CQE 只說 Invalid Field in Command。Error Information 提供的位置要怎麼對回 64-byte SQE？</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
 <li>已比對同一命令的 SQID／CID；Error Information 的 ECNT 非零、位置有效，BYTLOC=52、BITLOC=6。</li>
 <li>保留原始 SQE、opcode、CSI 與完整 completion status。</li>
-</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
+</ul></div><details open class="qr-answer"><summary>沿著欄位一步步理解</summary>
 <p class="qr-route"><strong>查詢次序：</strong>從 CQE 的 SCT／SC 確認錯誤類型 → Get Log Page LID=01h 找相符 entry → 用 byte offset 對回原命令格式。</p>
 <p data-reasoning="command-02-1"><span class="qr-step">推導 1</span>每個 Dword 是 4 bytes，因此 byte 52 是 CDW13 的第一個 byte；BITLOC=6 指向 CDW13 bit 6。BYTLOC 不是 Dword 編號，也不是資料 buffer 的 byte 52。</p>
 <p data-reasoning="command-02-2"><span class="qr-step">推導 2</span>接著要依 opcode 與 command set 查 CDW13 的定義，才能知道該 bit 屬於哪個欄位。共同 SQE 格式只能提供位置，不能替每種命令決定此處語意。</p>
 <p data-reasoning="command-02-3"><span class="qr-step">推導 3</span>錯誤位置指出值得檢查的參數，不能自行推導成「那個 bit 必須翻轉」。可能是保留值、能力不支援，或與別的欄位組合不合法；修正仍要核對該命令條件。</p>
 <div class="qr-related">需要重看欄位時，接著查：<a href="/nvme/figure-reference/logs/zh-tw/#figure-b212">Base 2.4 Figure 212 · Error Information：把錯誤對回命令與欄位</a><a href="/nvme/figure-reference/command/zh-tw/#figure-b93">Base 2.4 Figure 93 · 64-byte 命令的共同位置</a><a href="/nvme/figure-reference/command/zh-tw/#figure-b101">Base 2.4 Figure 101 · Status：類別、錯誤碼與重試提示</a><a href="/nvme/figure-reference/command/zh-tw/#figure-b103">Base 2.4 Figure 103 · 通用錯誤碼：先區分哪類參數問題</a></div>
-<h4>本題原文定位</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.13.1.2 · Figure 212 · Error Information Log Entry Data Structure · 文件頁 218–220 · PDF 244–246</li><li>Base 2.4 · §4.1.1 · Figure 93 · Common Command Format · 文件頁 140–142 · PDF 166–168</li><li>Base 2.4 · §4.2.3 · Figure 101 · Completion Queue Entry: Status Field · 文件頁 145–146 · PDF 171–172</li><li>Base 2.4 · §4.2.3.1 · Figure 103 · Status Code – Generic Command Status Values · 文件頁 147–150 · PDF 173–176</li></ul></details>
+<details class="st-source"><summary>完整原文定位</summary><ul class="qr-case-sources"><li>Base 2.4 · §5.2.13.1.2 · Figure 212 · Error Information Log Entry Data Structure · 文件頁 218–220 · PDF 244–246</li><li>Base 2.4 · §4.1.1 · Figure 93 · Common Command Format · 文件頁 140–142 · PDF 166–168</li><li>Base 2.4 · §4.2.3 · Figure 101 · Completion Queue Entry: Status Field · 文件頁 145–146 · PDF 171–172</li><li>Base 2.4 · §4.2.3.1 · Figure 103 · Status Code – Generic Command Status Values · 文件頁 147–150 · PDF 173–176</li></ul></details></details>
 <a href="#exercise-toc">回情境索引</a></article>
 <article class="qr-card qr-case" id="exercise-command-03" data-scenario="command-03"><h3><span class="qr-number">練習 03</span>PRP2 是第二個資料頁，還是 list 位址？</h3>
 <p class="qr-case-question">同樣的起始位址，把傳輸長度從 5120 改成 6144 bytes，就可能需要改變 PRP2 的解讀。為什麼？</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
 <li>目前記憶體頁大小 4096 bytes；PRP1 在第一頁內的 offset=3072，位址符合要求。</li>
 <li>資料頁彼此不連續；使用 PRP，沒有 metadata 影響本例長度。</li>
-</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
+</ul></div><details open class="qr-answer"><summary>沿著欄位一步步理解</summary>
 <p class="qr-route"><strong>查詢次序：</strong>讀 CC.MPS 確定頁大小 → 由命令與格式算傳輸 bytes → 計算第一頁剩餘空間，再決定 PRP2 類型。</p>
 <p data-reasoning="command-03-1"><span class="qr-step">推導 1</span>第一頁只剩 4096−3072=1024 bytes。長度 5120 時，剩下 4096 bytes 恰可放一個後續資料頁，PRP2 可直接指向該頁。</p>
-<p data-reasoning="command-03-2"><span class="qr-step">推導 2</span>長度 6144 時，剩下 5120 bytes，需兩個後續資料頁。此時 PRP2 指向 PRP list，list entries 再指向那兩個資料頁；不能仍把 PRP2 當第一個後續資料 buffer。</p>
+<p data-reasoning="command-03-2"><span class="qr-step">推導 2</span>長度 6144 時，剩下 5120 bytes，需兩個後續資料頁。此時 PRP2 指向 PRP list，list entries 再指向那兩個資料頁；不能仍把 PRP2 當第一個後續資料 buffer。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>PRP</dt><dd>Physical Region Page，描述資料頁位置的指標</dd></div></dl>
 <p data-reasoning="command-03-3"><span class="qr-step">推導 3</span>判斷關鍵是跨越的頁數，不是總長是否大於某個固定常數。把 6144 bytes 改成從頁首開始，又只跨兩個頁面，PRP2 的角色便可能不同。</p>
 <div class="qr-related">需要重看欄位時，接著查：<a href="/nvme/figure-reference/command/zh-tw/#figure-b111">Base 2.4 Figure 111 · PRP：哪些位置允許頁內 offset</a><a href="/nvme/figure-reference/command/zh-tw/#figure-b113">Base 2.4 Figure 113 · PRP List：不連續實體頁的排列</a><a href="/nvme/figure-reference/init/zh-tw/#figure-b41">Base 2.4 Figure 41 · CC：主機實際選了什麼</a></div>
-<h4>本題原文定位</h4><ul class="qr-case-sources"><li>Base 2.4 · §4.3.1 · Figure 111 · PRP Entry – Page Base Address and Offset · 文件頁 158 · PDF 184</li><li>Base 2.4 · §4.3.1 · Figure 113 · PRP List Layout for Physically Non-Contiguous Memory Pages · 文件頁 159 · PDF 185</li><li>Base 2.4 · §4.3.1 · 文件頁 158–160 · PDF 184–186</li><li>Base 2.4 · §3.1.4.5 · Figure 41 · Offset 14h: CC – Controller Configuration · 文件頁 60–63 · PDF 86–89</li></ul></details>
+<details class="st-source"><summary>完整原文定位</summary><ul class="qr-case-sources"><li>Base 2.4 · §4.3.1 · Figure 111 · PRP Entry – Page Base Address and Offset · 文件頁 158 · PDF 184</li><li>Base 2.4 · §4.3.1 · Figure 113 · PRP List Layout for Physically Non-Contiguous Memory Pages · 文件頁 159 · PDF 185</li><li>Base 2.4 · §4.3.1 · 文件頁 158–160 · PDF 184–186</li><li>Base 2.4 · §3.1.4.5 · Figure 41 · Offset 14h: CC – Controller Configuration · 文件頁 60–63 · PDF 86–89</li></ul></details></details>
 <a href="#exercise-toc">回情境索引</a></article>
-<article class="qr-card qr-case" id="exercise-command-04" data-scenario="command-04"><h3><span class="qr-number">練習 04</span>SGL 地址正確，長度還可能不夠嗎？</h3>
+<article class="qr-card qr-case" id="exercise-command-04" data-scenario="command-04"><h3><span class="qr-number">練習 04</span>SGL 地址正確，長度還可能不夠嗎？</h3><dl class="st-terms" aria-label="本段名詞"><div><dt>SGL</dt><dd>Scatter Gather List，描述分散資料區段的清單</dd></div></dl>
 <p class="qr-case-question">buffer 的地址都能存取，但命令仍有資料長度問題。如何在不讀取實體記憶體的情況下先檢查描述子？</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
 <li>命令要求 8192 data bytes；完整 SGL 只有兩個合法 Data Block descriptors，Length 分別為 4096、2048。</li>
 <li>沒有 Bit Bucket、metadata 或其他 descriptors；SGL 支援與排列方式已確認。</li>
-</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
-<p class="qr-route"><strong>查詢次序：</strong>由命令與 LBA 格式計算需求 → 按 descriptor type 走訪完整 SGL → 加總 Data Block lengths。</p>
+</ul></div><details open class="qr-answer"><summary>沿著欄位一步步理解</summary>
+<p class="qr-route"><strong>查詢次序：</strong>由命令與 LBA 格式計算需求 → 按 descriptor type 走訪完整 SGL → 加總 Data Block lengths。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>LBA</dt><dd>Logical Block Address，邏輯區塊位址</dd></div></dl>
 <p data-reasoning="command-04-1"><span class="qr-step">推導 1</span>兩段合計 6144 bytes，比命令需要的 8192 少 2048。地址合法只回答可指向哪裡，Length 才界定可傳輸的範圍；兩者不能互相代替。</p>
 <p data-reasoning="command-04-2"><span class="qr-step">推導 2</span>Segment descriptor 的 Length 用來描述另一段 descriptors 所占的範圍，不能當作 payload bytes 加進資料總量。先按 type 區分「描述資料」與「描述下一段清單」，才不會把缺少的資料藏在表頭長度裡。</p>
 <p data-reasoning="command-04-3"><span class="qr-step">推導 3</span>本例可確定描述的 payload 不足；實際 controller 回覆仍要保留 SCT／SC，按 SGL validation 規則比對。不能因找出一個長度問題，就忽略可能同時存在的其他格式錯誤。</p>
 <div class="qr-related">需要重看欄位時，接著查：<a href="/nvme/figure-reference/command/zh-tw/#figure-b114">Base 2.4 Figure 114 · SGL 結構錯誤如何對應 status</a><a href="/nvme/figure-reference/command/zh-tw/#figure-b116">Base 2.4 Figure 116 · SGL 描述子的 type 與 subtype</a><a href="/nvme/figure-reference/command/zh-tw/#figure-b119">Base 2.4 Figure 119 · SGL Data Block：直接描述資料 buffer</a><a href="/nvme/figure-reference/command/zh-tw/#figure-b121">Base 2.4 Figure 121 · SGL Segment：指向下一段描述子</a></div>
-<h4>本題原文定位</h4><ul class="qr-case-sources"><li>Base 2.4 · §4.3.2 · Figure 114 · SGL Validation Error Conditions · 文件頁 161 · PDF 187</li><li>Base 2.4 · §4.3.2 · Figure 116 · Generic SGL Descriptor Format · 文件頁 161 · PDF 187</li><li>Base 2.4 · §4.3.2 · Figure 119 · SGL Data Block descriptor · 文件頁 162–163 · PDF 188–189</li><li>Base 2.4 · §4.3.2 · Figure 121 · SGL Segment descriptor · 文件頁 163 · PDF 189</li></ul></details>
+<details class="st-source"><summary>完整原文定位</summary><ul class="qr-case-sources"><li>Base 2.4 · §4.3.2 · Figure 114 · SGL Validation Error Conditions · 文件頁 161 · PDF 187</li><li>Base 2.4 · §4.3.2 · Figure 116 · Generic SGL Descriptor Format · 文件頁 161 · PDF 187</li><li>Base 2.4 · §4.3.2 · Figure 119 · SGL Data Block descriptor · 文件頁 162–163 · PDF 188–189</li><li>Base 2.4 · §4.3.2 · Figure 121 · SGL Segment descriptor · 文件頁 163 · PDF 189</li></ul></details></details>
 <a href="#exercise-toc">回情境索引</a></article>
 <article class="qr-card qr-case" id="exercise-command-05" data-scenario="command-05"><h3><span class="qr-number">練習 05</span>要從 offset 1024 讀 3 KiB，NUMD 應填多少？</h3>
 <p class="qr-case-question">一個一般 byte-offset log 支援這個讀取範圍。請分別編碼長度與起點，不把 byte 數直接填進 NUMD。</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
 <li>需 3072 bytes，起點距 log 開頭 1024 bytes；OT=0，無特殊長度覆寫規則。</li>
 <li>LID、NSID、CSI、LSP、LSI 都已依目標 log 正確選定。</li>
-</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
+</ul></div><details open class="qr-answer"><summary>沿著欄位一步步理解</summary>
 <p class="qr-route"><strong>查詢次序：</strong>Get Log Page：NUMDU／NUMDL 控制長度；LPO 配 OT 控制位置；先查該 log 是否有例外。</p>
 <p data-reasoning="command-05-1"><span class="qr-step">推導 1</span>3072÷4=768 Dwords，減 1 後 NUMD=767=02FFh，所以 NUMDU=0、NUMDL=02FFh。填入 3072 會被解成另一個 Dword 數，而不是 3072 bytes。</p>
 <p data-reasoning="command-05-2"><span class="qr-step">推導 2</span>OT=0 時 LPO=1024 表示 byte offset；本次範圍為 bytes 1024–4095。若改成 OT=1，LPO 變成資料結構 index，只有支援該模式的 log 才能使用，不能把同一數字當相同位置。</p>
 <p data-reasoning="command-05-3"><span class="qr-step">推導 3</span>還要確認讀取是否保留事件：RAE 的選擇可能有通知確認效果。像 Persistent Event Log 的 ACT=3 另有固定 header 規則，就不能套用本題的一般長度算法控制回傳範圍。</p>
 <div class="qr-related">需要重看欄位時，接著查：<a href="/nvme/figure-reference/logs/zh-tw/#figure-b204">Base 2.4 Figure 204 · Get Log CDW10：讀哪份、讀多少、是否確認事件</a><a href="/nvme/figure-reference/logs/zh-tw/#figure-b205">Base 2.4 Figure 205 · Get Log CDW11：長度高位與目標識別</a><a href="/nvme/figure-reference/logs/zh-tw/#figure-b208">Base 2.4 Figure 208 · Get Log offset：byte 位置或清單 index</a><a href="/nvme/figure-reference/logs/zh-tw/#figure-b232">Base 2.4 Figure 232 · Persistent Event Log：建立、讀取與釋放 context</a></div>
-<h4>本題原文定位</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.13 · Figure 204 · Get Log Page – Command Dword 10 · 文件頁 213 · PDF 239</li><li>Base 2.4 · §5.2.13 · Figure 205 · Get Log Page – Command Dword 11 · 文件頁 214 · PDF 240</li><li>Base 2.4 · §5.2.13 · Figure 208 · Get Log Page – Command Dword 14 · 文件頁 214–215 · PDF 240–241</li><li>Base 2.4 · §5.2.13.1.14 · Figure 232 · Persistent Event Log Specific Parameter Field · 文件頁 246 · PDF 272</li></ul></details>
+<details class="st-source"><summary>完整原文定位</summary><ul class="qr-case-sources"><li>Base 2.4 · §5.2.13 · Figure 204 · Get Log Page – Command Dword 10 · 文件頁 213 · PDF 239</li><li>Base 2.4 · §5.2.13 · Figure 205 · Get Log Page – Command Dword 11 · 文件頁 214 · PDF 240</li><li>Base 2.4 · §5.2.13 · Figure 208 · Get Log Page – Command Dword 14 · 文件頁 214–215 · PDF 240–241</li><li>Base 2.4 · §5.2.13.1.14 · Figure 232 · Persistent Event Log Specific Parameter Field · 文件頁 246 · PDF 272</li></ul></details></details>
 <a href="#exercise-toc">回情境索引</a></article>
 <article class="qr-card qr-case" id="exercise-command-06" data-scenario="command-06"><h3><span class="qr-number">練習 06</span>Effects log 說會改 namespace，就表示剛剛新增了嗎？</h3>
 <p class="qr-case-question">操作後，工具只靠 NIC=1 就把 namespace 數量加 1。這是能力查詢還是歷史查詢？</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
 <li>Commands Supported and Effects 中，目標 Admin opcode 的 CSUPP=1、NIC=1。</li>
 <li>一筆該 opcode 的命令已完成，但工具未保留 action、status 或新的 Identify 清單。</li>
-</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
+</ul></div><details open class="qr-answer"><summary>沿著欄位一步步理解</summary>
 <p class="qr-route"><strong>查詢次序：</strong>Get Log Page LID=05h 查對應 Admin／I/O opcode 區；再取得實際命令及完成紀錄，必要時重新 Identify。</p>
 <p data-reasoning="command-06-1"><span class="qr-step">推導 1</span>CSUPP 說明命令支援，NIC 說明命令可能改 namespace inventory。它們不是事件時間線，也沒說該命令這一次一定成功或一定執行 Create。</p>
 <p data-reasoning="command-06-2"><span class="qr-step">推導 2</span>正確做法是依命令 action 與完成狀態決定是否更新盤點，再取得 Allocated／Active lists。若一律加 1，Delete、失敗的 Create、或沒有變更的動作都會把快取搞錯。</p>
 <p data-reasoning="command-06-3"><span class="qr-step">推導 3</span>I/O opcode 還要在正確 command set 下解讀。相同數字出現在另一張 opcode 表，不一定是同一個命令；effects 的作用範圍與協調要求也不能取代實際結果。</p>
 <div class="qr-related">需要重看欄位時，接著查：<a href="/nvme/figure-reference/logs/zh-tw/#figure-b217">Base 2.4 Figure 217 · Command Effects：支援與執行影響</a><a href="/nvme/figure-reference/identify/zh-tw/#figure-b336">Base 2.4 Figure 336 · CNS 總表：查結構及有效參數</a></div>
-<h4>本題原文定位</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.13.1.6 · Figure 217 · Commands Supported and Effects Data Structure · 文件頁 228–229 · PDF 254–255</li><li>Base 2.4 · §5.2.14 · Figure 336 · Identify – CNS Values · 文件頁 338–339 · PDF 364–365</li></ul></details>
+<details class="st-source"><summary>完整原文定位</summary><ul class="qr-case-sources"><li>Base 2.4 · §5.2.13.1.6 · Figure 217 · Commands Supported and Effects Data Structure · 文件頁 228–229 · PDF 254–255</li><li>Base 2.4 · §5.2.14 · Figure 336 · Identify – CNS Values · 文件頁 338–339 · PDF 364–365</li></ul></details></details>
 <a href="#exercise-toc">回情境索引</a></article>
 </section>
 <nav class="qr-toc" id="figure-index" aria-label="本冊圖表索引"><h2>本冊圖表</h2><ol>
@@ -138,8 +156,8 @@ description: "NVMe 情境練習與圖表速查：查詢路徑、欄位推導、�
 <p class="qr-original">Base 2.4 · Figure 93 · Common Command Format</p>
 <p class="qr-location">§4.1.1 · 文件頁 140–142 · PDF 166–168</p>
 <p class="qr-explanation" data-paragraph="B93-1"><span class="qr-step">02.1 · 用途</span>這張表是把原始命令 bytes 對回欄位的總地圖。它告訴你哪些位置共通，哪些位置必須接到個別命令定義。</p>
-<p class="qr-explanation" data-paragraph="B93-2"><span class="qr-step">02.2 · 欄位與關係</span>CDW0 在 bytes3:0，NSID 在 7:4，CDW2／3 在 15:8，MPTR 在 23:16，DPTR 在 39:24，CDW10～15 在 63:40。PRP 模式下，DPTR 分為 PRP1 與 PRP2；PRP2 可能保留、指第二頁或指 PRP List，取決於傳輸跨越多少頁邊界。</p>
-<p class="qr-explanation" data-paragraph="B93-3"><span class="qr-step">02.3 · 判讀與例子</span>例如 4 KiB 頁、PRP1 頁內 offset=512、傳輸 8192 bytes，需要 3 個資料頁；PRP2 因此指向清單，而不是第二資料頁。NSID=FFFFFFFFh 也不是所有命令都接受的通用廣播值。</p>
+<p class="qr-explanation" data-paragraph="B93-2"><span class="qr-step">02.2 · 欄位與關係</span>CDW0 在 bytes3:0，NSID 在 7:4，CDW2／3 在 15:8，MPTR 在 23:16，DPTR 在 39:24，CDW10～15 在 63:40。PRP 模式下，DPTR 分為 PRP1 與 PRP2；PRP2 可能保留、指第二頁或指 PRP List，取決於傳輸跨越多少頁邊界。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>NSID</dt><dd>Namespace Identifier，邏輯儲存空間識別碼</dd></div></dl>
+<p class="qr-explanation" data-paragraph="B93-3"><span class="qr-step">02.3 · 判讀與例子</span>例如 4 KiB 頁、PRP1 頁內 offset=512、傳輸 8192 bytes，需要 3 個資料頁；PRP2 因此指向清單，而不是第二資料頁。NSID=FFFFFFFFh 也不是所有命令都接受的通用廣播值。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>NSID</dt><dd>Namespace Identifier，邏輯儲存空間識別碼</dd></div></dl>
 <p class="qr-tags">搜尋詞：SQE · NSID · MPTR · DPTR · CDW10 · PRP2</p>
 <div class="qr-related">接著查：<a href="/nvme/figure-reference/command/zh-tw/#figure-b92">Base 2.4 Figure 92 · CDW0：先辨認命令與資料指標格式</a><a href="/nvme/figure-reference/command/zh-tw/#figure-b111">Base 2.4 Figure 111 · PRP：哪些位置允許頁內 offset</a><a href="/nvme/figure-reference/command/zh-tw/#figure-b113">Base 2.4 Figure 113 · PRP List：不連續實體頁的排列</a></div>
 <a href="#figure-index">回本冊圖表索引</a></article>
@@ -148,13 +166,13 @@ description: "NVMe 情境練習與圖表速查：查詢路徑、欄位推導、�
 <p class="qr-original">Base 2.4 · Figure 97 · Common Completion Queue Entry Layout – Admin and All I/O Command Sets</p>
 <p class="qr-location">§4.2.1 · 文件頁 144 · PDF 170</p>
 <p class="qr-explanation" data-paragraph="B97-1"><span class="qr-step">03.1 · 用途</span>拿到 completion 原始資料時，先用此配置圖分出回傳值、queue 位置、命令識別與 status。共同格式至少 16 bytes，圖中只描述前 16 bytes。</p>
-<p class="qr-explanation" data-paragraph="B97-2"><span class="qr-step">03.2 · 欄位與關係</span>DW0 與 DW1 依命令定義，不能一律當 0 或一般 status；DW2 含 SQID 與 SQHD，DW3 含 STATUS、P 與 CID。P 是 phase tag，用來辨認環形 CQ 中的新項目。</p>
+<p class="qr-explanation" data-paragraph="B97-2"><span class="qr-step">03.2 · 欄位與關係</span>DW0 與 DW1 依命令定義，不能一律當 0 或一般 status；DW2 含 SQID 與 SQHD，DW3 含 STATUS、P 與 CID。P 是 phase tag，用來辨認環形 CQ 中的新項目。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CQ</dt><dd>Completion Queue，完成佇列</dd></div></dl>
 <p class="qr-explanation" data-paragraph="B97-3"><span class="qr-step">03.3 · 判讀與例子</span>Get Features 的 DW0 可能是 Feature 值，Namespace Management 的 DW0 可能是新 NSID。兩者都應先查命令定義；是否成功則由 DW3 的 status 判斷。</p>
 <p class="qr-tags">搜尋詞：CQE · DW0 · DW1 · DW2 · DW3</p>
 <div class="qr-related">接著查：<a href="/nvme/figure-reference/command/zh-tw/#figure-b98">Base 2.4 Figure 98 · CQE DW2：對回 SQ 與已消耗的位置</a><a href="/nvme/figure-reference/command/zh-tw/#figure-b99">Base 2.4 Figure 99 · CQE DW3：新舊判別、CID 與狀態</a><a href="/nvme/figure-reference/command/zh-tw/#figure-b101">Base 2.4 Figure 101 · Status：類別、錯誤碼與重試提示</a></div>
 <a href="#figure-index">回本冊圖表索引</a></article>
 <article class="qr-card" id="figure-b98" data-figure="B98">
-<h2><span class="qr-number">04</span>CQE DW2：對回 SQ 與已消耗的位置</h2>
+<h2><span class="qr-number">04</span>CQE DW2：對回 SQ 與已消耗的位置</h2><dl class="st-terms" aria-label="本段名詞"><div><dt>SQ</dt><dd>Submission Queue，提交佇列</dd></div></dl>
 <p class="qr-original">Base 2.4 · Figure 98 · Completion Queue Entry: DW 2</p>
 <p class="qr-location">§4.2.1 · 文件頁 144 · PDF 170</p>
 <p class="qr-explanation" data-paragraph="B98-1"><span class="qr-step">04.1 · 用途</span>多個 SQ 共用同一個 CQ 時，SQID 協助把完成結果對回來源。SQHD 則讓主機知道提交佇列哪些位置已被 controller 消耗。</p>
@@ -178,7 +196,7 @@ description: "NVMe 情境練習與圖表速查：查詢路徑、欄位推導、�
 <p class="qr-original">Base 2.4 · Figure 101 · Completion Queue Entry: Status Field</p>
 <p class="qr-location">§4.2.3 · 文件頁 145–146 · PDF 171–172</p>
 <p class="qr-explanation" data-paragraph="B101-1"><span class="qr-step">06.1 · 用途</span>命令有完成結果但不成功時，從這張表拆出狀態欄位，再選正確的錯誤碼表。原圖 bit 位置是相對整個 CQE DW3，不是已移位的 15-bit STATUS。</p>
-<p class="qr-explanation" data-paragraph="B101-2"><span class="qr-step">06.2 · 欄位與關係</span>DNR bit31 表示相同命令重送是否預期仍失敗；M bit30 表示 Error Information 有額外資訊；CRD bits29:28 選重試等待時間；SCT bits27:25 為類別，SC bits24:17 為代碼。CRD 只有 DNR=0 且 Host Behavior Support 的 ACRE=1 才適用。</p>
+<p class="qr-explanation" data-paragraph="B101-2"><span class="qr-step">06.2 · 欄位與關係</span>DNR bit31 表示相同命令重送是否預期仍失敗；M bit30 表示 Error Information 有額外資訊；CRD bits29:28 選重試等待時間；SCT bits27:25 為類別，SC bits24:17 為代碼。CRD 只有 DNR=0 且 Host Behavior Support 的 ACRE=1 才適用。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>DNR</dt><dd>Do Not Retry，命令重試的狀態提示</dd></div></dl>
 <p class="qr-explanation" data-paragraph="B101-3"><span class="qr-step">06.3 · 判讀與例子</span>DW3=8005002Ah 可拆出 DNR=1、SCT=0、SC=02h、P=1、CID=002Ah。這表示通用 Invalid Field in Command，不能只取 02h 就忽略類別；DNR=0 的情況也不保證重試成功。</p>
 <p class="qr-tags">搜尋詞：SCT · SC · DNR · M · CRD · ACRE</p>
 <div class="qr-related">接著查：<a href="/nvme/figure-reference/command/zh-tw/#figure-b102">Base 2.4 Figure 102 · SCT：決定去哪張錯誤碼表</a><a href="/nvme/figure-reference/command/zh-tw/#figure-b103">Base 2.4 Figure 103 · 通用錯誤碼：先區分哪類參數問題</a><a href="/nvme/figure-reference/logs/zh-tw/#figure-b212">Base 2.4 Figure 212 · Error Information：把錯誤對回命令與欄位</a></div>
@@ -189,7 +207,7 @@ description: "NVMe 情境練習與圖表速查：查詢路徑、欄位推導、�
 <p class="qr-location">§4.2.3 · 文件頁 146 · PDF 172</p>
 <p class="qr-explanation" data-paragraph="B102-1"><span class="qr-step">07.1 · 用途</span>這張表是 status 查詢的分流入口。同一個 SC 數值，在不同 SCT 下可能完全不同。</p>
 <p class="qr-explanation" data-paragraph="B102-2"><span class="qr-step">07.2 · 欄位與關係</span>SCT=0 是通用命令狀態，1 是命令專屬狀態，2 是媒體與資料完整性，3 是路徑相關，7 是廠商專屬，4～6 保留。表的 Reference 欄帶你到對應 Base 小節；I/O 命令還可能有 command set 補充。</p>
-<p class="qr-explanation" data-paragraph="B102-3"><span class="qr-step">07.3 · 判讀與例子</span>SC=80h、SCT=0 在 NVM 代表 LBA Out of Range；SC=80h、SCT=1 則是 Conflicting Attributes。工具若只印 80h，資訊不足以判讀。</p>
+<p class="qr-explanation" data-paragraph="B102-3"><span class="qr-step">07.3 · 判讀與例子</span>SC=80h、SCT=0 在 NVM 代表 LBA Out of Range；SC=80h、SCT=1 則是 Conflicting Attributes。工具若只印 80h，資訊不足以判讀。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>LBA</dt><dd>Logical Block Address，邏輯區塊位址</dd></div></dl>
 <p class="qr-tags">搜尋詞：SCT · Generic · Command Specific · Media · Path Related</p>
 <div class="qr-related">接著查：<a href="/nvme/figure-reference/command/zh-tw/#figure-n18">NVM Command Set 1.3 Figure 18 · NVM 通用狀態補充：地址、容量與原子性</a><a href="/nvme/figure-reference/command/zh-tw/#figure-n19">NVM Command Set 1.3 Figure 19 · NVM 命令專屬錯誤與命令清單</a><a href="/nvme/figure-reference/command/zh-tw/#figure-b107">Base 2.4 Figure 107 · 媒體與保護檢查錯誤</a></div>
 <a href="#figure-index">回本冊圖表索引</a></article>
@@ -219,7 +237,7 @@ description: "NVMe 情境練習與圖表速查：查詢路徑、欄位推導、�
 <p class="qr-location">§4.2.3.3 · 文件頁 154–155 · PDF 180–181</p>
 <p class="qr-explanation" data-paragraph="B107-1"><span class="qr-step">10.1 · 用途</span>SCT=2 時，用這張表區分媒體讀寫錯誤與資料保護檢查失敗。保護資訊不符不必然等於 NAND 物理損壞。</p>
 <p class="qr-explanation" data-paragraph="B107-2"><span class="qr-step">10.2 · 欄位與關係</span>SC 及描述涵蓋 Write Fault、Unrecovered Read，以及 Guard、Application Tag、Reference Tag 檢查錯誤。先保留失敗種類，再查 namespace 格式、命令的檢查旗標與預期 tag。</p>
-<p class="qr-explanation" data-paragraph="B107-3"><span class="qr-step">10.3 · 判讀與例子</span>Reference Tag 失敗時，LBA 起點、PI 類型或 tag 設定不一致都值得核對；若只記成「讀取錯誤」，會失去定位線索。NVM 另補 Compare Failure 及 Deallocated／Unwritten 相關碼。</p>
+<p class="qr-explanation" data-paragraph="B107-3"><span class="qr-step">10.3 · 判讀與例子</span>Reference Tag 失敗時，LBA 起點、PI 類型或 tag 設定不一致都值得核對；若只記成「讀取錯誤」，會失去定位線索。NVM 另補 Compare Failure 及 Deallocated／Unwritten 相關碼。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>PI</dt><dd>Protection Information，資料保護資訊</dd></div></dl>
 <p class="qr-tags">搜尋詞：SCT 2 · Guard · Application Tag · Reference Tag · Media Error</p>
 <div class="qr-related">接著查：<a href="/nvme/figure-reference/command/zh-tw/#figure-n20">NVM Command Set 1.3 Figure 20 · NVM 媒體狀態補充：Compare 與未寫入區塊</a><a href="/nvme/figure-reference/io/zh-tw/#figure-n155">NVM Command Set 1.3 Figure 155 · 16-bit Guard PI：8 bytes 的實際配置</a><a href="/nvme/figure-reference/io/zh-tw/#figure-n174">NVM Command Set 1.3 Figure 174 · Write 的 PRACT：host 要提供多少 metadata</a><a href="/nvme/figure-reference/io/zh-tw/#figure-n175">NVM Command Set 1.3 Figure 175 · Read 的 PRACT：回主機時保留或移除哪些資料</a></div>
 <a href="#figure-index">回本冊圖表索引</a></article>
@@ -309,7 +327,7 @@ description: "NVMe 情境練習與圖表速查：查詢路徑、欄位推導、�
 <p class="qr-location">§3.1.2 · 文件頁 25 · PDF 25</p>
 <p class="qr-explanation" data-paragraph="N18-1"><span class="qr-step">19.1 · 用途</span>Base 通用表找不到 NVM 特有原因時，接著查這張補充表，SCT 仍然是 0。這不是新的 status 編碼格式。</p>
 <p class="qr-explanation" data-paragraph="N18-2"><span class="qr-step">19.2 · 欄位與關係</span>SC14h 為超過 atomic write unit，1Eh 為 SGL 地址或長度粒度錯誤，25h 為 Invalid Key Tag，80h 為 LBA 超出 namespace 大小，81h 為配置使用量超過 namespace 容量。</p>
-<p class="qr-explanation" data-paragraph="N18-3"><span class="qr-step">19.3 · 判讀與例子</span>80h 查 SLBA、NLB 與 NSZE；81h 查 NUSE、NCAP 及配置情境。兩者都與容量相關，但「位址越界」和「使用量超過可配置容量」不應使用同一個判斷式。</p>
+<p class="qr-explanation" data-paragraph="N18-3"><span class="qr-step">19.3 · 判讀與例子</span>80h 查 SLBA、NLB 與 NSZE；81h 查 NUSE、NCAP 及配置情境。兩者都與容量相關，但「位址越界」和「使用量超過可配置容量」不應使用同一個判斷式。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SLBA</dt><dd>Starting LBA，起始邏輯區塊位址</dd></div></dl>
 <p class="qr-tags">搜尋詞：SCT 0 · LBA Out of Range · Capacity Exceeded · Atomic Write Unit Exceeded</p>
 <div class="qr-related">接著查：<a href="/nvme/figure-reference/identify/zh-tw/#figure-n123">NVM Command Set 1.3 Figure 123 · NVM Namespace：容量、格式、原子性與建議粒度</a><a href="/nvme/figure-reference/io/zh-tw/#figure-n4">NVM Command Set 1.3 Figure 4 · Single Atomicity：單位、條件與邊界的關係</a></div>
 <a href="#figure-index">回本冊圖表索引</a></article>
@@ -319,7 +337,7 @@ description: "NVMe 情境練習與圖表速查：查詢路徑、欄位推導、�
 <p class="qr-location">§3.1.2 · 文件頁 25 · PDF 25</p>
 <p class="qr-explanation" data-paragraph="N19-1"><span class="qr-step">20.1 · 用途</span>收到 NVM 命令的 SCT=1 時，這張表除了錯誤名稱，也直接列出哪些命令可能回它。適合檢查工具是否套錯 command set。</p>
 <p class="qr-explanation" data-paragraph="N19-2"><span class="qr-step">20.2 · 欄位與關係</span>80h 為 Conflicting Attributes，81h 為 Invalid Protection Information，82h 為 Attempted Write to Read Only Range；Copy 還有 83h 大小限制、85h 格式不相容、86h 無法 fast copy、87h 重疊範圍與 89h 資源不足。</p>
-<p class="qr-explanation" data-paragraph="N19-3"><span class="qr-step">20.3 · 判讀與例子</span>SC81h 在這裡是 PI 設定無效，不等於 SCT2 的 Guard Check Error；前者先檢查要求的保護參數是否成立，後者則檢查資料與保護值是否吻合。</p>
+<p class="qr-explanation" data-paragraph="N19-3"><span class="qr-step">20.3 · 判讀與例子</span>SC81h 在這裡是 PI 設定無效，不等於 SCT2 的 Guard Check Error；前者先檢查要求的保護參數是否成立，後者則檢查資料與保護值是否吻合。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>PI</dt><dd>Protection Information，資料保護資訊</dd></div></dl>
 <p class="qr-tags">搜尋詞：SCT 1 · Conflicting Attributes · Invalid Protection Information · Copy errors</p>
 <div class="qr-related">接著查：<a href="/nvme/figure-reference/command/zh-tw/#figure-b107">Base 2.4 Figure 107 · 媒體與保護檢查錯誤</a><a href="/nvme/figure-reference/io/zh-tw/#figure-n39">NVM Command Set 1.3 Figure 39 · Copy 描述子：格式決定 namespace 與 PI 配置</a></div>
 <a href="#figure-index">回本冊圖表索引</a></article>

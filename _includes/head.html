@@ -75,6 +75,9 @@
   {% if page.nvme_qa %}
   <link rel="stylesheet" href="{{ relativebase }}assets/css/nvme-question-bank.css">
   {% endif %}
+  {% if page.spec_teaching %}
+  <link rel="stylesheet" href="{{ relativebase }}assets/css/spec-teaching.css">
+  {% endif %}
   {% include favicon.html %}
   {% if page.layout == 'post' %}
   <link rel="stylesheet" href="{{ relativebase }}assets/css/highlighter/{{ site.highlight_theme }}.css">

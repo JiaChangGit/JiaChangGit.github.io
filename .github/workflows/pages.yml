@@ -50,6 +50,8 @@ jobs:
           python3 -B scripts/build_pcie_course.py --check
           python3 -B scripts/validate_pcie_course.py
           python3 -B scripts/validate_pcie_teaching.py
+          python3 -B scripts/validate_pcie_examples.py
+          python3 -B scripts/validate_public_teaching.py
 
       - name: Build with Jekyll
         run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
@@ -58,6 +60,7 @@ jobs:
 
       - name: Verify PCIe pages were included
         run: |
+          python3 -B scripts/validate_public_teaching.py --site-dir _site
           python3 -B - <<'PY'
           import json
           from pathlib import Path

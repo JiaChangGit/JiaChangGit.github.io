@@ -7,18 +7,21 @@ permalink: /nvme/question-bank/logs/zh-tw/
 lang: zh-TW
 nvme_quickref: true
 nvme_qa: true
+spec_teaching: true
+last_modified_at: 2026-10-23
 ---
 
-<div class="nvme-quickref nvme-qa">
+<div class="nvme-quickref nvme-qa spec-teaching" data-spec-series="nvme">
 <nav class="qr-top" aria-label="題庫與版本"><a href="#content">跳到內容</a><a href="/nvme/question-bank/zh-tw/">題庫總索引</a><a href="/nvme/question-bank/logs/en/">English</a><a href="/DOCS/nvme-question-bank/logs.html">繁中教學 HTML</a></nav>
-<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–328</p>
-<header><p class="qa-range">Q69–Q81</p><h1>Get Log Page 與資料一致性</h1><p class="qr-intro">Log 回答狀態、歷史或支援能力，但不是每份 Log 都保存歷史，也不是讀取後一定不變。本冊先選對資料與範圍，再處理長度、分段、事件確認與一致性。</p><p>先練習，再展開解答。各題依需要使用文字、欄位判讀、比較或流程說明，不要求相同的回答項目。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p></header>
-<aside class="qa-glossary"><h2>先認識本文使用的字詞</h2><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></aside>
+<main id="content"><p class="qr-eyebrow">NVMe · Q1–328</p>
+<div class="st-specs" aria-label="Specification editions"><span>NVM Express Base 2.4</span><span>NVM Command Set 1.3</span><span>NVMe over PCIe Transport 1.4</span></div>
+<header><p class="qa-range">Q69–Q81</p><h1>Get Log Page 與資料一致性</h1><aside class="st-context"><p>Get Log Page 讀取指定種類的狀態或紀錄。LID（Log Page Identifier）選紀錄頁，LPO（Log Page Offset）指定讀取位置；RAE（Retain Asynchronous Event）影響相應事件的保留或確認。以下先選資料與範圍，再說明分段及一致性。</p></aside><p class="qr-intro">Log 回答狀態、歷史或支援能力，但不是每份 Log 都保存歷史，也不是讀取後一定不變。本冊先選對資料與範圍，再處理長度、分段、事件確認與一致性。</p><p>每個問題都接著完整解說，依內容帶讀欄位、比較機制或追蹤流程。先看本冊總覽，再沿問題閱讀；必要條件與正常路徑直接顯示。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SCT</dt><dd>Status Code Type，完成狀態代碼類型</dd></div></dl></header>
 <section id="overview" class="qa-overview"><h2>同樣是讀 Log，四個問題要分開</h2><p class="qa-takeaway">先決定要證明什麼，再選 Log；讀成功只代表查詢成功，不代表被查的管理操作已完成。</p>
 <div class="qr-table" tabindex="0" role="region" aria-label="可橫向捲動的比較表"><table><thead><tr><th scope="col">需要的證據</th><th scope="col">查詢對象</th><th scope="col">判讀限制</th></tr></thead><tbody><tr><td>支援哪些 Log</td><td>LID00h</td><td>支援不等於目前有事件</td></tr><tr><td>目前健康</td><td>SMART LID02h</td><td>警告可恢復；累計值則有生命週期</td></tr><tr><td>這次命令的錯誤細節</td><td>Error LID01h</td><td>需對回命令，且舊 entries 可能消失</td></tr><tr><td>持續事件歷史</td><td>PEL LID0Dh</td><td>容量與事件支援限制仍存在</td></tr></tbody></table></div>
 <p><strong>舉例看懂：</strong>假設一次讀 4096 bytes，NUMD=1023。下一段若採 byte offset，LPO=4096；若 Log 使用 index offset，則要依該 Log 的索引規則前進，不能照抄 4096。</p>
 <p class="qa-citations">來源：<a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-pelcontext">Base 2.4 §5.2.13.1.14–5.2.13.1.14.2.5 (exclude PCIe link/packet decoding)</a></p>
 </section>
+<details class="qa-glossary st-glossary"><summary>需要時回顧本篇名詞</summary><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></details>
 <div class="qa-controls" hidden><label>搜尋本頁 <input type="search" id="qa-search" placeholder="題號、欄位或關鍵字"></label><button type="button" data-expand="true">展開全部解答</button><button type="button" data-expand="false">收合全部解答</button><output id="qa-count" aria-live="polite"></output></div>
 <section id="question-index"><h2>本冊題目</h2><ol class="qa-index">
 <li><a href="#q-069">Q69 · Supported Log Pages 有什麼用途？讀取其他 Log 前，應如何確認支援能力？</a></li>
@@ -36,15 +39,15 @@ nvme_qa: true
 <li><a href="#q-081">Q81 · Host 如何從 Commands Supported and Effects Log 確認 Opcode 支援及影響範圍？</a></li>
 </ol></section>
 <article class="qa-question" id="q-069" data-question="69" data-answer-kind="lookup"><h2><a class="qa-qid" href="#q-069">Q69</a> Supported Log Pages 有什麼用途？讀取其他 Log 前，應如何確認支援能力？</h2>
-<p class="qa-prompt">需求：確認能不能讀 Sanitize Status，並判斷可否用 index offset 讀取。這兩個問題應查同一個位元嗎？先找出要讀的 Log 與目標 entry，再展開解答。</p>
-<details class="qa-answer" id="q-069-answer"><summary>展開解答與推導</summary>
-<p class="qa-answer-lead" id="q-069-a-01">Supported Log Pages 提供查詢目錄，讓 Host 知道目前這個介面支援哪些 LID，以及各 LID 是否允許用 entry 索引讀取。它能避免把不支援誤認為資料為零；不過，先讀它是探索方法，不是每次 Get Log Page 前都必須重送的命令。</p><div class="qa-sections">
+<p class="qa-prompt">需求：確認能不能讀 Sanitize Status，並判斷可否用 index offset 讀取。以下先找到支援清單的目標項目，再分別讀取功能支援與位移使用方式。</p>
+<details open class="qa-answer" id="q-069-answer"><summary>跟著解說理解</summary>
+<p class="qa-answer-lead" id="q-069-a-01">Supported Log Pages 提供查詢目錄，讓 Host 知道目前這個介面支援哪些 LID，以及各 LID 是否允許用 entry 索引讀取。它能避免把不支援誤認為資料為零；不過，先讀它是探索方法，不是每次 Get Log Page 前都必須重送的命令。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>LID</dt><dd>Log Page Identifier，紀錄頁識別碼</dd></div></dl><div class="qa-sections">
 <section class="qa-section" id="q-069-s-01" data-answer-section="1"><h3><span>1.</span> 要查哪個對象、哪份資料</h3>
-<span class="qa-anchor" id="q-069-a-02"></span><p>回覆屬於收到命令的介面與 controller。不同介面可能支援不同 Log；CC.CSS=110b 時，CSI 與已啟用的 Command Set Profile 也會影響結果，不能把另一個介面的清單直接當成本介面的能力。</p>
+<span class="qa-anchor" id="q-069-a-02"></span><p>回覆屬於收到命令的介面與 controller。不同介面可能支援不同 Log；CC.CSS=110b 時，CSI 與已啟用的 Command Set Profile 也會影響結果，不能把另一個介面的清單直接當成本介面的能力。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CSI</dt><dd>Command Set Identifier，命令集識別碼</dd></div></dl>
 <span class="qa-anchor" id="q-069-a-03"></span><p>Get Log Page 使用 LID=00h。Identify.LPA.MLPS=1 保證提供 Supported Log Pages；MLPS=0 仍可能提供，不能直接判成所有 Log 都不支援。LPA.LPEDS（Figure338 bit2）說明延伸 offset 與長度能力；目標 entry 的 LSUPP、IOS 則分別表示該 LID 是否支援及是否接受 index offset。</p>
 <section class="qa-lookup" id="q-069-lookup"><h4>查詢範例：支援 Log，不等於支援每一種讀法</h4>
 <p>教學假設：同一 PCIe Admin 介面，CC.CSS=000b、UUID Index=0，LPA.MLPS=1、LPEDS=1。此處要查的是 Sanitize Status 的 LID81h，不是 Sanitize Namespace 的 Opcode8Ch。</p>
-<div class="qr-table" tabindex="0" role="region" aria-label="可橫向捲動的比較表"><table><thead><tr><th scope="col">查詢步驟與原文位置</th><th scope="col">要取出的資訊</th><th scope="col">這一步能判斷什麼</th></tr></thead><tbody><tr><td>1 · §5.2.13.1.1、Figure 210，文件頁 217／PDF 243</td><td>Get Log Page：LID=00h、NSID=0、NUMDL=00FFh、NUMDU=0、LPO=0、OT=0、RAE=0。</td><td>讀取 256 筆、每筆 4 bytes，共 1024 bytes 的支援清單；查詢成功不表示 256 個 LID 全部受支援。</td></tr><tr><td>2 · Figure 210，文件頁 217／PDF 243</td><td>目標 LID=81h=129；entry 位於 4×129=516=204h，取 bytes516～519。</td><td>用 LID 當索引。Opcode 與 FID 即使同為 81h，也不是這張清單要查的對象。</td></tr><tr><td>3 · Figure 211，文件頁 217～218／PDF 243～244</td><td>假設 entry=00000001h：bit0 LSUPP=1，bit1 IOS=0。</td><td>支援 Sanitize Status，但不支援該 Log 的 index offset。LPEDS=1 只提供一般延伸讀取能力，不能推翻 IOS=0。</td></tr><tr><td>4 · Figures 206、312，文件頁 214、313 起／PDF 240、339 起</td><td>後續讀 LID81h 時使用 OT=0，依目標 scope 選 NSID；再解讀回傳的 Sanitize Status。</td><td>LSUPP 只回答 Log 是否提供；清除是否進行或完成，要看後續 Status 內容。即使 LSUPP=1，強行使用不支援的 OT=1 仍須回 Invalid Field。</td></tr></tbody></table></div>
+<div class="qr-table" tabindex="0" role="region" aria-label="可橫向捲動的比較表"><table><thead><tr><th scope="col">查詢步驟與原文位置</th><th scope="col">要取出的資訊</th><th scope="col">這一步能判斷什麼</th></tr></thead><tbody><tr><td>1 · §5.2.13.1.1、Figure 210，文件頁 217／PDF 243</td><td>Get Log Page：LID=00h、NSID=0、NUMDL=00FFh、NUMDU=0、LPO=0、OT=0、RAE=0。</td><td>讀取 256 筆、每筆 4 bytes，共 1024 bytes 的支援清單；查詢成功不表示 256 個 LID 全部受支援。</td></tr><tr><td>2 · Figure 210，文件頁 217／PDF 243</td><td>目標 LID=81h=129；entry 位於 4×129=516=204h，取 bytes516～519。</td><td>用 LID 當索引。Opcode 與 FID 即使同為 81h，也不是這張清單要查的對象。</td></tr><tr><td>3 · Figure 211，文件頁 217～218／PDF 243～244</td><td>假設 entry=00000001h：bit0 LSUPP=1，bit1 IOS=0。</td><td>支援 Sanitize Status，但不支援該 Log 的 index offset。LPEDS=1 只提供一般延伸讀取能力，不能推翻 IOS=0。</td></tr><tr><td>4 · Figures 206、312，文件頁 214、313 起／PDF 240、339 起</td><td>後續讀 LID81h 時使用 OT=0，依目標 scope 選 NSID；再解讀回傳的 Sanitize Status。</td><td>LSUPP 只回答 Log 是否提供；清除是否進行或完成，要看後續 Status 內容。即使 LSUPP=1，強行使用不支援的 OT=1 仍須回 Invalid Field。</td></tr></tbody></table><dl class="st-terms" aria-label="本段名詞"><div><dt>NSID</dt><dd>Namespace Identifier，邏輯儲存空間識別碼</dd></div><div><dt>FID</dt><dd>Feature Identifier，功能識別碼</dd></div></dl></div>
 <p>如果 Supported Log Pages 本身不可取得，不能把缺少清單當成所有 LID 都不支援；應改查該 Log 在規格中的支援條件及對應 Identify 欄位。任何查詢失敗後留下的 buffer，都不能拿來解讀 LSUPP。</p>
 <p class="qa-citations">來源：<a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-sanitizelog">Base 2.4 §5.2.13.1.38</a></p>
 </section>
@@ -57,39 +60,41 @@ nvme_qa: true
 <section class="qa-section" id="q-069-s-03" data-answer-section="3"><h3><span>3.</span> 證據不足或不一致時怎麼判斷</h3>
 <span class="qa-anchor" id="q-069-a-07"></span><p>不支援的 LID 一般回 Invalid Log Page（1/09h）；若 LSUPP=1，卻使用不支援的 OT=1，回 Invalid Field（0/02h）。兩者分別是 Log 不支援與讀取方式非法。</p>
 <span class="qa-anchor" id="q-069-a-16"></span><p>將 LSUPP、IOS、LPA 與實際合法查詢一起比較。不能要求所有支援的 Log 都支援 index offset，也不能用一次非法參數失敗推翻 LSUPP。</p>
-<span class="qa-anchor" id="q-069-a-17"></span><p>先確認清單與後續命令來自同一介面、相同 CSI 及設定期間，再檢查目標 entry 是否按 4 bytes 定位。</p>
+<span class="qa-anchor" id="q-069-a-17"></span><p>先確認清單與後續命令來自同一介面、相同 CSI 及設定期間，再檢查目標 entry 是否按 4 bytes 定位。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CSI</dt><dd>Command Set Identifier，命令集識別碼</dd></div></dl>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-profile">Base 2.4 §5.2.30.1.18</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-sanitizelog">Base 2.4 §5.2.13.1.38</a></p>
 <span class="qa-anchor" id="q-069-a-08"></span><span class="qa-anchor" id="q-069-a-09"></span><span class="qa-anchor" id="q-069-a-10"></span><span class="qa-anchor" id="q-069-a-11"></span><span class="qa-anchor" id="q-069-a-12"></span><span class="qa-anchor" id="q-069-a-13"></span><span class="qa-anchor" id="q-069-a-14"></span><span class="qa-anchor" id="q-069-a-15"></span>
 <p class="qa-related">相關機制：<a href="/nvme/question-bank/logs/zh-tw/#q-081">Q81</a> · <a href="/nvme/question-bank/features/zh-tw/#q-054">Q54</a> · <a href="/nvme/question-bank/format-sanitize/zh-tw/#q-128">Q128</a></p>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-profile">Base 2.4 §5.2.30.1.18</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-sanitizelog">Base 2.4 §5.2.13.1.38</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-070" data-question="70" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-070">Q70</a> Error Information Log 與 SMART / Health Information Log 分別記錄什麼？</h2>
-<p class="qa-prompt">先說出比較對象最重要的差別，並舉一個不能互相代用的例子。</p>
-<details class="qa-answer" id="q-070-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-070-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-070-a-01">Error Information 用來追查某次錯誤的細節；SMART / Health 則提供目前警告及生命週期累計資訊。前者回答哪筆命令或哪個錯誤，後者回答目前健康狀態與長期使用情況，不能互相替代。</p><div class="qa-sections">
 <section class="qa-section" id="q-070-s-01" data-answer-section="1"><h3><span>1.</span> 差別在哪裡</h3>
 <span class="qa-anchor" id="q-070-a-02"></span><p>LID01h 是 controller 的錯誤紀錄。LID02h 可依支援情況接受 namespace 查詢，但 Base 2.4 明確指出本版沒有 namespace-specific SMART 欄位，因此兩種回覆包含相同資訊，不能自行標成各 namespace 的獨立使用量。</p>
-<span class="qa-anchor" id="q-070-a-04"></span><p>01h 每筆 64 bytes，重點是 ECNT、SQID、CID、Status、參數錯誤位置與 NSID。02h 為 512 bytes，重點是 Critical Warning、溫度、spare、Percentage Used，以及資料量、命令、時間和錯誤累計。</p>
+<span class="qa-anchor" id="q-070-a-04"></span><p>01h 每筆 64 bytes，重點是 ECNT、SQID、CID、Status、參數錯誤位置與 NSID。02h 為 512 bytes，重點是 Critical Warning、溫度、spare、Percentage Used，以及資料量、命令、時間和錯誤累計。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SQID</dt><dd>Submission Queue Identifier，提交佇列識別碼</dd></div><div><dt>CID</dt><dd>Command Identifier，同一提交佇列內的命令識別碼</dd></div></dl>
 </section>
 <section class="qa-section" id="q-070-s-02" data-answer-section="2"><h3><span>2.</span> 如何選擇與確認</h3>
 <span class="qa-anchor" id="q-070-a-03"></span><p>ELPE+1 表示最多可讀多少個 Error Information entries；LPA 的 SMART 支援位決定是否接受 per-namespace 請求。先確認支援，再解讀 Log 內容。</p>
-<span class="qa-anchor" id="q-070-a-05"></span><p>遇到錯誤時先保存 CQE，接著讀 01h 對回命令，再以同時段 02h 觀察健康狀態。先記錄取樣時間，避免將很久以前的錯誤與目前警告錯配。</p>
+<span class="qa-anchor" id="q-070-a-05"></span><p>遇到錯誤時先保存 CQE，接著讀 01h 對回命令，再以同時段 02h 觀察健康狀態。先記錄取樣時間，避免將很久以前的錯誤與目前警告錯配。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry，佇列中的完成項目</dd></div></dl>
 <span class="qa-anchor" id="q-070-a-06"></span><p>成功讀取不代表裝置沒有錯誤。ECNT=0 表示該 entry 無效；Percentage Used=100 表示估計耐久度已耗用，並不直接表示裝置已失效。</p>
 </section>
-<section class="qa-section" id="q-070-s-03" data-answer-section="3"><h3><span>3.</span> 哪些結論不能互相套用</h3>
+<section class="qa-section" id="q-070-s-03" data-answer-section="3"><h3><span>3.</span> 比較時要保留的條件</h3>
 <span class="qa-anchor" id="q-070-a-07"></span><p>不支援 per-namespace SMART 卻指定一般 NSID，須回 Invalid Field（0/02h）。Log 中的舊錯誤 Status 是紀錄內容，與本次 Get Log Page 的完成 Status 不同。</p>
 <span class="qa-anchor" id="q-070-a-16"></span><p>SMART 的 Error Log Entries 累計不等於目前 01h buffer 裡的有效筆數；有限容量與重設清除可能讓歷史總量大於現存 entries。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-070-a-17"></span><span class="qa-anchor" id="q-070-a-08"></span><span class="qa-anchor" id="q-070-a-09"></span><span class="qa-anchor" id="q-070-a-10"></span><span class="qa-anchor" id="q-070-a-11"></span><span class="qa-anchor" id="q-070-a-12"></span><span class="qa-anchor" id="q-070-a-13"></span><span class="qa-anchor" id="q-070-a-14"></span><span class="qa-anchor" id="q-070-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-071" data-question="71" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-071">Q71</a> Firmware Slot Information、Changed Namespace List 及 Commands Supported and Effects Log 分別用來確認什麼？</h2>
-<p class="qa-prompt">先說出比較對象最重要的差別，並舉一個不能互相代用的例子。</p>
-<details class="qa-answer" id="q-071-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-071-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-071-a-01">這三張 Log 分別回答韌體從哪個 slot 執行、哪些 namespace 發生過變更，以及命令受不受支援、可能造成什麼影響。它們不是通用的操作歷史清單。</p><div class="qa-sections">
 <section class="qa-section" id="q-071-s-01" data-answer-section="1"><h3><span>1.</span> 差別在哪裡</h3>
 <span class="qa-anchor" id="q-071-a-02"></span><p>03h 的資料依 multi-domain 能力屬於 domain 或 subsystem；04h 描述此 controller 的 attached namespace 變更；05h 的命令支援則以接收命令的 controller 與命令集為準。</p>
@@ -100,18 +105,19 @@ nvme_qa: true
 <span class="qa-anchor" id="q-071-a-05"></span><p>先根據問題選 Log：更新韌體後比較 03h 與 Identify.FR；收到 namespace 通知後讀 04h，再查 Identify；執行管理命令前讀 05h，完成後重查可能被改變的能力。</p>
 <span class="qa-anchor" id="q-071-a-06"></span><p>例如 NAFS=2 只表示 slot 2 等待適用的 CLR 啟用，不表示目前已從 slot 2 執行。04h 出現 NSID=7 也只指出有變更，不能單憑清單判斷它被 Format 或刪除。</p>
 </section>
-<section class="qa-section" id="q-071-s-03" data-answer-section="3"><h3><span>3.</span> 哪些結論不能互相套用</h3>
+<section class="qa-section" id="q-071-s-03" data-answer-section="3"><h3><span>3.</span> 比較時要保留的條件</h3>
 <span class="qa-anchor" id="q-071-a-07"></span><p>各次 Get 的錯誤與 Log 所描述的事件分開。不存在支援的 LID 回 1/09h；非法已定義參數依 Get 規則回 0/02h，不能把空 slot 或空變更清單本身當成失敗。</p>
 <span class="qa-anchor" id="q-071-a-16"></span><p>核對 active slot 與 FR、變更清單與新的 Identify，以及 CSUPP 與合法命令行為。每一組對照有不同目的，不要求三張 Log 的數值彼此相同。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-fwlog">Base 2.4 §5.2.13.1.4</a> · <a href="#ref-changedlog">Base 2.4 §5.2.13.1.5</a> · <a href="#ref-commandseffects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-071-a-17"></span><span class="qa-anchor" id="q-071-a-08"></span><span class="qa-anchor" id="q-071-a-09"></span><span class="qa-anchor" id="q-071-a-10"></span><span class="qa-anchor" id="q-071-a-11"></span><span class="qa-anchor" id="q-071-a-12"></span><span class="qa-anchor" id="q-071-a-13"></span><span class="qa-anchor" id="q-071-a-14"></span><span class="qa-anchor" id="q-071-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-fwlog">Base 2.4 §5.2.13.1.4</a> · <a href="#ref-changedlog">Base 2.4 §5.2.13.1.5</a> · <a href="#ref-commandseffects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-072" data-question="72" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-072">Q72</a> Device Self-test、Persistent Event 及 Sanitize Status Log 分別適用於哪些情境？</h2>
-<p class="qa-prompt">先說出比較對象最重要的差別，並舉一個不能互相代用的例子。</p>
-<details class="qa-answer" id="q-072-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-072-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-072-a-01">Self-test Log 用來看測試進度與最近結果；PEL 用來追查跨時間的特定事件；Sanitize Status 用來判斷清除操作的目前狀態及最後結果。先選對證據種類，才不會把命令接受當成工作完成。</p><div class="qa-sections">
 <section class="qa-section" id="q-072-s-01" data-answer-section="1"><h3><span>1.</span> 差別在哪裡</h3>
 <span class="qa-anchor" id="q-072-a-02"></span><p>Self-test scope 受 DSTO.SDSO 等能力影響；PEL 屬於 subsystem；81h 的 NSID 則用來区分 subsystem 與 namespace sanitization target。查詢的 controller 不一定就是事件影響的全部範圍。</p>
@@ -122,40 +128,42 @@ nvme_qa: true
 <span class="qa-anchor" id="q-072-a-05"></span><p>例如 Sanitize 命令完成後，持續查 81h 判斷背景操作；Self-test 結束後讀 06h 最新有效結果；要追查先前重設或管理操作，才到 PEL 找支援的事件。</p>
 <span class="qa-anchor" id="q-072-a-06"></span><p>Get 成功表示讀取成功，不表示 Self-test 通過或 Sanitize 成功。PEL 沒有某筆事件，也要先確認事件支援、記錄條件與保存範圍。</p>
 </section>
-<section class="qa-section" id="q-072-s-03" data-answer-section="3"><h3><span>3.</span> 哪些結論不能互相套用</h3>
-<span class="qa-anchor" id="q-072-a-07"></span><p>不支援的 LID 回 1/09h；PEL context 順序錯誤可能回 Command Sequence Error（0/0Ch）。操作本身失敗要看其專用 Log 狀態，不能替本次成功 Get 改成失敗 CQE。</p>
+<section class="qa-section" id="q-072-s-03" data-answer-section="3"><h3><span>3.</span> 比較時要保留的條件</h3>
+<span class="qa-anchor" id="q-072-a-07"></span><p>不支援的 LID 回 1/09h；PEL context 順序錯誤可能回 Command Sequence Error（0/0Ch）。操作本身失敗要看其專用 Log 狀態，不能替本次成功 Get 改成失敗 CQE。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry，佇列中的完成項目</dd></div></dl>
 <span class="qa-anchor" id="q-072-a-16"></span><p>以操作目標、時間及最新結果交叉比對。不得將舊 Self-test 結果或上次 Sanitize 成功，當成目前這次作業已成功的證據。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-dstlog">Base 2.4 §5.2.13.1.7</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a></p>
 <span class="qa-anchor" id="q-072-a-17"></span><span class="qa-anchor" id="q-072-a-08"></span><span class="qa-anchor" id="q-072-a-09"></span><span class="qa-anchor" id="q-072-a-10"></span><span class="qa-anchor" id="q-072-a-11"></span><span class="qa-anchor" id="q-072-a-12"></span><span class="qa-anchor" id="q-072-a-13"></span><span class="qa-anchor" id="q-072-a-14"></span><span class="qa-anchor" id="q-072-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-dstlog">Base 2.4 §5.2.13.1.7</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-073" data-question="73" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-073">Q73</a> Endurance Group、Predictable Latency、Lockdown、Boot Partition 及 Media Unit Status Log 各記錄什麼？</h2>
-<p class="qa-prompt">先說出比較對象最重要的差別，並舉一個不能互相代用的例子。</p>
-<details class="qa-answer" id="q-073-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-073-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-073-a-01">這些 Log 分別描述群組耐久度、可預測延遲狀態、禁止操作清單、開機分割區狀態，以及媒體單元資源。目的不同，不能把它們統稱為健康資訊後使用相同欄位判讀。</p><div class="qa-sections">
 <section class="qa-section" id="q-073-s-01" data-answer-section="1"><h3><span>1.</span> 差別在哪裡</h3>
 <span class="qa-anchor" id="q-073-a-02"></span><p>先辨認管理對象：Endurance Group 使用 ENDGID，Predictable Latency 針對 NVM Set；Lockdown 依選擇與支援範圍，Boot Partition 透過 controller 查詢，Media Unit 則反映 domain 或 subsystem 資源。</p>
-<span class="qa-anchor" id="q-073-a-04"></span><p>09h 看警告、spare 與壽命計數；0Ah／0Bh 看 Set 的 latency 狀態及事件集合；14h 看禁止的 Opcode／FID；15h 看分割區識別與保護狀態；10h 看 Media Unit 識別、歸屬及狀態。</p>
+<span class="qa-anchor" id="q-073-a-04"></span><p>09h 看警告、spare 與壽命計數；0Ah／0Bh 看 Set 的 latency 狀態及事件集合；14h 看禁止的 Opcode／FID；15h 看分割區識別與保護狀態；10h 看 Media Unit 識別、歸屬及狀態。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>FID</dt><dd>Feature Identifier，功能識別碼</dd></div></dl>
 </section>
 <section class="qa-section" id="q-073-s-02" data-answer-section="2"><h3><span>2.</span> 如何選擇與確認</h3>
 <span class="qa-anchor" id="q-073-a-03"></span><p>先查 00h 及相關 Identify 能力。主要 LID 為 09h、0Ah／0Bh、14h、15h、10h；同一個 LSI 在不同 LID 的意義可能不同。</p>
 <span class="qa-anchor" id="q-073-a-05"></span><p>由待回答的問題選 LID，再由 Identify 建立資源 ID 的對應，最後依該 Log 的參數與結構解碼。例如要查 group 3 的健康狀態，LSI 應選 ENDGID=3，而不是隨手填 NSID。</p>
 <span class="qa-anchor" id="q-073-a-06"></span><p>成功回覆只描述選定對象。例如一個 group 的警告不能推論成全部 namespace 都有相同媒體故障；Lockdown 列出禁止項目，也不是那些命令的執行歷史。</p>
 </section>
-<section class="qa-section" id="q-073-s-03" data-answer-section="3"><h3><span>3.</span> 哪些結論不能互相套用</h3>
+<section class="qa-section" id="q-073-s-03" data-answer-section="3"><h3><span>3.</span> 比較時要保留的條件</h3>
 <span class="qa-anchor" id="q-073-a-07"></span><p>不支援的 LID 與非法資源選擇須分開處理。前者是 1/09h；後者依該 Log 的已定義參數與專用 Status 判斷，不能一律改成 Invalid Namespace。</p>
 <span class="qa-anchor" id="q-073-a-16"></span><p>核對資源歸屬、Log 狀態及實際功能。例如被禁止的 FID，應與 Lockdown 設定一致；Media Unit 狀態則要連同 namespace 所依賴的資源判斷。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-073-a-17"></span><span class="qa-anchor" id="q-073-a-08"></span><span class="qa-anchor" id="q-073-a-09"></span><span class="qa-anchor" id="q-073-a-10"></span><span class="qa-anchor" id="q-073-a-11"></span><span class="qa-anchor" id="q-073-a-12"></span><span class="qa-anchor" id="q-073-a-13"></span><span class="qa-anchor" id="q-073-a-14"></span><span class="qa-anchor" id="q-073-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-074" data-question="74" data-answer-kind="lookup"><h2><a class="qa-qid" href="#q-074">Q74</a> Host 如何依 Log Page 的 Scope 正確設定 NSID 及其他欄位？</h2>
-<p class="qa-prompt">先選查詢介面與目標，再說明哪個回傳欄位能支持你的結論。</p>
-<details class="qa-answer" id="q-074-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-074-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-074-a-01">scope 決定資料描述哪個物件；選擇欄位則指出這次要查哪個實例。NSID 出現在公共命令格式中，不表示每張 Log 都可以查任意 namespace。</p><div class="qa-sections">
 <section class="qa-section" id="q-074-s-01" data-answer-section="1"><h3><span>1.</span> 要查哪個對象、哪份資料</h3>
 <span class="qa-anchor" id="q-074-a-02"></span><p>Figure 209 列出 controller、namespace、domain、subsystem 等範圍，但個別欄位也可能有更具體的定義。讀完整張表後，仍要核對該 LID 的例外。</p>
@@ -172,13 +180,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-074-a-17"></span><p>先查該 LID 的 scope，而不是看到 NSID 非零就認定回覆是 namespace 專屬資料。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-uuid">Base 2.4 §8.1.31.1–8.1.31.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-074-a-08"></span><span class="qa-anchor" id="q-074-a-09"></span><span class="qa-anchor" id="q-074-a-10"></span><span class="qa-anchor" id="q-074-a-11"></span><span class="qa-anchor" id="q-074-a-12"></span><span class="qa-anchor" id="q-074-a-13"></span><span class="qa-anchor" id="q-074-a-14"></span><span class="qa-anchor" id="q-074-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-uuid">Base 2.4 §8.1.31.1–8.1.31.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-075" data-question="75" data-answer-kind="process"><h2><a class="qa-qid" href="#q-075">Q75</a> 大型 Log 如何分段讀取？Offset、Length、重疊及缺口應如何處理？</h2>
-<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
-<details class="qa-answer" id="q-075-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-075-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-075-a-01">分段讀取讓 Host 用有限 buffer 取得大型 Log，但必須同時保證位址連續及內容一致。每段 Get 都成功，只能證明各段傳輸成功，不能自動證明合併檔完整。</p><div class="qa-sections">
 <section class="qa-section" id="q-075-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
 <span class="qa-anchor" id="q-075-a-02"></span><p>Offset 是 Log 內的位置，不是 Host buffer 位址。OT=0 使用 byte offset；OT=1 使用該 Log 定義的 entry index，兩種單位不能混算。</p>
@@ -200,13 +209,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-075-a-16"></span><p>核對總長度、各段 offset／NUMD、generation 或 reporting context。涵蓋完整與同一份快照，是兩個都要成立的條件。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-telemetrylog">Base 2.4 §5.2.13.1.8–5.2.13.1.9</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-075-a-17"></span><span class="qa-anchor" id="q-075-a-08"></span><span class="qa-anchor" id="q-075-a-09"></span><span class="qa-anchor" id="q-075-a-10"></span><span class="qa-anchor" id="q-075-a-11"></span><span class="qa-anchor" id="q-075-a-12"></span><span class="qa-anchor" id="q-075-a-13"></span><span class="qa-anchor" id="q-075-a-14"></span><span class="qa-anchor" id="q-075-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-telemetrylog">Base 2.4 §5.2.13.1.8–5.2.13.1.9</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-076" data-question="76" data-answer-kind="fields"><h2><a class="qa-qid" href="#q-076">Q76</a> Log Specific Identifier、UUID Index 及 Retain Asynchronous Event 有什麼用途？</h2>
-<p class="qa-prompt">先試著說明欄位的單位與編碼，再用一組數值推導結果。</p>
-<details class="qa-answer" id="q-076-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-076-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-076-a-01">這三個欄位分別選資源、選資料定義，以及決定讀取後是否保留事件。它們控制不同部分，不能因為都叫參數就互相替代。</p><div class="qa-sections">
 <section class="qa-section" id="q-076-s-01" data-answer-section="1"><h3><span>1.</span> 先確認資料的來源與範圍</h3>
 <span class="qa-anchor" id="q-076-a-02"></span><p>LSI 的意義由 LID 決定；UIDX 從 UUID List 選擇適用定義；RAE 則影響這次讀取所對應的非同步事件。不是所有 Log 都使用三者。</p>
@@ -222,13 +232,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-076-a-16"></span><p>核對 LSI 的目標、UIDX 對應資料及事件是否仍 pending。讀取相同 bytes 但 RAE 不同，後續通知行為可能不同。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-uuid">Base 2.4 §8.1.31.1–8.1.31.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-076-a-17"></span><span class="qa-anchor" id="q-076-a-08"></span><span class="qa-anchor" id="q-076-a-09"></span><span class="qa-anchor" id="q-076-a-10"></span><span class="qa-anchor" id="q-076-a-11"></span><span class="qa-anchor" id="q-076-a-12"></span><span class="qa-anchor" id="q-076-a-13"></span><span class="qa-anchor" id="q-076-a-14"></span><span class="qa-anchor" id="q-076-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-uuid">Base 2.4 §8.1.31.1–8.1.31.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-077" data-question="77" data-answer-kind="diagnose"><h2><a class="qa-qid" href="#q-077">Q77</a> 分段讀取期間 Log 內容改變時，Host 如何判斷資料是否一致？</h2>
-<p class="qa-prompt">先列出已知證據與仍缺少的資訊，再決定能不能判定韌體違規。</p>
-<details class="qa-answer" id="q-077-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-077-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-077-a-01">這題要防止把不同時點的資料拼成一份看似完整的報告。長度正確、沒有缺口，仍不代表所有欄位屬於同一次擷取。</p><div class="qa-sections">
 <section class="qa-section" id="q-077-s-01" data-answer-section="1"><h3><span>1.</span> 先保留哪些證據</h3>
 <span class="qa-anchor" id="q-077-a-02"></span><p>一致性判斷由各 Log 提供的機制決定。Telemetry 有 generation，PEL 有 reporting context；沒有此類機制的動態 Log，不能自行假設跨命令原子快照。</p>
@@ -239,19 +250,20 @@ nvme_qa: true
 <span class="qa-anchor" id="q-077-a-17"></span><p>先看 generation 或 context 是否在整段讀取期間保持一致，再檢查解析器。</p>
 <span class="qa-anchor" id="q-077-a-05"></span><p>先取得 header，再按同一擷取或 context 讀取；必要時重讀 header。若前後 generation 改變，應重新取得一致資料，或明確標示無法證明一致，不能只換掉最後一份 header。</p>
 </section>
-<section class="qa-section" id="q-077-s-03" data-answer-section="3"><h3><span>3.</span> 什麼結果足以支持結論</h3>
+<section class="qa-section" id="q-077-s-03" data-answer-section="3"><h3><span>3.</span> 把觀察結果接回規格條件</h3>
 <span class="qa-anchor" id="q-077-a-06"></span><p>例如最初 TCDGN=10、最後=11，兩次 Get 都成功仍不足以證明中間所有 chunks 來自第 10 代。成功的分析結果必須連同一致性證據保存。</p>
 <span class="qa-anchor" id="q-077-a-07"></span><p>內容改變不一定產生錯誤 CQE；動態更新本身可以合法。PEL 的非法 context 操作則可能得到 0/0Ch，應和資料版本改變分開判斷。</p>
 <span class="qa-anchor" id="q-077-a-16"></span><p>將 header、每段資料及查詢順序當成一組證據，不能拿最後讀到的 capability 或 generation 回頭替所有舊 chunks 背書。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-telemetrylog">Base 2.4 §5.2.13.1.8–5.2.13.1.9</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a></p>
 <span class="qa-anchor" id="q-077-a-08"></span><span class="qa-anchor" id="q-077-a-09"></span><span class="qa-anchor" id="q-077-a-10"></span><span class="qa-anchor" id="q-077-a-11"></span><span class="qa-anchor" id="q-077-a-12"></span><span class="qa-anchor" id="q-077-a-13"></span><span class="qa-anchor" id="q-077-a-14"></span><span class="qa-anchor" id="q-077-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-telemetrylog">Base 2.4 §5.2.13.1.8–5.2.13.1.9</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-078" data-question="78" data-answer-kind="concept"><h2><a class="qa-qid" href="#q-078">Q78</a> Error Information Log 或 Persistent Event Log 到達容量上限時，舊紀錄如何處理？</h2>
-<p class="qa-prompt">先用自己的話解釋機制，再舉一個常見誤解。</p>
-<details class="qa-answer" id="q-078-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-078-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-078-a-01">有限容量的 Log 不可能無限保存歷史，因此必須分清楚累計事件數與目前還能讀到的紀錄。缺少舊 entry 不一定表示事件從未發生。</p><div class="qa-sections">
 <section class="qa-section" id="q-078-s-01" data-answer-section="1"><h3><span>1.</span> 機制與適用範圍</h3>
 <span class="qa-anchor" id="q-078-a-02"></span><p>Error Information 以 controller 為範圍；PEL 保存 subsystem 的支援事件，並透過 reporting context 提供報告。兩者的容量與讀取生命週期不同。</p>
@@ -267,13 +279,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-078-a-16"></span><p>ECNT／SMART 的累計變化與目前筆數可能不同；應以容量及保留規則解釋，不能要求每次取樣都仍含所有舊紀錄。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a></p>
 <span class="qa-anchor" id="q-078-a-17"></span><span class="qa-anchor" id="q-078-a-08"></span><span class="qa-anchor" id="q-078-a-09"></span><span class="qa-anchor" id="q-078-a-10"></span><span class="qa-anchor" id="q-078-a-11"></span><span class="qa-anchor" id="q-078-a-12"></span><span class="qa-anchor" id="q-078-a-13"></span><span class="qa-anchor" id="q-078-a-14"></span><span class="qa-anchor" id="q-078-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-079" data-question="79" data-answer-kind="lifecycle"><h2><a class="qa-qid" href="#q-079">Q79</a> 哪些 Log 資料在 Controller Reset、NVM Subsystem Reset 或 Power Cycle 後仍可保留？</h2>
-<p class="qa-prompt">先指明重設或中斷的方式，再分別判斷設定、進行中的操作與資料。</p>
-<details class="qa-answer" id="q-079-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-079-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-079-a-01">判斷保留性時，要把查詢命令、暫時回報狀態與真正保存的歷史分開。重設使 Get 中止，不表示它原本要讀的所有資料都被清除。</p><div class="qa-sections">
 <section class="qa-section" id="q-079-s-01" data-answer-section="1"><h3><span>1.</span> 先界定觸發方式與影響對象</h3>
 <span class="qa-anchor" id="q-079-a-02"></span><p>保留規則可能適用整張 Log，也可能只適用其中某個欄位。多 controller 或 multi-domain 配置還要先確認重設影響哪些範圍。</p>
@@ -296,36 +309,38 @@ nvme_qa: true
 <span class="qa-anchor" id="q-079-a-17"></span><p>先確認是在比較內容保留，還是在比較一個已失效的 context 或未完成查詢。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a></p>
 <span class="qa-anchor" id="q-079-a-08"></span><span class="qa-anchor" id="q-079-a-09"></span><span class="qa-anchor" id="q-079-a-10"></span><span class="qa-anchor" id="q-079-a-11"></span><span class="qa-anchor" id="q-079-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-080" data-question="80" data-answer-kind="diagnose"><h2><a class="qa-qid" href="#q-080">Q80</a> Supported Log Pages 或 Commands Supported and Effects 的宣告與實際行為不一致時，如何判斷？</h2>
-<p class="qa-prompt">先列出已知證據與仍缺少的資訊，再決定能不能判定韌體違規。</p>
-<details class="qa-answer" id="q-080-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-080-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-080-a-01">這題要建立可重現的能力一致性檢查。宣告支援只表示存在合法用法，不能把任何參數下的失敗都判為能力造假。</p><div class="qa-sections">
 <section class="qa-section" id="q-080-s-01" data-answer-section="1"><h3><span>1.</span> 先保留哪些證據</h3>
 <span class="qa-anchor" id="q-080-a-02"></span><p>固定接收介面、controller、CSI、UUID 選擇及配置時間。尤其 CC.CSS=110b 時，尚未啟用的命令集會被視為不支援。</p>
 <span class="qa-anchor" id="q-080-a-03"></span><p>一起保存 LSUPP、IOS、CSUPP、Identify 的功能位與 FID19h 設定。不要拿 LID 的支援位去判斷任意 Opcode，也不要反過來混用。</p>
-<span class="qa-anchor" id="q-080-a-04"></span><p>測試命令保留 LID 或 Opcode、NSID、CSI、LSP、LSI、OT、長度及資料指標。取得 CQE 後再讀 SCT／SC，而不是只記一個工具錯誤訊息。</p>
+<span class="qa-anchor" id="q-080-a-04"></span><p>測試命令保留 LID 或 Opcode、NSID、CSI、LSP、LSI、OT、長度及資料指標。取得 CQE 後再讀 SCT／SC，而不是只記一個工具錯誤訊息。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SCT</dt><dd>Status Code Type，完成狀態代碼類型</dd></div></dl>
 </section>
 <section class="qa-section" id="q-080-s-02" data-answer-section="2"><h3><span>2.</span> 依什麼順序排除原因</h3>
 <span class="qa-anchor" id="q-080-a-17"></span><p>先確認兩份證據來自同一介面與同一命令集配置，這通常比先懷疑韌體更能排除誤判。</p>
 <span class="qa-anchor" id="q-080-a-05"></span><p>先構造符合能力、scope 及狀態的合法命令，再執行並核對結果。若失敗，逐項排除非法參數、被 Lockdown 禁止、namespace 未就緒及配置變更。</p>
 </section>
-<section class="qa-section" id="q-080-s-03" data-answer-section="3"><h3><span>3.</span> 什麼結果足以支持結論</h3>
+<section class="qa-section" id="q-080-s-03" data-answer-section="3"><h3><span>3.</span> 把觀察結果接回規格條件</h3>
 <span class="qa-anchor" id="q-080-a-06"></span><p>在同一穩定配置下，明確宣告支援卻對合法請求回不支援，才形成需要追查的矛盾；合法的限制性 Status 不能直接當成不支援。</p>
 <span class="qa-anchor" id="q-080-a-07"></span><p>Get 不支援 LID 使用 1/09h；不支援 Opcode 使用 0/01h；0/02h 通常需要回頭檢查參數。保留規範的專用例外與多重錯誤選擇，不能只比一個預期數字。</p>
 <span class="qa-anchor" id="q-080-a-16"></span><p>比較內容、行為與時間關係三者。若韌體已啟用新版本，應先重讀宣告，不能用舊表要求新 controller 行為。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-commandseffects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-profile">Base 2.4 §5.2.30.1.18</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-080-a-08"></span><span class="qa-anchor" id="q-080-a-09"></span><span class="qa-anchor" id="q-080-a-10"></span><span class="qa-anchor" id="q-080-a-11"></span><span class="qa-anchor" id="q-080-a-12"></span><span class="qa-anchor" id="q-080-a-13"></span><span class="qa-anchor" id="q-080-a-14"></span><span class="qa-anchor" id="q-080-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-commandseffects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-profile">Base 2.4 §5.2.30.1.18</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-081" data-question="81" data-answer-kind="lookup"><h2><a class="qa-qid" href="#q-081">Q81</a> Host 如何從 Commands Supported and Effects Log 確認 Opcode 支援及影響範圍？</h2>
-<p class="qa-prompt">先選查詢介面與目標，再說明哪個回傳欄位能支持你的結論。</p>
-<details class="qa-answer" id="q-081-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-081-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-081-a-01">這張表讓 Host 在執行命令前，了解是否支援，以及操作可能改變資料、namespace 配置或 controller 能力。它描述可能效果，不是每次執行一定發生的全部效果。</p><div class="qa-sections">
 <section class="qa-section" id="q-081-s-01" data-answer-section="1"><h3><span>1.</span> 要查哪個對象、哪份資料</h3>
 <span class="qa-anchor" id="q-081-a-02"></span><p>Admin Opcode 與 I/O Opcode 使用不同區域；I/O 區還要選對命令集。CSP 可以同時表示多種 scope，因為實際參數可能決定不同影響對象。</p>
@@ -342,6 +357,7 @@ nvme_qa: true
 <span class="qa-anchor" id="q-081-a-17"></span><p>先確認 Admin 或 I/O 區，再核對 Opcode、byte offset 與成功的查詢 CQE。Log 中資料的起點、分段 buffer 的起點，以及 entry 內的 bit 位置是三種座標；把任一種誤當另一種，都可能讀到別的命令或欄位。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-commandseffects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-profile">Base 2.4 §5.2.30.1.18</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-adminsupport">Base 2.4 §3.1.3.4 (Figure 28 PCIe I/O-controller rows and O/M/P note only)</a></p>
 <span class="qa-anchor" id="q-081-a-08"></span><span class="qa-anchor" id="q-081-a-09"></span><span class="qa-anchor" id="q-081-a-10"></span><span class="qa-anchor" id="q-081-a-11"></span><span class="qa-anchor" id="q-081-a-12"></span><span class="qa-anchor" id="q-081-a-13"></span><span class="qa-anchor" id="q-081-a-14"></span><span class="qa-anchor" id="q-081-a-15"></span>
 <p class="qa-related">相關機制：<a href="/nvme/question-bank/format-sanitize/zh-tw/#q-118">Q118</a> · <a href="/nvme/question-bank/logs/zh-tw/#q-069">Q69</a> · <a href="/nvme/question-bank/features/zh-tw/#q-054">Q54</a></p>
 <details class="qa-source-links"><summary>本題原文定位</summary>

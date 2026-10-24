@@ -117,11 +117,11 @@ LESSONS = {
 ('錯誤碼先做單一原因實驗','假設一筆命令同時含有非法 NSID 與非法資料指標，controller 可能先發現其中任一錯誤。如果把它當成只測 NSID 的案例，就可能因實際回報另一種合法錯誤而誤判。比較 Status 前，先建立參數及狀態都合法的基準，再每次只改一項，並記錄作用範圍與支援能力，才能知道結果是由哪個條件造成。'),
 ('正常寫入與 fused operation 的順序不同','兩筆普通命令即使放在相鄰的 SQ 位置，也不會自動成為不可分割的操作。支援的 fused pair 必須設定對應 FUSE 值，放在同一 SQ 的相鄰位置，並透過同一次 Tail 更新提交；兩筆仍各自有完成結果。判斷一般排程時也要分清楚開始處理與完成：不同命令耗時不同，因此整體吞吐比例不一定等於仲裁權重。')],
 'identify':[
-('從裝置、容量到可見性，分三次問','Identify Controller 描述 controller 的能力與屬性；Identify Namespace 描述指定 namespace 的格式及容量；Active List 則列出目前可經由這個 controller 使用的 namespace。這三份資料各自回答不同問題，必須互相配合。不能只讀到 Controller.NN，就認定 NSID 從 1 到 NN 全都存在，而且全部可存取。'),
+('先查控制器，再找可存取的 namespace','Identify Controller 描述 controller 的能力與屬性；Identify Namespace 描述指定 namespace 的格式及容量；Active List 則列出目前可經由這個 controller 使用的 namespace。先用 Active List 取得可存取的 NSID，再逐一讀取格式與容量；控制器能力則由 Identify Controller 補足。不能只讀到 Controller.NN，就認定 NSID 從 1 到 NN 全都存在，而且全部可存取。'),
 ('欄位是位元遮罩還是索引，會改變算式','解讀數值前，先確認欄位的資料型態：CNS 選擇資料結構，CSI 選擇命令集，bitmap 的各位元代表不同能力，index 則指出清單中的某一筆。例如讀取 LBA 格式時，先從 FLBAS 解出索引，再讀取對應的 LBAF 描述；不能把 FLBAS 的原始數字直接當成 byte 數。知道數值用來選擇什麼，比單獨背下十六進位值更容易正確運用。'),
 ('查詢結果也有時間','要觀察管理操作的結果，必須等操作成功後再查詢：Create 成功後查 Allocated List，Attach 成功後查目標 controller 的 Active List。如果另一個管理者同時修改配置，兩份清單可能來自不同時點。先確認查詢順序及對象，再判斷 controller 是否漏了更新，才能避免把正常的時間差當成錯誤。')],
 'features':[
-('先問能不能，再問目前是多少','Get Features.SEL=3 回傳的是能力，例如是否可變更及是否可保存，而不是目前正在使用的設定。假設 DW0=5，表示能力欄位的 bit2 與 bit0 為 1，不能直接拿來和 Current=5 比較。比較兩次 Get 的結果前，先確認 FID、SEL 及作用對象一致，才能知道它們是否描述同一件事。'),
+('先查變更與保存能力，再讀目前設定','Get Features.SEL=3 回傳的是能力，例如是否可變更及是否可保存，而不是目前正在使用的設定。假設 DW0=5，表示能力欄位的 bit2 與 bit0 為 1，不能直接拿來和 Current=5 比較。比較兩次 Get 的結果前，先確認 FID、SEL 及作用對象一致，才能知道它們是否描述同一件事。'),
 ('APST 的狀態轉移該怎麼讀','假設目前處於 PS0，APSTE=1，PS0 entry 的 ITPT=2000 ms、ITPS=3，而且 PS3 是受支援的非工作狀態。controller 在 PS0 持續閒置超過 2000 ms 後，會轉入 PS3；之後若有工作需要離開 PS3，恢復處理時就要考慮 PS3.EXLAT 所描述的退出延遲。ITPT 是進入前的閒置門檻，EXLAT 是離開時的延遲，兩者發生在不同階段，不能相加後宣稱每筆命令都固定等待這麼久。'),
 ('持久性與原子性要各做一個判斷','持久性問的是已完成資料在斷電後是否仍存在；原子性問的是一次更新是否可能留下部分新資料、部分舊資料。WCE、FUA 與 Flush 處理持久性；原子單位及邊界則限制哪些寫入具有原子性。即使資料已持久保存，超出原子保證範圍的多 block 操作，也不會因此自動取得整筆不可分割的保證。')],
 }

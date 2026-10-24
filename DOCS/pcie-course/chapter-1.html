@@ -222,9 +222,154 @@
 
 /* Self-contained teaching diagrams use the same theme in standalone pages and posts. */
 .pcie-surface .course-diagram text { fill: var(--ink); font-family: inherit; font-size: 18px; }
+
+/* Applied only to explicitly authorized teaching roots. */
+html .spec-teaching[data-spec-series] .st-terms { margin:.35rem 0 1rem; padding:.5rem .8rem; border-inline-start:3px solid var(--st-accent); background:var(--st-soft); font-size:.88em; color:var(--st-muted); }
+html .spec-teaching[data-spec-series] .st-terms > div { display:flex; flex-wrap:wrap; gap:.2em .7em; }
+html .spec-teaching[data-spec-series] .st-terms dt { font-weight:650; }
+html .spec-teaching[data-spec-series] .st-terms dd { margin:0; flex:1 1 14em; }
+html .spec-teaching[data-spec-series] {
+ --st-diagram-width:900px;
+ --st-paper:#f2f6f8; --st-surface:#fff; --st-ink:#192d40; --st-muted:#4c6479;
+ --st-line:#cbd9e3; --st-accent:#145f9d; --st-soft:#edf5fc;
+ --paper:var(--st-paper); --surface:var(--st-surface); --surface-2:var(--st-soft); --surface-alt:var(--st-soft);
+ --ink:var(--st-ink); --muted:var(--st-muted); --line:var(--st-line);
+ --accent:var(--st-accent); --accent-2:var(--st-accent); --soft:var(--st-soft); --blue-soft:var(--st-soft); --teal-soft:var(--st-soft);
+ --qr-paper:var(--st-paper); --qr-surface:var(--st-surface); --qr-ink:var(--st-ink); --qr-muted:var(--st-muted);
+ --qr-line:var(--st-line); --qr-accent:var(--st-accent); --qr-soft:var(--st-soft);
+ color:var(--st-ink); background:var(--st-paper); font-size:17px; line-height:1.9;
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+}
+html .spec-teaching[data-spec-series="nvme"] { --st-accent:#086b56; --st-soft:#e7f4ee; }
+@media(prefers-color-scheme:dark) {
+ html:not([data-theme="light"]) .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+ html:not([data-theme="light"]) .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+}
+html[data-theme="dark"] .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+html[data-theme="dark"] .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+.spec-teaching * { box-sizing:border-box; }
+.spec-teaching :is(h1,h2,h3,h4,h5,p,li,td,th,summary,strong,figcaption) { color:var(--st-ink); }
+.spec-teaching svg text { font-family:inherit; }
+.spec-teaching h1 { font-size:clamp(1.8rem,3.2vw,2.65rem); line-height:1.4; }
+.spec-teaching h2 { font-size:clamp(1.3rem,2.5vw,1.7rem); line-height:1.55; }
+.spec-teaching h3 { font-size:1.15rem; line-height:1.65; }
+.spec-teaching h4 { font-size:1rem; line-height:1.7; }
+.spec-teaching :is(h1,h2,h3,h4) { overflow-wrap:anywhere; }
+.spec-teaching p { margin:.7rem 0 1.15rem; }
+.spec-teaching :is(a,summary) { text-underline-offset:.2em; }
+.spec-teaching :focus-visible { outline:3px solid var(--st-accent); outline-offset:4px; }
+.spec-teaching :is(.qa-takeaway,.qa-answer-lead,.st-takeaway) { color:var(--st-ink); font-weight:650; font-size:1.06rem; line-height:1.9; }
+.spec-teaching :is(.qa-question,.qr-card,.guided-walk) { border:1px solid var(--st-line); border-radius:12px; background:var(--st-surface); padding:clamp(18px,3vw,30px); margin:1.8rem 0; }
+.spec-teaching :is(.qa-flow,.qr-note,.qr-observations,.st-context,.st-route) { background:var(--st-soft); border-left:4px solid var(--st-accent); padding:1rem 1.2rem; margin:1.4rem 0; }
+.spec-teaching :is(.qr-step,.qa-qid,.st-label) { color:var(--st-accent); font-weight:700; }
+.spec-teaching :is(.qa-citations,.qa-source-links,.qr-case-sources,.walk-source,.st-source) { font-size:.84rem; line-height:1.75; color:var(--st-muted); overflow-wrap:anywhere; }
+.spec-teaching :is(.qr-table,.table-wrap) { overflow-x:auto; margin:1.4rem 0; border-radius:7px; }
+.spec-teaching :is(th,td) { line-height:1.8; vertical-align:top; min-width:120px; }
+.spec-teaching :is(table,td) { background:var(--st-surface); }
+.spec-teaching th { background:var(--st-soft); }
+.spec-teaching .st-step { border-left:3px solid var(--st-line); padding:.6rem 1rem; margin:1.2rem 0; }
+.spec-teaching .st-step:target { border-left-color:var(--st-accent); background:var(--st-soft); }
+.spec-teaching .st-glossary { border:1px solid var(--st-line); padding:.7rem 1rem; margin:1.4rem 0; border-radius:8px; }
+.spec-teaching .st-glossary > summary { min-height:44px; cursor:pointer; }
+.spec-teaching .st-specs { display:flex; flex-wrap:wrap; gap:.4rem 1rem; color:var(--st-muted); font-size:.8rem; line-height:1.8; margin:1rem 0; }
+.spec-teaching .st-specs span { border-bottom:2px solid var(--st-accent); padding:.2rem 0; }
+@media(max-width:620px) { .spec-teaching :is(.qa-question,.qr-card,.guided-walk) { padding:16px; } .spec-teaching .diagram svg { min-width:var(--st-diagram-width); } }
+@media print {
+ .spec-teaching { --st-paper:#fff!important; --st-surface:#fff!important; --st-ink:#000!important; --st-muted:#333!important; --st-line:#999!important; --st-accent:#000!important; --st-soft:#fff!important; }
+ .spec-teaching details > * { display:block!important; }
+ .spec-teaching details::details-content { content-visibility:visible!important; }
+ .spec-teaching .st-step { break-inside:avoid; }
+}
+
+/* Native reading guides: selection highlights; it never hides teaching content.
+   build_pcie_course.py changes .pcie-surface to .pcie-article for the posts. */
+.pcie-surface .guided-walk { margin: 1.8rem 0; padding: 1.2rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); min-width: 0; }
+.pcie-surface .guided-walk > h3 { margin-top: 0; }
+.pcie-surface .walk-help { color: var(--muted); font-size: .85rem; }
+.pcie-surface .walk-order { margin-bottom: 1.1rem; }
+/* Keep native radio semantics and keyboard handling; the associated label is
+   the visible control, so a radio cannot wrap away from its own label. */
+.pcie-surface .walk-choice { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.pcie-surface .walk-label { display: inline-flex; align-items: center; min-height: 44px; padding: .35rem .7rem; margin: .25rem .8rem .25rem 0; border: 2px solid var(--line); border-radius: 8px; cursor: pointer; font-size: .9rem; line-height: 1.5; color: var(--ink); background: var(--surface-alt); }
+.pcie-surface .walk-choice:checked + .walk-label { border-color: var(--accent); background: var(--blue-soft); font-weight: 700; }
+.pcie-surface .walk-choice:focus-visible + .walk-label { outline: 3px solid var(--focus); outline-offset: 3px; }
+.pcie-surface .walk-view { margin-top: 1rem; min-width: 0; }
+.pcie-surface .walk-diagram { margin: 0 0 1.2rem; }
+.pcie-surface .walk-diagram svg { width: 100%; height: auto; display: block; }
+.pcie-surface .walk-diagram svg a { cursor: pointer; }
+.pcie-surface .walk-diagram svg a:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
+.pcie-surface .walk-diagram figcaption { margin-top: .8rem; }
+.pcie-surface .walk-steps { max-width: none; padding-left: 1.6rem; }
+.pcie-surface .walk-step { padding: .6rem .9rem; margin: .7rem 0; border: 2px solid transparent; border-left: 5px solid var(--line); border-radius: 5px; background: var(--surface); }
+.pcie-surface .walk-step h4 { margin: .2rem 0 .5rem; }
+.pcie-surface .walk-condition { font-size: .9rem; color: var(--muted); }
+.pcie-surface .walk-source { border-top: 1px solid var(--line); padding-top: .35rem; color: var(--muted); font-size: .85rem; }
+.pcie-surface .walk-step p:last-child { margin-bottom: .3rem; }
+.pcie-surface .walk-components { border-top: 1px solid var(--line); margin-top: 1.4rem; padding-top: .4rem; }
+.pcie-surface .walk-component-links { display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; list-style: none; padding-left: 0; }
+.pcie-surface .walk-component-links a { min-height: 44px; min-width: 44px; }
+.pcie-surface .walk-component { padding: .7rem 1rem; margin: 1rem 0; border: 1px solid var(--line); border-radius: 8px; }
+.pcie-surface .walk-component > h4 { margin-top: .2rem; }
+.pcie-surface .walk-component:target { outline: 3px solid var(--accent-2); outline-offset: 3px; }
+.pcie-surface .walk-component details { margin-bottom: .3rem; }
+
+.pcie-surface .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-step[data-walk-step="1"],
+.pcie-surface .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-step[data-walk-step="2"],
+.pcie-surface .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-step[data-walk-step="3"],
+.pcie-surface .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-step[data-walk-step="4"],
+.pcie-surface .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-step[data-walk-step="5"],
+.pcie-surface .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-step[data-walk-step="6"],
+.pcie-surface .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-step[data-walk-step="7"],
+.pcie-surface .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-step[data-walk-step="8"] { border-color: var(--accent); background: var(--blue-soft); }
+
+.pcie-surface .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-node[data-walk-steps~="1"],
+.pcie-surface .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-node[data-walk-steps~="2"],
+.pcie-surface .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-node[data-walk-steps~="3"],
+.pcie-surface .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-node[data-walk-steps~="4"],
+.pcie-surface .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-node[data-walk-steps~="5"],
+.pcie-surface .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-node[data-walk-steps~="6"],
+.pcie-surface .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-node[data-walk-steps~="7"],
+.pcie-surface .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-node[data-walk-steps~="8"] { --walk-active-weight: 750; }
+.pcie-surface .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-node[data-walk-steps~="1"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-node[data-walk-steps~="2"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-node[data-walk-steps~="3"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-node[data-walk-steps~="4"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-node[data-walk-steps~="5"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-node[data-walk-steps~="6"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-node[data-walk-steps~="7"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-node[data-walk-steps~="8"] > :is(rect, circle, ellipse, polygon, path, line, polyline) { stroke: var(--accent); stroke-width: 3.5px; vector-effect: non-scaling-stroke; }
+.pcie-surface .walk-node text { font-weight: var(--walk-active-weight, inherit); }
+
+@media (max-width: 620px) {
+  .pcie-surface .guided-walk { padding: .8rem; }
+  .pcie-surface .walk-label { margin-right: .45rem; padding-left: .45rem; padding-right: .45rem; }
+  .pcie-surface .walk-steps { padding-left: 1.15rem; }
+  .pcie-surface .walk-step { padding: .5rem .6rem; }
+  .pcie-surface .walk-diagram { overflow-x: auto; }
+  .pcie-surface .walk-diagram svg { min-width: var(--st-diagram-width, 700px); }
+}
+@media (forced-colors: active) {
+  .pcie-surface .walk-choice:checked + .walk-label { border-color: Highlight; }
+  .pcie-surface .walk-step { border-color: CanvasText; }
+}
+@media print {
+  .pcie-surface .guided-walk { border: 1px solid #999; padding: .7rem; break-inside: auto; }
+  .pcie-surface .walk-choice, .pcie-surface .walk-label, .pcie-surface .walk-help { display: none; }
+  .pcie-surface .walk-step { display: list-item !important; border-color: #999 !important; background: transparent !important; }
+  .pcie-surface .walk-node { --walk-active-weight: 500 !important; }
+  .pcie-surface .walk-node > :is(rect, circle, ellipse, polygon, path, line, polyline) { stroke: #333 !important; stroke-width: 1.5px !important; }
+  .pcie-surface .walk-diagram { overflow: visible; }
+  .pcie-surface .walk-diagram svg { min-width: 0; }
+  .pcie-surface .walk-component details > * { display: block !important; }
+  .pcie-surface .walk-component details::details-content { content-visibility: visible !important; }
+}
+
+/* SVG text follows the selected reading theme. */
+.pcie-surface svg text { fill: var(--ink); }
+.pcie-surface .walk-summary { margin: 1rem 0 1.5rem; }
   </style>
 </head>
-<body class="pcie-surface">
+<body class="pcie-surface spec-teaching" data-spec-series="pcie">
   <a class="skip-link" href="#content">跳到正文</a>
   <div class="site-shell">
     <nav class="topbar" aria-label="課程導覽">
@@ -235,22 +380,57 @@
       <p class="eyebrow">PCIe · 系統與規格閱讀 / CHAPTER 1</p>
       <h1>拓樸、Function 與識別方式</h1>
       <p class="header-description">沿著含 Switch 的拓樸，釐清實體卡、Function 與 Port 的關係，再從欄位判讀 BDF、下游 Bus 範圍與 Requester ID。</p>
-      <div class="edition"><span>繁體中文 · 規格與情境推演</span><span>2026-10-20</span></div>
+      <div class="edition"><span>繁體中文 · 規格與情境推演</span><span>2026-10-23</span></div>
     </header>
     <div class="reading-layout">
       <aside class="toc-panel" aria-label="本頁目錄">
         <p class="toc-label">本章閱讀路徑</p>
-        <nav aria-label="章節段落"><ol><li><a href="#objects">1. 系統列出的是卡，還是 Function？</a></li><li><a href="#snapshot">2. Switch 為什麼會在設定空間裡變成多個 Bridge？</a></li><li><a href="#address">3. 03:00.1 的每一段究竟選了誰？</a></li><li><a href="#identify">4. 只知道 BDF，怎麼查它是 Endpoint 還是 Port？</a></li><li><a href="#bridge-path">5. 要找 Bus 03，為什麼沿著 Downstream A？</a></li><li><a href="#requester">6. 封包裡的 Requester ID 和 BDF 有什麼關係？</a></li><li><a href="#identity">7. 記住 BDF，下一次開機就能認出同一張卡嗎？</a></li><li><a href="#practice">8. 換一個條件，你會怎麼查？</a></li><li><a href="#next">9. 知道查誰之後，下一步看什麼？</a></li><li><a href="#sources">版本與來源</a></li></ol></nav>
+        <nav aria-label="章節段落"><ol><li><a href="#objects">1. 系統列出的是卡，還是 Function？</a></li><li><a href="#snapshot">2. Switch 為什麼會在設定空間裡變成多個 Bridge？</a></li><li><a href="#address">3. 03:00.1 的每一段究竟選了誰？</a></li><li><a href="#identify">4. 只知道 BDF，怎麼查它是 Endpoint 還是 Port？</a></li><li><a href="#bridge-path">5. 要找 Bus 03，為什麼沿著 Downstream A？</a></li><li><a href="#requester">6. 封包裡的 Requester ID 和 BDF 有什麼關係？</a></li><li><a href="#identity">7. 記住 BDF，下一次開機就能認出同一張卡嗎？</a></li><li><a href="#practice">8. 串接角色、路徑與識別號</a></li><li><a href="#next">9. 知道查誰之後，下一步看什麼？</a></li><li><a href="#sources">版本與來源</a></li></ol></nav>
       </aside>
       <main id="content" tabindex="-1">
         <article class="lesson">
-<p class="lead">如果系統列出兩個 PCIe Function，機器裡就一定有兩張卡嗎？如果兩筆紀錄都寫著 <code>03:00.0</code>，又能確定它們指向同一個對象嗎？要回答這些問題，得先把實體連接、設定空間中的拓樸，以及識別號的範圍分開。</p>
-<p>本章接續 <a href="chapter-0.html#topology">Chapter 0 的系統角色</a>，把焦點放在「軟體究竟在辨識誰」。讀完後，你應能沿著 Switch 的邏輯拓樸找到 Function，查出它是哪一種 Port，並說明一組 BDF 能證明什麼。</p>
+<!-- pcie-walk: walks/chapter1-topology.json -->
+<div class="guided-walk" id="ch1-topology" role="group" aria-labelledby="ch1-topology-title" data-walk-version="1">
+<h3 id="ch1-topology-title">在同一份快照中找到目標 Function</h3>
+<p class="walk-help" id="ch1-topology-help">選擇步驟後，圖中對應的元件與下方解說會加上重點標示。完整圖與所有解說會持續顯示；也可用方向鍵切換步驟。</p>
+<div class="walk-order"><p>這是讀取快照的順序：先確認 Segment，再沿橋接範圍選分支，最後選 Function；不是枚舉或封包交換的時間線。</p></div>
+<input class="walk-choice" type="radio" name="ch1-topology-step" id="ch1-topology-choice-1" value="1" data-walk-step="1" aria-describedby="ch1-topology-help" aria-controls="ch1-topology-view ch1-topology-step-1" checked="checked">
+<label class="walk-label" for="ch1-topology-choice-1">1. 先確認查詢範圍</label>
+<input class="walk-choice" type="radio" name="ch1-topology-step" id="ch1-topology-choice-2" value="2" data-walk-step="2" aria-describedby="ch1-topology-help" aria-controls="ch1-topology-view ch1-topology-step-2">
+<label class="walk-label" for="ch1-topology-choice-2">2. 看懂交換器內部表示</label>
+<input class="walk-choice" type="radio" name="ch1-topology-step" id="ch1-topology-choice-3" value="3" data-walk-step="3" aria-describedby="ch1-topology-help" aria-controls="ch1-topology-view ch1-topology-step-3">
+<label class="walk-label" for="ch1-topology-choice-3">3. 用下游範圍選 A 分支</label>
+<input class="walk-choice" type="radio" name="ch1-topology-step" id="ch1-topology-choice-4" value="4" data-walk-step="4" aria-describedby="ch1-topology-help" aria-controls="ch1-topology-view ch1-topology-step-4">
+<label class="walk-label" for="ch1-topology-choice-4">4. 最後選定 Function 1</label>
+<div class="walk-view" id="ch1-topology-view">
+<figure class="diagram walk-diagram">
+<svg viewBox="0 0 840 585" class="course-diagram" role="img" aria-labelledby="ch1-topology-svg-title ch1-topology-svg-desc"><title id="ch1-topology-svg-title">沿拓樸找到 03:00.1</title><desc id="ch1-topology-svg-desc">所有BDF皆在Segment 0000；實線是外部Link，虛線是內部邏輯連接；Endpoint A的兩個Function共用一條Link。</desc><a href="#ch1-topology-component-rp" aria-label="Root Port：根部的對外介面"><g data-walk-target="rp" class="walk-node" data-walk-steps="1"><rect x="285" y="20" width="270" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2" /><text x="420" y="47" text-anchor="middle" fill="var(--ink)" font-size="18">Root Port</text><text x="420" y="72" text-anchor="middle" fill="var(--ink)" font-size="16">00:01.0 · 01–04</text></g></a><g data-walk-target="up" class="walk-node" data-walk-steps="2"><rect x="285" y="155" width="270" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2" /><text x="420" y="182" text-anchor="middle" fill="var(--ink)" font-size="18">Switch Upstream Port</text><text x="420" y="207" text-anchor="middle" fill="var(--ink)" font-size="16">01:00.0 · 02–04</text></g><a href="#ch1-topology-component-a" aria-label="Downstream Port A：通往 Bus 03"><g data-walk-target="a" class="walk-node" data-walk-steps="2 3"><rect x="35" y="330" width="300" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2" /><text x="185" y="357" text-anchor="middle" fill="var(--ink)" font-size="18">Downstream Port A</text><text x="185" y="382" text-anchor="middle" fill="var(--ink)" font-size="16">02:01.0 · 03–03</text></g></a><g data-walk-target="b" class="walk-node" data-walk-steps="2 3"><rect x="505" y="330" width="300" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2" /><text x="655" y="357" text-anchor="middle" fill="var(--ink)" font-size="18">Downstream Port B</text><text x="655" y="382" text-anchor="middle" fill="var(--ink)" font-size="16">02:02.0 · 04–04</text></g><a href="#ch1-topology-component-ep-a" aria-label="Endpoint A：選出 Function 1"><g data-walk-target="ep-a" class="walk-node" data-walk-steps="3 4"><rect x="35" y="475" width="300" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2" /><text x="185" y="502" text-anchor="middle" fill="var(--ink)" font-size="18">Endpoint A</text><text x="185" y="527" text-anchor="middle" fill="var(--ink)" font-size="16">03:00.0 / 03:00.1</text></g></a><g data-walk-target="ep-b" class="walk-node" data-walk-steps="3"><rect x="505" y="475" width="300" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2" /><text x="655" y="502" text-anchor="middle" fill="var(--ink)" font-size="18">Endpoint B</text><text x="655" y="527" text-anchor="middle" fill="var(--ink)" font-size="16">04:00.0</text></g><g data-walk-target="link-rp" class="walk-node" data-walk-steps="1"><path d="M420 100 V155" fill="none" stroke="var(--accent)" stroke-width="2.5" /><text x="465" y="132" text-anchor="middle" fill="var(--ink)" font-size="15">Link</text></g><g data-walk-target="internal" class="walk-node" data-walk-steps="2"><path d="M420 235 V280 H185 V330 M420 280 H655 V330" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-dasharray="6 5" /><text x="420" y="270" text-anchor="middle" fill="var(--ink)" font-size="15">內部 Bus 02（邏輯連接）</text></g><g data-walk-target="link-a" class="walk-node" data-walk-steps="3"><path d="M185 410 V475" fill="none" stroke="var(--accent)" stroke-width="2.5" /><text x="225" y="450" text-anchor="middle" fill="var(--ink)" font-size="15">Link</text></g><g data-walk-target="link-b" class="walk-node" data-walk-steps="3"><path d="M655 410 V475" fill="none" stroke="var(--accent)" stroke-width="2.5" /><text x="695" y="450" text-anchor="middle" fill="var(--ink)" font-size="15">Link</text></g></svg>
+<figcaption>作者的已配置拓樸。實線：外部 Link；虛線：Switch 內部邏輯連接。框內第二行依序標示 BDF 與下游 Bus 範圍。</figcaption></figure><dl class="st-terms" aria-label="本段名詞"><div><dt>BDF</dt><dd>Bus／Device／Function，匯流排、裝置與功能識別</dd></div></dl>
+<div class="walk-summary"><p class="lead">本章沿著一棵含交換器的 PCIe 拓樸，找到裝置上的一個可設定功能。先認識軟體看到的橋接關係，再用設定欄位辨認角色，最後把識別號放回正確的範圍與時間。</p></div>
+<ol class="walk-steps">
+<li class="walk-step" id="ch1-topology-step-1" data-walk-step="1" data-walk-targets="rp link-rp"><h4>先確認查詢範圍</h4><div class="walk-condition"><p>所有 Function 已確認存在，設定讀取成功，拓樸在查詢期間保持不變。</p></div><div class="walk-explanation"><p>圖中所有 BDF（Bus、Device、Function 識別號）均位於 Segment 0000。Root Port 是根部向外建立 Link 的介面；它的下游範圍涵蓋 01–04。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>BDF</dt><dd>Bus／Device／Function，匯流排、裝置與功能識別</dd></div></dl></div><div class="walk-source" data-source-claims="PCIE-CH1-SEGMENT-001 PCIE-CH1-EXAMPLE-001"><p>Base 6.0 §7.1／Figure 7-1，文件頁／PDF 頁 903–904；Firmware 3.3 §1.3，文件頁／PDF 頁 8–9。</p></div></li>
+<li class="walk-step" id="ch1-topology-step-2" data-walk-step="2" data-walk-targets="up internal a b"><h4>看懂交換器內部表示</h4><div class="walk-condition"><p>本例沒有 FPB Routing ID；內部 Bus 只放代表 Downstream Port 的橋接功能。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>FPB</dt><dd>Flattening Portal Bridge，扁平化入口橋接器</dd></div></dl></div><div class="walk-explanation"><p>Switch Upstream Port 是交換器朝向主機的一端。其下游的 Bus 02 連接兩個 Downstream Port，也就是交換器朝下游的連接埠；虛線只表示邏輯橋接關係。</p></div><div class="walk-source" data-source-claims="PCIE-CH1-SWITCH-001"><p>Base 6.0 §1.3.3／Figure 1-3、§7.1／Figure 7-2，文件頁／PDF 頁 107、903–904。</p></div></li>
+<li class="walk-step" id="ch1-topology-step-3" data-walk-step="3" data-walk-targets="a link-a ep-a b link-b ep-b"><h4>用下游範圍選 A 分支</h4><div class="walk-condition"><p>Secondary 指下一層 Bus；Subordinate 指下游最高 Bus。範圍內的號碼不保證都有 Function。</p></div><div class="walk-explanation"><p>目標 Bus 03 落在 A 的 03–03 範圍。B 分支只涵蓋 04–04，因此圖中沿 A 的外部連線到裝置。這次是核對已知範圍，還沒有執行配置。</p></div><div class="walk-source" data-source-claims="PCIE-CH1-BRIDGEBUS-001 PCIE-CH1-EXAMPLE-001"><p>Base 6.0 Figure 7-14、§7.5.1.3.3–§7.5.1.3.4，文件頁／PDF 頁 936–937。</p></div></li>
+<li class="walk-step" id="ch1-topology-step-4" data-walk-step="4" data-walk-targets="ep-a"><h4>最後選定 Function 1</h4><div class="walk-condition"><p>Function 1 的存在是獨立發現結果；Header Type 的多功能位元只允許探查。</p></div><div class="walk-explanation"><p>到達 Bus 03 後，完整 BDF 選出 Device 00 的 Function 1。Function 是軟體可個別設定的功能；卡 A 的兩個 Function 共用圖中的一條 Link。</p></div><div class="walk-source" data-source-claims="PCIE-CH1-OBJECTS-001 PCIE-CH1-HEADER-001 PCIE-CH1-EXAMPLE-001"><p>Base 6.0 §7.5.1.1.9／Figure 7-8／Table 7-7，文件頁／PDF 頁 924–925。</p></div></li>
+</ol></div>
+<div class="walk-components"><h4>圖中元件</h4><ul class="walk-component-links">
+<li><a href="#ch1-topology-component-rp">Root Port：根部的對外介面</a></li>
+<li><a href="#ch1-topology-component-a">Downstream Port A：通往 Bus 03</a></li>
+<li><a href="#ch1-topology-component-ep-a">Endpoint A：選出 Function 1</a></li>
+</ul>
+<section class="walk-component" id="ch1-topology-component-rp" data-component-target="rp"><h4>Root Port：根部的對外介面</h4><div class="walk-component-action"><p>圖中的下游範圍 01–04 包含兩條分支。</p></div><details><summary>基本責任</summary><p>本章 Root Port 在設定模型中呈現為 Type 1 橋接功能。</p></details></section>
+<section class="walk-component" id="ch1-topology-component-a" data-component-target="a"><h4>Downstream Port A：通往 Bus 03</h4><div class="walk-component-action"><p>它的 Secondary 與 Subordinate 都為 03，目標從這一支到達。</p></div><details><summary>基本責任</summary><p>Downstream 表示遠離 Root Complex、朝階層下游的方向。</p></details></section>
+<section class="walk-component" id="ch1-topology-component-ep-a" data-component-target="ep-a"><h4>Endpoint A：選出 Function 1</h4><div class="walk-component-action"><p>設定查詢使用 03:00.1，與同卡的 03:00.0 分別取得資料。</p></div><details><summary>基本責任</summary><p>實體卡是組裝單位；Function 是軟體可個別辨識與設定的對象。</p></details></section>
+</div>
+</div>
+<!-- /pcie-walk -->
+
+<p>沿用 <a href="chapter-0.html#topology">Chapter 0 的系統角色</a>：主機經根部連接介面和交換器到達裝置。本章把交換器內部的橋接功能展開，讓你看見軟體如何選到其中一個 Function，而不必先知道卡片的實體組裝方式。</p>
 <aside class="note"><strong>版本與適用範圍</strong><p>欄位依 PCI Express Base Specification Revision 6.0；Segment 的背景依 PCI Firmware Specification Revision 3.3。本章採傳統 Bus／Device／Function 編址，不使用 ARI（Alternative Routing-ID Interpretation）、SR-IOV（Single Root I/O Virtualization）或 FPB（Flattening Portal Bridge）Routing ID 機制。這些機制涉及額外的發現、編號或路由規則，留待後續章節；其中 ARI 會改變 Device／Function 位元的解讀。頁碼均為本課程採用 PDF 的文件頁／PDF 頁，兩者相同。</p></aside>
 
 <section id="objects">
 <h2>1. 系統列出的是卡，還是 Function？</h2>
-<p>先想像一張插入主機的擴充卡。卡是實體組裝的單位；軟體卻不是替整張卡讀取一份共同的設定空間。軟體會找出可辨識的 Function，再分別讀取各自的設定資料。同一個 Device 可以只有一個 Function，也可以有多個 Function；一張卡內還可能有 Switch 及多個元件，所以不能把這幾個數量畫上等號。</p>
+<p>軟體會對每個 Function 分別讀取設定資料。Function 是可個別辨識與設定的功能；同一個 Device 可以提供一個或多個 Function。一張實體卡還可能包含 Switch 及多個元件，因此要由實際組裝資訊另行確認卡片數量。</p>
 <div class="table-wrap"><table><caption>看到同一件硬體時，我們可能在談不同的對象</caption><thead><tr><th scope="col">用語</th><th scope="col">這一層在回答什麼問題？</th><th scope="col">不能直接推得什麼？</th></tr></thead><tbody>
 <tr><td>實體卡、封裝</td><td>元件裝在哪裡，如何連到主機？</td><td>不能只憑卡的數量，推算 Function 的數量。</td></tr>
 <tr><td>Device</td><td>在傳統編址下，同一個 Bus 上的哪個 Device Number？</td><td>Device Number 不是插槽號，也不是產品型號。</td></tr>
@@ -263,21 +443,10 @@
 
 <section id="snapshot">
 <h2>2. Switch 為什麼會在設定空間裡變成多個 Bridge？</h2>
-<p>在本章使用的設定模型中，Root Port 表現為一個 PCI-to-PCI Bridge。Switch 則由多個邏輯 Bridge 組成：Upstream Port 的下游是 Switch 內部的邏輯 Bus；每個 Downstream Port 再從這個 Bus 接出一條外部 Link。這個安排讓軟體能沿著橋接關係認識整棵樹。</p>
+<p>回到開頭的圖。Root Port 在本章的設定模型中呈現為一個 PCI-to-PCI Bridge，也就是連接上、下游匯流排的橋接功能。Switch 則呈現為多個邏輯 Bridge：Upstream Port 接到內部邏輯 Bus，各個 Downstream Port 再接出外部 Link。軟體可以沿這些關係找到下游。</p>
 <p class="term-note">PCI-to-PCI Bridge 是設定模型裡連接上、下游匯流排的橋接功能。Upstream 指朝向 Root Complex 的方向；Downstream 指離開 Root Complex、朝階層下游的方向。Switch 的 internal bus 是邏輯表示，不是把外部 PCIe Link 改成共享的平行匯流排。</p>
-<aside class="example"><strong>教學假設：已完成發現與配置的快照</strong><p>下圖的編號與元件由作者設計，不是規格指定的固定拓樸，也不是實機量測。所有列出的 Function 都已確認存在，相關設定讀取成功，查詢期間拓樸不變。Requester ID 的案例也不使用 Phantom／Shadow Functions；這些機制可借用額外的 Function 識別號，留待交易進階內容再談。卡 A 內的一個 Device 提供 Function 0 與 Function 1，卡 B 提供另一個單功能 Device。圖中省略 CPU、記憶體及其他路徑；Bus Number 的配置過程留到 Chapter 3。</p></aside>
-<figure class="diagram">
-<svg viewBox="0 0 760 660" role="img" aria-labelledby="map-title map-desc" xmlns="http://www.w3.org/2000/svg">
-<title id="map-title">Segment 0000 中含 Switch 的設定拓樸</title><desc id="map-desc">Root Port 00:01.0 透過 Bus 01 的 Link 連到 Switch Upstream Port 01:00.0。Switch 內部 Bus 02 上有 Downstream Port 02:01.0 與 02:02.0，分別經 Bus 03 與 Bus 04 的 Link 連到卡 A 和卡 B。卡 A 提供 03:00.0 與 03:00.1；卡 B 提供 04:00.0。</desc>
-<rect x="110" y="186" width="540" height="276" rx="16" fill="var(--blue-soft)" stroke="var(--accent)" stroke-dasharray="7 5"/>
-<g fill="none" stroke="var(--accent-2)" stroke-width="3"><path d="M380 108V224M220 430V536M540 430V536"/></g>
-<g fill="none" stroke="var(--muted)" stroke-width="2.5" stroke-dasharray="6 4"><path d="M380 302V330M220 330H540M220 330V362M540 330V362"/></g>
-<g fill="var(--surface)" stroke="var(--line)" stroke-width="2"><rect x="235" y="30" width="290" height="78" rx="10"/><rect x="235" y="224" width="290" height="78" rx="10"/><rect x="135" y="362" width="170" height="68" rx="9"/><rect x="455" y="362" width="170" height="68" rx="9"/><rect x="70" y="536" width="300" height="96" rx="10"/><rect x="415" y="536" width="270" height="96" rx="10"/></g>
-<g fill="var(--ink)" text-anchor="middle" font-size="18"><text x="380" y="60">Root Port</text><text x="380" y="88">00:01.0</text><text x="380" y="254">Switch Upstream Port</text><text x="380" y="283">01:00.0</text><text x="220" y="390">Downstream A</text><text x="220" y="416">02:01.0</text><text x="540" y="390">Downstream B</text><text x="540" y="416">02:02.0</text><text x="220" y="567">卡 A：同一個 Device</text><text x="220" y="595">03:00.0　與　03:00.1</text><text x="220" y="620" font-size="15">兩個 Function，各有設定空間</text><text x="550" y="569">卡 B</text><text x="550" y="601">04:00.0</text></g>
-<g fill="var(--muted)" font-size="16"><text x="24" y="23">Segment 0000</text><text x="400" y="151">Link 對應 Bus 01</text><text x="130" y="211">Switch 的邏輯邊界</text><text x="257" y="353">Internal Bus 02（虛線）</text><text x="77" y="497">Link → Bus 03</text><text x="555" y="497">Link → Bus 04</text></g>
-</svg>
-<figcaption>自製教學圖。實線表示外部 Link，虛線表示 Switch 內部的邏輯連接；每個方框中的位址都是已知快照的 BDF。卡 A 的兩個 Function 共用所畫的上游 Link，不能因為有兩個 Function 就多算一條 Link。</figcaption>
-</figure>
+<aside class="example"><strong>教學假設：已完成發現與配置的快照</strong><p>下圖的編號與元件由作者設計，不是規格指定的固定拓樸，也不是實機量測。所有列出的 Function 都已確認存在，相關設定讀取成功，查詢期間拓樸不變。Requester ID（封包要求來源的識別號） 的案例也不使用 Phantom／Shadow Functions；這些機制可借用額外的 Function 識別號，留待交易進階內容再談。卡 A 內的一個 Device 提供 Function 0 與 Function 1，卡 B 提供另一個單功能 Device。圖中省略 CPU、記憶體及其他路徑；Bus Number 的配置過程留到 Chapter 3。</p></aside>
+
 <p>先從上方一路往下讀：Root Port 的下一層是 Bus 01；到了 Switch Upstream Port，下一層才是內部 Bus 02；兩個 Downstream Port 再分別接到 Bus 03 和 Bus 04。所以 <code>02:01.0</code> 是橋接功能本身的位置，<code>03:00.1</code> 才是它下游的目標 Function。</p>
 <p>依 Base 6.0 §7.1，本模型的 Switch 內部 Bus 只能出現代表 Downstream Port 的 Bridge，不能把一般 Type 0 Endpoint 畫在 Bus 02，與這些 Bridge 並列。圖上的卡 A、卡 B 因而放在各 Downstream Port 的下一層。</p>
 <details class="source-note"><summary>讀原圖時，依序看哪幾張？</summary><p>先看 Base 6.0 Figure 1-3（§1.3.3，p.107），建立 Switch 裡有多個 virtual PCI-to-PCI Bridge 的觀念；再看 Figure 7-2（§7.1，p.904），確認這些 Bridge 如何映射到設定拓樸。Root Port 的對應關係看同頁 Figure 7-1。§7.1 p.903 說明 internal bus 與 Endpoint 限制，並限定這段 Switch 描述不使用 FPB Routing ID 機制。本圖沿用這個範圍。</p></details>
@@ -297,12 +466,12 @@
 <h3>另一個 Segment 也有 03:00.0，會衝突嗎？</h3>
 <p><strong>新增教學假設：</strong>系統另有 Segment <code>0001</code>，其中一條 Root Port 路徑接到 <code>0001:03:00.0</code>。這與圖中的 <code>0000:03:00.0</code> 是兩個不同的設定對象；只有省略 Segment，才會看起來相同。紀錄資料時，應把 Segment 與 BDF 一起保留。</p>
 <p>反過來，同一份穩定快照、同一個 Segment 裡，<code>03:00.0</code> 和 <code>03:00.1</code> 具有相同的 Bus 與 Device，指向同一個 Device 的兩個 Function。至於它們在實體上裝在哪張卡，還需要實體配置的資訊；本例是題目另行給定卡 A 的組裝方式。</p>
-<details class="source-note"><summary>規格依據：編碼範圍與 Segment</summary><p>Base 6.0 §2.2.4.2、Table 2-8（p.147），Figures 2-20、2-22（p.148），說明傳統 ID 編碼；Requester ID 的條件另見下節。設定拓樸見 §7.1 pp.903–904。PCI Firmware 3.3 §1.3，pp.8–9 定義 PCI Segment Group：每組最多 256 個 PCI Bus，系統最多 65536 個 Segment。這是位址範圍，不是每個平台都實作最大數量的保證。</p></details>
+<details class="source-note"><summary>規格依據：編碼範圍與 Segment</summary><p>Base 6.0 §2.2.4.2、Table 2-8（p.147），Figures 2-20、2-22（p.148），說明傳統 ID 編碼；Requester ID（封包要求來源的識別號） 的條件另見下節。設定拓樸見 §7.1 pp.903–904。PCI Firmware 3.3 §1.3，pp.8–9 定義 PCI Segment Group：每組最多 256 個 PCI Bus，系統最多 65536 個 Segment。這是位址範圍，不是每個平台都實作最大數量的保證。</p></details>
 </section>
 
 <section id="identify">
 <h2>4. 只知道 BDF，怎麼查它是 Endpoint 還是 Port？</h2>
-<p>BDF 告訴你查詢對象的位置，卻沒有直接編碼它的角色。要判斷 <code>02:01.0</code> 是什麼，先查 Header Type，再到該 Function 的 PCI Express Capability 查 Device/Port Type。前者決定標頭版面；後者才區分 Root Port、Switch Port 或 Endpoint。</p>
+<p>先用 BDF 選定 02:01.0 的設定空間，再讀兩組欄位。Header Type（決定標頭布局並指示多功能的欄位） 的低位元決定要採用哪一種標頭布局；PCI Express Capability 內的 Device/Port Type 才區分 Root Port、Switch Port 與 Endpoint。下面依這個順序讀取。</p>
 <ol class="route">
 <li><strong>先分清 Header 的兩個欄位</strong><br>Figure 7-8 與 Table 7-7：低 7 bits 是 Header Layout，bit 7 是 Multi-Function Device。</li>
 <li><strong>找到 PCIe 類型欄位</strong><br>Figure 7-21：從已找到的 Capability 起點加 <code>0x02</code>，定位 16-bit PCI Express Capabilities Register。</li>
@@ -319,7 +488,7 @@
 <p>以 Downstream A 為例，<code>0x01 &amp; 0x7F = 1</code> 先選出 Type 1 Header。設讀到的 16-bit Capabilities Register 為 <code>cap</code>，則 <code>(cap &amp; 0x00F0) &gt;&gt; 4 = 6</code>，才得到 Switch Downstream Port。<code>cap &amp; 0x000F = 2</code> 則表示 Capability Version 2，與 Type 6 是不同欄位，也不是連線的 PCIe 世代。</p>
 <h3>Header Type 為 0x80，就代表有 8 個 Function 嗎？</h3>
 <p>不是。先做 <code>0x80 &amp; 0x7F = 0</code>，可知 Header Layout 仍是 Type 0；bit 7 為 1，只表示這個 Device <strong>可能</strong>含有多個 Function，允許軟體探查其他 Function，並未回報數量。卡 A 的 Function 1 存在，是題目已確認的另一筆資料，不能只從 <code>0x80</code> 推出。</p>
-<p>Table 7-7 也規定，若此 bit 為 0，軟體不得探查 Function 0 以外的 Function，除非 ARI、SR-IOV 等其他機制另有指示。本章已排除這些機制；不能為了練習，就把「一律掃完 0–7」當成通用規則。</p>
+<p>Table 7-7 也規定，若此 bit 為 0，軟體不得探查 Function 0 以外的 Function，除非 ARI、SR-IOV 等其他機制另有指示。本章已排除這些機制；不能為了練習，就把「一律掃完 0–7」當成通用規則。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SR-IOV</dt><dd>Single Root I/O Virtualization，單根I/O虛擬化</dd></div></dl>
 <details class="source-note"><summary>欄位位置與查表順序的來源</summary><p>Base 6.0 §7.5.1.1.9，Figure 7-8／Table 7-7，pp.924–925；§7.5.3 Figure 7-21，p.952；§7.5.3.2 Figure 7-23／Table 7-19，pp.953–954。Table 7-19 的名稱雖是 Device/Port Type，實際描述的是這個 Function 的類型。Type 1 Header 不只適用於 Switch Downstream Port，不能跳過第二次查詢。</p></details>
 </section>
 
@@ -334,7 +503,7 @@
 <tr><td><code>02:02.0</code></td><td><code>0x04</code></td><td><code>0x04</code></td><td>Downstream B 的下游範圍只有 Bus 04。</td></tr>
 </tbody></table></div>
 <p><strong>案例推演：</strong>目標 <code>0000:03:00.1</code> 位於 Segment 0000 的 Bus 03。Bus 03 落在 Root Port 的 01–04 範圍，也落在 Upstream Port 的 02–04 範圍；到了兩個 Downstream Port，只有 A 的 03–03 範圍符合。因此圖中的分支是 A，最後仍須以 Device 00、Function 1 選定對象。</p>
-<p>這裡練習的是把已知快照與欄位對上，沒有執行 Configuration Write。Bus Number 怎麼分配、尚未配置時如何搜尋，以及 Configuration Request 如何轉送，分別留到枚舉與交易章。也不要把這張 Bus 範圍表當成 Memory BAR 的位址窗口；它們處理的識別與資源不同。</p>
+<p>這裡練習的是把已知快照與欄位對上，沒有執行 Configuration Write。Bus Number 怎麼分配、尚未配置時如何搜尋，以及 Configuration Request 如何轉送，分別留到枚舉與交易章。也不要把這張 Bus 範圍表當成 Memory BAR 的位址窗口；它們處理的識別與資源不同。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>BAR</dt><dd>Base Address Register，基底位址暫存器</dd></div></dl>
 <details class="source-note"><summary>規格依據與這個方法的範圍</summary><p>Base 6.0 §7.5.1.3，Figure 7-14（p.936）；§7.5.1.3.3–§7.5.1.3.4（p.937）。本章不使用 FPB Routing ID 機制。Primary Bus Number 位於 0x18，但 §7.5.1.3.2（p.937）說明此欄位通常不供 PCIe Function 使用，主要為相容性保留；本例沒有用它來推出 Bridge 自己的 BDF。</p></details>
 </section>
 
@@ -354,25 +523,26 @@
 03:00.1 → (0x03 &lt;&lt; 8) | (0x00 &lt;&lt; 3) | 1 = 0x0301
 02:02.0 → (0x02 &lt;&lt; 8) | (0x02 &lt;&lt; 3) | 0 = 0x0210</code></pre>
 <p><strong>案例推演：</strong>要把 <code>0x0210</code> 還原，先取 <code>(id &gt;&gt; 8) &amp; 0xFF = 0x02</code> 得到 Bus，再取 <code>(id &gt;&gt; 3) &amp; 0x1F = 0x02</code> 得到 Device，最後取 <code>id &amp; 0x07 = 0</code> 得到 Function。它對應圖中的 Downstream B，而不是 Bus 02 上的 Function 0x10。</p>
-<p>這個算式只編碼身分，不表示所有經過 Downstream B 的要求都要改成 <code>0x0210</code>。Requester 是發出該要求的對象；沿途經過哪個 Bridge，是另一件事。把橋接路徑上的 BDF 都當成要求者，會失去原本要追蹤的 Function。</p>
+<p>這個算式把要求來源的 BDF 編成識別號。封包經過 Downstream B 時，要求者仍是原先發出要求的 Function；Switch 轉送時必須保留 Transaction ID。因此要分別記錄「誰發出要求」與「要求經過哪些 Bridge」。</p>
 <p>此外，<code>0000:03:00.0</code> 與 <code>0001:03:00.0</code> 的傳統 16-bit 編碼都會是 <code>0x0300</code>。因此只拿到這 16 bits，仍缺少判定 Segment 的情境。這不等於宣稱封包完全沒有 Segment 資訊：PCIe 6.0 的部分 Flit Mode 格式另有 Segment 欄位，不能與這個 16-bit 欄位混為一談。</p>
 <details class="source-note"><summary>規格依據：Requester ID 與 Segment 的邊界</summary><p>先看 Base 6.0 §2.2.4.2 的 Table 2-8（p.147）、Figures 2-20／2-22（p.148）辨認非 ARI 的位元分配，再讀 §2.2.6.2（pp.156–157）的 Requester ID 規則。前幾張圖展示的是目的地 ID routing，不能把圖上的封包 byte offset 套到所有 Requester ID；本章只取 BDF 的編碼關係。p.157 也明定 Switch 轉送要求時不得修改 Transaction ID，並把 Segment 定義為獨立欄位。Flit Mode 的獨立 Segment 資訊見 §2.2.1.2，pp.134–139。本章只做欄位識別與編碼，沒有把傳統 BDF 的拆法延伸到 ARI。</p></details>
 </section>
 
 <section id="identity">
 <h2>7. 記住 BDF，下一次開機就能認出同一張卡嗎？</h2>
-<p>BDF 描述的是目前設定拓樸中的位置，不是製造時刻在硬體上的序號。Bus Number 由設定流程建立；若拓樸或配置方式改變，同一件硬體可能出現在不同位置。只比對兩次紀錄的 BDF，既不能保證相同位址仍是原來的硬體，也不能因位址改變就判定硬體被換掉。</p>
+<p>跨次開機比對硬體時，先保留每筆紀錄所屬的配置快照。BDF 描述目前設定拓樸中的位置；Bus Number 由配置流程建立，同一硬體可能因拓樸或分配方式改變而取得不同位置。若要追蹤實體個體，還要取得可信的裝置身分或平台位置資訊。</p>
 <aside class="example"><strong>換一次快照來想</strong><p>假設另一次配置把卡 A 所在的 Bus 從 03 改為 05，其他相關路徑也已正確調整。原 Function 1 在新快照中就以 <code>0000:05:00.1</code> 被定位，傳統 Requester ID 也成為 <code>0x0501</code>。這是作者用來說明配置結果可能改變的情境，不表示每次開機都會重新編號。</p></aside>
 <p>若要跨開機追蹤實體裝置，就需要另外取得可信的裝置身分或平台位置資訊。Vendor ID、Device ID 描述廠商與裝置類型，不能單獨充當每一件產品的唯一序號。這類長期識別需求與本章的「選定目前哪個 Function」不同，不能用一組 BDF 同時回答。</p>
 <details class="source-note"><summary>規格依據與推論範圍</summary><p>Base 6.0 §2.2.6.2（pp.156–157）說明 Bus／Device Number 的設定、捕獲與執行期間可改變的性質；另外， §7.5.1.1.1–§7.5.1.1.2（p.917）的 Vendor ID／Device ID 定義，也支持上述區分。換成 Bus 05 是教學推演；規格不要求每次開機更改 BDF，也未由這些 ID 保證實體個體的唯一性。</p></details>
 </section>
 
 <section id="practice">
-<h2>8. 換一個條件，你會怎麼查？</h2>
-<details class="question"><summary>題目一：只讀到 Header Type = 0x01，就可以把這個 Function 標成 Switch Downstream Port 嗎？</summary><p>還不行。依 Figure 7-8／Table 7-7，低 7 bits 只確定它採 Type 1 Header。下一步要找到 PCIe Capability，沿 Figure 7-21 到相對 offset 0x02，再依 Figure 7-23／Table 7-19 解碼 Device/Port Type；值為 6 才是本題要辨識的 Switch Downstream Port。Root Port 與 Upstream Port 也使用 Type 1 Header。</p></details>
-<details class="question"><summary>題目二：我只知道 Header Type = 0x80，可以把其他七個 Function 都標成「存在」嗎？</summary><p>不能。Table 7-7 的 bit 7 只允許探查，沒有列出存在的 Function。正確的紀錄是「Type 0 Header；Device 可能含有多個 Function」，再保留各 Function 是否存在的獨立查詢結果。即使只有一個 Function，也可能看到這個 bit 為 1。</p></details>
-<details class="question"><summary>題目三：紀錄只有 Requester ID = 0x0300，能判定是卡 A 的 Function 0 嗎？</summary><p>在本章的傳統格式下，可先還原為 BDF 03:00.0；還缺少 Segment 及這筆紀錄所屬的配置快照。若 Segment 是 0001，就不是圖中的卡 A；若是不同時刻的配置，也不能直接沿用舊圖。先補齊範圍與時間，再對照 Function。</p></details>
-<details class="question"><summary>題目四：圖中的兩條分支都連到 Device 00，是不是把同一個裝置畫了兩次？</summary><p>沒有。卡 A 是 Bus 03 的 Device 00，卡 B 是 Bus 04 的 Device 00；BDF 的 Bus 部分不同。若要沿圖查到卡 B，先由 Type 1 Header 的 Figure 7-14 找到 Secondary／Subordinate 欄位，再使用本例 Downstream B 的 04–04 範圍。不能只拿 Device Number 00 比對。</p></details>
+<h2>8. 串接角色、路徑與識別號</h2>
+<p>串起本章案例：在 Segment 0000 選定目標 03:00.1，沿下游 Bus 範圍走到 A 分支，再以自己的設定資料確認 Function 角色。若它發起要求，傳統 Requester ID 為 0x0301。下面逐項改變條件，說明哪一部分需要重新查證。</p>
+<details open class="question"><summary>只讀到 Header Type = 0x01，就可以把這個 Function 標成 Switch Downstream Port 嗎？</summary><p>還不行。依 Figure 7-8／Table 7-7，低 7 bits 只確定它採 Type 1 Header。下一步要找到 PCIe Capability，沿 Figure 7-21 到相對 offset 0x02，再依 Figure 7-23／Table 7-19 解碼 Device/Port Type；值為 6 才是本題要辨識的 Switch Downstream Port。Root Port 與 Upstream Port 也使用 Type 1 Header。</p></details>
+<details open class="question"><summary>我只知道 Header Type = 0x80，可以把其他七個 Function 都標成「存在」嗎？</summary><p>不能。Table 7-7 的 bit 7 只允許探查，沒有列出存在的 Function。正確的紀錄是「Type 0 Header；Device 可能含有多個 Function」，再保留各 Function 是否存在的獨立查詢結果。即使只有一個 Function，也可能看到這個 bit 為 1。</p></details>
+<details open class="question"><summary>紀錄只有 Requester ID = 0x0300，能判定是卡 A 的 Function 0 嗎？</summary><p>在本章的傳統格式下，可先還原為 BDF 03:00.0；還缺少 Segment 及這筆紀錄所屬的配置快照。若 Segment 是 0001，就不是圖中的卡 A；若是不同時刻的配置，也不能直接沿用舊圖。先補齊範圍與時間，再對照 Function。</p></details>
+<details open class="question"><summary>圖中的兩條分支都連到 Device 00，是不是把同一個裝置畫了兩次？</summary><p>沒有。卡 A 是 Bus 03 的 Device 00，卡 B 是 Bus 04 的 Device 00；BDF 的 Bus 部分不同。若要沿圖查到卡 B，先由 Type 1 Header 的 Figure 7-14 找到 Secondary／Subordinate 欄位，再使用本例 Downstream B 的 04–04 範圍。不能只拿 Device Number 00 比對。</p></details>
 </section>
 
 <section id="next">

@@ -9,7 +9,11 @@ layout: default
     <a class="post-list-title" href="{{ post_url }}">{{ page.title }}</a>
     {% include post_meta.html type="post-card-meta" %}
     <div class="post-excerpt">
-      {{ page.content | markdownify | strip_html | normalize_whitespace | truncatewords: 100 | escape }}<a class="read-more" href="{{ post_url }}">
+      {% if page.spec_teaching %}
+      {{ page.description | default: page.title | escape }}
+      {% else %}
+      {{ page.content | markdownify | strip_html | normalize_whitespace | truncatewords: 100 | escape }}
+      {% endif %}<a class="read-more" href="{{ post_url }}">
         read more</a>
     </div>
   </div>
@@ -24,7 +28,7 @@ layout: default
       </div>
     </div>
     <div class="wrapper">
-      <div class="page-content">
+      <div class="page-content{% if page.spec_teaching %} spec-teaching{% endif %}"{% if page.spec_teaching %} data-spec-series="{{ page.spec_series | default: 'nvme' | escape }}"{% endif %}>
         <div class="header-page">
           <h1 class="page-title">{{ page.title }}</h1>
           {% include post_meta.html type="post-page-meta" %}

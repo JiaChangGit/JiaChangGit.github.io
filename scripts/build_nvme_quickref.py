@@ -8,6 +8,8 @@ import re
 import sys
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from scripts.nvme_quickref_data import load, TOPICS
+from scripts.spec_teaching import specification_badges
+from scripts.spec_terms import explain_terms
 from scripts.nvme_scenario_render import CASES, index_html, cases_html
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -70,10 +72,10 @@ def introduction(lang):
     return '<aside class="qr-note"><p>'+tr('每張原圖都有用途、欄位和判讀例子。例子中的數值用於說明，不代表你的裝置設定；原文另有條件時，依該欄位與命令定義判斷。','Each source figure has a use, field guide and worked interpretation. Example numbers are illustrative, not assumed device settings. Apply the conditions belonging to the field and command.',lang)+'</p><p>'+tr('用瀏覽器「在頁面中尋找」搜尋欄位、FID、LID、CNS 或 Figure。bit／byte 位置沿用原圖：bit 是位元，byte 是 8 bits，Dword 是 4 bytes；index 是第幾筆，offset 是相對起點的偏移，須看當處使用的單位。','Use browser Find for fields, FID, LID, CNS or Figure. Positions follow the source: a byte is 8 bits and a Dword is 4 bytes. An index counts entries; an offset measures displacement from an origin in the specified unit.',lang)+'</p><p>'+tr('FID（Feature Identifier）選擇功能；LID（Log Page Identifier）選擇紀錄頁；CNS（Controller or Namespace Structure）選擇 Identify 回傳的資料結構。','FID (Feature Identifier) selects a feature; LID (Log Page Identifier) selects a log page; CNS (Controller or Namespace Structure) selects the structure returned by Identify.',lang)+'</p></aside>'
 
 def body(topic,lang,standalone=False):
-    out=['<div class="nvme-quickref">',nav(topic,lang,standalone),'<main id="content">']
+    out=['<div class="nvme-quickref spec-teaching" data-spec-series="nvme">',nav(topic,lang,standalone),'<main id="content">',specification_badges()]
     if topic=='index':
         title=tr('NVMe 圖表判讀與情境練習總索引','NVMe Figure Reference and Scenario Index',lang)
-        out+=['<header><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4</p><h1>'+title+'</h1><p class="qr-intro">'+tr('從問題、欄位或圖號，找到需要核對的原始定義。七冊整合 45 道情境練習與 117 張常用圖表，從需求走到查詢介面、欄位與可驗證的結論。每題及每張圖均有固定位置，其他入口直接連回。','Find original definitions by question, field or figure number. Seven volumes combine 45 scenarios with 117 selected figures, connecting requirements to query interfaces, fields and defensible conclusions. Each exercise and figure has one canonical location.',lang)+'</p></header>',introduction(lang),'<section class="qr-series">']
+        out+=['<header><p class="qr-eyebrow">NVMe · BASE 2.4 / NVM 1.3 / TRANSPORT 1.4</p><h1>'+title+'</h1><p class="qr-intro">'+tr('從問題、欄位或圖號，找到需要核對的原始定義。七冊整合 45 道情境練習與 117 張常用圖表，從需求走到查詢介面、欄位與可驗證的結論。每題及每張圖均有固定位置，其他入口直接連回。','Find original definitions by question, field or figure number. Seven volumes combine 45 scenarios with 117 selected figures, connecting requirements to query interfaces, fields and defensible conclusions. Each exercise and figure has one canonical location.',lang)+'</p></header>',introduction(lang),'<section class="qr-series">']
         for i,(slug,zh,en,iz,ie) in enumerate(TOPICS,1):
             count=sum(r['group']==slug for r in REG.values())
             out.append('<article><h2><a href="'+url(slug,lang,standalone)+'">'+f'{i:02d} · '+E(zh if lang=='zh' else en)+'</a></h2><p>'+E(iz if lang=='zh' else ie)+'</p><p class="qr-tags">'+str(count)+tr(' 張原圖',' source figures',lang)+'</p></article>')
@@ -97,17 +99,17 @@ def body(topic,lang,standalone=False):
         out.append('</ol></nav>')
         for i,k in enumerate(keys,1):out.append(render_card(k,i,lang,standalone))
     out+=[source_list(lang),'</main></div>']
-    return title,'\n'.join(out)
+    return title,explain_terms('\n'.join(out),'nvme',lang)
 
 def generated():
-    outputs={};css=(ROOT/'assets/css/nvme-quickref.css').read_text()
+    outputs={};css=(ROOT/'assets/css/nvme-quickref.css').read_text()+'\n'+(ROOT/'assets/css/spec-teaching.css').read_text()
     for topic in ['index']+[t[0] for t in TOPICS]:
         title,content=body(topic,'zh',True)
         outputs[f'DOCS/nvme-quick-reference/{topic}.html']='<!doctype html>\n<html lang="zh-Hant-TW"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>'+E(title)+'</title><style>\n'+css+'\n</style></head><body class="qr-standalone">\n'+content+'\n</body></html>\n'
         for lang in ['zh','en']:
             title,content=body(topic,lang)
             suffix='zh-tw' if lang=='zh' else 'en'
-            front={'layout':'post','title':title,'date':DATE+' 09:00:00 +0800','categories':['nvme'],'tags':['NVMe','Reference'],'permalink':url(topic,lang),'nvme_quickref':True,'last_modified_at':'2026-10-01','lang':'zh-Hant-TW' if lang=='zh' else 'en','description':tr('NVMe 情境練習與圖表速查：查詢路徑、欄位推導、完整解答及 Spec 位置。','NVMe scenarios and source figures: lookup routes, field reasoning, worked answers and precise specification locations.',lang)}
+            front={'layout':'post','title':title,'date':DATE+' 09:00:00 +0800','categories':['nvme'],'tags':['NVMe','Reference'],'permalink':url(topic,lang),'nvme_quickref':True,'spec_teaching':True,'last_modified_at':'2026-10-23','lang':'zh-Hant-TW' if lang=='zh' else 'en','description':tr('NVMe 情境練習與圖表速查：查詢路徑、欄位推導、完整解答及 Spec 位置。','NVMe scenarios and source figures: lookup routes, field reasoning, worked answers and precise specification locations.',lang)}
             header='---\n'+'\n'.join(k+': '+json.dumps(v,ensure_ascii=False) for k,v in front.items())+'\n---\n\n'
             outputs[f'_posts/{DATE}-nvme-figure-reference-{topic}-{suffix}.md']=header+content+'\n'
     return outputs

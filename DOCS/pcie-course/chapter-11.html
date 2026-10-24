@@ -222,9 +222,154 @@
 
 /* Self-contained teaching diagrams use the same theme in standalone pages and posts. */
 .pcie-surface .course-diagram text { fill: var(--ink); font-family: inherit; font-size: 18px; }
+
+/* Applied only to explicitly authorized teaching roots. */
+html .spec-teaching[data-spec-series] .st-terms { margin:.35rem 0 1rem; padding:.5rem .8rem; border-inline-start:3px solid var(--st-accent); background:var(--st-soft); font-size:.88em; color:var(--st-muted); }
+html .spec-teaching[data-spec-series] .st-terms > div { display:flex; flex-wrap:wrap; gap:.2em .7em; }
+html .spec-teaching[data-spec-series] .st-terms dt { font-weight:650; }
+html .spec-teaching[data-spec-series] .st-terms dd { margin:0; flex:1 1 14em; }
+html .spec-teaching[data-spec-series] {
+ --st-diagram-width:900px;
+ --st-paper:#f2f6f8; --st-surface:#fff; --st-ink:#192d40; --st-muted:#4c6479;
+ --st-line:#cbd9e3; --st-accent:#145f9d; --st-soft:#edf5fc;
+ --paper:var(--st-paper); --surface:var(--st-surface); --surface-2:var(--st-soft); --surface-alt:var(--st-soft);
+ --ink:var(--st-ink); --muted:var(--st-muted); --line:var(--st-line);
+ --accent:var(--st-accent); --accent-2:var(--st-accent); --soft:var(--st-soft); --blue-soft:var(--st-soft); --teal-soft:var(--st-soft);
+ --qr-paper:var(--st-paper); --qr-surface:var(--st-surface); --qr-ink:var(--st-ink); --qr-muted:var(--st-muted);
+ --qr-line:var(--st-line); --qr-accent:var(--st-accent); --qr-soft:var(--st-soft);
+ color:var(--st-ink); background:var(--st-paper); font-size:17px; line-height:1.9;
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+}
+html .spec-teaching[data-spec-series="nvme"] { --st-accent:#086b56; --st-soft:#e7f4ee; }
+@media(prefers-color-scheme:dark) {
+ html:not([data-theme="light"]) .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+ html:not([data-theme="light"]) .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+}
+html[data-theme="dark"] .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+html[data-theme="dark"] .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+.spec-teaching * { box-sizing:border-box; }
+.spec-teaching :is(h1,h2,h3,h4,h5,p,li,td,th,summary,strong,figcaption) { color:var(--st-ink); }
+.spec-teaching svg text { font-family:inherit; }
+.spec-teaching h1 { font-size:clamp(1.8rem,3.2vw,2.65rem); line-height:1.4; }
+.spec-teaching h2 { font-size:clamp(1.3rem,2.5vw,1.7rem); line-height:1.55; }
+.spec-teaching h3 { font-size:1.15rem; line-height:1.65; }
+.spec-teaching h4 { font-size:1rem; line-height:1.7; }
+.spec-teaching :is(h1,h2,h3,h4) { overflow-wrap:anywhere; }
+.spec-teaching p { margin:.7rem 0 1.15rem; }
+.spec-teaching :is(a,summary) { text-underline-offset:.2em; }
+.spec-teaching :focus-visible { outline:3px solid var(--st-accent); outline-offset:4px; }
+.spec-teaching :is(.qa-takeaway,.qa-answer-lead,.st-takeaway) { color:var(--st-ink); font-weight:650; font-size:1.06rem; line-height:1.9; }
+.spec-teaching :is(.qa-question,.qr-card,.guided-walk) { border:1px solid var(--st-line); border-radius:12px; background:var(--st-surface); padding:clamp(18px,3vw,30px); margin:1.8rem 0; }
+.spec-teaching :is(.qa-flow,.qr-note,.qr-observations,.st-context,.st-route) { background:var(--st-soft); border-left:4px solid var(--st-accent); padding:1rem 1.2rem; margin:1.4rem 0; }
+.spec-teaching :is(.qr-step,.qa-qid,.st-label) { color:var(--st-accent); font-weight:700; }
+.spec-teaching :is(.qa-citations,.qa-source-links,.qr-case-sources,.walk-source,.st-source) { font-size:.84rem; line-height:1.75; color:var(--st-muted); overflow-wrap:anywhere; }
+.spec-teaching :is(.qr-table,.table-wrap) { overflow-x:auto; margin:1.4rem 0; border-radius:7px; }
+.spec-teaching :is(th,td) { line-height:1.8; vertical-align:top; min-width:120px; }
+.spec-teaching :is(table,td) { background:var(--st-surface); }
+.spec-teaching th { background:var(--st-soft); }
+.spec-teaching .st-step { border-left:3px solid var(--st-line); padding:.6rem 1rem; margin:1.2rem 0; }
+.spec-teaching .st-step:target { border-left-color:var(--st-accent); background:var(--st-soft); }
+.spec-teaching .st-glossary { border:1px solid var(--st-line); padding:.7rem 1rem; margin:1.4rem 0; border-radius:8px; }
+.spec-teaching .st-glossary > summary { min-height:44px; cursor:pointer; }
+.spec-teaching .st-specs { display:flex; flex-wrap:wrap; gap:.4rem 1rem; color:var(--st-muted); font-size:.8rem; line-height:1.8; margin:1rem 0; }
+.spec-teaching .st-specs span { border-bottom:2px solid var(--st-accent); padding:.2rem 0; }
+@media(max-width:620px) { .spec-teaching :is(.qa-question,.qr-card,.guided-walk) { padding:16px; } .spec-teaching .diagram svg { min-width:var(--st-diagram-width); } }
+@media print {
+ .spec-teaching { --st-paper:#fff!important; --st-surface:#fff!important; --st-ink:#000!important; --st-muted:#333!important; --st-line:#999!important; --st-accent:#000!important; --st-soft:#fff!important; }
+ .spec-teaching details > * { display:block!important; }
+ .spec-teaching details::details-content { content-visibility:visible!important; }
+ .spec-teaching .st-step { break-inside:avoid; }
+}
+
+/* Native reading guides: selection highlights; it never hides teaching content.
+   build_pcie_course.py changes .pcie-surface to .pcie-article for the posts. */
+.pcie-surface .guided-walk { margin: 1.8rem 0; padding: 1.2rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); min-width: 0; }
+.pcie-surface .guided-walk > h3 { margin-top: 0; }
+.pcie-surface .walk-help { color: var(--muted); font-size: .85rem; }
+.pcie-surface .walk-order { margin-bottom: 1.1rem; }
+/* Keep native radio semantics and keyboard handling; the associated label is
+   the visible control, so a radio cannot wrap away from its own label. */
+.pcie-surface .walk-choice { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.pcie-surface .walk-label { display: inline-flex; align-items: center; min-height: 44px; padding: .35rem .7rem; margin: .25rem .8rem .25rem 0; border: 2px solid var(--line); border-radius: 8px; cursor: pointer; font-size: .9rem; line-height: 1.5; color: var(--ink); background: var(--surface-alt); }
+.pcie-surface .walk-choice:checked + .walk-label { border-color: var(--accent); background: var(--blue-soft); font-weight: 700; }
+.pcie-surface .walk-choice:focus-visible + .walk-label { outline: 3px solid var(--focus); outline-offset: 3px; }
+.pcie-surface .walk-view { margin-top: 1rem; min-width: 0; }
+.pcie-surface .walk-diagram { margin: 0 0 1.2rem; }
+.pcie-surface .walk-diagram svg { width: 100%; height: auto; display: block; }
+.pcie-surface .walk-diagram svg a { cursor: pointer; }
+.pcie-surface .walk-diagram svg a:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
+.pcie-surface .walk-diagram figcaption { margin-top: .8rem; }
+.pcie-surface .walk-steps { max-width: none; padding-left: 1.6rem; }
+.pcie-surface .walk-step { padding: .6rem .9rem; margin: .7rem 0; border: 2px solid transparent; border-left: 5px solid var(--line); border-radius: 5px; background: var(--surface); }
+.pcie-surface .walk-step h4 { margin: .2rem 0 .5rem; }
+.pcie-surface .walk-condition { font-size: .9rem; color: var(--muted); }
+.pcie-surface .walk-source { border-top: 1px solid var(--line); padding-top: .35rem; color: var(--muted); font-size: .85rem; }
+.pcie-surface .walk-step p:last-child { margin-bottom: .3rem; }
+.pcie-surface .walk-components { border-top: 1px solid var(--line); margin-top: 1.4rem; padding-top: .4rem; }
+.pcie-surface .walk-component-links { display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; list-style: none; padding-left: 0; }
+.pcie-surface .walk-component-links a { min-height: 44px; min-width: 44px; }
+.pcie-surface .walk-component { padding: .7rem 1rem; margin: 1rem 0; border: 1px solid var(--line); border-radius: 8px; }
+.pcie-surface .walk-component > h4 { margin-top: .2rem; }
+.pcie-surface .walk-component:target { outline: 3px solid var(--accent-2); outline-offset: 3px; }
+.pcie-surface .walk-component details { margin-bottom: .3rem; }
+
+.pcie-surface .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-step[data-walk-step="1"],
+.pcie-surface .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-step[data-walk-step="2"],
+.pcie-surface .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-step[data-walk-step="3"],
+.pcie-surface .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-step[data-walk-step="4"],
+.pcie-surface .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-step[data-walk-step="5"],
+.pcie-surface .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-step[data-walk-step="6"],
+.pcie-surface .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-step[data-walk-step="7"],
+.pcie-surface .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-step[data-walk-step="8"] { border-color: var(--accent); background: var(--blue-soft); }
+
+.pcie-surface .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-node[data-walk-steps~="1"],
+.pcie-surface .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-node[data-walk-steps~="2"],
+.pcie-surface .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-node[data-walk-steps~="3"],
+.pcie-surface .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-node[data-walk-steps~="4"],
+.pcie-surface .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-node[data-walk-steps~="5"],
+.pcie-surface .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-node[data-walk-steps~="6"],
+.pcie-surface .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-node[data-walk-steps~="7"],
+.pcie-surface .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-node[data-walk-steps~="8"] { --walk-active-weight: 750; }
+.pcie-surface .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-node[data-walk-steps~="1"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-node[data-walk-steps~="2"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-node[data-walk-steps~="3"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-node[data-walk-steps~="4"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-node[data-walk-steps~="5"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-node[data-walk-steps~="6"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-node[data-walk-steps~="7"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-node[data-walk-steps~="8"] > :is(rect, circle, ellipse, polygon, path, line, polyline) { stroke: var(--accent); stroke-width: 3.5px; vector-effect: non-scaling-stroke; }
+.pcie-surface .walk-node text { font-weight: var(--walk-active-weight, inherit); }
+
+@media (max-width: 620px) {
+  .pcie-surface .guided-walk { padding: .8rem; }
+  .pcie-surface .walk-label { margin-right: .45rem; padding-left: .45rem; padding-right: .45rem; }
+  .pcie-surface .walk-steps { padding-left: 1.15rem; }
+  .pcie-surface .walk-step { padding: .5rem .6rem; }
+  .pcie-surface .walk-diagram { overflow-x: auto; }
+  .pcie-surface .walk-diagram svg { min-width: var(--st-diagram-width, 700px); }
+}
+@media (forced-colors: active) {
+  .pcie-surface .walk-choice:checked + .walk-label { border-color: Highlight; }
+  .pcie-surface .walk-step { border-color: CanvasText; }
+}
+@media print {
+  .pcie-surface .guided-walk { border: 1px solid #999; padding: .7rem; break-inside: auto; }
+  .pcie-surface .walk-choice, .pcie-surface .walk-label, .pcie-surface .walk-help { display: none; }
+  .pcie-surface .walk-step { display: list-item !important; border-color: #999 !important; background: transparent !important; }
+  .pcie-surface .walk-node { --walk-active-weight: 500 !important; }
+  .pcie-surface .walk-node > :is(rect, circle, ellipse, polygon, path, line, polyline) { stroke: #333 !important; stroke-width: 1.5px !important; }
+  .pcie-surface .walk-diagram { overflow: visible; }
+  .pcie-surface .walk-diagram svg { min-width: 0; }
+  .pcie-surface .walk-component details > * { display: block !important; }
+  .pcie-surface .walk-component details::details-content { content-visibility: visible !important; }
+}
+
+/* SVG text follows the selected reading theme. */
+.pcie-surface svg text { fill: var(--ink); }
+.pcie-surface .walk-summary { margin: 1rem 0 1.5rem; }
   </style>
 </head>
-<body class="pcie-surface">
+<body class="pcie-surface spec-teaching" data-spec-series="pcie">
   <a class="skip-link" href="#content">跳到正文</a>
   <div class="site-shell">
     <nav class="topbar" aria-label="課程導覽">
@@ -235,22 +380,52 @@
       <p class="eyebrow">PCIe · 系統與規格閱讀 / CHAPTER 11</p>
       <h1>熱插拔與拓樸變動</h1>
       <p class="header-description">從插槽能力、事件通知與插入時序，判讀熱插拔的資源與移除條件。</p>
-      <div class="edition"><span>繁體中文 · 規格與情境推演</span><span>2026-10-21</span></div>
+      <div class="edition"><span>繁體中文 · 規格與情境推演</span><span>2026-10-23</span></div>
     </header>
     <div class="reading-layout">
       <aside class="toc-panel" aria-label="本頁目錄">
         <p class="toc-label">本章閱讀路徑</p>
-        <nav aria-label="章節段落"><ol><li><a href="#overview">1. 有插槽，就一定能在運作中拔插嗎？</a></li><li><a href="#slot">2. 如果要查這個插槽能做什麼，依序看哪幾張圖？</a></li><li><a href="#events">3. Presence=1 與 Presence Changed=1，有什麼差別？</a></li><li><a href="#sequence">4. 寫入 Power On 後，什麼時候可以開始枚舉？</a></li><li><a href="#resources">5. Link 已起來，為什麼新裝置仍可能不能使用？</a></li><li><a href="#remove">6. 有秩序移除與突然消失，處理方式差在哪裡？</a></li><li><a href="#questions">7. 換一個情境，還能判斷嗎？</a></li></ol></nav>
+        <nav aria-label="章節段落"><ol><li><a href="#overview">1. 有插槽，就一定能在運作中拔插嗎？</a></li><li><a href="#slot">2. 如果要查這個插槽能做什麼，依序看哪幾張圖？</a></li><li><a href="#events">3. Presence=1 與 Presence Changed=1，有什麼差別？</a></li><li><a href="#sequence">4. 寫入 Power On 後，什麼時候可以開始枚舉？</a></li><li><a href="#resources">5. Link 已起來，為什麼新裝置仍可能不能使用？</a></li><li><a href="#remove">6. 有秩序移除與突然消失，處理方式差在哪裡？</a></li><li><a href="#questions">7. 把插入與移除流程接起來</a></li></ol></nav>
       </aside>
       <main id="content" tabindex="-1">
         <article class="lesson">
-<p class="lead">裝置插入後，系統不只要發現它，還要確認供電、Link、設定存取與位址資源都已準備好。裝置移除時則反過來：先讓軟體停止使用，才有機會有秩序地收回資源。本章從插槽的一組讀值出發，把這些步驟接起來。</p>
+<!-- pcie-walk: walks/chapter11-overview.json -->
+<div class="guided-walk" id="ch11-overview" role="group" aria-labelledby="ch11-overview-title" data-walk-version="1">
+<h3 id="ch11-overview-title">把插入事件接到可使用的裝置</h3>
+<p class="walk-help" id="ch11-overview-help">選擇步驟後，圖中對應的元件與下方解說會加上重點標示。完整圖與所有解說會持續顯示；也可用方向鍵切換步驟。</p>
+<div class="walk-order"><p>由上往下看本章的有管理插入路徑；是否具有 Power Controller 與哪些通知能力，先由插槽欄位決定。</p></div>
+<input class="walk-choice" type="radio" name="ch11-overview-step" id="ch11-overview-choice-1" value="1" data-walk-step="1" aria-describedby="ch11-overview-help" aria-controls="ch11-overview-view ch11-overview-step-1" checked="checked">
+<label class="walk-label" for="ch11-overview-choice-1">1. 先找到負責這個插槽的 Port</label>
+<input class="walk-choice" type="radio" name="ch11-overview-step" id="ch11-overview-choice-2" value="2" data-walk-step="2" aria-describedby="ch11-overview-help" aria-controls="ch11-overview-view ch11-overview-step-2">
+<label class="walk-label" for="ch11-overview-choice-2">2. 把目前狀態和事件分開讀</label>
+<input class="walk-choice" type="radio" name="ch11-overview-step" id="ch11-overview-choice-3" value="3" data-walk-step="3" aria-describedby="ch11-overview-help" aria-controls="ch11-overview-view ch11-overview-step-3">
+<label class="walk-label" for="ch11-overview-choice-3">3. 完成供電與可存取條件</label>
+<input class="walk-choice" type="radio" name="ch11-overview-step" id="ch11-overview-choice-4" value="4" data-walk-step="4" aria-describedby="ch11-overview-help" aria-controls="ch11-overview-view ch11-overview-step-4">
+<label class="walk-label" for="ch11-overview-choice-4">4. 找到 Function，配置資源後再使用</label>
+<div class="walk-view" id="ch11-overview-view">
+<figure class="diagram walk-diagram">
+<svg viewBox="0 0 900 500" role="img" aria-labelledby="ch11-guide-title ch11-guide-desc"><title id="ch11-guide-title">管理軟體先處理插入事件與供電，再等待適用的 Reset、Link 條件，最後枚舉與配置新 Function。</title><desc id="ch11-guide-desc">管理軟體先處理插入事件與供電，再等待適用的 Reset、Link 條件，最後枚舉與配置新 Function。</desc><g data-walk-target="software" class="walk-node" data-walk-steps="2 4"><rect x="25" y="15" width="260" height="60" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="155.0" y="40" text-anchor="middle" font-size="15">Hot-Plug 管理軟體</text></g><a href="#ch11-overview-component-slot" aria-label="Port／插槽控制"><g data-walk-target="slot" class="walk-node" data-walk-steps="1"><rect x="320" y="15" width="260" height="60" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="450.0" y="40" text-anchor="middle" font-size="15">Port／插槽控制</text></g></a><g data-walk-target="function" class="walk-node" data-walk-steps="3 4"><rect x="615" y="15" width="260" height="60" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="745.0" y="40" text-anchor="middle" font-size="15">新加入的 Function</text></g><g data-walk-target="sl" class="walk-node" data-walk-steps="2"><path d="M155 75 L155 475" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="6 5" /></g><g data-walk-target="cl" class="walk-node" data-walk-steps="1"><path d="M450 75 L450 475" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="6 5" /></g><g data-walk-target="fl" class="walk-node" data-walk-steps="3"><path d="M745 75 L745 475" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="6 5" /></g><g data-walk-target="presence" class="walk-node" data-walk-steps="2"><path d="M450 135 L155 135" fill="none" stroke="var(--accent)" stroke-width="2" /><polygon points="155.0,135.0 165.0,140.0 165.0,130.0" fill="var(--accent)" /><text x="302.5" y="126.0" text-anchor="middle" font-size="13">Presence／事件通知 ←</text></g><g data-walk-target="power" class="walk-node" data-walk-steps="3"><path d="M155 225 L450 225" fill="none" stroke="var(--accent)" stroke-width="2" /><polygon points="450.0,225.0 440.0,220.0 440.0,230.0" fill="var(--accent)" /><text x="302.5" y="216.0" text-anchor="middle" font-size="13">依能力控制供電 →</text></g><g data-walk-target="ready" class="walk-node" data-walk-steps="3"><path d="M450 320 L745 320" fill="none" stroke="var(--accent)" stroke-width="2" /><polygon points="745.0,320.0 735.0,315.0 735.0,325.0" fill="var(--accent)" /><text x="597.5" y="311.0" text-anchor="middle" font-size="13">依序確認電源、Reset 與 Link</text></g><g data-walk-target="configure" class="walk-node" data-walk-steps="4"><path d="M155 415 L745 415" fill="none" stroke="var(--accent)" stroke-width="2" /><polygon points="745.0,415.0 735.0,410.0 735.0,420.0" fill="var(--accent)" /><text x="450.0" y="406.0" text-anchor="middle" font-size="13">完成等待後枚舉、配置並交給驅動</text></g></svg>
+<figcaption><p>作者的插入流程示意。控制操作完成、Link 可用與裝置已配置是沿途不同的條件。</p></figcaption></figure>
+<div class="walk-summary"><p class="lead">熱插拔把實體插入、供電、Link 建立與軟體配置接成一個受管理的過程。讀到插入狀態後，管理軟體還要依插槽能力完成後續準備。</p><p>前情提要：Chapter 3／4 的枚舉與資源配置會在新裝置加入時再次用到；Chapter 8／9 提供連線與重設後等待條件。</p><p><strong>規格路線：</strong>Slot Implemented／Hot-Plug 能力 → Figures 7-30–7-32 的能力、控制、狀態 → §6.7.3 的操作與通知 → 枚舉及資源。</p></div>
+<ol class="walk-steps">
+<li class="walk-step" id="ch11-overview-step-1" data-walk-step="1" data-walk-targets="slot cl"><h4>先找到負責這個插槽的 Port</h4><div class="walk-condition"><p>實體連接器不直接代表具備標準 Hot-Plug 管理能力；本章以有管理的 PCIe 插槽為例。</p></div><div class="walk-explanation"><p>查 Slot Implemented 與 Hot-Plug 相關能力，確認本章的欄位適用，再定位 Slot Capabilities、Control、Status。</p></div><div class="walk-source" data-source-claims="PCIE-CH11-ELEMENTS-001"><p>Base 6.0 §6.7／Table 6-7，pp.727–728；Figure 7-23／Table 7-19，pp.953–954。</p></div></li>
+<li class="walk-step" id="ch11-overview-step-2" data-walk-step="2" data-walk-targets="presence software sl"><h4>把目前狀態和事件分開讀</h4><div class="walk-condition"><p>事件狀態與目前狀態各有用途；Command Completed 也有自己的支援及通知規則。</p></div><div class="walk-explanation"><p>Presence Detect State 表示目前偵測狀態；Presence Detect Changed 表示變動事件。軟體保存事件，再依 Enable 與通知方式接手。</p></div><div class="walk-source" data-source-claims="PCIE-CH11-FIELDS-001 PCIE-CH11-EVENTS-001"><p>Base 6.0 Figures 7-30–7-32／Tables 7-27–7-29，pp.980–986；§6.7.3.1／§6.7.3.4，pp.735–737。</p></div></li>
+<li class="walk-step" id="ch11-overview-step-3" data-walk-step="3" data-walk-targets="power ready function fl"><h4>完成供電與可存取條件</h4><div class="walk-condition"><p>本文會區分控制完成及 Link／Reset 後等待的起算點；支援能力不相同時，流程須依相應規則調整。</p></div><div class="walk-explanation"><p>依插槽能力控制供電，再等待適用的電源、Reset 與 Link 條件。通知某次控制操作完成後，仍繼續檢查裝置存取條件。</p></div><div class="walk-source" data-source-claims="PCIE-CH11-TIMING-001 PCIE-CH11-EXAMPLE-001"><p>Base 6.0 §6.7.3.2–§6.7.3.3，pp.735–736；§6.6.1，pp.721–723。</p></div></li>
+<li class="walk-step" id="ch11-overview-step-4" data-walk-step="4" data-walk-targets="configure function software"><h4>找到 Function，配置資源後再使用</h4><div class="walk-condition"><p>新裝置仍可能遇到 Bus 或位址資源不足；突然消失另依錯誤及隔離條件處理。</p></div><div class="walk-explanation"><p>走回枚舉與 BAR／Bridge Window 配置，確認可用資源後再交給驅動程式。有秩序移除則先停止使用，再處理實體離開。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>BAR</dt><dd>Base Address Register，基底位址暫存器</dd></div></dl></div><div class="walk-source" data-source-claims="PCIE-CH11-PLATFORM-001 PCIE-CH11-ASYNC-001"><p>Firmware 3.3 §3.5、§4.3.2、§4.5.1，pp.34–37、46–49、53；Base 6.0 §6.7、§6.2.11，pp.727、694–697。</p></div></li>
+</ol></div>
+<div class="walk-components"><h4>圖中元件</h4><ul class="walk-component-links">
+<li><a href="#ch11-overview-component-slot">Port／插槽控制</a></li>
+</ul>
+<section class="walk-component" id="ch11-overview-component-slot" data-component-target="slot"><h4>Port／插槽控制</h4><div class="walk-component-action"><p>本例由這個 Port 的 Slot 欄位提供插槽能力、控制與狀態。</p></div><details><summary>基本責任</summary><p>Presence、事件狀態、供電控制與通知各有欄位，不以其中一項代替全部準備條件。</p></details></section>
+</div>
+</div>
+<!-- /pcie-walk -->
 <aside class="note"><strong>版本與案例邊界</strong><p>硬體行為依 PCI Express Base 6.0，控制權與韌體交接依 PCI Firmware 3.3。兩份規格的版次分開使用。本章所有讀值、時間與資源配置都是作者假設；延用 02:01.0 → 03:00.0 的位置，但另設一個具備 Hot-Plug 的插槽案例。假設 OS 已取得原生 Hot-Plug 控制權，沒有 SFI 介入，採一般有秩序插入流程，也不使用提早就緒通知。</p></aside>
 <section id="overview"><h2>1. 有插槽，就一定能在運作中拔插嗎？</h2>
 <p>不一定。PCIe 的 Native Hot-Plug 定義了一組可搭配使用的機制；按鈕、指示燈、電源控制器、固定扣具與偵測器是否存在，還要看實際 form factor。Base 規格不替所有連接器指定相同的拔插方式。</p>
 <div class="table-wrap"><table><caption>插槽相關資訊各自回答什麼</caption><thead><tr><th scope="col">資訊</th><th scope="col">能回答的問題</th><th scope="col">還不能下的結論</th></tr></thead><tbody>
 <tr><td>Slot Implemented</td><td>這個 Downstream Port 是否連接插槽？</td><td>不表示支援 Hot-Plug。</td></tr><tr><td>Hot-Plug Capable</td><td>插槽是否具備 Hot-Plug 能力？</td><td>不表示 OS 已取得控制權。</td></tr><tr><td>Presence Detect State</td><td>目前的存在偵測結果為何？</td><td>不表示 Link 已可傳輸。</td></tr><tr><td>Data Link Layer Link Active</td><td>Data Link 是否已進入可運作狀態？</td><td>不表示裝置已枚舉、取得 BAR 資源或完成驅動初始化。</td></tr>
-</tbody></table></div>
+</tbody></table><dl class="st-terms" aria-label="本段名詞"><div><dt>BAR</dt><dd>Base Address Register，基底位址暫存器</dd></div></dl></div>
 <p>OS 與韌體之間的管理權由 <a href="chapter-13.html#osc">Chapter 13 的 _OSC 協調</a>說明。這裡先接受「OS 有權管理此插槽」的前提，專心觀察硬體如何回報。</p>
 <details class="source-note"><summary>先讀機制範圍，再看能力欄位</summary><p>Base 6.0 §6.7–§6.7.1、Table 6-7（pp.727–728）；§7.5.3.2、Table 7-19（pp.953–954）；Figures 7-30–7-32、Tables 7-27–7-29（pp.980–986）。PCI Firmware 3.3 §4.5.1、Table 4-6（pp.48–53）規定控制權；授權本身不證明每個插槽的硬體能力。</p></details></section>
 <section id="slot"><h2>2. 如果要查這個插槽能做什麼，依序看哪幾張圖？</h2>
@@ -261,12 +436,12 @@
 <p><code>(0x0162 &gt;&gt; 4) &amp; 0xF = 6</code> 表示 Switch Downstream Port；bit 8=1 才讓插槽欄位具有本節所需的意義。若 Slot Implemented=0，不能繼續把整個 Slot Register 區都當成有效插槽資料；Data Link Layer State Changed 等欄位另有明確例外。</p>
 <p>Slot Capabilities 的 bits 0–4 都是 1：Attention Button、Power Controller、MRL Sensor、Attention Indicator、Power Indicator 均存在。MRL 是 Manually-operated Retention Latch，也就是手動固定扣具。bit 6=1 表示 Hot-Plug Capable；bit 18=0 表示支援 Command Completed 通知。<code>0x002825DF &gt;&gt; 19 = 5</code> 是實體插槽編號，不是 Device Number。</p>
 <p>功率欄位也要分開算：Value=<code>(0x002825DF &gt;&gt; 7) &amp; 0xFF = 75</code>，Scale=0，因此本例上限為 75 W。這是插槽所提供的上限資訊，不是裝置當下量到的耗電量。本例沒有使用 Value 大於 0xEF 時的特殊編碼。</p>
-<p>Hot-Plug Surprise bit 5=0。本例只示範有秩序流程；不能由此推斷其他平台完全無法處理非同步移除。Base 6.0 已不建議以舊 HPS 機制支援 async hot-plug，而建議使用 DPC。若有 SFI，讀到的 HPS 還可能受 SFI HPS Suppress 影響。</p>
+<p>Hot-Plug Surprise bit 5=0。本例只示範有秩序流程；不能由此推斷其他平台完全無法處理非同步移除。Base 6.0 已不建議以舊 HPS 機制支援 async hot-plug，而建議使用 DPC。若有 SFI，讀到的 HPS 還可能受 SFI HPS Suppress 影響。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>DPC</dt><dd>Downstream Port Containment，下游連接埠錯誤隔離</dd></div></dl>
 <details class="source-note"><summary>能力查詢路徑</summary><p>Figure 7-23／Table 7-19（pp.953–954）→ Figure 7-30／Table 7-27（pp.980–982）→ Figure 7-31／Table 7-28（pp.982–984）→ Figure 7-32／Table 7-29（pp.985–986）。HPS 的版次提醒見 §6.7.6（pp.741–742）；SFI 對 HPS 的影響見 Table 7-27（p.980）。</p></details></section>
 <section id="events"><h2>3. Presence=1 與 Presence Changed=1，有什麼差別？</h2>
 <p>0x0048 的 bit 6 是目前狀態，bit 3 是待處理事件。前者說「現在偵測到裝置」，後者說「存在狀態曾經改變」。事件 bit 不記錄變化次數，也不保存每次變化方向；同類 Slot Event 尚未清除時，後續同類事件會被忽略。因此軟體不能把 Changed=1 解成「剛好插入一次」。</p>
 <p>本例有主電源控制器，也有符合 form factor 的 out-of-band presence detect，因此主電源關閉時仍能偵測插入。一般而言，In-Band PD Disable=0 時 Presence Detect State 是 in-band 與適用 out-of-band 偵測的 OR；in-band 偵測需要裝置已有供電。若兩種偵測來源不同步，只看這一個 bit 不能還原完整的物理過程。</p>
-<p>通知又是另一層。Slot Control=0x17F8 開啟 PDC Enable bit 3、Command Completed Interrupt Enable bit 4、Hot-Plug Interrupt Enable bit 5，以及 Data Link Layer State Changed Enable bit 12。存在事件 bit 可以在通知停用時設起來；而要收到中斷，還必須符合所選 INTx 或 MSI／MSI-X 機制的條件。</p>
+<p>通知又是另一層。Slot Control=0x17F8 開啟 PDC Enable bit 3、Command Completed Interrupt Enable bit 4、Hot-Plug Interrupt Enable bit 5，以及 Data Link Layer State Changed Enable bit 12。存在事件 bit 可以在通知停用時設起來；而要收到中斷，還必須符合所選 INTx 或 MSI／MSI-X 機制的條件。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>MSI</dt><dd>Message Signaled Interrupt，訊息中斷</dd></div><div><dt>MSI-X</dt><dd>Message Signaled Interrupts Extension，表格式訊息中斷</dd></div></dl>
 <div class="table-wrap"><table><caption>三個事件快照與精確清除值</caption><thead><tr><th scope="col">已保存的 Slot Status</th><th scope="col">這次要處理的事件</th><th scope="col">向 0x8A 寫入的 16-bit 值</th><th scope="col">沒有新事件時的後續讀值</th></tr></thead><tbody>
 <tr><td>0x0048</td><td>Presence Detect Changed</td><td>0x0008</td><td>0x0040</td></tr><tr><td>0x0050</td><td>Command Completed</td><td>0x0010</td><td>0x0040</td></tr><tr><td>0x0140</td><td>Data Link Layer State Changed</td><td>0x0100</td><td>0x0040</td></tr>
 </tbody></table></div>
@@ -287,9 +462,9 @@
 <details class="source-note"><summary>資源範圍與推演邊界</summary><p>PCI Firmware 3.3 §3.5（pp.34–37）、§4.3.2（p.47）說明 Host Bridge 資源及 OS 配置邊界；Bridge/BAR 欄位沿用 Chapter 4 的來源。本例剩餘空間與容量比較是作者推演，不是規格指定的保留大小或重新配置演算法。</p></details></section>
 <section id="remove"><h2>6. 有秩序移除與突然消失，處理方式差在哪裡？</h2>
 <div class="table-wrap"><table><caption>依移除前是否有協調機會，選擇處理路線</caption><thead><tr><th scope="col">情況</th><th scope="col">軟體需要處理的事情</th><th scope="col">不能省略的判斷</th></tr></thead><tbody><tr><td>Orderly removal</td><td>停止新工作，與使用此裝置的軟體協調；依裝置協定處理在途工作，再完成適用的供電、指示燈及移除流程。</td><td>清 BME 不能證明所有既有傳輸或應用工作已完成；還要有裝置與軟體層的完成證據。</td></tr><tr><td>Async／surprise removal</td><td>裝置可能已無法存取；處理失效的軟體狀態與未完成工作，並依平台機制隔離、移除或恢復。</td><td>不能靠再讀已消失裝置的欄位，補出從未取得的完成保證。</td></tr></tbody></table></div>
-<p>上表的工作協調是作者整理的系統流程；各類裝置如何停止佇列、保存資料或取消工作，超出 PCIe Base 的通用定義。DPC 可切斷受影響的下游流量，減少錯誤擴散，但不會替應用程式判定哪些工作已成功。下一章會從 DPC Status 與 AER 紀錄確認實際發生的事。</p>
+<p>上表的工作協調是作者整理的系統流程；各類裝置如何停止佇列、保存資料或取消工作，超出 PCIe Base 的通用定義。DPC 可切斷受影響的下游流量，減少錯誤擴散，但不會替應用程式判定哪些工作已成功。下一章會從 DPC Status 與 AER 紀錄確認實際發生的事。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>DPC</dt><dd>Downstream Port Containment，下游連接埠錯誤隔離</dd></div><div><dt>AER</dt><dd>Advanced Error Reporting，進階錯誤回報</dd></div></dl>
 <details class="source-note"><summary>移除模式與隔離</summary><p>§6.7（p.727）、§6.7.6（pp.741–742）區分 orderly 與 async；§6.2.11（pp.694–697）說明 DPC。請接著讀 <a href="chapter-12.html#dpc">Chapter 12：DPC</a>；BME 與尚未完成交易的界線見 Chapter 6、Chapter 9。</p></details></section>
-<section id="questions"><h2>7. 換一個情境，還能判斷嗎？</h2><details class="question"><summary>Presence Changed=1，但 Presence=0，是否能說從未插入過裝置？</summary><p>不能。前者保留事件，後者是目前狀態；中間可能有多次變動。應以當前狀態決定處理方向，不能把單一事件 bit 當成歷史清單。依據：§6.7.3.1、Table 7-29。</p></details><details class="question"><summary>控制權已授予 OS、Link 也 Active，還差哪種證據才能開始裝置工作？</summary><p>至少還要通過首次設定存取的等待條件、完成枚舉與資源配置，並完成驅動要求的初始化。每一步回答的問題不同，不能用 Active 取代。依據：§6.7.3.3、PCI Firmware 3.3 §3.5。</p></details><details class="question"><summary>Command Completed=1 後又讀到 Power Fault，哪個紀錄優先相信？</summary><p>兩者不矛盾。前者說明命令介面可接受下一個命令；後者記錄電源故障。必須處理故障並重新確認硬體狀態，不能用命令完成覆蓋掉故障證據。依據：Table 7-28、Table 7-29。</p></details></section>
+<section id="questions"><h2>7. 把插入與移除流程接起來</h2><details open class="question"><summary>Presence Changed=1，但 Presence=0，是否能說從未插入過裝置？</summary><p>不能。前者保留事件，後者是目前狀態；中間可能有多次變動。應以當前狀態決定處理方向，不能把單一事件 bit 當成歷史清單。依據：§6.7.3.1、Table 7-29。</p></details><details open class="question"><summary>控制權已授予 OS、Link 也 Active，還差哪種證據才能開始裝置工作？</summary><p>至少還要通過首次設定存取的等待條件、完成枚舉與資源配置，並完成驅動要求的初始化。每一步回答的問題不同，不能用 Active 取代。依據：§6.7.3.3、PCI Firmware 3.3 §3.5。</p></details><details open class="question"><summary>Command Completed=1 後又讀到 Power Fault，哪個紀錄優先相信？</summary><p>兩者不矛盾。前者說明命令介面可接受下一個命令；後者記錄電源故障。必須處理故障並重新確認硬體狀態，不能用命令完成覆蓋掉故障證據。依據：Table 7-28、Table 7-29。</p></details></section>
         </article>
         <nav class="bottom-nav" aria-label="下一步"><a href="index.html">課程總覽</a><a href="chapter-10.html">← Chapter 10</a><a href="chapter-12.html">Chapter 12 →</a><a href="#content">回到本章開頭 ↑</a></nav>
       </main>

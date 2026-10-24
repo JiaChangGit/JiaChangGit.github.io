@@ -1,0 +1,77 @@
+{
+  "title": "沿一次回報保存錯誤證據",
+  "summary_html": "<p class=\"lead\">AER（Advanced Error Reporting，進階錯誤回報）提供錯誤狀態、回報控制及相關紀錄。本章先走正常的錯誤回報路徑，再解釋遮罩與 DPC 隔離如何改變軟體看到的資訊。</p><p>前情提要：Chapter 5 的交易識別用來解讀有效的 Header Log；Chapter 7 的通知概念用來理解 Root 端如何把事件交給軟體。</p><p><strong>規格路線：</strong>Figure 6-1 的分類 → Status／Mask／Severity → Figure 6-3 的回報路徑 → Root 紀錄 → 保存與清除 → DPC 分支。</p>",
+  "svg": "<svg viewBox=\"0 0 900 500\" role=\"img\" aria-labelledby=\"ch12-guide-title ch12-guide-desc\"><title id=\"ch12-guide-title\">來源記錄狀態，符合條件時向 Root 回報；軟體先保存有效證據，再依規則清除。</title><desc id=\"ch12-guide-desc\">來源記錄狀態，符合條件時向 Root 回報；軟體先保存有效證據，再依規則清除。</desc><g data-walk-target=\"status\"><rect x=\"30\" y=\"20\" width=\"360\" height=\"70\" rx=\"9\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"210.0\" y=\"45\" text-anchor=\"middle\" font-size=\"15\">來源 Function：記錄錯誤狀態</text></g><g data-walk-target=\"control\"><rect x=\"30\" y=\"170\" width=\"360\" height=\"75\" rx=\"9\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"210.0\" y=\"195\" text-anchor=\"middle\" font-size=\"15\">個別 Mask、Severity</text><text x=\"210.0\" y=\"218\" text-anchor=\"middle\" font-size=\"15\">及適用回報控制</text></g><g data-walk-target=\"record\"><path d=\"M210 90 L210 170\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2\"/><polygon points=\"210.0,170.0 215.0,160.0 205.0,160.0\" fill=\"var(--accent)\"/></g><g data-walk-target=\"root\"><rect x=\"510\" y=\"170\" width=\"360\" height=\"75\" rx=\"9\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"690.0\" y=\"195\" text-anchor=\"middle\" font-size=\"15\">Root：通知與來源紀錄</text></g><g data-walk-target=\"message\"><path d=\"M390 210 L510 210\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2\"/><polygon points=\"510.0,210.0 500.0,205.0 500.0,215.0\" fill=\"var(--accent)\"/><text x=\"450.0\" y=\"201.0\" text-anchor=\"middle\" font-size=\"13\">Error Message →</text></g><g data-walk-target=\"save\"><rect x=\"510\" y=\"355\" width=\"360\" height=\"85\" rx=\"9\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"690.0\" y=\"380\" text-anchor=\"middle\" font-size=\"15\">軟體保存兩端證據</text><text x=\"690.0\" y=\"403\" text-anchor=\"middle\" font-size=\"15\">核對有效性與事件關聯</text></g><g data-walk-target=\"notify\"><path d=\"M690 245 L690 355\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2\"/><polygon points=\"690.0,355.0 695.0,345.0 685.0,345.0\" fill=\"var(--accent)\"/></g><g data-walk-target=\"masked\"><rect x=\"30\" y=\"355\" width=\"360\" height=\"85\" rx=\"9\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"210.0\" y=\"380\" text-anchor=\"middle\" font-size=\"15\">狀態可保留，但本次不送訊息</text><text x=\"210.0\" y=\"403\" text-anchor=\"middle\" font-size=\"15\">Log 是否更新依各自規則</text></g><g data-walk-target=\"mask-path\"><path d=\"M210 245 L210 355\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2\"/><polygon points=\"210.0,355.0 215.0,345.0 205.0,345.0\" fill=\"var(--accent)\"/><text x=\"210.0\" y=\"291.0\" text-anchor=\"middle\" font-size=\"13\">本例被 Mask 的錯誤</text></g></svg>",
+  "order_html": "<p>先走左上到右下的正常回報路徑，再看下方遮罩分支。DPC（Downstream Port Containment，下游連接埠隔離）在後文另行放大，不把兩條路徑畫成連續操作。</p>",
+  "caption_html": "<p>作者依本章案例繪製的證據關係圖。訊息來源識別與實體故障原因需依其他證據繼續判讀。</p>",
+  "steps": [
+    {
+      "title": "先核對結構版本及錯誤類別",
+      "html": "<p>確認 AER Extended Capability 的版本與欄位布局，再依錯誤類型讀相關 Status。</p>",
+      "targets": [
+        "status",
+        "record"
+      ],
+      "condition_html": "<p>本章的主要算例使用非 Flit、無 Prefix 的條件；不能因 Base 版本較新而改套別種 Capability 布局。</p>",
+      "source_html": "<p>Base 6.0 §6.2.1–§6.2.3／Figure 6-1，pp.669–673；Figure 7-154／Table 7-134，p.1112。</p>",
+      "claim_ids": [
+        "PCIE-CH12-CLASSIFICATION-001",
+        "PCIE-CH12-MASK-001"
+      ]
+    },
+    {
+      "title": "沿控制條件判斷這次回報",
+      "html": "<p>在本例中依 Status、個別 Mask、Severity 與回報 Enable 追蹤訊息。被遮罩的狀態仍有自己的保存規則。</p>",
+      "targets": [
+        "control",
+        "message",
+        "masked",
+        "mask-path"
+      ],
+      "condition_html": "<p>這是本章特定錯誤案例的回報路徑；Unsupported Request、Advisory Non-Fatal 等另有規則。</p>",
+      "source_html": "<p>Base 6.0 §6.2.3.2.2、§6.2.6／Figure 6-3，pp.673、685；Figures 7-155–7-157，pp.1113–1117。</p>",
+      "claim_ids": [
+        "PCIE-CH12-MASK-001"
+      ]
+    },
+    {
+      "title": "把來源端與 Root 紀錄配起來",
+      "html": "<p>保存 Root Error Status／Source ID，再回到來源 Function 的 Status 與有效紀錄；用 First Error Pointer 等欄位確認關聯。</p>",
+      "targets": [
+        "root",
+        "save",
+        "status",
+        "notify"
+      ],
+      "condition_html": "<p>回報的 Requester ID 是定位線索；只有 Log 非零，尚不足以確認它屬於這次事件。</p>",
+      "source_html": "<p>Base 6.0 §7.8.4.7–§7.8.4.11／Figures 7-160–7-164，pp.1121–1127。</p>",
+      "claim_ids": [
+        "PCIE-CH12-LOG-001",
+        "PCIE-CH12-ROOT-001"
+      ]
+    },
+    {
+      "title": "先保存，再處理清除與隔離分支",
+      "html": "<p>保存相關狀態、Header Log、控制值及時間資訊，再依 RW1C 等存取規則清除已處理狀態。接著比較啟用 DPC 時的不同觀察。</p>",
+      "targets": [
+        "save",
+        "root"
+      ],
+      "condition_html": "<p>RW1C 表示讀取可得值、寫 1 清除相應狀態；清除前先保留需要的證據。DPC 的觸發與恢復依其專屬條件。</p>",
+      "source_html": "<p>Base 6.0 §6.2.4.2／§6.2.7.1，pp.679–681、691；§6.2.11、§7.9.14，pp.694–697、1245–1254。</p>",
+      "claim_ids": [
+        "PCIE-CH12-CLEAR-001",
+        "PCIE-CH12-DPC-001"
+      ]
+    }
+  ],
+  "components": [
+    {
+      "target": "root",
+      "title": "Root 端的回報紀錄",
+      "html": "<p>本圖從 Root 端通知連回來源 Function 的狀態與紀錄。</p>",
+      "basic_html": "<p>錯誤分類、來源識別、有效紀錄與故障原因是沿途要核對的資訊，不能只用一個識別值概括。</p>"
+    }
+  ],
+  "walk_id": "ch12-overview"
+}

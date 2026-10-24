@@ -5,6 +5,14 @@ on:
     paths:
       - "AGENTS.md"
       - ".ai/nvme-report/**"
+      - ".ai/spec-teaching/**"
+      - "assets/css/spec-teaching.css"
+      - "scripts/spec_teaching.py"
+      - "scripts/spec_terms.py"
+      - "scripts/run_project_checks.py"
+      - "scripts/package_spec_teaching_toolkit.py"
+      - "scripts/verify_teaching_bundle.py"
+      - "scripts/validate_public_teaching.py"
       - "docs/domain-standards.md"
       - "scripts/validate_nvme_report.py"
       - "scripts/extract_nvme_source_text.py"
@@ -31,6 +39,14 @@ on:
     paths:
       - "AGENTS.md"
       - ".ai/nvme-report/**"
+      - ".ai/spec-teaching/**"
+      - "assets/css/spec-teaching.css"
+      - "scripts/spec_teaching.py"
+      - "scripts/spec_terms.py"
+      - "scripts/run_project_checks.py"
+      - "scripts/package_spec_teaching_toolkit.py"
+      - "scripts/verify_teaching_bundle.py"
+      - "scripts/validate_public_teaching.py"
       - "docs/domain-standards.md"
       - "scripts/validate_nvme_report.py"
       - "scripts/extract_nvme_source_text.py"
@@ -74,6 +90,7 @@ jobs:
           python3 -B scripts/nvme_qa_sources.py --check
           git diff --exit-code -- .ai/nvme-report DOCS/nvme-spec-report DOCS/nvme-question-bank .ai/nvme-question-bank _posts _pages scripts
           python3 -B scripts/validate_nvme_report.py --phase auto
+          python3 -B scripts/validate_public_teaching.py
 
       - name: Run validator tests
         run: python3 -B -m unittest discover -s tests -v

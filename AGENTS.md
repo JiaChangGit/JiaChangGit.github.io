@@ -1,5 +1,13 @@
 # AGENTS.md — Jia’s Blog 專案規則
 
+## 2026-10-23 PCIe／指定 NVMe 系列共同教學修訂
+
+使用者已確認 `.ai/spec-teaching/skill/`，授權修訂 PCIe 全部既有文章並補足 PCI Express Base 6.0 全文（含附錄）尚未涵蓋主題。NVMe 只含自問自答、圖表判讀與情境練習，以及 `pcie-transport-1.4`、`nvm-command-set-1.3` 兩篇專篇，均含三版本與相關索引。這項最新授權取代下方只做 PCIe 7–9 後停止及不修改 NVMe 的舊限制。
+
+以 Chapter 7–9 為起點，依理解順序重排、改寫與重整圖表。正常流程、必要條件與推導直接顯示；延伸背景及完整引用可收合。問題直接接帶讀，不要求新手先作答。NVMe 圖表系列每冊先帶讀一個既有完整情境，沿途連回 Figure，再接其他情境與圖表索引；保留原題號、URL 與固定位置。共用樣式為 PCIe 藍、NVMe 綠；英文關鍵字前兩次各篇就近解釋，三版獨立計算。完整繁中 HTML 與中英文文章的深度、跨篇背景及來源規則見共用 skill。
+
+公開 GitHub Pages 不包含來源 PDF、擷取全文、個人路徑、私密資料或內部檢查產物。共用程式只影響核准頁面；兩篇專篇使用限定 report 輸出。新增互動不用動態 HTML 執行輸入。發布前驗證 Jekyll 輸出與相關同一 commit 的 CI。全規格對照表區分待核對、只提及與已帶讀，不以索引冒充已完成。
+
 ## 2026-10-22 PCIe 教學修訂（僅適用此系列）
 
 本次完成 Chapter 7–9 三版本與配套 skill／腳本後停止，等待使用者確認教學方式。其他章節維持既有內容，不繼續修訂或新增。使用 `.ai/pcie-course/skill/` 的 `pcie-spec-teaching` skill 與教學工具；不修改 NVMe 系列。skill 已安裝於使用者的 Codex skills 目錄，repository 內保存可維護來源。

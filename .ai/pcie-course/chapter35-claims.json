@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "course": "pcie-course",
+  "chapter": 35,
+  "updated": "2026-10-24",
+  "claims": [
+    {
+      "id": "PCIE-CH35-001",
+      "claim": "普通ROM解碼、VF限制與驗證狀態。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.1.2.4"
+      ],
+      "document_pages": [
+        933,
+        934,
+        935
+      ],
+      "pdf_pages": [
+        933,
+        934,
+        935
+      ],
+      "figures": [
+        "7-13"
+      ],
+      "tables": [
+        "7-10"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH35-002",
+      "claim": "ExpansionROM結構、指標、PCIR、CodeType與長度及執行位置。",
+      "kind": "specification",
+      "source_id": "PCI-FW-3.3",
+      "revision": "3.3",
+      "sections": [
+        "5",
+        "5.1",
+        "5.1.1",
+        "5.1.2",
+        "5.1.3"
+      ],
+      "document_pages": [
+        98,
+        99,
+        100,
+        101,
+        102
+      ],
+      "pdf_pages": [
+        98,
+        99,
+        100,
+        101,
+        102
+      ],
+      "figures": [
+        "5-1"
+      ],
+      "tables": [
+        "5-1"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    }
+  ]
+}

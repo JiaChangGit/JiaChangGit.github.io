@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "course": "pcie-course",
+  "chapter": 21,
+  "updated": "2026-10-24",
+  "claims": [
+    {
+      "id": "PCIE-CH21-001",
+      "claim": "captive與外形通道規格邊界及模型。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "8.5.1"
+      ],
+      "document_pages": [
+        1400
+      ],
+      "pdf_pages": [
+        1400
+      ],
+      "figures": [
+        "8-56",
+        "8-57"
+      ],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH21-002",
+      "claim": "接收壓力眼圖與不同速率的參考位置。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "8.4.1"
+      ],
+      "document_pages": [
+        1357
+      ],
+      "pdf_pages": [
+        1357
+      ],
+      "figures": [],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH21-003",
+      "claim": "Refclk測試、共同獨立架構與濾波模型。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "8.6.1",
+        "8.6.4",
+        "8.6.5"
+      ],
+      "document_pages": [
+        1420,
+        1426
+      ],
+      "pdf_pages": [
+        1420,
+        1426
+      ],
+      "figures": [],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    }
+  ]
+}

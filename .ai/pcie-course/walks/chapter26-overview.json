@@ -1,0 +1,51 @@
+{
+  "walk_id": "ch26-overview",
+  "title": "一個裝置提供很多 Function，身分與資源怎麼算？",
+  "summary_html": "<p>SR-IOV（Single Root I/O Virtualization，單根 I/O 虛擬化）讓多個系統映像共用裝置資源。PF（Physical Function，實體功能）管理相關設定，VF（Virtual Function，虛擬功能）則有自己的 Routing ID 與資源範圍。先把身分與位址分開，再讀啟用流程。</p>",
+  "svg": "<svg viewBox=\"0 0 900 420\" role=\"img\" aria-labelledby=\"ch26-zh-t ch26-zh-d\"><title id=\"ch26-zh-t\">本章角色與事件</title><desc id=\"ch26-zh-d\">先配置身分與資源，再啟用虛擬功能。</desc><g data-walk-target=\"n0\"><rect x=\"35\" y=\"35\" width=\"330\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"200.0\" y=\"64\" text-anchor=\"middle\" font-size=\"16\">PF：探索與管理虛擬功能</text></g><g data-walk-target=\"n1\"><rect x=\"530\" y=\"35\" width=\"335\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"697.5\" y=\"64\" text-anchor=\"middle\" font-size=\"16\">選 NumVFs、頁面與資源</text></g><g data-walk-target=\"n2\"><rect x=\"35\" y=\"300\" width=\"330\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"200.0\" y=\"329\" text-anchor=\"middle\" font-size=\"16\">啟用後確認 VF 可見與可存取</text></g><g data-walk-target=\"n3\"><rect x=\"530\" y=\"300\" width=\"335\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"697.5\" y=\"329\" text-anchor=\"middle\" font-size=\"16\">分別推算 RID 與記憶體範圍</text></g><g data-walk-target=\"a\"><path d=\"M365 69 L530 69\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"530,69 520.0,74.0 520.0,64.0\" fill=\"var(--accent)\"/><text x=\"447.5\" y=\"59.0\" text-anchor=\"middle\" font-size=\"16\"></text></g><g data-walk-target=\"b\"><path d=\"M695 103 L695 300\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"695,300 690.0,290.0 700.0,290.0\" fill=\"var(--accent)\"/><text x=\"695.0\" y=\"191.5\" text-anchor=\"middle\" font-size=\"16\"></text></g><g data-walk-target=\"c\"><path d=\"M530 334 L365 334\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"365,334 375.0,329.0 375.0,339.0\" fill=\"var(--accent)\"/><text x=\"447.5\" y=\"324.0\" text-anchor=\"middle\" font-size=\"16\"></text></g></svg>",
+  "order_html": "<p>先由 PF 配置數量與資源，再分別推算路由身分和記憶體範圍，最後確認 VF 的啟用與解碼條件。</p>",
+  "caption_html": "<p>作者依 Base 6.0 繪製的教學示意；省略與本章無關的交換。</p>",
+  "steps": [
+    {
+      "title": "先設定會影響資源的條件",
+      "targets": [
+        "n0",
+        "a",
+        "n1"
+      ],
+      "html": "<p>PF（管理這組虛擬功能的實體功能）先確認數量、Supported／System Page Size 與相關資源。</p>",
+      "condition_html": "<p>NumVFs 只能在 VF Enable=0 時變更；ARI Capable Hierarchy 另有全裝置的停用條件。</p>",
+      "source_html": "<p>Base 6.0 §9.2.1，pp.1445–1446。</p>",
+      "claim_ids": [
+        "PCIE-CH26-001"
+      ]
+    },
+    {
+      "title": "分別計算身分與記憶體",
+      "targets": [
+        "b",
+        "n3"
+      ],
+      "html": "<p>Table 9-1 用 PF Routing ID、First VF Offset 與 Stride 算身分；Figure 9-9 用 VF BAR 與 aperture 算記憶體範圍。</p>",
+      "condition_html": "<p>Routing ID 的 offset 不是 byte address，VF（提供個別資源介面的虛擬功能）也不支援 I/O Space。</p>",
+      "source_html": "<p>Base 6.0 §9.2.1.1.1、§9.2.1.2，pp.1445–1447。</p>",
+      "claim_ids": [
+        "PCIE-CH26-001",
+        "PCIE-CH26-002"
+      ]
+    },
+    {
+      "title": "最後啟用並檢查存取",
+      "targets": [
+        "c",
+        "n2"
+      ],
+      "html": "<p>VF Enable 控制啟用；VF 記憶體空間要同時滿足 VF Enable 與 VF MSE。</p>",
+      "condition_html": "<p>開啟可見的功能與允許記憶體解碼是相應的控制條件，不能由已算出位址推定已可使用。</p>",
+      "source_html": "<p>Base 6.0 §9.2.1.1.1，p.1446。</p>",
+      "claim_ids": [
+        "PCIE-CH26-001"
+      ]
+    }
+  ]
+}

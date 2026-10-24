@@ -120,8 +120,8 @@ PBA base = 0x80004000 + (0x00003000 &amp; 0xFFFFFFF8) = 0x80007000</code></pre>
 <details class="source-note"><summary>通知與資料順序的適用範圍</summary><p>§6.1.4 的跨 TC 同步說明與屬性限制（p.661）；§6.1.4.7（p.667）規定資料可見性、接收端獨立處理與服務順序；延遲不保證見 §6.1.4（p.660）。若多個 entries 共用同一向量，仍可能需要讀裝置狀態辨識事件來源；那是辨識用途，不是前述資料一致性的 flush。</p></details></section>
 
 <section id="practice"><h2>8. 沿同一個事件再走一次</h2>
-<details class="question"><summary>第 3 號項目要發出通知，系統先準備哪些內容？</summary><p>先由 Figure 7-56 找設定表，再按 Figure 7-57 填入平台指定的 Address／Data。系統確認兩層遮罩、啟用控制、裝置發送許可與平台接收資源都已就緒，最後開放事件來源。Table Size=7 表示共有 8 個項目；實際向量配置由系統決定，多個項目也可能共用向量。</p></details>
-<details class="question"><summary>通知暫時被遮罩時，沿哪些欄位追蹤事件？</summary><p>先看 Table 7-49 的 Function Mask，再看 Table 7-55 的 entry Mask。任一層遮罩有效，裝置就按 §6.1.4.5 將通知留待處理，以 Table 7-56 的 Pending bit 表示。事件仍待處理而遮罩解除後，裝置安排送出通知，送出後清除 Pending。</p></details>
-<details class="question"><summary>之後要更改通知目標，如何接回設定流程？</summary><p>先依規定遮罩，確認更新順序，再改 Address／Data，完成後解除遮罩。對原本未遮罩的項目，先以 DWORD 更新 Mask，避免用同一次 QWORD 寫入同時更動 Data 與遮罩；未遮罩時更改目的資料的結果未定義。（§6.1.4.2、§6.1.4.5，pp.662–665。）</p></details></section>
+<details open class="question"><summary>第 3 號項目要發出通知，系統先準備哪些內容？</summary><p>先由 Figure 7-56 找設定表，再按 Figure 7-57 填入平台指定的 Address／Data。系統確認兩層遮罩、啟用控制、裝置發送許可與平台接收資源都已就緒，最後開放事件來源。Table Size=7 表示共有 8 個項目；實際向量配置由系統決定，多個項目也可能共用向量。</p></details>
+<details open class="question"><summary>通知暫時被遮罩時，沿哪些欄位追蹤事件？</summary><p>先看 Table 7-49 的 Function Mask，再看 Table 7-55 的 entry Mask。任一層遮罩有效，裝置就按 §6.1.4.5 將通知留待處理，以 Table 7-56 的 Pending bit 表示。事件仍待處理而遮罩解除後，裝置安排送出通知，送出後清除 Pending。</p></details>
+<details open class="question"><summary>之後要更改通知目標，如何接回設定流程？</summary><p>先依規定遮罩，確認更新順序，再改 Address／Data，完成後解除遮罩。對原本未遮罩的項目，先以 DWORD 更新 Mask，避免用同一次 QWORD 寫入同時更動 Data 與遮罩；未遮罩時更改目的資料的結果未定義。（§6.1.4.2、§6.1.4.5，pp.662–665。）</p></details></section>
 <section id="next"><h2>9. 下一步：這些封包如何可靠地通過 Link？</h2><p>到這裡，已能從設定空間走到資料搬移與通知。<a href="chapter-8.html">Chapter 8</a> 回到 Link，說明訓練、流量控制與重送的責任；Chapter 9–10 接續 Reset 與電源管理，可由 <a href="index.html">課程路線</a> 查看安排。</p></section>
 <section id="sources"><h2>版本與來源</h2><p>本章以 PCI Express Base Specification Revision 6.0 的 §6.1、§7.7.1–§7.7.2 為準；文件頁碼與 PDF 頁碼一致。查核日期：2026-10-21。未把其他版本的中斷欄位或特定 CPU 的中斷編碼混入通用規則；數值案例與初始化安排均已標示為作者推演。</p></section>

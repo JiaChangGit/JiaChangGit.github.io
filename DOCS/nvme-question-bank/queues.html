@@ -119,26 +119,85 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 .nvme-qa :focus-visible {outline:3px solid var(--qr-accent);outline-offset:3px;}
 @media(max-width:600px){.nvme-qa .qa-question{padding:1rem}.nvme-qa .qa-glossary{padding:1rem}.nvme-qa .qa-state{flex-direction:column}.nvme-qa .qa-flow{padding:.8rem}.nvme-qa .qa-flow-steps>li.qa-flow-branch{margin-left:.3rem}}
 @media print{.nvme-qa .qa-controls,.nvme-qa .qa-theme,.nvme-qa .qa-back{display:none}.nvme-qa details::details-content{display:block}.nvme-qa details>*{display:block!important}.nvme-qa .qa-question{break-inside:auto}.nvme-qa .qa-flow-steps>li{break-inside:avoid}}
+
+/* Applied only to explicitly authorized teaching roots. */
+html .spec-teaching[data-spec-series] .st-terms { margin:.35rem 0 1rem; padding:.5rem .8rem; border-inline-start:3px solid var(--st-accent); background:var(--st-soft); font-size:.88em; color:var(--st-muted); }
+html .spec-teaching[data-spec-series] .st-terms > div { display:flex; flex-wrap:wrap; gap:.2em .7em; }
+html .spec-teaching[data-spec-series] .st-terms dt { font-weight:650; }
+html .spec-teaching[data-spec-series] .st-terms dd { margin:0; flex:1 1 14em; }
+html .spec-teaching[data-spec-series] {
+ --st-diagram-width:900px;
+ --st-paper:#f2f6f8; --st-surface:#fff; --st-ink:#192d40; --st-muted:#4c6479;
+ --st-line:#cbd9e3; --st-accent:#145f9d; --st-soft:#edf5fc;
+ --paper:var(--st-paper); --surface:var(--st-surface); --surface-2:var(--st-soft); --surface-alt:var(--st-soft);
+ --ink:var(--st-ink); --muted:var(--st-muted); --line:var(--st-line);
+ --accent:var(--st-accent); --accent-2:var(--st-accent); --soft:var(--st-soft); --blue-soft:var(--st-soft); --teal-soft:var(--st-soft);
+ --qr-paper:var(--st-paper); --qr-surface:var(--st-surface); --qr-ink:var(--st-ink); --qr-muted:var(--st-muted);
+ --qr-line:var(--st-line); --qr-accent:var(--st-accent); --qr-soft:var(--st-soft);
+ color:var(--st-ink); background:var(--st-paper); font-size:17px; line-height:1.9;
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+}
+html .spec-teaching[data-spec-series="nvme"] { --st-accent:#086b56; --st-soft:#e7f4ee; }
+@media(prefers-color-scheme:dark) {
+ html:not([data-theme="light"]) .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+ html:not([data-theme="light"]) .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+}
+html[data-theme="dark"] .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+html[data-theme="dark"] .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+.spec-teaching * { box-sizing:border-box; }
+.spec-teaching :is(h1,h2,h3,h4,h5,p,li,td,th,summary,strong,figcaption) { color:var(--st-ink); }
+.spec-teaching svg text { font-family:inherit; }
+.spec-teaching h1 { font-size:clamp(1.8rem,3.2vw,2.65rem); line-height:1.4; }
+.spec-teaching h2 { font-size:clamp(1.3rem,2.5vw,1.7rem); line-height:1.55; }
+.spec-teaching h3 { font-size:1.15rem; line-height:1.65; }
+.spec-teaching h4 { font-size:1rem; line-height:1.7; }
+.spec-teaching :is(h1,h2,h3,h4) { overflow-wrap:anywhere; }
+.spec-teaching p { margin:.7rem 0 1.15rem; }
+.spec-teaching :is(a,summary) { text-underline-offset:.2em; }
+.spec-teaching :focus-visible { outline:3px solid var(--st-accent); outline-offset:4px; }
+.spec-teaching :is(.qa-takeaway,.qa-answer-lead,.st-takeaway) { color:var(--st-ink); font-weight:650; font-size:1.06rem; line-height:1.9; }
+.spec-teaching :is(.qa-question,.qr-card,.guided-walk) { border:1px solid var(--st-line); border-radius:12px; background:var(--st-surface); padding:clamp(18px,3vw,30px); margin:1.8rem 0; }
+.spec-teaching :is(.qa-flow,.qr-note,.qr-observations,.st-context,.st-route) { background:var(--st-soft); border-left:4px solid var(--st-accent); padding:1rem 1.2rem; margin:1.4rem 0; }
+.spec-teaching :is(.qr-step,.qa-qid,.st-label) { color:var(--st-accent); font-weight:700; }
+.spec-teaching :is(.qa-citations,.qa-source-links,.qr-case-sources,.walk-source,.st-source) { font-size:.84rem; line-height:1.75; color:var(--st-muted); overflow-wrap:anywhere; }
+.spec-teaching :is(.qr-table,.table-wrap) { overflow-x:auto; margin:1.4rem 0; border-radius:7px; }
+.spec-teaching :is(th,td) { line-height:1.8; vertical-align:top; min-width:120px; }
+.spec-teaching :is(table,td) { background:var(--st-surface); }
+.spec-teaching th { background:var(--st-soft); }
+.spec-teaching .st-step { border-left:3px solid var(--st-line); padding:.6rem 1rem; margin:1.2rem 0; }
+.spec-teaching .st-step:target { border-left-color:var(--st-accent); background:var(--st-soft); }
+.spec-teaching .st-glossary { border:1px solid var(--st-line); padding:.7rem 1rem; margin:1.4rem 0; border-radius:8px; }
+.spec-teaching .st-glossary > summary { min-height:44px; cursor:pointer; }
+.spec-teaching .st-specs { display:flex; flex-wrap:wrap; gap:.4rem 1rem; color:var(--st-muted); font-size:.8rem; line-height:1.8; margin:1rem 0; }
+.spec-teaching .st-specs span { border-bottom:2px solid var(--st-accent); padding:.2rem 0; }
+@media(max-width:620px) { .spec-teaching :is(.qa-question,.qr-card,.guided-walk) { padding:16px; } .spec-teaching .diagram svg { min-width:var(--st-diagram-width); } }
+@media print {
+ .spec-teaching { --st-paper:#fff!important; --st-surface:#fff!important; --st-ink:#000!important; --st-muted:#333!important; --st-line:#999!important; --st-accent:#000!important; --st-soft:#fff!important; }
+ .spec-teaching details > * { display:block!important; }
+ .spec-teaching details::details-content { content-visibility:visible!important; }
+ .spec-teaching .st-step { break-inside:avoid; }
+}
 </style></head><body class="qr-standalone">
-<div class="nvme-quickref nvme-qa">
+<div class="nvme-quickref nvme-qa spec-teaching" data-spec-series="nvme">
 <nav class="qr-top" aria-label="題庫與版本"><a href="#content">跳到內容</a><a href="index.html">題庫總索引</a><a href="/nvme/question-bank/queues/zh-tw/">Pages 中文</a><a href="/nvme/question-bank/queues/en/">English</a></nav>
 <button class="qa-theme" type="button" data-theme-toggle>切換明／暗色</button>
-<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–328</p>
-<header><p class="qa-range">Q10–Q21</p><h1>Admin Queue 與 I/O Queue</h1><p class="qr-intro">Host 準備的 queue 記憶體、controller 分配的 queue 配額，以及已成功建立的 queue，是三種不同資訊。本冊先說明 SQ 與 CQ 的依賴關係，再討論大小、識別碼、刪除及重設，讓你能判斷何時可以使用 queue，以及何時能安全回收記憶體。</p><p>先練習，再展開解答。各題依需要使用文字、欄位判讀、比較或流程說明，不要求相同的回答項目。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p></header>
-<aside class="qa-glossary"><h2>先認識本文使用的字詞</h2><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></aside>
+<main id="content"><p class="qr-eyebrow">NVMe · Q1–328</p>
+<div class="st-specs" aria-label="Specification editions"><span>NVM Express Base 2.4</span><span>NVM Command Set 1.3</span><span>NVMe over PCIe Transport 1.4</span></div>
+<header><p class="qa-range">Q10–Q21</p><h1>Admin Queue 與 I/O Queue</h1><aside class="st-context"><p>SQ（Submission Queue，提交佇列）放置命令，CQ（Completion Queue，完成佇列）放置處理結果。Host 是準備並提交工作的主機端；controller 是接收並處理命令的控制器。以下先連起一條 SQ 與它使用的 CQ，再處理建立和回收。</p></aside><p class="qr-intro">Host 準備的 queue 記憶體、controller 分配的 queue 配額，以及已成功建立的 queue，是三種不同資訊。本冊先說明 SQ 與 CQ 的依賴關係，再討論大小、識別碼、刪除及重設，讓你能判斷何時可以使用 queue，以及何時能安全回收記憶體。</p><p>每個問題都接著完整解說，依內容帶讀欄位、比較機制或追蹤流程。先看本冊總覽，再沿問題閱讀；必要條件與正常路徑直接顯示。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SCT</dt><dd>Status Code Type，完成狀態代碼類型</dd></div></dl></header>
 <section id="overview" class="qa-overview"><h2>一條 CQ、兩條 SQ：先建立依賴對象，刪除時則反過來</h2><p class="qa-takeaway">SQ 的命令要透過關聯的 CQ 回報完成。因此，只要仍有 SQ 使用某條 CQ，就不能先刪除那條 CQ。</p>
-<div class="qr-table" tabindex="0" role="region" aria-label="可橫向捲動的比較表"><table><thead><tr><th scope="col">觀察層次</th><th scope="col">教學假設</th><th scope="col">可以推論什麼</th></tr></thead><tbody><tr><td>數量配額</td><td>FID07h 回 NSQA=3、NCQA=1</td><td>可建立 4 條 I/O SQ、2 條 I/O CQ；這時還沒有建立 queue</td></tr><tr><td>單一 queue 深度</td><td>Create CQ：QID=1、QSIZE=7</td><td>共有 8 個位置；環狀 queue 須保留一格，用來區分已滿與空佇列</td></tr><tr><td>依賴關係</td><td>SQ1.CQID=1；SQ2.CQID=1</td><td>先建 CQ1，再建 SQ1、SQ2</td></tr><tr><td>回收順序</td><td>刪 SQ1、SQ2，各自等成功完成</td><td>最後再刪 CQ1，並在各 queue 的使用期間結束後回收對應記憶體</td></tr></tbody></table></div>
+<div class="qr-table" tabindex="0" role="region" aria-label="可橫向捲動的比較表"><table><thead><tr><th scope="col">觀察層次</th><th scope="col">教學假設</th><th scope="col">可以推論什麼</th></tr></thead><tbody><tr><td>數量配額</td><td>FID07h 回 NSQA=3、NCQA=1</td><td>可建立 4 條 I/O SQ、2 條 I/O CQ；這時還沒有建立 queue</td></tr><tr><td>單一 queue 深度</td><td>Create CQ：QID=1、QSIZE=7</td><td>共有 8 個位置；環狀 queue 須保留一格，用來區分已滿與空佇列</td></tr><tr><td>依賴關係</td><td>SQ1.CQID=1；SQ2.CQID=1</td><td>先建 CQ1，再建 SQ1、SQ2</td></tr><tr><td>回收順序</td><td>刪 SQ1、SQ2，各自等成功完成</td><td>最後再刪 CQ1，並在各 queue 的使用期間結束後回收對應記憶體</td></tr></tbody></table><dl class="st-terms" aria-label="本段名詞"><div><dt>CQID</dt><dd>Completion Queue Identifier，完成佇列識別碼</dd></div></dl></div>
 <p><strong>舉例看懂：</strong>假設 SQ1 已刪除，但 SQ2 仍存在。這時不能刪除 CQ1，因為 SQ2 還要使用它回報命令結果。另外，SQ1 刪除完成只結束 SQ1 的使用期間，不表示仍由 SQ2 使用的資料 buffer 也可以回收。</p>
 <p class="qa-citations">來源：<a href="#ref-number">Base 2.4 §5.2.30.1.5</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-queue">Base 2.4 §3.3.1</a></p>
 </section>
 <section class="qa-lesson"><h2>先把觀念接起來</h2>
-<article><h3>教學 1 · 把配額、深度與記憶體容量分開算</h3><p>FID07h 的回覆決定能建立多少條 I/O queue；Create Queue 的 QSIZE 決定一條 queue 有多少個位置；每個位置的大小，則用來計算需要多少記憶體。例如一條 NVM I/O SQ 有 64 個位置，每個位置 64 bytes，總共需要 4096 bytes。這不表示 controller 分配了 64 條 SQ；由於環狀 queue 需保留一格，也不表示能同時放入 64 筆尚未消費的 SQE。</p>
+<article><h3>教學 1 · 把配額、深度與記憶體容量分開算</h3><p>FID07h 的回覆決定能建立多少條 I/O queue；Create Queue 的 QSIZE 決定一條 queue 有多少個位置；每個位置的大小，則用來計算需要多少記憶體。例如一條 NVM I/O SQ 有 64 個位置，每個位置 64 bytes，總共需要 4096 bytes。這不表示 controller 分配了 64 條 SQ；由於環狀 queue 需保留一格，也不表示能同時放入 64 筆尚未消費的 SQE。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SQE</dt><dd>Submission Queue Entry，佇列中的命令項目</dd></div></dl>
 </article>
 <article><h3>教學 2 · CQ 共用帶來什麼取捨</h3><p>多條 SQ 共用 CQ，可以集中處理完成通知。不過，如果一條繁忙 SQ 產生大量 completion，將 CQ 空間占滿，其他共用者也可能受到阻塞。各自使用 CQ，則能隔離這種空間壓力。這項取捨關乎完成結果放在哪裡，與 namespace 的資料是否共享是不同問題。</p>
 </article>
-<article><h3>教學 3 · 刪除的完成點比刪除的提交點重要</h3><p>Host 送出 Delete SQ 後，controller 仍可能需要處理已取得的命令，因此不能在提交刪除命令的同時，就立刻釋放原記憶體。等 Delete SQ 成功完成，才到達規範定義的刪除完成點。某些命令即使沒有各自的 CQE，也可能已依規則被隱含中止；Host 應按刪除規則清理追蹤資料，而不是無限等待這些 completion。</p>
+<article><h3>教學 3 · 刪除的完成點比刪除的提交點重要</h3><p>Host 送出 Delete SQ 後，controller 仍可能需要處理已取得的命令，因此不能在提交刪除命令的同時，就立刻釋放原記憶體。等 Delete SQ 成功完成，才到達規範定義的刪除完成點。某些命令即使沒有各自的 CQE，也可能已依規則被隱含中止；Host 應按刪除規則清理追蹤資料，而不是無限等待這些 completion。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry，佇列中的完成項目</dd></div></dl>
 </article>
 </section>
+<details class="qa-glossary st-glossary"><summary>需要時回顧本篇名詞</summary><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></details>
 <div class="qa-controls" hidden><label>搜尋本頁 <input type="search" id="qa-search" placeholder="題號、欄位或關鍵字"></label><button type="button" data-expand="true">展開全部解答</button><button type="button" data-expand="false">收合全部解答</button><output id="qa-count" aria-live="polite"></output></div>
 <section id="question-index"><h2>本冊題目</h2><ol class="qa-index">
 <li><a href="#q-010">Q10 · Admin Submission Queue 與 Admin Completion Queue 如何透過 AQA、ASQ 及 ACQ 建立？</a></li>
@@ -155,37 +214,38 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <li><a href="#q-021">Q21 · Controller Reset 後，原有 I/O Queue 是否有效？Host 需要重新執行哪些操作？</a></li>
 </ol></section>
 <article class="qa-question" id="q-010" data-question="10" data-answer-kind="process"><h2><a class="qa-qid" href="#q-010">Q10</a> Admin Submission Queue 與 Admin Completion Queue 如何透過 AQA、ASQ 及 ACQ 建立？</h2>
-<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
-<details class="qa-answer" id="q-010-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-010-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-010-a-01">Create I/O Queue 本身也是 Admin 命令，所以必須先有可用的 Admin Queue，才能建立 I/O Queue。這也是 Admin Queue 需要透過 Register 配置，而不能依賴尚未建立的命令通道來建立自己的原因。</p><div class="qa-sections">
 <section class="qa-section" id="q-010-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
 <span class="qa-anchor" id="q-010-a-02"></span><p>每個 controller 有 QID=0 的 Admin SQ／CQ；這不是一般 I/O QID。</p>
-<span class="qa-anchor" id="q-010-a-03"></span><p>AQA 指定 Admin SQ 與 CQ 各自的長度，ASQ 與 ACQ 則提供各自的實體起始位址。這兩條 queue 必須使用實體連續的記憶體，不能套用 Create I/O Queue 中 PC=0 的 PRP list 建立方式。</p>
-<span class="qa-anchor" id="q-010-a-04"></span><p>ASQS、ACQS 均為 zero-based；64 entries 寫 63。Admin SQE 64 bytes、CQE 16 bytes；兩條 queue 可以有不同長度。</p>
+<span class="qa-anchor" id="q-010-a-03"></span><p>AQA 指定 Admin SQ 與 CQ 各自的長度，ASQ 與 ACQ 則提供各自的實體起始位址。這兩條 queue 必須使用實體連續的記憶體，不能套用 Create I/O Queue 中 PC=0 的 PRP list 建立方式。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>PRP</dt><dd>Physical Region Page，描述資料頁位置的指標</dd></div></dl>
+<span class="qa-anchor" id="q-010-a-04"></span><p>ASQS、ACQS 均為 zero-based；64 entries 寫 63。Admin SQE 64 bytes、CQE 16 bytes；兩條 queue 可以有不同長度。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SQE</dt><dd>Submission Queue Entry，佇列中的命令項目</dd></div><div><dt>CQE</dt><dd>Completion Queue Entry，佇列中的完成項目</dd></div></dl>
 </section>
 <section class="qa-section" id="q-010-s-02" data-answer-section="2"><h3><span>2.</span> 先後順序與完成條件</h3>
 <span class="qa-anchor" id="q-010-a-05"></span><p>Host 先配置並初始化記憶體，再於 EN=0 時寫入 AQA、ASQ、ACQ，並把 Admin CQ 的 Phase 初始化為 0。完成 CC 設定後啟用 controller，等到 RDY=1，才提交第一筆 Admin 命令。</p>
-<span class="qa-anchor" id="q-010-a-06"></span><p>Host 應能透過 Admin SQ 提交 Identify，並在 Admin CQ 收到 CID 相符的完成結果。ACQ 與 interrupt vector 0 關聯，但 Host 也可以輪詢 Phase 來辨認完成，不一定要等待中斷通知。</p>
+<span class="qa-anchor" id="q-010-a-06"></span><p>Host 應能透過 Admin SQ 提交 Identify，並在 Admin CQ 收到 CID 相符的完成結果。ACQ 與 interrupt vector 0 關聯，但 Host 也可以輪詢 Phase 來辨認完成，不一定要等待中斷通知。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CID</dt><dd>Command Identifier，同一提交佇列內的命令識別碼</dd></div></dl>
 </section>
 <section class="qa-section" id="q-010-s-03" data-answer-section="3"><h3><span>3.</span> 未符合條件時如何處理</h3>
 <span class="qa-anchor" id="q-010-a-07"></span><p>size=0 編碼的是一個位置，不是停用 queue 的合法方式；以這種配置啟用 controller，結果屬於 undefined behavior。此外，Delete I/O Queue 只用來刪除 I/O Queue，不能用來刪除 Admin Queue。</p>
 <span class="qa-anchor" id="q-010-a-16"></span><p>應同時核對 AQA 的長度、實際配置的記憶體與第一筆 CQE。即使 Register 回讀值正確，也還不能證明 controller 真的能存取 Host 提供的記憶體。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-adminreg">Base 2.4 §3.1.4 (AQA, ASQ, ACQ, CMBLOC)</a> · <a href="#ref-init">Base 2.4 §3.5.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a></p>
 <span class="qa-anchor" id="q-010-a-17"></span><span class="qa-anchor" id="q-010-a-08"></span><span class="qa-anchor" id="q-010-a-09"></span><span class="qa-anchor" id="q-010-a-10"></span><span class="qa-anchor" id="q-010-a-11"></span><span class="qa-anchor" id="q-010-a-12"></span><span class="qa-anchor" id="q-010-a-13"></span><span class="qa-anchor" id="q-010-a-14"></span><span class="qa-anchor" id="q-010-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-adminreg">Base 2.4 §3.1.4 (AQA, ASQ, ACQ, CMBLOC)</a> · <a href="#ref-init">Base 2.4 §3.5.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-011" data-question="11" data-answer-kind="fields"><h2><a class="qa-qid" href="#q-011">Q11</a> Admin Queue 與 I/O Queue 的 Size、Base Address 及 Memory Page 對齊有哪些要求？</h2>
-<p class="qa-prompt">先試著說明欄位的單位與編碼，再用一組數值推導結果。</p>
-<details class="qa-answer" id="q-011-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-011-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-011-a-01">配置 queue 時，必須分清 entry 數量、每筆 entry 的 bytes 數，以及需要幾個記憶體頁面。這些數量的單位不同；混用時，queue 就可能超出實際配置的記憶體範圍。</p><div class="qa-sections">
 <section class="qa-section" id="q-011-s-01" data-answer-section="1"><h3><span>1.</span> 先確認資料的來源與範圍</h3>
-<span class="qa-anchor" id="q-011-a-02"></span><p>對齊與大小規則會因 queue 類型及記憶體位置而異。Admin Queue、一般 I/O Queue，以及能力允許時放在 CMB 的 queue，必須分別確認，不能把其中一種配置的規則直接套到其他配置。</p>
-<span class="qa-anchor" id="q-011-a-03"></span><p>Admin Queue 的長度限制來自 AQA；I/O Queue 則要核對 CAP.MQES、CQR 與 CC.IOSQES／IOCQES。如果使用 CMB，還須確認 CMBSZ 的 queue 支援能力，以及 CMBLOC.CQDA／CQPDS 定義的例外。</p>
+<span class="qa-anchor" id="q-011-a-02"></span><p>對齊與大小規則會因 queue 類型及記憶體位置而異。Admin Queue、一般 I/O Queue，以及能力允許時放在 CMB 的 queue，必須分別確認，不能把其中一種配置的規則直接套到其他配置。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CMB</dt><dd>Controller Memory Buffer，控制器記憶體緩衝</dd></div></dl>
+<span class="qa-anchor" id="q-011-a-03"></span><p>Admin Queue 的長度限制來自 AQA；I/O Queue 則要核對 CAP.MQES、CQR 與 CC.IOSQES／IOCQES。如果使用 CMB，還須確認 CMBSZ 的 queue 支援能力，以及 CMBLOC.CQDA／CQPDS 定義的例外。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CMB</dt><dd>Controller Memory Buffer，控制器記憶體緩衝</dd></div></dl>
 </section>
 <section class="qa-section" id="q-011-s-02" data-answer-section="2"><h3><span>2.</span> 欄位、單位與判讀例子</h3>
-<span class="qa-anchor" id="q-011-a-04"></span><p>Queue 長度欄位編碼的是 entry 數量減 1。在一般配置中，queue 的基底位址，以及非連續 queue 的各個 PRP 頁面，都要依 CC.MPS 對齊，PRP1 的 offset 則為 0。</p>
+<span class="qa-anchor" id="q-011-a-04"></span><p>Queue 長度欄位編碼的是 entry 數量減 1。在一般配置中，queue 的基底位址，以及非連續 queue 的各個 PRP 頁面，都要依 CC.MPS 對齊，PRP1 的 offset 則為 0。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>PRP</dt><dd>Physical Region Page，描述資料頁位置的指標</dd></div></dl>
 <span class="qa-anchor" id="q-011-a-05"></span><p>先決定 queue 有幾個位置、每筆 entry 有多大，再算出所需 bytes 數並配置頁面。如果支援非連續配置，接著建立 PRP list，最後提交 Create 命令。Queue 仍有效時，Host 不得任意修改這份 PRP list。</p>
 <span class="qa-anchor" id="q-011-a-06"></span><p>每條 queue 至少需要 2 個位置。Admin Queue 最多有 4096 個位置，I/O Queue 則最多有 min(65536, MQES+1) 個。為了分辨 Full 與 Empty，環狀 queue 還必須保留一個位置不使用。</p>
 </section>
@@ -194,13 +254,14 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-011-a-16"></span><p>例如，同樣有 128 個位置，NVM SQ 需要 8192 bytes，而 CQ 只需要 2048 bytes。兩者的 QSIZE 雖然都是 127，每筆 entry 的大小卻不同，因此不能只憑 QSIZE 相同，就把所需的記憶體容量算成同一個數值。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-adminreg">Base 2.4 §3.1.4 (AQA, ASQ, ACQ, CMBLOC)</a> · <a href="#ref-cap">Base 2.4 §3.1.4 (CAP, VS)</a> · <a href="#ref-qattr">Base 2.4 §3.3.3–3.4.1</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-011-a-17"></span><span class="qa-anchor" id="q-011-a-08"></span><span class="qa-anchor" id="q-011-a-09"></span><span class="qa-anchor" id="q-011-a-10"></span><span class="qa-anchor" id="q-011-a-11"></span><span class="qa-anchor" id="q-011-a-12"></span><span class="qa-anchor" id="q-011-a-13"></span><span class="qa-anchor" id="q-011-a-14"></span><span class="qa-anchor" id="q-011-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-adminreg">Base 2.4 §3.1.4 (AQA, ASQ, ACQ, CMBLOC)</a> · <a href="#ref-cap">Base 2.4 §3.1.4 (CAP, VS)</a> · <a href="#ref-qattr">Base 2.4 §3.3.3–3.4.1</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-012" data-question="12" data-answer-kind="process"><h2><a class="qa-qid" href="#q-012">Q12</a> Host 如何建立 I/O Completion Queue 與 I/O Submission Queue？兩者必須遵守什麼建立順序？</h2>
-<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
-<details class="qa-answer" id="q-012-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-012-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-012-a-01">SQ 中的命令需要一個有效的 CQ 來回報完成，所以 Host 必須先建立 CQ，才能建立指向它的 SQ。這是物件之間的依賴要求，不只是效能上的建議。</p><div class="qa-sections">
 <section class="qa-section" id="q-012-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
 <span class="qa-anchor" id="q-012-a-02"></span><p>一個 SQ 在建立時指定其 CQ；多個 SQ 可以指向同一個已存在的 CQ。</p>
@@ -217,42 +278,44 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <li class="qa-flow-step"><span class="qa-flow-arrow" aria-hidden="true">↓</span><strong>Create I/O CQ → 等 Admin CQ 回報成功</strong><p>這筆 Create 的完成結果出現在 Admin CQ，不在正在建立的 I/O CQ。</p></li>
 <li class="qa-flow-step"><span class="qa-flow-arrow" aria-hidden="true">↓</span><strong>Create I/O SQ → 等 Admin CQ 回報成功</strong><p>CQID 指向已成功建立的 CQ；兩筆 Create 的成功 Status 都是 SCT=0、SC=00h。</p></li>
 <li class="qa-flow-step"><span class="qa-flow-arrow" aria-hidden="true">↓</span><strong>開始 I/O</strong><p>兩步都成功後，才填入 I/O SQE 並更新 SQ Tail Doorbell。</p></li>
-</ol><p class="qa-flow-conclusion">若 Create CQ 失敗，就還沒有可供這條 SQ 使用的 CQ。先處理失敗原因；「Create CQ 已提交」不能替代「Create CQ 已成功」。</p></figure>
+</ol><p class="qa-flow-conclusion">若 Create CQ 失敗，就還沒有可供這條 SQ 使用的 CQ。先處理失敗原因；「Create CQ 已提交」不能替代「Create CQ 已成功」。</p></figure><dl class="st-terms" aria-label="本段名詞"><div><dt>SCT</dt><dd>Status Code Type，完成狀態代碼類型</dd></div></dl>
 </section>
 <section class="qa-section" id="q-012-s-03" data-answer-section="3"><h3><span>3.</span> 未符合條件時如何處理</h3>
 <span class="qa-anchor" id="q-012-a-07"></span><p>CQID 在支援範圍內但未建立，回 Completion Queue Invalid（1/00h）；CQID=0 或超界回 Invalid Queue Identifier（1/01h）。</p>
 <span class="qa-anchor" id="q-012-a-16"></span><p>應確認 Create SQ 的 CQID 與 Host 保存的 SQ→CQ 對照一致。Create CQ 成功只代表該 CQ 已存在，並不會自動把所有 SQ 都連到它。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-number">Base 2.4 §5.2.30.1.5</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-012-a-08"></span><span class="qa-anchor" id="q-012-a-09"></span><span class="qa-anchor" id="q-012-a-10"></span><span class="qa-anchor" id="q-012-a-11"></span><span class="qa-anchor" id="q-012-a-12"></span><span class="qa-anchor" id="q-012-a-13"></span><span class="qa-anchor" id="q-012-a-14"></span><span class="qa-anchor" id="q-012-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-number">Base 2.4 §5.2.30.1.5</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-013" data-question="13" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-013">Q13</a> 多個 SQ 共用一個 CQ 與每個 SQ 使用獨立 CQ 有什麼差異？</h2>
-<p class="qa-prompt">先說出比較對象最重要的差別，並舉一個不能互相代用的例子。</p>
-<details class="qa-answer" id="q-013-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-013-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-013-a-01">共用 CQ 可以減少 CQ 資源用量，但也會把多條 SQ 的完成流量集中到同一處。因此，選擇共用或獨立 CQ 時，要考慮資源用量與完成處理能否互相隔離。</p><div class="qa-sections">
 <section class="qa-section" id="q-013-s-01" data-answer-section="1"><h3><span>1.</span> 差別在哪裡</h3>
-<span class="qa-anchor" id="q-013-a-02"></span><p>多條 SQ 共用的是 CQ 的完成位置及相關通知資源。各條 SQ 仍各自管理 CID，所以不會因此變成共用同一個命令識別空間。</p>
-<span class="qa-anchor" id="q-013-a-04"></span><p>Host 以 CQE 的 SQID 與 CID 找到原命令，再以 SQHD 更新該 SQ 已被 controller 消費到的位置。</p>
+<span class="qa-anchor" id="q-013-a-02"></span><p>多條 SQ 共用的是 CQ 的完成位置及相關通知資源。各條 SQ 仍各自管理 CID，所以不會因此變成共用同一個命令識別空間。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CID</dt><dd>Command Identifier，同一提交佇列內的命令識別碼</dd></div></dl>
+<span class="qa-anchor" id="q-013-a-04"></span><p>Host 以 CQE 的 SQID 與 CID 找到原命令，再以 SQHD 更新該 SQ 已被 controller 消費到的位置。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SQID</dt><dd>Submission Queue Identifier，提交佇列識別碼</dd></div></dl>
 </section>
 <section class="qa-section" id="q-013-s-02" data-answer-section="2"><h3><span>2.</span> 如何選擇與確認</h3>
 <span class="qa-anchor" id="q-013-a-03"></span><p>Number of Queues 分別回傳 SQ 與 CQ 的配額；Create SQ 的 CQID 指出它使用哪條 CQ；Create CQ 的 IEN 與 IV 則設定中斷通知。這三組欄位分別處理數量、關聯及通知。</p>
-<span class="qa-anchor" id="q-013-a-05"></span><p>先建立 CQ，再建立多條 SQ，並讓它們的 CQID 指向同一個 CQ。Host 讀取 CQE 時，先以 SQID 找出來源 SQ，再處理該命令的完成；處理完畢後，更新共用 CQ 的 Head。</p>
+<span class="qa-anchor" id="q-013-a-05"></span><p>先建立 CQ，再建立多條 SQ，並讓它們的 CQID 指向同一個 CQ。Host 讀取 CQE 時，先以 SQID 找出來源 SQ，再處理該命令的完成；處理完畢後，更新共用 CQ 的 Head。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SQID</dt><dd>Submission Queue Identifier，提交佇列識別碼</dd></div></dl>
 <span class="qa-anchor" id="q-013-a-06"></span><p>例如，SQ1/CID7 與 SQ2/CID7 可以同時存在，Host 必須把回覆各自對回正確的 SQ。這不代表同一條 SQ 也可以在命令尚未完成時，重複使用同一個 CID。</p>
 </section>
-<section class="qa-section" id="q-013-s-03" data-answer-section="3"><h3><span>3.</span> 哪些結論不能互相套用</h3>
+<section class="qa-section" id="q-013-s-03" data-answer-section="3"><h3><span>3.</span> 比較時要保留的條件</h3>
 <span class="qa-anchor" id="q-013-a-07"></span><p>合法地共用 CQ 不會造成錯誤。若 Create SQ 指定不存在的 CQID，則使用該命令定義的錯誤 Status。至於共用 CQ 已滿，應按空間不足的處理規則判斷，不能把它當成每條 SQ 都要回報 Invalid Queue Size。</p>
 <span class="qa-anchor" id="q-013-a-16"></span><p>應一起觀察 CQ 可用的位置數、各 SQ 的完成流量，以及 Host 處理完成的速度。只知道建立了多少條 SQ，還不足以判斷共用 CQ 是否成為瓶頸。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-013-a-17"></span><span class="qa-anchor" id="q-013-a-08"></span><span class="qa-anchor" id="q-013-a-09"></span><span class="qa-anchor" id="q-013-a-10"></span><span class="qa-anchor" id="q-013-a-11"></span><span class="qa-anchor" id="q-013-a-12"></span><span class="qa-anchor" id="q-013-a-13"></span><span class="qa-anchor" id="q-013-a-14"></span><span class="qa-anchor" id="q-013-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-014" data-question="14" data-answer-kind="lookup"><h2><a class="qa-qid" href="#q-014">Q14</a> Host 如何確認 Controller 支援 Physically Contiguous 或其他 Queue 形式？</h2>
-<p class="qa-prompt">先選查詢介面與目標，再說明哪個回傳欄位能支持你的結論。</p>
-<details class="qa-answer" id="q-014-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-014-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-014-a-01">Host 必須用 controller 支援的方式描述 queue 記憶體。尤其要注意，程式看到的虛擬位址即使連續，底層實體記憶體也不一定連續。</p><div class="qa-sections">
 <section class="qa-section" id="q-014-s-01" data-answer-section="1"><h3><span>1.</span> 要查哪個對象、哪份資料</h3>
 <span class="qa-anchor" id="q-014-a-02"></span><p>Admin Queue 一律要求實體記憶體連續。I/O Queue 能否使用實體不連續的頁面，則取決於 CAP.CQR，以及 queue 配置在哪一種記憶體中。</p>
@@ -269,13 +332,14 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-014-a-17"></span><p>先確認 PRP1 應該指向 queue 本體，還是 PRP list。如果把兩者弄反，即使位址可存取，controller 讀到的內容仍不是它預期的資料結構。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-cap">Base 2.4 §3.1.4 (CAP, VS)</a> · <a href="#ref-adminreg">Base 2.4 §3.1.4 (AQA, ASQ, ACQ, CMBLOC)</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-014-a-08"></span><span class="qa-anchor" id="q-014-a-09"></span><span class="qa-anchor" id="q-014-a-10"></span><span class="qa-anchor" id="q-014-a-11"></span><span class="qa-anchor" id="q-014-a-12"></span><span class="qa-anchor" id="q-014-a-13"></span><span class="qa-anchor" id="q-014-a-14"></span><span class="qa-anchor" id="q-014-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-cap">Base 2.4 §3.1.4 (CAP, VS)</a> · <a href="#ref-adminreg">Base 2.4 §3.1.4 (AQA, ASQ, ACQ, CMBLOC)</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-015" data-question="15" data-answer-kind="error"><h2><a class="qa-qid" href="#q-015">Q15</a> QID 重複、QID 為 0、CQID 不存在、Queue Size 超過 CAP.MQES 或 Interrupt Vector 非法時，Controller 應如何回應？</h2>
-<p class="qa-prompt">先區分失敗條件，再判斷是否有規範明定的回報結果。</p>
-<details class="qa-answer" id="q-015-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-015-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-015-a-01">不同的參數錯誤有各自適用的 Status。這題要練習根據錯誤欄位與狀態選擇正確結果，避免把所有情況都歸成 Invalid Field。</p><div class="qa-sections">
 <section class="qa-section" id="q-015-s-01" data-answer-section="1"><h3><span>1.</span> 先區分是哪一種失敗</h3>
 <span class="qa-anchor" id="q-015-a-02"></span><p>這裡檢查的是透過 Admin Queue 提交的 Create I/O Queue 命令。判斷 QID 是否重複時，SQ 與 CQ 各有自己的識別空間，必須在相同類型內比較。</p>
@@ -292,17 +356,18 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-015-a-17"></span><p>先確認測例確實只有一個非法條件，再核對預期的 SCT。這類命令專用錯誤通常要以 SCT=1 搭配 SC 判讀，不能只比較 SC 數字。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-irq">PCIe Transport 1.4 §3.5</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-015-a-08"></span><span class="qa-anchor" id="q-015-a-09"></span><span class="qa-anchor" id="q-015-a-10"></span><span class="qa-anchor" id="q-015-a-11"></span><span class="qa-anchor" id="q-015-a-12"></span><span class="qa-anchor" id="q-015-a-13"></span><span class="qa-anchor" id="q-015-a-14"></span><span class="qa-anchor" id="q-015-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-irq">PCIe Transport 1.4 §3.5</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-016" data-question="16" data-answer-kind="fields"><h2><a class="qa-qid" href="#q-016">Q16</a> Number of Queues Feature 回傳的數值與實際可建立的 Queue 數量有什麼關係？</h2>
-<p class="qa-prompt">先試著說明欄位的單位與編碼，再用一組數值推導結果。</p>
-<details class="qa-answer" id="q-016-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-016-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-016-a-01">Host 先向 controller 取得 I/O SQ 與 CQ 的數量配額，再依配額建立 queue。配額只說明可建立的數量，既不代表 queue 已建立，也不代表每條 queue 的深度。</p><div class="qa-sections">
 <section class="qa-section" id="q-016-s-01" data-answer-section="1"><h3><span>1.</span> 先確認資料的來源與範圍</h3>
-<span class="qa-anchor" id="q-016-a-02"></span><p>FID 07h 作用於 controller，不包含 Admin SQ／CQ。</p>
-<span class="qa-anchor" id="q-016-a-03"></span><p>實際分配數量應以 Set Features FID 07h 成功回覆的 CQE DW0 為準，之後也可用 Get Features 讀回。CAP.MQES 則回答另一個問題：每條 I/O Queue 最多可以有幾個 entry。</p>
+<span class="qa-anchor" id="q-016-a-02"></span><p>FID 07h 作用於 controller，不包含 Admin SQ／CQ。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>FID</dt><dd>Feature Identifier，功能識別碼</dd></div></dl>
+<span class="qa-anchor" id="q-016-a-03"></span><p>實際分配數量應以 Set Features FID 07h 成功回覆的 CQE DW0 為準，之後也可用 Get Features 讀回。CAP.MQES 則回答另一個問題：每條 I/O Queue 最多可以有幾個 entry。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>FID</dt><dd>Feature Identifier，功能識別碼</dd></div></dl>
 </section>
 <section class="qa-section" id="q-016-s-02" data-answer-section="2"><h3><span>2.</span> 欄位、單位與判讀例子</h3>
 <span class="qa-anchor" id="q-016-a-04"></span><p>CDW11 的 NSQR／NCQR 與 DW0 的 NSQA／NCQA 都是 zero-based；回覆可能比要求少，也可能因配置單位而較多。</p>
@@ -318,13 +383,14 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-016-a-16"></span><p>應分別保存回覆的配額、目前已建立的 queue 清單，以及 MQES 限制。Get Features 回報的是配額，不能將它解讀成目前實際存在的 queue 數量。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-number">Base 2.4 §5.2.30.1.5</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 <span class="qa-anchor" id="q-016-a-17"></span><span class="qa-anchor" id="q-016-a-08"></span><span class="qa-anchor" id="q-016-a-09"></span><span class="qa-anchor" id="q-016-a-10"></span><span class="qa-anchor" id="q-016-a-11"></span><span class="qa-anchor" id="q-016-a-13"></span><span class="qa-anchor" id="q-016-a-14"></span><span class="qa-anchor" id="q-016-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-number">Base 2.4 §5.2.30.1.5</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-017" data-question="17" data-answer-kind="process"><h2><a class="qa-qid" href="#q-017">Q17</a> Host 刪除 I/O Queue 時，SQ 與 CQ 的相依關係如何限制刪除順序？</h2>
-<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
-<details class="qa-answer" id="q-017-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-017-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-017-a-01">Host 必須先刪除依賴 CQ 的 SQ，才能刪除該 CQ。這個順序可避免 SQ 還有命令需要回報時，完成結果的目的地卻已不存在。</p><div class="qa-sections">
 <section class="qa-section" id="q-017-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
 <span class="qa-anchor" id="q-017-a-02"></span><p>一個 CQ 可能同時被多條 SQ 使用，因此要先刪除所有指向它的 SQ。只刪除與 CQ 具有相同 QID 的 SQ，並不足以滿足這個條件。</p>
@@ -340,13 +406,14 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-017-a-16"></span><p>應比較 Delete 成功回覆與記憶體釋放的先後時間。只要刪除命令尚未成功，Host 就不能僅憑「已送出 Delete」而提前回收裝置可能仍會存取的記憶體。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-017-a-17"></span><span class="qa-anchor" id="q-017-a-08"></span><span class="qa-anchor" id="q-017-a-09"></span><span class="qa-anchor" id="q-017-a-10"></span><span class="qa-anchor" id="q-017-a-11"></span><span class="qa-anchor" id="q-017-a-12"></span><span class="qa-anchor" id="q-017-a-13"></span><span class="qa-anchor" id="q-017-a-14"></span><span class="qa-anchor" id="q-017-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-018" data-question="18" data-answer-kind="error"><h2><a class="qa-qid" href="#q-018">Q18</a> 刪除不存在的 Queue、仍被 SQ 使用的 CQ 或仍有 Outstanding Command 的 SQ 時，應如何處理？</h2>
-<p class="qa-prompt">先區分失敗條件，再判斷是否有規範明定的回報結果。</p>
-<details class="qa-answer" id="q-018-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-018-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-018-a-01">仍有未完成命令，不會直接讓 Delete SQ 變成非法操作。判斷時應分清楚：刪除要求本身不合法，與合法刪除導致原命令終止，是兩種不同情況。</p><div class="qa-sections">
 <section class="qa-section" id="q-018-s-01" data-answer-section="1"><h3><span>1.</span> 先區分是哪一種失敗</h3>
 <span class="qa-anchor" id="q-018-a-02"></span><p>刪除 SQ 會影響該 SQ 中尚未完成的 I/O。刪除 CQ 則另有前提：所有依賴它的 SQ 都必須已被刪除，才能繼續進行。</p>
@@ -363,13 +430,14 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-018-a-17"></span><p>先檢查 Delete SQ 是否已成功完成；在它還 outstanding 時，不能宣布所有原命令已停止。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-018-a-08"></span><span class="qa-anchor" id="q-018-a-09"></span><span class="qa-anchor" id="q-018-a-10"></span><span class="qa-anchor" id="q-018-a-11"></span><span class="qa-anchor" id="q-018-a-12"></span><span class="qa-anchor" id="q-018-a-13"></span><span class="qa-anchor" id="q-018-a-14"></span><span class="qa-anchor" id="q-018-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-019" data-question="19" data-answer-kind="concept"><h2><a class="qa-qid" href="#q-019">Q19</a> Queue 刪除後，Controller 是否還能存取原 Queue Memory 或回報原 Queue 的 Completion？</h2>
-<p class="qa-prompt">先用自己的話解釋機制，再舉一個常見誤解。</p>
-<details class="qa-answer" id="q-019-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-019-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-019-a-01">刪除 queue 後能否回收記憶體，取決於刪除是否已成功完成。判斷違規存取時，也必須區分：CQE 是先前已寫入、只是 Host 較晚讀到，還是真的在刪除成功後才寫入。</p><div class="qa-sections">
 <section class="qa-section" id="q-019-s-01" data-answer-section="1"><h3><span>1.</span> 機制與適用範圍</h3>
 <span class="qa-anchor" id="q-019-a-02"></span><p>刪除 SQ 不會一併刪除它使用的 CQ。如果 CQ 仍存在，其中先前已寫入的完成結果，仍可能等待 Host 處理。</p>
@@ -378,20 +446,21 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <section class="qa-section" id="q-019-s-02" data-answer-section="2"><h3><span>2.</span> 用操作與結果理解</h3>
 <span class="qa-anchor" id="q-019-a-03"></span><p>以 Admin CQ 回報 Delete 成功的時點，判斷 queue 的刪除是否完成。Host 送出 Delete 的時間，或自行設定的 timeout 到期，都不能代替這個完成結果。</p>
 <span class="qa-anchor" id="q-019-a-05"></span><p>先停止提交新命令，再送出 Delete 並等待成功，之後才回收對應的 queue 記憶體與 PRP list。若只刪除 SQ，而 CQ 仍存在，Host 還須處理其中先前已寫入的完成結果。</p>
-<span class="qa-anchor" id="q-019-a-06"></span><p>Delete SQ 成功後，controller 不得再為原 SQ 的命令新增 completion。Delete CQ 成功後，Host 可釋放其 PRP list 與記憶體，controller 也不能再把已刪除的 queue 當作可存取的 DMA 目標。</p>
+<span class="qa-anchor" id="q-019-a-06"></span><p>Delete SQ 成功後，controller 不得再為原 SQ 的命令新增 completion。Delete CQ 成功後，Host 可釋放其 PRP list 與記憶體，controller 也不能再把已刪除的 queue 當作可存取的 DMA 目標。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>DMA</dt><dd>Direct Memory Access，裝置直接存取記憶體</dd></div></dl>
 </section>
 <section class="qa-section" id="q-019-s-03" data-answer-section="3"><h3><span>3.</span> 容易誤判的地方</h3>
 <span class="qa-anchor" id="q-019-a-07"></span><p>若 Delete 本身失敗或沒有完成，不能推論記憶體已可收回。逾時不是另一種 Successful Completion。</p>
 <span class="qa-anchor" id="q-019-a-16"></span><p>應一併核對 CQE 的寫入時間、Phase、Delete 完成時間，以及 Host 實際讀取 CQE 的時間。Host 較晚處理到舊 CQE，並不等於 controller 在刪除成功後才違規寫入。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-019-a-17"></span><span class="qa-anchor" id="q-019-a-08"></span><span class="qa-anchor" id="q-019-a-09"></span><span class="qa-anchor" id="q-019-a-10"></span><span class="qa-anchor" id="q-019-a-11"></span><span class="qa-anchor" id="q-019-a-12"></span><span class="qa-anchor" id="q-019-a-13"></span><span class="qa-anchor" id="q-019-a-14"></span><span class="qa-anchor" id="q-019-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-020" data-question="20" data-answer-kind="process"><h2><a class="qa-qid" href="#q-020">Q20</a> Queue Level Reset 的影響範圍是什麼？Outstanding Command 應如何處理？</h2>
-<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
-<details class="qa-answer" id="q-020-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-020-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-020-a-01">Queue Level Reset 可在不重設整個 controller 的情況下，重新建立 I/O Queue。對 PCIe 而言，這個流程是刪除後再建立 queue，並沒有另一個專用的 Reset opcode。</p><div class="qa-sections">
 <section class="qa-section" id="q-020-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
 <span class="qa-anchor" id="q-020-a-02"></span><p>影響範圍包括目標 queue，以及重建時必須一併處理的相關 queue。例如，若要重建 CQ，就要先刪除所有使用它的 SQ；等 CQ 重建完成後，再重建這些 SQ。</p>
@@ -407,13 +476,14 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-020-a-16"></span><p>核對刪除／建立順序與新舊 CID 對照，並檢查其他獨立 queue 是否保持正常。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-020-a-17"></span><span class="qa-anchor" id="q-020-a-08"></span><span class="qa-anchor" id="q-020-a-09"></span><span class="qa-anchor" id="q-020-a-10"></span><span class="qa-anchor" id="q-020-a-11"></span><span class="qa-anchor" id="q-020-a-12"></span><span class="qa-anchor" id="q-020-a-13"></span><span class="qa-anchor" id="q-020-a-14"></span><span class="qa-anchor" id="q-020-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-021" data-question="21" data-answer-kind="process"><h2><a class="qa-qid" href="#q-021">Q21</a> Controller Reset 後，原有 I/O Queue 是否有效？Host 需要重新執行哪些操作？</h2>
-<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
-<details class="qa-answer" id="q-021-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-021-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-021-a-01">Host 必須把重設前的命令與恢復後的新命令分開追蹤，才能避免把記憶體中殘留的 completion 誤認成新命令的結果。</p><div class="qa-sections">
 <section class="qa-section" id="q-021-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
 <span class="qa-anchor" id="q-021-a-02"></span><p>Controller Level Reset 刪除該 controller 的全部 I/O SQ／CQ；不同於只刪除一條 SQ。</p>
@@ -429,6 +499,7 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-021-a-16"></span><p>Host 應保存重設前後的 queue 建立紀錄與命令對照，用來區分新舊配置。這是 Host 自行管理的追蹤資訊，不是要求在 NVMe 傳輸格式中新增欄位。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-init">Base 2.4 §3.5.1</a> · <a href="#ref-number">Base 2.4 §5.2.30.1.5</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-021-a-17"></span><span class="qa-anchor" id="q-021-a-08"></span><span class="qa-anchor" id="q-021-a-09"></span><span class="qa-anchor" id="q-021-a-10"></span><span class="qa-anchor" id="q-021-a-11"></span><span class="qa-anchor" id="q-021-a-12"></span><span class="qa-anchor" id="q-021-a-13"></span><span class="qa-anchor" id="q-021-a-14"></span><span class="qa-anchor" id="q-021-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-init">Base 2.4 §3.5.1</a> · <a href="#ref-number">Base 2.4 §5.2.30.1.5</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>

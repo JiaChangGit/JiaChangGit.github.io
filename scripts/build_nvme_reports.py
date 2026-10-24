@@ -1596,6 +1596,9 @@ def main() -> int:
         ],
         "claims": all_claims,
     }
+    if args.reports:
+        print('Updated selected reports only; shared claims and landing page retained.')
+        return 0
     (CONTROL / "claims.json").write_text(
         json.dumps(claims_doc, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
@@ -1605,8 +1608,8 @@ def main() -> int:
     from scripts.nvme_reader_context import REPORT_CONTEXT
     hub=['---\nlayout: menu-page\ntitle: NVMe 教學與報告\npermalink: /nvme-notes/\nnvme_notes: true\n---\n<div class="nvme-note">',
          '<h1>NVMe 教學與報告</h1><p>先用中英文報告理解主軸、流程與案例，再打開 Spec 閱讀精確定義。中文教學 HTML 提供由淺入深的解釋，以及每張範圍內圖表的重點、案例與細節。</p>']
-    hub.append('<section><h2>NVMe 自問自答題庫：第 1～328 題，27 冊</h2><p>練習理解機制與判斷韌體行為；每題可展開 17 項解答，分別核對流程、錯誤、事件、紀錄及重設。繁中 HTML 另有逐步教學。</p><ul><li><a href="/DOCS/nvme-question-bank/index.html">繁中教學 HTML 題庫</a></li><li><a href="/nvme/question-bank/zh-tw/">中文版題庫</a></li><li><a href="/nvme/question-bank/en/">English question bank</a></li></ul></section>')
-    hub.append('<section><h2>NVMe 圖表判讀與情境練習：七冊與總索引</h2><p>45 道情境練習串接 117 張重點圖表；先做題，再展開查詢路徑與推導，並保留文件／PDF 定位。</p><ul><li><a href="/DOCS/nvme-quick-reference/index.html">繁中 HTML 速查總索引</a></li><li><a href="/nvme/figure-reference/zh-tw/">中文版速查總索引</a></li><li><a href="/nvme/figure-reference/en/">English reference index</a></li></ul></section>')
+    hub.append('<section><h2>NVMe 自問自答題庫：第 1～328 題，27 冊</h2><p>以問題帶讀機制、流程與必要條件，完整解說直接顯示。繁中 HTML 另有逐步教學。</p><ul><li><a href="/DOCS/nvme-question-bank/index.html">繁中教學 HTML 題庫</a></li><li><a href="/nvme/question-bank/zh-tw/">中文版題庫</a></li><li><a href="/nvme/question-bank/en/">English question bank</a></li></ul></section>')
+    hub.append('<section><h2>NVMe 圖表判讀與情境練習：七冊與總索引</h2><p>45 個情境串接 117 張重點圖表；每冊先完整帶讀一個情境，沿途對照規格欄位，再接其他情境與圖表索引。</p><ul><li><a href="/DOCS/nvme-quick-reference/index.html">繁中 HTML 速查總索引</a></li><li><a href="/nvme/figure-reference/zh-tw/">中文版速查總索引</a></li><li><a href="/nvme/figure-reference/en/">English reference index</a></li></ul></section>')
     for rid in order:
         editions=[a for a in contract['artifacts'] if a['report_id']==rid]
         hub.append('<section><h2>'+html.escape(REPORTS[rid]['title_zh'])+'</h2><p>'+html.escape(REPORT_CONTEXT[rid]['intro']['zh'])+'</p><ul>')

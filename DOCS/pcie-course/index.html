@@ -7,7 +7,7 @@
   <link rel="icon" href="data:,">
   <meta name="theme-color" content="#f2f6f8" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101b26" media="(prefers-color-scheme: dark)">
-  <meta name="description" content="以懂基本程式與 CPU／記憶體、但尚未學過 PCIe 的讀者為對象。先建立系統觀，再透過情境問題、規格查詢與明確標示的教學假設深入各領域。目前完成 Chapter 0–13 與全課程規劃；Chapter 14–19 尚待逐章查證、撰寫與校閱。">
+  <meta name="description" content="先建立系統觀，再依角色、流程與規格圖表深入各領域。Chapter 0–37 依 PCI Express Base 6.0 全文及附錄安排主題導讀；逐條涵蓋狀態另由規格對照表追蹤，主題導讀不等於完整條文已全部帶讀。">
   <title>PCIe 系統觀與規格閱讀課程 · PCIe 系統與規格閱讀</title>
   <style>
 /* Every selector is scoped so the same reading styles can be embedded in Jekyll. */
@@ -222,9 +222,67 @@
 
 /* Self-contained teaching diagrams use the same theme in standalone pages and posts. */
 .pcie-surface .course-diagram text { fill: var(--ink); font-family: inherit; font-size: 18px; }
+
+/* Applied only to explicitly authorized teaching roots. */
+html .spec-teaching[data-spec-series] .st-terms { margin:.35rem 0 1rem; padding:.5rem .8rem; border-inline-start:3px solid var(--st-accent); background:var(--st-soft); font-size:.88em; color:var(--st-muted); }
+html .spec-teaching[data-spec-series] .st-terms > div { display:flex; flex-wrap:wrap; gap:.2em .7em; }
+html .spec-teaching[data-spec-series] .st-terms dt { font-weight:650; }
+html .spec-teaching[data-spec-series] .st-terms dd { margin:0; flex:1 1 14em; }
+html .spec-teaching[data-spec-series] {
+ --st-diagram-width:900px;
+ --st-paper:#f2f6f8; --st-surface:#fff; --st-ink:#192d40; --st-muted:#4c6479;
+ --st-line:#cbd9e3; --st-accent:#145f9d; --st-soft:#edf5fc;
+ --paper:var(--st-paper); --surface:var(--st-surface); --surface-2:var(--st-soft); --surface-alt:var(--st-soft);
+ --ink:var(--st-ink); --muted:var(--st-muted); --line:var(--st-line);
+ --accent:var(--st-accent); --accent-2:var(--st-accent); --soft:var(--st-soft); --blue-soft:var(--st-soft); --teal-soft:var(--st-soft);
+ --qr-paper:var(--st-paper); --qr-surface:var(--st-surface); --qr-ink:var(--st-ink); --qr-muted:var(--st-muted);
+ --qr-line:var(--st-line); --qr-accent:var(--st-accent); --qr-soft:var(--st-soft);
+ color:var(--st-ink); background:var(--st-paper); font-size:17px; line-height:1.9;
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+}
+html .spec-teaching[data-spec-series="nvme"] { --st-accent:#086b56; --st-soft:#e7f4ee; }
+@media(prefers-color-scheme:dark) {
+ html:not([data-theme="light"]) .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+ html:not([data-theme="light"]) .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+}
+html[data-theme="dark"] .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+html[data-theme="dark"] .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+.spec-teaching * { box-sizing:border-box; }
+.spec-teaching :is(h1,h2,h3,h4,h5,p,li,td,th,summary,strong,figcaption) { color:var(--st-ink); }
+.spec-teaching svg text { font-family:inherit; }
+.spec-teaching h1 { font-size:clamp(1.8rem,3.2vw,2.65rem); line-height:1.4; }
+.spec-teaching h2 { font-size:clamp(1.3rem,2.5vw,1.7rem); line-height:1.55; }
+.spec-teaching h3 { font-size:1.15rem; line-height:1.65; }
+.spec-teaching h4 { font-size:1rem; line-height:1.7; }
+.spec-teaching :is(h1,h2,h3,h4) { overflow-wrap:anywhere; }
+.spec-teaching p { margin:.7rem 0 1.15rem; }
+.spec-teaching :is(a,summary) { text-underline-offset:.2em; }
+.spec-teaching :focus-visible { outline:3px solid var(--st-accent); outline-offset:4px; }
+.spec-teaching :is(.qa-takeaway,.qa-answer-lead,.st-takeaway) { color:var(--st-ink); font-weight:650; font-size:1.06rem; line-height:1.9; }
+.spec-teaching :is(.qa-question,.qr-card,.guided-walk) { border:1px solid var(--st-line); border-radius:12px; background:var(--st-surface); padding:clamp(18px,3vw,30px); margin:1.8rem 0; }
+.spec-teaching :is(.qa-flow,.qr-note,.qr-observations,.st-context,.st-route) { background:var(--st-soft); border-left:4px solid var(--st-accent); padding:1rem 1.2rem; margin:1.4rem 0; }
+.spec-teaching :is(.qr-step,.qa-qid,.st-label) { color:var(--st-accent); font-weight:700; }
+.spec-teaching :is(.qa-citations,.qa-source-links,.qr-case-sources,.walk-source,.st-source) { font-size:.84rem; line-height:1.75; color:var(--st-muted); overflow-wrap:anywhere; }
+.spec-teaching :is(.qr-table,.table-wrap) { overflow-x:auto; margin:1.4rem 0; border-radius:7px; }
+.spec-teaching :is(th,td) { line-height:1.8; vertical-align:top; min-width:120px; }
+.spec-teaching :is(table,td) { background:var(--st-surface); }
+.spec-teaching th { background:var(--st-soft); }
+.spec-teaching .st-step { border-left:3px solid var(--st-line); padding:.6rem 1rem; margin:1.2rem 0; }
+.spec-teaching .st-step:target { border-left-color:var(--st-accent); background:var(--st-soft); }
+.spec-teaching .st-glossary { border:1px solid var(--st-line); padding:.7rem 1rem; margin:1.4rem 0; border-radius:8px; }
+.spec-teaching .st-glossary > summary { min-height:44px; cursor:pointer; }
+.spec-teaching .st-specs { display:flex; flex-wrap:wrap; gap:.4rem 1rem; color:var(--st-muted); font-size:.8rem; line-height:1.8; margin:1rem 0; }
+.spec-teaching .st-specs span { border-bottom:2px solid var(--st-accent); padding:.2rem 0; }
+@media(max-width:620px) { .spec-teaching :is(.qa-question,.qr-card,.guided-walk) { padding:16px; } .spec-teaching .diagram svg { min-width:var(--st-diagram-width); } }
+@media print {
+ .spec-teaching { --st-paper:#fff!important; --st-surface:#fff!important; --st-ink:#000!important; --st-muted:#333!important; --st-line:#999!important; --st-accent:#000!important; --st-soft:#fff!important; }
+ .spec-teaching details > * { display:block!important; }
+ .spec-teaching details::details-content { content-visibility:visible!important; }
+ .spec-teaching .st-step { break-inside:avoid; }
+}
   </style>
 </head>
-<body class="pcie-surface">
+<body class="pcie-surface spec-teaching" data-spec-series="pcie">
   <a class="skip-link" href="#content">跳到正文</a>
   <div class="site-shell">
     <nav class="topbar" aria-label="課程導覽">
@@ -234,8 +292,8 @@
     <header class="page-header">
       <p class="eyebrow">PCIe · 系統與規格閱讀 / COURSE GUIDE</p>
       <h1>PCIe 系統觀與規格閱讀課程</h1>
-      <p class="header-description">以懂基本程式與 CPU／記憶體、但尚未學過 PCIe 的讀者為對象。先建立系統觀，再透過情境問題、規格查詢與明確標示的教學假設深入各領域。目前完成 Chapter 0–13 與全課程規劃；Chapter 14–19 尚待逐章查證、撰寫與校閱。</p>
-      <div class="edition"><span>繁體中文 · 規格與情境推演</span><span>2026-10-23</span></div>
+      <p class="header-description">先建立系統觀，再依角色、流程與規格圖表深入各領域。Chapter 0–37 依 PCI Express Base 6.0 全文及附錄安排主題導讀；逐條涵蓋狀態另由規格對照表追蹤，主題導讀不等於完整條文已全部帶讀。</p>
+      <div class="edition"><span>繁體中文 · 規格與情境推演</span><span>2026-10-24</span></div>
     </header>
     <div class="reading-layout">
       <aside class="toc-panel" aria-label="本頁目錄">
@@ -246,10 +304,10 @@
         <article class="lesson">
 <section id="start"><h2>先把系統看懂，再深入各領域</h2>
 <p class="lead">這套課程從裝置在系統裡的角色出發。先理解軟體為什麼要查這個欄位，再沿著規格找出答案，逐步走進裝置發現、資源配置、傳輸與系統管理。</p>
-<p>目前可以完整閱讀 Chapter 0、Chapter 1、Chapter 2、Chapter 3、Chapter 4、Chapter 5、Chapter 6、Chapter 7、Chapter 8、Chapter 9、Chapter 10、Chapter 11、Chapter 12、Chapter 13。下列其他章節是後續課程規劃，尚未完成教材；章節主題與順序仍可能隨來源查證結果調整。</p>
+<p>目前可閱讀 Chapter 0–37。先從系統觀建立共同基礎，再依需要選擇交易、實體層、虛擬化或管理主題。各章列出本次帶讀的條文與圖表位置。</p>
 <p><a class="start-link" href="chapter-0.html">從 Chapter 0 開始 →</a></p></section>
 <section id="method"><h2>讀情境，也讀推理過程</h2>
-<p>Chapter 7–9 已先採用新版圖解教學，其他已發布章節保留原版。這三章先從總覽圖看角色與路徑，再跟著正常流程閱讀。每一步都會指出相關的規格圖表、使用的欄位，以及接下來的動作。案例中的配置與讀值標明為作者假設，適用條件則在使用前交代。</p>
+<p>課程先從總覽圖看角色與路徑，再跟著正常流程閱讀。每一步都會指出相關的規格圖表、使用的欄位，以及接下來的動作。案例中的配置與讀值標明為作者假設，適用條件則在使用前交代。</p>
 <ul><li><strong>跟著圖解走一遍：</strong>完整圖與文字持續顯示，可選擇步驟標出當下的元件與解說。</li><li><strong>接上本章需要的背景：</strong>前情提要只回顧接下來會使用的關係，延伸背景可就近展開。</li><li><strong>沿流程閱讀規格：</strong>先看簡短的閱讀路線，再逐步對照 Figure、Table 與相關條文。</li></ul></section>
 <section id="curriculum"><h2>課程安排</h2><p>章號提供一條漸進的閱讀路徑；已有相關基礎時，也可以依各章的先備知識選擇切入點。</p>
 <div class="chapter-list"><article class="chapter-card ready" id="chapter-0"><div class="chapter-meta"><span>CHAPTER 0</span><span class="status">已完成 · 可閱讀</span></div><h3><a href="chapter-0.html">從系統全貌到第一次規格查詢</a></h3><p class="chapter-question">一個 PCIe 裝置如何被系統認識並使用？又該如何查出它支援什麼？</p><ul><li>PCIe 的用途與 CPU、記憶體、裝置之間的關係</li><li>Root Complex、Root Port、Switch、Endpoint 的角色辨識</li><li>建立連線、發現裝置、配置資源與開始使用的整體流程</li><li>Configuration Space、MMIO 與 DMA 的用途區分</li><li>支援能力、控制設定與目前狀態的差別</li><li>依序查找 Capability、Figure、Table 與欄位的完整速率判讀案例</li><li>用反例說明低於最高支援速率不等於已證明故障</li></ul><p class="prerequisites"><strong>先備知識：</strong>基本程式與 CPU／記憶體概念；不需要 PCIe 經驗</p></article>
@@ -266,12 +324,30 @@
 <article class="chapter-card ready" id="chapter-11"><div class="chapter-meta"><span>CHAPTER 11</span><span class="status">已完成 · 可閱讀</span></div><h3><a href="chapter-11.html">熱插拔與拓樸變動</a></h3><p class="chapter-question">系統運作中新增或移除裝置，如何維持資源與軟體狀態的一致性？</p><ul><li>Hot-Plug 能力與 Slot 的關係</li><li>Presence、事件狀態、控制與通知</li><li>插入、供電、建立連線與開始枚舉</li><li>正常移除與 Surprise Removal 的條件差異</li><li>預留資源與重新配置的問題</li><li>軟體停止使用與實體裝置離開的先後關係</li><li>DPC 對錯誤隔離的用途，連回錯誤處理章深入</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 3、Chapter 4、Chapter 7、Chapter 8、Chapter 9、Chapter 10</p></article>
 <article class="chapter-card ready" id="chapter-12"><div class="chapter-meta"><span>CHAPTER 12</span><span class="status">已完成 · 可閱讀</span></div><h3><a href="chapter-12.html">錯誤證據、回報與隔離</a></h3><p class="chapter-question">收到 PCIe 錯誤時，應如何從紀錄判斷發生了什麼，以及哪些結論仍缺乏證據？</p><ul><li>Correctable 與 Uncorrectable 錯誤</li><li>狀態、Mask、Severity 與回報控制</li><li>AER 的查詢入口及紀錄解讀</li><li>Root Port 回報與錯誤來源追蹤</li><li>DPC 的隔離與恢復條件</li><li>Header Log 與必要的交易背景</li><li>保留證據、判斷範圍與清除狀態的順序</li><li>以跨元件紀錄練習避免過度推論</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 2、Chapter 5、Chapter 7、Chapter 8、Chapter 9</p></article>
 <article class="chapter-card ready" id="chapter-13"><div class="chapter-meta"><span>CHAPTER 13</span><span class="status">已完成 · 可閱讀</span></div><h3><a href="chapter-13.html">韌體、ACPI 與 OS 的控制權</a></h3><p class="chapter-question">同一個 PCIe 功能，究竟由韌體還是 OS 管理？軟體如何得知平台的限制？</p><ul><li>UEFI 階段的 PCI Bus 與 PCI I/O 介面</li><li>ACPI 描述的 Root Bridge、設定空間與資源</li><li>MCFG、_CRS 與相關描述的用途</li><li>_OSC 等控制權協調與能力確認</li><li>原生 Hot-Plug、AER 與電源管理的管理者</li><li>系統啟動交接與執行期間的責任邊界</li><li>區分 PCI Firmware、UEFI、ACPI 各自規定的內容</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 3、Chapter 4、Chapter 7、Chapter 10、Chapter 11、Chapter 12</p></article>
-<article class="chapter-card planned" id="chapter-14"><div class="chapter-meta"><span>CHAPTER 14</span><span class="status">規劃中 · 尚未撰寫</span></div><h3>開機裝置、Option ROM 與相容機制</h3><p class="chapter-question">OS 尚未載入驅動程式，韌體如何利用 PCIe 裝置開機？哪些流程只適用於舊式系統？</p><ul><li>Expansion ROM BAR 與 ROM 映像</li><li>ROM Header、PCI Data Structure 與映像選擇</li><li>UEFI Driver 與裝置初始化的關係</li><li>開機服務、裝置路徑與 OS 驅動程式的交接</li><li>Legacy BIOS 介面與歷史相容需求</li><li>原生 PCIe 機制與沿用 PCI 規則的區別</li><li>避免把某平台的啟動行為當成所有系統要求</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 2、Chapter 3、Chapter 4、Chapter 13</p></article>
-<article class="chapter-card planned" id="chapter-15"><div class="chapter-meta"><span>CHAPTER 15</span><span class="status">規劃中 · 尚未撰寫</span></div><h3>多功能、ARI 與 SR-IOV</h3><p class="chapter-question">一個實體裝置如何提供多個獨立的軟體使用對象？</p><ul><li>多功能裝置與虛擬化的不同需求</li><li>ARI 對 Function 識別與轉送的影響</li><li>Physical Function 與 Virtual Function</li><li>SR-IOV 能力、VF 數量與啟用條件</li><li>VF 位址資源、身分與中斷</li><li>Reset 及資源共享的隔離界線</li><li>以假設拓樸追蹤 PF 與 VF 的查詢入口</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 1、Chapter 2、Chapter 3、Chapter 4、Chapter 7、Chapter 9</p></article>
-<article class="chapter-card planned" id="chapter-16"><div class="chapter-meta"><span>CHAPTER 16</span><span class="status">規劃中 · 尚未撰寫</span></div><h3>ATS、PRI 與 PASID</h3><p class="chapter-question">裝置需要替不同工作存取記憶體時，如何辨識位址空間並處理轉譯需求？</p><ul><li>未轉譯位址、已轉譯位址與平台 IOMMU</li><li>ATS 的能力、啟用與轉譯快取</li><li>失效通知與快取一致性要求</li><li>PASID 所辨識的對象及有效條件</li><li>PRI 的用途、請求與回應</li><li>ATS、PRI、PASID 之間的關係與獨立能力</li><li>缺少其中一項能力時能做與不能做的事</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 2、Chapter 5、Chapter 6、Chapter 12、Chapter 15</p></article>
-<article class="chapter-card planned" id="chapter-17"><div class="chapter-meta"><span>CHAPTER 17</span><span class="status">規劃中 · 尚未撰寫</span></div><h3>隔離、存取控制與傳輸安全</h3><p class="chapter-question">裝置能傳送合法的 PCIe 交易，是否就表示它可以安全地存取任何目標？</p><ul><li>威脅情境與信任邊界</li><li>ACS 與 Peer-to-Peer 路由限制</li><li>IOMMU 隔離和 PCIe 存取控制的分工</li><li>IDE 的保護目標、能力與適用範圍</li><li>安全建立所需的其他規格與平台前提</li><li>支援、啟用、驗證成功與保護生效的證據區分</li><li>不把封包完整性、身分驗證與資料保密混為一談</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 2、Chapter 5、Chapter 6、Chapter 12、Chapter 13、Chapter 15、Chapter 16</p></article>
-<article class="chapter-card planned" id="chapter-18"><div class="chapter-meta"><span>CHAPTER 18</span><span class="status">規劃中 · 尚未撰寫</span></div><h3>實體連線、訊號與板級限制</h3><p class="chapter-question">規格欄位看起來相容，為什麼實體連線仍可能無法達到預期速度或寬度？</p><ul><li>差動訊號、Lane 與雙向傳輸的必要背景</li><li>時脈、編碼與 PCIe 6.0 訊號傳輸方式</li><li>Equalization、通道條件與訓練結果</li><li>Retimer 與其他中間元件的作用</li><li>連接器、卡片、供電與 Base Specification 的範圍差異</li><li>Link 寬度、速度與實體條件的關係</li><li>用規格證據縮小原因範圍，避免僅憑狀態值推斷訊號品質</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 8、Chapter 9、Chapter 10</p></article>
-<article class="chapter-card planned" id="chapter-19"><div class="chapter-meta"><span>CHAPTER 19</span><span class="status">規劃中 · 尚未撰寫</span></div><h3>效能推估與跨章判讀</h3><p class="chapter-question">Link 已達預期速度與寬度，應用程式為什麼仍未達到預期傳輸量？</p><ul><li>GT/s、編碼效率、協定開銷與有效資料量</li><li>MPS、MRRS、Completion 切分與交易數量</li><li>可並行要求數、延遲與吞吐量</li><li>拓樸共享、Peer-to-Peer 與上游瓶頸</li><li>電源狀態、重送與軟體工作負載的影響</li><li>把能力、設定、狀態、量測分成不同證據</li><li>整合多個欄位與假設工作負載，推導上限及不確定性</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 4、Chapter 5、Chapter 6、Chapter 7、Chapter 8、Chapter 10、Chapter 12、Chapter 18</p></article></div></section>
+<article class="chapter-card ready" id="chapter-14"><div class="chapter-meta"><span>CHAPTER 14</span><span class="status">已完成 · 可閱讀</span></div><h3><a href="chapter-14.html">從 TLP 標頭到 Flit 封包布局</a></h3><p class="chapter-question">收到一段封包資料，要從哪個欄位開始讀？</p><ul><li>Non-Flit 與 Flit 的封包類別、長度與位置</li><li>Memory、I/O、Configuration、Message 與 Completion 的格式</li><li>Prefix、OHC、識別、路由與有效條件</li><li>保留位元及資料負載的判讀路線</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 2、Chapter 5、Chapter 8</p></article>
+<article class="chapter-card ready" id="chapter-15"><div class="chapter-meta"><span>CHAPTER 15</span><span class="status">已完成 · 可閱讀</span></div><h3><a href="chapter-15.html">接收要求、完成回覆與進階交易</a></h3><p class="chapter-question">要求到了接收端，什麼時候才算完成？</p><ul><li>Completer 檢查、回覆、Byte Count 與分段條件</li><li>Completion Timeout 與進行中要求的生命週期</li><li>Locked Transactions 與 AtomicOps 的目標、路由及保證</li><li>Deferrable Memory Write 的能力、請求與回覆</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 5、Chapter 6、Chapter 9、Chapter 14</p></article>
+<article class="chapter-card ready" id="chapter-16"><div class="chapter-meta"><span>CHAPTER 16</span><span class="status">已完成 · 可閱讀</span></div><h3><a href="chapter-16.html">Traffic Class、Virtual Channel 與仲裁</a></h3><p class="chapter-question">不同流量共用一條 Link，如何避免一起被堵住？</p><ul><li>TC 到 VC 的對應與獨立資源</li><li>Port 與多功能裝置的 VC 能力、資源及仲裁</li><li>VC 配置、啟用與協調條件</li><li>Appendix A 的等時性需求與端到端預算</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 5、Chapter 8、Chapter 14</p></article>
+<article class="chapter-card ready" id="chapter-17"><div class="chapter-meta"><span>CHAPTER 17</span><span class="status">已完成 · 可閱讀</span></div><h3><a href="chapter-17.html">資料連結初始化、流量控制與重送細節</a></h3><p class="chapter-question">credit、Ack 和 Completion 各自在哪一步發生？</p><ul><li>Data Link 管理狀態、Feature Exchange 與 FC 初始化</li><li>Scaled Flow Control、不同封包類別與額度更新</li><li>Non-Flit 與 Flit 的確認、序號、錯誤及重送差異</li><li>ECRC、LCRC、Poison 的責任邊界</li><li>Appendix H 的更新與 ACK 延遲計算</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 8、Chapter 14、Chapter 16</p></article>
+<article class="chapter-card ready" id="chapter-18"><div class="chapter-meta"><span>CHAPTER 18</span><span class="status">已完成 · 可閱讀</span></div><h3><a href="chapter-18.html">編碼、Flit、CRC 與 FEC 如何合作</a></h3><p class="chapter-question">Flit、編碼與錯誤更正，怎麼放在同一張圖裡？</p><ul><li>8b/10b、128b/130b 與 1b/1b 的適用範圍</li><li>封包框定、Ordered Sets、Scrambling 與 Flit 布局</li><li>CRC 與 Forward Error Correction 的各自用途</li><li>Appendices B、J、K 的編碼與矩陣閱讀方法</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 8、Chapter 14、Chapter 17</p></article>
+<article class="chapter-card ready" id="chapter-19"><div class="chapter-meta"><span>CHAPTER 19</span><span class="status">已完成 · 可閱讀</span></div><h3><a href="chapter-19.html">LTSSM、Equalization 與 Retimer</a></h3><p class="chapter-question">Link 還沒到正常傳送狀態，應該追哪個階段？</p><ul><li>完整訓練狀態、狀態進入與離開條件</li><li>速率、Lane 寬度、Lane 編號與降級</li><li>不同速率的 Equalization 與訓練交換</li><li>Retimer 的分段、轉送、設定與重設關係</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 8、Chapter 9、Chapter 18</p></article>
+<article class="chapter-card ready" id="chapter-20"><div class="chapter-meta"><span>CHAPTER 20</span><span class="status">已完成 · 可閱讀</span></div><h3><a href="chapter-20.html">發射端電氣條件與量測觀點</a></h3><p class="chapter-question">要判讀發送端電氣規格，為什麼不能先抄一個電壓上限？</p><ul><li>電氣規格的量測位置、方向與單位</li><li>不同速率的發射電壓、抖動與等化參數</li><li>PAM4 發射條件與線性相關量</li><li>以規格表串起量測條件與允收範圍</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 18、Chapter 19</p></article>
+<article class="chapter-card ready" id="chapter-21"><div class="chapter-meta"><span>CHAPTER 21</span><span class="status">已完成 · 可閱讀</span></div><h3><a href="chapter-21.html">接收端、通道與參考時脈</a></h3><p class="chapter-question">發送端符合規格，為什麼接收端還要另做測試？</p><ul><li>接收器容忍條件與測試情境</li><li>通道損耗、串擾、拓樸及量測位置</li><li>Refclk 架構與各自的時脈條件</li><li>Appendix C 與板級實作邊界</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 18、Chapter 19、Chapter 20</p></article>
+<article class="chapter-card ready" id="chapter-22"><div class="chapter-meta"><span>CHAPTER 22</span><span class="status">已完成 · 可閱讀</span></div><h3><a href="chapter-22.html">連線診斷、Lane Margining 與 Flit 紀錄</a></h3><p class="chapter-question">要檢查某條 Lane，設定空間應該怎麼查？</p><ul><li>不同 PHY Extended Capability 的定位與判讀</li><li>Lane Margining 的能力、控制、狀態及觀察範圍</li><li>Flit Logging、錯誤注入與計數的不同用途</li><li>Device 3 與 Secondary PCIe 欄位如何接回主機制</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 12、Chapter 17、Chapter 19、Chapter 21</p></article>
+<article class="chapter-card ready" id="chapter-23"><div class="chapter-meta"><span>CHAPTER 23</span><span class="status">已完成 · 可閱讀</span></div><h3><a href="chapter-23.html">功率預算、動態分配與緊急降功耗</a></h3><p class="chapter-question">裝置已進 D0，功率限制還有哪些層次？</p><ul><li>完整電源狀態、輔助電源、事件與橋接分工</li><li>Power Budgeting 與 Slot Power Limit 的對象</li><li>Dynamic Power Allocation 的能力、狀態與控制</li><li>Emergency Power Reduction 與 SR-IOV 電源關係</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 10、Chapter 16</p></article>
+<article class="chapter-card ready" id="chapter-24"><div class="chapter-meta"><span>CHAPTER 24</span><span class="status">已完成 · 可閱讀</span></div><h3><a href="chapter-24.html">TPH、LTR 與 OBFF 的平台協調</a></h3><p class="chapter-question">裝置如何告訴平台「資料會怎麼用、多久需要服務」？</p><ul><li>TPH 的提示、Steering Tag 與資料移動位置</li><li>LTR 的延遲容忍回報、編碼及更新</li><li>OBFF 的通知模式、條件與緩衝區協作</li><li>支援、配置、目前狀態與效益的證據</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 6、Chapter 10、Chapter 16、Chapter 23</p></article>
+<article class="chapter-card ready" id="chapter-25"><div class="chapter-meta"><span>CHAPTER 25</span><span class="status">已完成 · 可閱讀</span></div><h3><a href="chapter-25.html">PTM 與時間同步的角色、交換與精度</a></h3><p class="chapter-question">兩個裝置的本地時鐘不同，要如何對齊事件時間？</p><ul><li>PTM Root、Requester、Responder 的角色</li><li>能力查詢、Enable、Context 與交換流程</li><li>時間、延遲、粒度及結果有效性</li><li>狀態改變後何時需要重新建立有效資訊</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 5、Chapter 16、Chapter 19</p></article>
+<article class="chapter-card ready" id="chapter-26"><div class="chapter-meta"><span>CHAPTER 26</span><span class="status">已完成 · 可閱讀</span></div><h3><a href="chapter-26.html">多功能、ARI、SR-IOV 與 Shadow Functions</a></h3><p class="chapter-question">一個裝置提供很多 Function，身分與資源怎麼算？</p><ul><li>ARI 的 Function 身分、探索與轉送</li><li>PF、VF、資源分配與啟用生命週期</li><li>VF BAR、VF Resizable BAR、MSI-X 與 Reset</li><li>Shadow Functions 的能力與使用條件</li><li>Base Chapter 9 的架構、初始化與完整欄位路線</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 1、Chapter 2、Chapter 4、Chapter 7、Chapter 9</p></article>
+<article class="chapter-card ready" id="chapter-27"><div class="chapter-meta"><span>CHAPTER 27</span><span class="status">已完成 · 可閱讀</span></div><h3><a href="chapter-27.html">ATS、PRI 與 PASID 的位址轉譯流程</a></h3><p class="chapter-question">裝置快取了位址轉譯，映射改變時怎麼辦？</p><ul><li>Base Chapter 10 的 ATS 架構、Translation Request 與 Completion</li><li>已轉譯及未轉譯位址、Memory Attributes 與 PASID</li><li>轉譯快取、Invalidation Request 與完成條件</li><li>Page Request Interface 的群組、請求及回覆</li><li>ATS、PRI、PASID 的能力、控制、重設及失敗生命週期</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 6、Chapter 14、Chapter 26</p></article>
+<article class="chapter-card ready" id="chapter-28"><div class="chapter-meta"><span>CHAPTER 28</span><span class="status">已完成 · 可閱讀</span></div><h3><a href="chapter-28.html">ACS、Peer-to-Peer 與 Multicast</a></h3><p class="chapter-question">兩張卡在同一個 Switch 下，可以直接互相存取嗎？</p><ul><li>ACS 的能力、控制與請求轉送條件</li><li>Peer-to-Peer 的路由、隔離及平台前提</li><li>Multicast 的群組、位址窗口、轉送及阻擋</li><li>同一筆交易如何依條件走不同路徑</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 1、Chapter 5、Chapter 14、Chapter 26、Chapter 27</p></article>
+<article class="chapter-card ready" id="chapter-29"><div class="chapter-meta"><span>CHAPTER 29</span><span class="status">已完成 · 可閱讀</span></div><h3><a href="chapter-29.html">Enhanced Allocation、Resizable BAR 與拓樸轉譯</a></h3><p class="chapter-question">裝置支援很大的 BAR，系統就一定能分配嗎？</p><ul><li>Enhanced Allocation 的資源描述與有效欄位</li><li>Resizable BAR 的支援大小、選擇與重新配置</li><li>Hierarchy ID 與 FPB 的識別及範圍轉譯</li><li>沿能力、設定與路由核對同一個 Function</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 2、Chapter 3、Chapter 4、Chapter 26</p></article>
+<article class="chapter-card ready" id="chapter-30"><div class="chapter-meta"><span>CHAPTER 30</span><span class="status">已完成 · 可閱讀</span></div><h3><a href="chapter-30.html">Root Complex 連結宣告、身分與裝置資料</a></h3><p class="chapter-question">裝置身分、產品資料與內部拓樸，要用同一份資訊嗎？</p><ul><li>Root Complex 拓樸宣告、內部連結與 RCRB</li><li>Root Complex Event Collector 的關聯資訊</li><li>DSN、Subsystem ID、VPD 的查詢與用途</li><li>Vendor-Specific、VSEC、DVSEC 與 Null 結構的閱讀邊界</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 1、Chapter 2、Chapter 3、Chapter 12、Chapter 29</p></article>
+<article class="chapter-card ready" id="chapter-31"><div class="chapter-meta"><span>CHAPTER 31</span><span class="status">已完成 · 可閱讀</span></div><h3><a href="chapter-31.html">DOE 與元件量測、認證</a></h3><p class="chapter-question">想取得元件的安全量測資料，先如何交換物件？</p><ul><li>DOE 的協定探索、信箱、控制與狀態</li><li>物件交換的先後、長度、等待與錯誤處理</li><li>CMA／SPDM 的角色、測量與信任邊界</li><li>Base 規則與外部安全協定的來源分工</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 2、Chapter 5、Chapter 28、Chapter 30</p></article>
+<article class="chapter-card ready" id="chapter-32"><div class="chapter-meta"><span>CHAPTER 32</span><span class="status">已完成 · 可閱讀</span></div><h3><a href="chapter-32.html">IDE 的保護範圍、Stream 與金鑰生命週期</a></h3><p class="chapter-question">IDE 開啟後，資料到底受到哪一段保護？</p><ul><li>Link IDE 與 Selective IDE 的保護範圍</li><li>Stream 的身分、位址關聯、配置與狀態</li><li>金鑰、IV、完整性與資料保密的角色</li><li>啟用、狀態改變、失敗與恢復條件</li><li>Appendix L 的封包範例閱讀</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 14、Chapter 17、Chapter 28、Chapter 31</p></article>
+<article class="chapter-card ready" id="chapter-33"><div class="chapter-meta"><span>CHAPTER 33</span><span class="status">已完成 · 可閱讀</span></div><h3><a href="chapter-33.html">Protocol Multiplexing 與替代協定</a></h3><p class="chapter-question">同一條 Link 承載其他協定，PCIe 的哪些規則還適用？</p><ul><li>Appendix G 的協定多工角色與交換</li><li>Alternate Protocol 能力、選擇與適用條件</li><li>流量分類、轉送與原生 PCIe 的分工</li><li>重設、模式改變及互通性邊界</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 14、Chapter 18、Chapter 19</p></article>
+<article class="chapter-card ready" id="chapter-34"><div class="chapter-meta"><span>CHAPTER 34</span><span class="status">已完成 · 可閱讀</span></div><h3><a href="chapter-34.html">Readiness、進階熱插拔與平台管理</a></h3><p class="chapter-question">Link 已啟動，軟體還要等多久才能讀設定空間？</p><ul><li>Readiness Notifications、FRS Queueing 與時間回報</li><li>Async Hot-Plug 與 Appendix I 參考模型</li><li>NPEM 的能力、控制、狀態與外殼管理</li><li>Conventional PCI AF 與 SFI 的平台約定</li><li>不同管理者、就緒狀態及事件的串接</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 9、Chapter 11、Chapter 12、Chapter 13、Chapter 23、Chapter 26</p></article>
+<article class="chapter-card ready" id="chapter-35"><div class="chapter-meta"><span>CHAPTER 35</span><span class="status">已完成 · 可閱讀</span></div><h3><a href="chapter-35.html">Expansion ROM 與開機路徑</a></h3><p class="chapter-question">開機韌體如何從 ROM 位址走到正確的映像？</p><ul><li>Expansion ROM BAR 與裝置初始化前提</li><li>Firmware 3.3 的 ROM 結構、映像與選擇</li><li>開機前存取、驅動與 OS 接手的界線</li><li>相容規則與平台政策分開標示</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 2、Chapter 4、Chapter 13、Chapter 30</p></article>
+<article class="chapter-card ready" id="chapter-36"><div class="chapter-meta"><span>CHAPTER 36</span><span class="status">已完成 · 可閱讀</span></div><h3><a href="chapter-36.html">交易依賴、ID-Based Ordering 與 Message</a></h3><p class="chapter-question">先送資料、再送通知，讀者要確認哪些排序條件？</p><ul><li>Device Synchronization 與交易依賴</li><li>Appendix D 的相依關係與等待條件</li><li>Appendix E 的 ID-Based Ordering 使用情境</li><li>Appendix F 的 Message Code 分配與選擇</li><li>以跨元件案例核對允許及禁止的先後</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 5、Chapter 6、Chapter 14、Chapter 15、Chapter 16、Chapter 17</p></article>
+<article class="chapter-card ready" id="chapter-37"><div class="chapter-meta"><span>CHAPTER 37</span><span class="status">已完成 · 可閱讀</span></div><h3><a href="chapter-37.html">效能推估與跨章觀察</a></h3><p class="chapter-question">速率與寬度都很高，為什麼應用仍跑不滿？</p><ul><li>GT/s、編碼、Flit、協定開銷與有效資料</li><li>MPS、MRRS、分段、Tag 數與往返延遲</li><li>Virtual Channel、仲裁、共享路徑與瓶頸</li><li>Flit Performance Measurement 的能力與讀值</li><li>以假設工作負載串起欄位、限制及觀察結果</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 14、Chapter 16、Chapter 17、Chapter 18、Chapter 19、Chapter 22、Chapter 24、Chapter 26、Chapter 29、Chapter 36</p></article></div></section>
 <section id="versions"><h2>版本與來源怎麼讀？</h2>
 <p>目前已完成章節的欄位與圖表以 <strong>PCI Express Base Specification Revision 6.0</strong> 為準，韌體背景另參考 <strong>PCI Firmware Specification Revision 3.3</strong>。Firmware 3.3 列出的 Base 參考版本為 5.0，因此教材逐項保留來源版本，不把兩份文件當成同版配套。</p>
 <p>章內引用會列出章節、適用的 Figure／Table 與頁碼。補充資料標明來源及版本；作者設計的配置、讀值與推演也會另行標示。後續進階章節若需要其他規格，會在完成查證後再納入教材。</p>

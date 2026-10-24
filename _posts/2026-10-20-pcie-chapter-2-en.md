@@ -2,10 +2,14 @@
 layout: post
 title: "PCIe Chapter 2: Reading Configuration Space and Finding Capabilities"
 date: 2026-10-20 00:00:00 +0800
+last_modified_at: 2026-10-23 00:00:00 +0800
 permalink: /pcie/chapter-2-en/
 categories: [PCIe]
 tags: [PCIe, Specification]
 lang: en
+spec_teaching: true
+spec_series: pcie
+description: "從傳統與 Extended 清單找到 Device Serial Number，練習指標、欄位版本、位元組順序與存取屬性的判讀。"
 ---
 
 <style>
@@ -220,42 +224,190 @@ lang: en
 /* Self-contained teaching diagrams use the same theme in standalone pages and posts. */
 .pcie-article .course-diagram text { fill: var(--ink); font-family: inherit; font-size: 18px; }
 
+/* Applied only to explicitly authorized teaching roots. */
+html .spec-teaching[data-spec-series] .st-terms { margin:.35rem 0 1rem; padding:.5rem .8rem; border-inline-start:3px solid var(--st-accent); background:var(--st-soft); font-size:.88em; color:var(--st-muted); }
+html .spec-teaching[data-spec-series] .st-terms > div { display:flex; flex-wrap:wrap; gap:.2em .7em; }
+html .spec-teaching[data-spec-series] .st-terms dt { font-weight:650; }
+html .spec-teaching[data-spec-series] .st-terms dd { margin:0; flex:1 1 14em; }
+html .spec-teaching[data-spec-series] {
+ --st-diagram-width:900px;
+ --st-paper:#f2f6f8; --st-surface:#fff; --st-ink:#192d40; --st-muted:#4c6479;
+ --st-line:#cbd9e3; --st-accent:#145f9d; --st-soft:#edf5fc;
+ --paper:var(--st-paper); --surface:var(--st-surface); --surface-2:var(--st-soft); --surface-alt:var(--st-soft);
+ --ink:var(--st-ink); --muted:var(--st-muted); --line:var(--st-line);
+ --accent:var(--st-accent); --accent-2:var(--st-accent); --soft:var(--st-soft); --blue-soft:var(--st-soft); --teal-soft:var(--st-soft);
+ --qr-paper:var(--st-paper); --qr-surface:var(--st-surface); --qr-ink:var(--st-ink); --qr-muted:var(--st-muted);
+ --qr-line:var(--st-line); --qr-accent:var(--st-accent); --qr-soft:var(--st-soft);
+ color:var(--st-ink); background:var(--st-paper); font-size:17px; line-height:1.9;
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+}
+html .spec-teaching[data-spec-series="nvme"] { --st-accent:#086b56; --st-soft:#e7f4ee; }
+@media(prefers-color-scheme:dark) {
+ html:not([data-theme="light"]) .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+ html:not([data-theme="light"]) .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+}
+html[data-theme="dark"] .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+html[data-theme="dark"] .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+.spec-teaching * { box-sizing:border-box; }
+.spec-teaching :is(h1,h2,h3,h4,h5,p,li,td,th,summary,strong,figcaption) { color:var(--st-ink); }
+.spec-teaching svg text { font-family:inherit; }
+.spec-teaching h1 { font-size:clamp(1.8rem,3.2vw,2.65rem); line-height:1.4; }
+.spec-teaching h2 { font-size:clamp(1.3rem,2.5vw,1.7rem); line-height:1.55; }
+.spec-teaching h3 { font-size:1.15rem; line-height:1.65; }
+.spec-teaching h4 { font-size:1rem; line-height:1.7; }
+.spec-teaching :is(h1,h2,h3,h4) { overflow-wrap:anywhere; }
+.spec-teaching p { margin:.7rem 0 1.15rem; }
+.spec-teaching :is(a,summary) { text-underline-offset:.2em; }
+.spec-teaching :focus-visible { outline:3px solid var(--st-accent); outline-offset:4px; }
+.spec-teaching :is(.qa-takeaway,.qa-answer-lead,.st-takeaway) { color:var(--st-ink); font-weight:650; font-size:1.06rem; line-height:1.9; }
+.spec-teaching :is(.qa-question,.qr-card,.guided-walk) { border:1px solid var(--st-line); border-radius:12px; background:var(--st-surface); padding:clamp(18px,3vw,30px); margin:1.8rem 0; }
+.spec-teaching :is(.qa-flow,.qr-note,.qr-observations,.st-context,.st-route) { background:var(--st-soft); border-left:4px solid var(--st-accent); padding:1rem 1.2rem; margin:1.4rem 0; }
+.spec-teaching :is(.qr-step,.qa-qid,.st-label) { color:var(--st-accent); font-weight:700; }
+.spec-teaching :is(.qa-citations,.qa-source-links,.qr-case-sources,.walk-source,.st-source) { font-size:.84rem; line-height:1.75; color:var(--st-muted); overflow-wrap:anywhere; }
+.spec-teaching :is(.qr-table,.table-wrap) { overflow-x:auto; margin:1.4rem 0; border-radius:7px; }
+.spec-teaching :is(th,td) { line-height:1.8; vertical-align:top; min-width:120px; }
+.spec-teaching :is(table,td) { background:var(--st-surface); }
+.spec-teaching th { background:var(--st-soft); }
+.spec-teaching .st-step { border-left:3px solid var(--st-line); padding:.6rem 1rem; margin:1.2rem 0; }
+.spec-teaching .st-step:target { border-left-color:var(--st-accent); background:var(--st-soft); }
+.spec-teaching .st-glossary { border:1px solid var(--st-line); padding:.7rem 1rem; margin:1.4rem 0; border-radius:8px; }
+.spec-teaching .st-glossary > summary { min-height:44px; cursor:pointer; }
+.spec-teaching .st-specs { display:flex; flex-wrap:wrap; gap:.4rem 1rem; color:var(--st-muted); font-size:.8rem; line-height:1.8; margin:1rem 0; }
+.spec-teaching .st-specs span { border-bottom:2px solid var(--st-accent); padding:.2rem 0; }
+@media(max-width:620px) { .spec-teaching :is(.qa-question,.qr-card,.guided-walk) { padding:16px; } .spec-teaching .diagram svg { min-width:var(--st-diagram-width); } }
+@media print {
+ .spec-teaching { --st-paper:#fff!important; --st-surface:#fff!important; --st-ink:#000!important; --st-muted:#333!important; --st-line:#999!important; --st-accent:#000!important; --st-soft:#fff!important; }
+ .spec-teaching details > * { display:block!important; }
+ .spec-teaching details::details-content { content-visibility:visible!important; }
+ .spec-teaching .st-step { break-inside:avoid; }
+}
+
+/* Native reading guides: selection highlights; it never hides teaching content.
+   build_pcie_course.py changes .pcie-article to .pcie-article for the posts. */
+.pcie-article .guided-walk { margin: 1.8rem 0; padding: 1.2rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); min-width: 0; }
+.pcie-article .guided-walk > h3 { margin-top: 0; }
+.pcie-article .walk-help { color: var(--muted); font-size: .85rem; }
+.pcie-article .walk-order { margin-bottom: 1.1rem; }
+/* Keep native radio semantics and keyboard handling; the associated label is
+   the visible control, so a radio cannot wrap away from its own label. */
+.pcie-article .walk-choice { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.pcie-article .walk-label { display: inline-flex; align-items: center; min-height: 44px; padding: .35rem .7rem; margin: .25rem .8rem .25rem 0; border: 2px solid var(--line); border-radius: 8px; cursor: pointer; font-size: .9rem; line-height: 1.5; color: var(--ink); background: var(--surface-alt); }
+.pcie-article .walk-choice:checked + .walk-label { border-color: var(--accent); background: var(--blue-soft); font-weight: 700; }
+.pcie-article .walk-choice:focus-visible + .walk-label { outline: 3px solid var(--focus); outline-offset: 3px; }
+.pcie-article .walk-view { margin-top: 1rem; min-width: 0; }
+.pcie-article .walk-diagram { margin: 0 0 1.2rem; }
+.pcie-article .walk-diagram svg { width: 100%; height: auto; display: block; }
+.pcie-article .walk-diagram svg a { cursor: pointer; }
+.pcie-article .walk-diagram svg a:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
+.pcie-article .walk-diagram figcaption { margin-top: .8rem; }
+.pcie-article .walk-steps { max-width: none; padding-left: 1.6rem; }
+.pcie-article .walk-step { padding: .6rem .9rem; margin: .7rem 0; border: 2px solid transparent; border-left: 5px solid var(--line); border-radius: 5px; background: var(--surface); }
+.pcie-article .walk-step h4 { margin: .2rem 0 .5rem; }
+.pcie-article .walk-condition { font-size: .9rem; color: var(--muted); }
+.pcie-article .walk-source { border-top: 1px solid var(--line); padding-top: .35rem; color: var(--muted); font-size: .85rem; }
+.pcie-article .walk-step p:last-child { margin-bottom: .3rem; }
+.pcie-article .walk-components { border-top: 1px solid var(--line); margin-top: 1.4rem; padding-top: .4rem; }
+.pcie-article .walk-component-links { display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; list-style: none; padding-left: 0; }
+.pcie-article .walk-component-links a { min-height: 44px; min-width: 44px; }
+.pcie-article .walk-component { padding: .7rem 1rem; margin: 1rem 0; border: 1px solid var(--line); border-radius: 8px; }
+.pcie-article .walk-component > h4 { margin-top: .2rem; }
+.pcie-article .walk-component:target { outline: 3px solid var(--accent-2); outline-offset: 3px; }
+.pcie-article .walk-component details { margin-bottom: .3rem; }
+
+.pcie-article .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-step[data-walk-step="1"],
+.pcie-article .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-step[data-walk-step="2"],
+.pcie-article .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-step[data-walk-step="3"],
+.pcie-article .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-step[data-walk-step="4"],
+.pcie-article .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-step[data-walk-step="5"],
+.pcie-article .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-step[data-walk-step="6"],
+.pcie-article .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-step[data-walk-step="7"],
+.pcie-article .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-step[data-walk-step="8"] { border-color: var(--accent); background: var(--blue-soft); }
+
+.pcie-article .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-node[data-walk-steps~="1"],
+.pcie-article .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-node[data-walk-steps~="2"],
+.pcie-article .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-node[data-walk-steps~="3"],
+.pcie-article .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-node[data-walk-steps~="4"],
+.pcie-article .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-node[data-walk-steps~="5"],
+.pcie-article .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-node[data-walk-steps~="6"],
+.pcie-article .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-node[data-walk-steps~="7"],
+.pcie-article .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-node[data-walk-steps~="8"] { --walk-active-weight: 750; }
+.pcie-article .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-node[data-walk-steps~="1"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-node[data-walk-steps~="2"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-node[data-walk-steps~="3"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-node[data-walk-steps~="4"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-node[data-walk-steps~="5"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-node[data-walk-steps~="6"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-node[data-walk-steps~="7"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-node[data-walk-steps~="8"] > :is(rect, circle, ellipse, polygon, path, line, polyline) { stroke: var(--accent); stroke-width: 3.5px; vector-effect: non-scaling-stroke; }
+.pcie-article .walk-node text { font-weight: var(--walk-active-weight, inherit); }
+
+@media (max-width: 620px) {
+  .pcie-article .guided-walk { padding: .8rem; }
+  .pcie-article .walk-label { margin-right: .45rem; padding-left: .45rem; padding-right: .45rem; }
+  .pcie-article .walk-steps { padding-left: 1.15rem; }
+  .pcie-article .walk-step { padding: .5rem .6rem; }
+  .pcie-article .walk-diagram { overflow-x: auto; }
+  .pcie-article .walk-diagram svg { min-width: var(--st-diagram-width, 700px); }
+}
+@media (forced-colors: active) {
+  .pcie-article .walk-choice:checked + .walk-label { border-color: Highlight; }
+  .pcie-article .walk-step { border-color: CanvasText; }
+}
+@media print {
+  .pcie-article .guided-walk { border: 1px solid #999; padding: .7rem; break-inside: auto; }
+  .pcie-article .walk-choice, .pcie-article .walk-label, .pcie-article .walk-help { display: none; }
+  .pcie-article .walk-step { display: list-item !important; border-color: #999 !important; background: transparent !important; }
+  .pcie-article .walk-node { --walk-active-weight: 500 !important; }
+  .pcie-article .walk-node > :is(rect, circle, ellipse, polygon, path, line, polyline) { stroke: #333 !important; stroke-width: 1.5px !important; }
+  .pcie-article .walk-diagram { overflow: visible; }
+  .pcie-article .walk-diagram svg { min-width: 0; }
+  .pcie-article .walk-component details > * { display: block !important; }
+  .pcie-article .walk-component details::details-content { content-visibility: visible !important; }
+}
+
+/* SVG text follows the selected reading theme. */
+.pcie-article svg text { fill: var(--ink); }
+.pcie-article .walk-summary { margin: 1rem 0 1.5rem; }
+
 html:not([data-theme="dark"]) .pcie-article { color-scheme: light; }
 html[data-theme="dark"] .pcie-article { color-scheme: dark; }
 
 .pcie-article { background: transparent; margin: 1.5rem 0; }
 .pcie-article .lesson { padding: 0; border: 0; background: transparent; }
 </style>
-<div class="pcie-article" lang="en">
+<div class="pcie-article spec-teaching" data-spec-series="pcie" lang="en">
 <nav class="bottom-nav" aria-label="Course and editions"><a href="/DOCS/pcie-course/index.html">Course overview</a><a href="/DOCS/pcie-course/chapter-2.html">Full Chinese tutorial</a><a href="/pcie/chapter-2-zh-tw/">繁體中文</a></nav>
 <article class="lesson">
-<p class="lead">A PCIe feature query starts with the right list, followed by field decoding. Capability locations are not fixed constants, and an ID, a Next pointer, and a structure-relative offset serve different purposes. This chapter uses Device Serial Number (DSN) to connect a feature name to a verifiable read result.</p>
+<p class="lead">Starting from an already discovered Function, this chapter queries Device Serial Number (DSN). The feature selects the list; pointers locate its structure; register definitions then determine how to read and assemble the serial number.</p>
+<figure class="diagram"><svg viewBox="0 0 840 580" class="course-diagram" role="img" aria-labelledby="ch2-dsn-en-svg-title ch2-dsn-en-svg-desc"><title id="ch2-dsn-en-svg-title">Two independent capability lists</title><desc id="ch2-dsn-en-svg-desc">The conventional list does not continue into the Extended list.</desc><g><rect x="270" y="20" width="300" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2"/><text x="420" y="47" text-anchor="middle" fill="var(--ink)" font-size="18">Function 03:00.0</text><text x="420" y="72" text-anchor="middle" fill="var(--ink)" font-size="16">Configuration Space</text></g><g><rect x="20" y="180" width="350" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2"/><text x="195" y="207" text-anchor="middle" fill="var(--ink)" font-size="18">Conventional list</text><text x="195" y="232" text-anchor="middle" fill="var(--ink)" font-size="16">0x34 → 0x40</text></g><g><rect x="470" y="180" width="350" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2"/><text x="645" y="207" text-anchor="middle" fill="var(--ink)" font-size="18">Extended list</text><text x="645" y="232" text-anchor="middle" fill="var(--ink)" font-size="16">Start at 0x100</text></g><g><rect x="20" y="325" width="350" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2"/><text x="195" y="352" text-anchor="middle" fill="var(--ink)" font-size="18">Null → PCIe → MSI-X</text><text x="195" y="377" text-anchor="middle" fill="var(--ink)" font-size="16">0x50 → 0x70 → 0xD0</text></g><g><rect x="470" y="325" width="350" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2"/><text x="645" y="352" text-anchor="middle" fill="var(--ink)" font-size="18">AER → DSN</text><text x="645" y="377" text-anchor="middle" fill="var(--ink)" font-size="16">0x100 → 0x180</text></g><g><rect x="470" y="470" width="350" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2"/><text x="645" y="497" text-anchor="middle" fill="var(--ink)" font-size="18">Read the serial number</text><text x="645" y="522" text-anchor="middle" fill="var(--ink)" font-size="16">base+0x04 / base+0x08</text></g><g><path d="M420 100 V140 H195 V180 M420 140 H645 V180" fill="none" stroke="var(--accent)" stroke-width="2.5"/><text x="420" y="130" text-anchor="middle" fill="var(--ink)" font-size="15">Choose the list for the feature</text></g><g><path d="M195 260 V325" fill="none" stroke="var(--accent)" stroke-width="2.5"/><text x="195" y="302" text-anchor="middle" fill="var(--ink)" font-size="15">Next: Function-relative</text></g><g><path d="M645 260 V325" fill="none" stroke="var(--accent)" stroke-width="2.5"/><text x="645" y="302" text-anchor="middle" fill="var(--ink)" font-size="15">Next=0x180</text></g><g><path d="M645 405 V470" fill="none" stroke="var(--accent)" stroke-width="2.5"/><text x="645" y="448" text-anchor="middle" fill="var(--ink)" font-size="15">ID=0003h; Version=1</text></g></svg><figcaption>An authored query map. The two lists have independent entry points. Next is Function-relative; data offsets are relative to the located DSN structure. Base 6.0 Figures 7-42/7-43/7-241, printed/PDF pp.1009–1010 and 1205.</figcaption></figure><dl class="st-terms" aria-label="Terms in this passage"><div><dt>MSI-X</dt><dd>Message Signaled Interrupts Extension</dd></div><div><dt>AER</dt><dd>Advanced Error Reporting</dd></div></dl>
+
 <p><a href="/DOCS/pcie-course/chapter-2.html">Full Chinese tutorial</a> · <a href="/DOCS/pcie-course/index.html">Course roadmap</a> · <a href="/pcie/chapter-2-zh-tw/">繁體中文</a></p>
-<aside class="note"><strong>Version and assumptions</strong><p>Definitions follow PCI Express Base Specification Revision 6.0. Addresses and values are author-created, not measurements. The target is an already discovered ordinary Type 0 PCI Express Endpoint, not an RCiEP or VF; ARI, SR-IOV, and RCRB lists are excluded. Reads succeed, the snapshot is stable, and the platform can access the full Configuration Space. The example does not support Flit Mode, allowing its AER Header to use Version 2. Printed and PDF page numbers coincide.</p></aside>
+<aside class="note"><strong>Version and assumptions</strong><p>Definitions follow PCI Express Base Specification Revision 6.0. Addresses and values are author-created, not measurements. The target is an already discovered ordinary Type 0 PCI Express Endpoint, not an RCiEP or VF; ARI, SR-IOV, and RCRB lists are excluded. Reads succeed, the snapshot is stable, and the platform can access the full Configuration Space. The example does not support Flit Mode, allowing its AER (Advanced Error Reporting) Header to use Version 2. Printed and PDF page numbers coincide.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>VF</dt><dd>Virtual Function</dd></div><div><dt>ARI</dt><dd>Alternative Routing-ID Interpretation</dd></div><div><dt>SR-IOV</dt><dd>Single Root I/O Virtualization</dd></div></dl></aside>
 <section id="space"><h2>Separate the target, configuration offset, and CPU address</h2>
-<p>Segment and BDF select a Function; a byte offset within Configuration Space selects a Register. Each Function has 4096 bytes: the first 256 bytes form the PCI-compatible region, followed by the extended region at 0x100–0xFFF. ECAM translates CPU memory-mapped accesses into Configuration Requests. This is distinct from a device's Memory BAR region, and a configuration offset is not a CPU physical address.</p>
+<p>Segment and BDF (Bus, Device, and Function identifier) select the Function. A byte offset then selects a Register in its 4096-byte Configuration Space: the first 256 bytes are PCI-compatible, and 0x100–0xFFF is the extended region. ECAM (Enhanced Configuration Access Mechanism) provides CPU memory-mapped configuration access. The platform supplies its physical mapping; the offset alone is only a position within the selected Function.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>BDF</dt><dd>Bus/Device/Function</dd></div></dl>
 <p>The conventional Capability list starts through the Header's Capabilities Pointer, at 0x34 for the Type 0/1 layouts used here. The Extended list starts independently at 0x100. The PCI Express Capability belongs to the conventional list; DSN belongs to the Extended list. A name containing PCIe does not establish which list to use.</p>
 <details class="source-note"><summary>Reading locations</summary><p>Base 6.0 §7.2–§7.2.2.2, Figure 7-3 and Table 7-1, pp.905–909; Figure 7-4, p.916; Capabilities Pointer: §7.5.1.1.11, p.926; Extended list: §7.6–§7.6.3, Figures 7-42/7-43 and Table 7-39, pp.1008–1010.</p></details></section>
 <section id="lists"><h2>An ID of zero is different from a Next pointer of zero</h2>
-<p>A conventional Capability normally starts with an ID in the low byte and a Next pointer in the high byte of a 16-bit read. The teaching list follows <code>0x40 → 0x50 → 0x70 → 0xD0 → 0</code>, representing PM, Null, PCIe, and MSI-X.</p>
+<p>A conventional Capability normally starts with an ID in the low byte and a Next pointer in the high byte of a 16-bit read. The teaching list follows <code>0x40 → 0x50 → 0x70 → 0xD0 → 0</code>, representing PM, Null, PCIe, and MSI-X.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>MSI-X</dt><dd>Message Signaled Interrupts Extension</dd></div></dl>
 <div class="table-wrap"><table><caption>Representative reads; locations are byte offsets within the Function</caption><thead><tr><th scope="col">Location and width</th><th scope="col">Value</th><th scope="col">Interpretation</th></tr></thead><tbody><tr><td>0x50, 16 bits</td><td>0x7000</td><td>Conventional ID 00h is Null; Next=0x70, so traversal continues.</td></tr><tr><td>0x100, 32 bits</td><td>0x18020001</td><td>Extended ID 0001h, AER Version 2; Next=0x180.</td></tr><tr><td>0x180, 32 bits</td><td>0x00010003</td><td>Extended ID 0003h, DSN Version 1; Next=0 ends the list.</td></tr></tbody></table></div>
 <pre><code>Extended ID = header &amp; 0xFFFF
 Version     = (header &gt;&gt; 16) &amp; 0xF
 Next        = (header &gt;&gt; 20) &amp; 0xFFC</code></pre>
-<p>Next is a byte offset from the start of the Function's Configuration Space. Do not add the current structure location or multiply it by four. An unknown ID can still be skipped through a valid Header. The course's parser checks range, alignment, and repeated offsets; these are validation practices, not additional hardware features. Locations need not increase monotonically.</p>
-<details class="source-note"><summary>ID and list sources</summary><p>PM: Figure 7-18/Table 7-14, p.945; PCIe: Figure 7-22/Table 7-18, p.953; MSI-X: Figure 7-59/Table 7-48, pp.1021–1022; Null: §7.9.27, Figure 7-384/Table 7-336, p.1315. Extended Header: Table 7-39, p.1010; AER: Figure 7-154/Table 7-134, p.1112. Flit Mode support requires AER Version 3 and is excluded here.</p></details></section>
+<p>Next already gives a byte offset from the beginning of the Function. Read at that offset directly; DWORD alignment does not change its unit. For an unknown ID, follow a valid Header to the next entry. The course separately checks range, alignment, and revisited offsets to detect unreliable traversal; valid positions need not increase.</p>
+<details class="source-note"><summary>ID and list sources</summary><p>PM: Figure 7-18/Table 7-14, p.945; PCIe: Figure 7-22/Table 7-18, p.953; MSI-X: Figure 7-59/Table 7-48, pp.1021–1022; Null: §7.9.27, Figure 7-384/Table 7-336, p.1315. Extended Header: Table 7-39, p.1010; AER (Advanced Error Reporting): Figure 7-154/Table 7-134, p.1112. Flit Mode support requires AER Version 3 and is excluded here.</p></details></section>
 <section id="dsn"><h2>After finding DSN, distinguish data location from display order</h2>
-<p>Figure 7-242/Table 7-221 identify DSN as ID 0003h. Figure 7-241 then places its Lower DW and Upper DW at structure offsets +0x04 and +0x08. The example reads 0x33221100 at 0x184 and 0x77665544 at 0x188, each as 32 bits.</p>
+<p>Figure 7-242/Table 7-221 identify DSN as ID 0003h. Figure 7-241 then places its Lower DW and Upper DW at structure offsets +0x04 and +0x08. The example reads 0x33221100 at 0x184 and 0x77665544 at 0x188, each as 32 bits.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>DW</dt><dd>Double Word, a four-byte unit</dd></div></dl>
 <pre><code>Register integer = (0x77665544 &lt;&lt; 32) | 0x33221100
                  = 0x7766554433221100</code></pre>
 <p>Table 7-222 separately maps Register bytes to EUI-64 bytes. Written from the highest EUI byte to the lowest, the example is <code>00-11-22-33-44-55-66-77</code>. These values illustrate reconstruction, not an allocated or usable product identifier. Real values must follow the IEEE company identifier and manufacturer extension rules, and the value alone does not authenticate hardware.</p>
-<p>DSN is optional. An ordinary Multi-Function Device implementing DSN must implement it in Function 0; other Functions implementing it must return the same value. DSN therefore does not replace the Function Number in BDF.</p>
+<p>DSN is optional. An ordinary Multi-Function Device implementing DSN must implement it in Function 0; other Functions implementing it must return the same value. DSN therefore does not replace the Function Number in BDF (Bus, Device, and Function identifier).</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>BDF</dt><dd>Bus/Device/Function</dd></div></dl>
 <details class="source-note"><summary>Exact DSN references</summary><p>Base 6.0 §7.9.3–§7.9.3.2, Figures 7-241–7-243 and Tables 7-221/7-222, pp.1205–1207. RCiEP and PF/VF conditions differ and are excluded here.</p></details></section>
 <section id="meaning"><h2>A read value is not automatically safe to write back</h2>
-<p>Read the Attributes column with the field definition. RO does not mean hardware state can never change. RW1C clears a status bit when written as one; writing zero has no effect. In an illustrative four-bit RW1C field reading 1001b, writing 0001b clears only bit 0, leaving 1000b if no new event occurs. This is an attribute example, not an actual Register.</p>
-<p>Software must preserve the read value when writing RsvdP bits, whereas RsvdZ requires zero on writes. Reserved fields cannot all use the same update rule. A failed read is not a valid indication of absence, and a successful zero read does not prove that a meaningful Register exists there. Establish the entry point and valid result before interpreting the format.</p>
+<p>Read the Attributes column with the field definition. RO does not mean hardware state can never change. RW1C (write one to clear) clears a status bit when written as one; writing zero has no effect. In an illustrative four-bit RW1C (write one to clear) field reading 1001b, writing 0001b clears only bit 0, leaving 1000b if no new event occurs. This is an attribute example, not an actual Register.</p>
+<p>Software must preserve the read value when writing RsvdP (reserved, preserve on writes) bits, whereas RsvdZ (reserved, write zero) requires zero on writes. Reserved fields cannot all use the same update rule. A failed read is not a valid indication of absence, and a successful zero read does not prove that a meaningful Register exists there. Establish the entry point and valid result before interpreting the format.</p>
 <details class="source-note"><summary>Attributes and evidence limits</summary><p>Base 6.0 §7.4, Table 7-2, pp.913–915. Unimplemented Registers return successful zero reads absent other errors: §7.3.3, p.913. An all-zero Extended Header at 0x100 indicates no Extended Capabilities: §7.6.1, p.1009. That rule differs from a conventional Null Capability ID of zero.</p></details></section>
-<section id="questions"><h2>Check the method with a changed value</h2>
+<section id="questions"><h2>Apply the complete query to changed values</h2>
+<p>The worked query starts at 0x100, reaches DSN at 0x180, and reads its data at 0x184 and 0x188. Next locates a different structure; a data offset locates a field in the current structure. The following variations apply that distinction.</p>
 <details class="question"><summary>If 0x180 returns 0x24010003, does the DSN Lower DW move to 0x244?</summary><p>No. 0x240 points to the next structure. The current DSN remains at 0x180, with its Lower DW at 0x184. (Figure 7-241, p.1205; Table 7-39, p.1010.)</p></details>
 <details class="question"><summary>Does failure to find DSN in the conventional list prove lack of support?</summary><p>No. DSN belongs to the Extended list and requires an interface that can access it. Searching the wrong list or lacking access is not valid absence evidence. (§7.6.1, p.1009; §7.9.3, p.1205.)</p></details></section>
 <p>Continue with <a href="/DOCS/pcie-course/chapter-3.html">Chapter 3</a> to see how software establishes a discovery path before it knows the downstream BDFs.</p>

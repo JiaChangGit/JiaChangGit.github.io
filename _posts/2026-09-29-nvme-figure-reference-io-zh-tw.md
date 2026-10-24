@@ -6,19 +6,21 @@ categories: ["nvme"]
 tags: ["NVMe", "Reference"]
 permalink: "/nvme/figure-reference/io/zh-tw/"
 nvme_quickref: true
-last_modified_at: "2026-10-01"
+spec_teaching: true
+last_modified_at: "2026-10-23"
 lang: "zh-Hant-TW"
 description: "NVMe 情境練習與圖表速查：查詢路徑、欄位推導、完整解答及 Spec 位置。"
 ---
 
-<div class="nvme-quickref">
+<div class="nvme-quickref spec-teaching" data-spec-series="nvme">
 <nav class="qr-top" aria-label="版本與索引"><a href="#content">跳到內容</a><a href="/nvme/figure-reference/zh-tw/">總索引</a><a href="/nvme/figure-reference/io/en/">English</a><a href="/DOCS/nvme-quick-reference/io.html">繁中 HTML</a></nav>
 <main id="content">
+<div class="st-specs" aria-label="Specification editions"><span>NVM Express Base 2.4</span><span>NVM Command Set 1.3</span><span>NVMe over PCIe Transport 1.4</span></div>
 <header><p class="qr-eyebrow">反覆查詢 · 欄位判讀 · 原文定位</p><h1>NVMe 圖表判讀與情境練習 04 · I/O 命令與資料完整性</h1><p class="qr-intro">由命令的位址與數量走到 metadata、保護資訊和原子性。相同欄位寬度不代表相同計數方式，命令成功也不等於所有持久性與原子性保證都成立。</p></header>
-<aside class="qr-note"><p>每張原圖都有用途、欄位和判讀例子。例子中的數值用於說明，不代表你的裝置設定；原文另有條件時，依該欄位與命令定義判斷。</p><p>用瀏覽器「在頁面中尋找」搜尋欄位、FID、LID、CNS 或 Figure。bit／byte 位置沿用原圖：bit 是位元，byte 是 8 bits，Dword 是 4 bytes；index 是第幾筆，offset 是相對起點的偏移，須看當處使用的單位。</p><p>FID（Feature Identifier）選擇功能；LID（Log Page Identifier）選擇紀錄頁；CNS（Controller or Namespace Structure）選擇 Identify 回傳的資料結構。</p></aside>
+<aside class="qr-note"><p>每張原圖都有用途、欄位和判讀例子。例子中的數值用於說明，不代表你的裝置設定；原文另有條件時，依該欄位與命令定義判斷。</p><p>用瀏覽器「在頁面中尋找」搜尋欄位、FID、LID、CNS 或 Figure。bit／byte 位置沿用原圖：bit 是位元，byte 是 8 bits，Dword 是 4 bytes；index 是第幾筆，offset 是相對起點的偏移，須看當處使用的單位。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>FID</dt><dd>Feature Identifier，功能識別碼</dd></div><div><dt>LID</dt><dd>Log Page Identifier，紀錄頁識別碼</dd></div><div><dt>CNS</dt><dd>Controller or Namespace Structure，選擇Identify回傳結構</dd></div></dl><p>FID（Feature Identifier）選擇功能；LID（Log Page Identifier）選擇紀錄頁；CNS（Controller or Namespace Structure）選擇 Identify 回傳的資料結構。</p></aside>
 <nav class="qr-top" aria-label="本冊閱讀入口"><a href="#exercises">從情境練習開始</a><a href="#figure-index">直接查圖表</a></nav>
-<section id="exercises"><h2>先做情境練習</h2>
-<p>每題資料均為教學假設，不是實際裝置回傳。先寫下查詢介面、目標、欄位與可支持的結論，再展開解答。題目只做 Spec 推導，不會執行命令。</p>
+<section id="exercises"><h2>先跟著一個情境讀規格</h2>
+<p>以下回傳資料均為教學假設。先看需求與已知條件，再沿閱讀路線找到相關欄位，接著一起判讀結果。完整解說直接顯示，來源細節可另外展開。</p>
 <nav class="qr-toc" id="exercise-toc" aria-label="情境索引"><ol>
 <li><a href="#exercise-io-01">8 個 blocks 的寫入，斷電也一定不會寫一半嗎？</a></li>
 <li><a href="#exercise-io-02">namespace 的 NAWUPF=0，為什麼不是 1 block？</a></li>
@@ -32,87 +34,101 @@ description: "NVMe 情境練習與圖表速查：查詢路徑、欄位推導、�
 <p class="qr-case-question">同事看到 AWUN=7，便宣稱一次寫 8 個 blocks 能抵抗斷電造成的部分更新。這個結論缺了什麼？</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
 <li>AWUN=7、AWUPF=1；NSFEAT.NSABP=0、MAM=0；目前 Write Atomicity Normal 的 DN=0。</li>
 <li>目標 LBA 資料大小 4096 bytes；這是單筆一般 Write，NLB=7。</li>
-</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
+</ul></div><section class="st-route" id="route-io-01"><h4>這個情境要連起哪些規格圖表？</h4>
+<p class="st-route-help">下面是閱讀規格的順序；實際操作的先後與等待條件，會在情境解說中另外交代。</p>
+<ol class="st-reading-route">
+<li><strong>先找原子性參數的關係</strong><p>先由 Single Atomicity Mode 的參數表分清正常與斷電情況，再看本例採用 controller 還是 namespace 的值。</p>
+<a href="#figure-n4">NVM Command Set 1.3 · Figure 4</a>
+<a href="/nvme/figure-reference/identify/zh-tw/#figure-n123">NVM Command Set 1.3 · Figure 123</a>
+</li>
+<li><strong>確認本筆 Write 的區塊數</strong><p>讀取 Write 的 NLB；本例 NLB=7 表示 8 個區塊，再和已確認的原子單位比較。</p>
+<a href="#figure-n71">NVM Command Set 1.3 · Figure 71</a>
+</li>
+<li><strong>保留不同事件的保證條件</strong><p>回到原子性參數表，分別解釋正常與斷電時整筆寫入的保證。成功完成、持久性與原子性各依相關規則判讀。</p>
+<a href="#figure-n4">NVM Command Set 1.3 · Figure 4</a>
+</li>
+</ol></section><details open class="qr-answer"><summary>沿著欄位一步步理解</summary>
 <p class="qr-route"><strong>查詢次序：</strong>Identify CNS=01h 讀 NVM 定義的 AWUN／AWUPF；CNS=00h 讀目標 namespace 的 NSFEAT；Get Features FID=0Ah、SEL=0 確認正常原子性未被停用。</p>
 <p data-reasoning="io-01-1"><span class="qr-step">推導 1</span>AWUN 與 AWUPF 都以 blocks 數減 1 編碼。7 表示正常情況下的 8 blocks 保證；1 表示斷電或錯誤情況下的 2 blocks 保證。命令 NLB=7 也是 8 blocks，即 32768 bytes。</p>
 <p data-reasoning="io-01-2"><span class="qr-step">推導 2</span>這筆 Write 在所給條件下符合正常原子性的大小限制，卻超過斷電原子性的大小。超出保證不代表必定發生部分更新，而是不能用 AWUPF 保證整筆 8 blocks 不被撕裂。</p>
 <p data-reasoning="io-01-3"><span class="qr-step">推導 3</span>如果應用要求整筆 32 KiB 在斷電下也不可分割，需要其他符合規格的配置或上層資料保護方法。改成 FUA=1 會增加完成前持久化要求，但不會把 AWUPF 的 2 blocks 改成 8 blocks。</p>
 <div class="qr-related">需要重看欄位時，接著查：<a href="/nvme/figure-reference/io/zh-tw/#figure-n4">NVM Command Set 1.3 Figure 4 · Single Atomicity：單位、條件與邊界的關係</a><a href="/nvme/figure-reference/identify/zh-tw/#figure-n123">NVM Command Set 1.3 Figure 123 · NVM Namespace：容量、格式、原子性與建議粒度</a><a href="/nvme/figure-reference/io/zh-tw/#figure-n71">NVM Command Set 1.3 Figure 71 · Write CDW12：持久性、PI 與配置提示</a></div>
-<h4>本題原文定位</h4><ul class="qr-case-sources"><li>NVM Command Set 1.3 · §4.1.5.2 · 文件頁 94–96 · PDF 94–96</li><li>NVM Command Set 1.3 · §4.1.5.1 · Figure 123 · Identify – Identify Namespace Data Structure, NVM Command Set · 文件頁 85–86, 88 · PDF 85–86, 88</li><li>NVM Command Set 1.3 · §2.1.4 · 文件頁 15–18 · PDF 15–18</li><li>NVM Command Set 1.3 · §4.1.3.4 · 文件頁 67 · PDF 67</li><li>NVM Command Set 1.3 · §3.3.6 · Figure 71 · Write – Command Dword 12 · 文件頁 54 · PDF 54</li></ul></details>
+<details class="st-source"><summary>完整原文定位</summary><ul class="qr-case-sources"><li>NVM Command Set 1.3 · §4.1.5.2 · 文件頁 94–96 · PDF 94–96</li><li>NVM Command Set 1.3 · §4.1.5.1 · Figure 123 · Identify – Identify Namespace Data Structure, NVM Command Set · 文件頁 85–86, 88 · PDF 85–86, 88</li><li>NVM Command Set 1.3 · §2.1.4 · 文件頁 15–18 · PDF 15–18</li><li>NVM Command Set 1.3 · §4.1.3.4 · 文件頁 67 · PDF 67</li><li>NVM Command Set 1.3 · §3.3.6 · Figure 71 · Write – Command Dword 12 · 文件頁 54 · PDF 54</li></ul></details></details>
 <a href="#exercise-toc">回情境索引</a></article>
+<h3>接著看其他情境</h3>
 <article class="qr-card qr-case" id="exercise-io-02" data-scenario="io-02"><h3><span class="qr-number">練習 02</span>namespace 的 NAWUPF=0，為什麼不是 1 block？</h3>
 <p class="qr-case-question">一個解碼器對所有 atomic unit 欄位直接加 1。請用此例找出它會算錯哪裡。</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
 <li>Controller：AWUN=7、AWUPF=3。Namespace：NSABP=1、NAWUN=15、NAWUPF=0、NABSN=0、NABSPF=0、MAM=0。</li>
 <li>正常原子性未停用；LBA data size=4096 bytes。</li>
-</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
+</ul></div><details open class="qr-answer"><summary>沿著欄位一步步理解</summary>
 <p class="qr-route"><strong>查詢次序：</strong>Identify CNS=01h 與 CNS=00h 配對取得 controller 基準及 namespace 覆寫值。</p>
 <p data-reasoning="io-02-1"><span class="qr-step">推導 1</span>先看 NSABP，才知道 namespace atomic 欄位是否有效。本例 NAWUN=15 是非零，採用它後得到正常情況 16 blocks，也就是 64 KiB；不是只看 controller 的 8 blocks。</p>
 <p data-reasoning="io-02-2"><span class="qr-step">推導 2</span>NAWUPF=0 在這裡有特別意思：沿用 controller 的 AWUPF，不是把 0 加 1。AWUPF=3 所以斷電保證為 4 blocks，即 16 KiB。</p>
 <p data-reasoning="io-02-3"><span class="qr-step">推導 3</span>NABSN=NABSPF=0 表示未設此類 atomic boundary。這些 0、NAWUPF 的 0，以及 controller AWUPF=0 所表示的 1 block，語意各不同。解碼器必須按欄位定義分支，不能做全表統一加 1。</p>
 <div class="qr-related">需要重看欄位時，接著查：<a href="/nvme/figure-reference/io/zh-tw/#figure-n4">NVM Command Set 1.3 Figure 4 · Single Atomicity：單位、條件與邊界的關係</a><a href="/nvme/figure-reference/identify/zh-tw/#figure-n123">NVM Command Set 1.3 Figure 123 · NVM Namespace：容量、格式、原子性與建議粒度</a></div>
-<h4>本題原文定位</h4><ul class="qr-case-sources"><li>NVM Command Set 1.3 · §4.1.5.2 · 文件頁 94–96 · PDF 94–96</li><li>NVM Command Set 1.3 · §4.1.5.1 · Figure 123 · Identify – Identify Namespace Data Structure, NVM Command Set · 文件頁 85–86, 88–89 · PDF 85–86, 88–89</li><li>NVM Command Set 1.3 · §2.1.4 · 文件頁 16–19 · PDF 16–19</li></ul></details>
+<details class="st-source"><summary>完整原文定位</summary><ul class="qr-case-sources"><li>NVM Command Set 1.3 · §4.1.5.2 · 文件頁 94–96 · PDF 94–96</li><li>NVM Command Set 1.3 · §4.1.5.1 · Figure 123 · Identify – Identify Namespace Data Structure, NVM Command Set · 文件頁 85–86, 88–89 · PDF 85–86, 88–89</li><li>NVM Command Set 1.3 · §2.1.4 · 文件頁 16–19 · PDF 16–19</li></ul></details></details>
 <a href="#exercise-toc">回情境索引</a></article>
 <article class="qr-card qr-case" id="exercise-io-03" data-scenario="io-03"><h3><span class="qr-number">練習 03</span>大小符合，跨過 boundary 還算整筆 atomic 嗎？</h3>
-<p class="qr-case-question">兩筆 Write 都只有 4 blocks，為什麼起始 LBA 不同，namespace 的原子性保證也可能不同？</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
+<p class="qr-case-question">兩筆 Write 都只有 4 blocks，為什麼起始 LBA 不同，namespace 的原子性保證也可能不同？</p><dl class="st-terms" aria-label="本段名詞"><div><dt>LBA</dt><dd>Logical Block Address，邏輯區塊位址</dd></div></dl><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
 <li>AWUN=0、AWUPF=0；NSABP=1、NAWUN=7、NAWUPF=7；NABSN=7、NABSPF=7、NABO=0；DN=0。</li>
 <li>先考慮 MAM=0。Write A：SLBA=8、NLB=3；Write B：SLBA=6、NLB=3。</li>
-</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
-<p class="qr-route"><strong>查詢次序：</strong>Identify CNS=00h 讀 unit、boundary、offset 及 NSFEAT.MAM；把命令轉成實際 LBA 區間後比較。</p>
+</ul></div><details open class="qr-answer"><summary>沿著欄位一步步理解</summary>
+<p class="qr-route"><strong>查詢次序：</strong>Identify CNS=00h 讀 unit、boundary、offset 及 NSFEAT.MAM；把命令轉成實際 LBA 區間後比較。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>LBA</dt><dd>Logical Block Address，邏輯區塊位址</dd></div></dl>
 <p data-reasoning="io-03-1"><span class="qr-step">推導 1</span>非零 boundary size=7 代表 8 blocks，NABO=0，所以分界在 0、8、16……。A 觸及 LBA 8–11，全在同一區間；B 觸及 6–9，跨過 8。兩者雖然都少於 8 blocks，位置並不等價。</p>
 <p data-reasoning="io-03-2"><span class="qr-step">推導 2</span>MAM=0 是 Single Atomicity Mode。A 符合本例 namespace 的整筆原子性條件；B 跨界，不能套用同一個整筆 4-block 保證。這個限制要與 unit 大小一起檢查。</p>
 <p data-reasoning="io-03-3"><span class="qr-step">推導 3</span>若改成規格允許的 MAM=1 配置，B 可分為 6–7 與 8–9 兩個 atomic LBA subranges，保證分別適用於各段，仍不是兩段合起來的一個不可分割更新。</p>
 <div class="qr-table"><table class=""><thead><tr><th scope="col">命令</th><th scope="col">實際 LBA 範圍</th><th scope="col">以 LBA 8 分界</th></tr></thead><tbody><tr><td>A</td><td>8–11</td><td>8 9 10 11：同一區間</td></tr><tr><td>B</td><td>6–9</td><td>6 7 │ 8 9：跨界</td></tr></tbody></table></div>
 <div class="qr-related">需要重看欄位時，接著查：<a href="/nvme/figure-reference/io/zh-tw/#figure-n8">NVM Command Set 1.3 Figure 8 · Atomic Boundary：同樣大小，不同起點會有不同結果</a><a href="/nvme/figure-reference/identify/zh-tw/#figure-n123">NVM Command Set 1.3 Figure 123 · NVM Namespace：容量、格式、原子性與建議粒度</a><a href="/nvme/figure-reference/io/zh-tw/#figure-n4">NVM Command Set 1.3 Figure 4 · Single Atomicity：單位、條件與邊界的關係</a></div>
-<h4>本題原文定位</h4><ul class="qr-case-sources"><li>NVM Command Set 1.3 · §2.1.4.4 · 文件頁 19 · PDF 19</li><li>NVM Command Set 1.3 · §2.1.4.5 · 文件頁 19–20 · PDF 19–20</li><li>NVM Command Set 1.3 · §4.1.5.1 · Figure 123 · Identify – Identify Namespace Data Structure, NVM Command Set · 文件頁 85, 88–89 · PDF 85, 88–89</li></ul></details>
+<details class="st-source"><summary>完整原文定位</summary><ul class="qr-case-sources"><li>NVM Command Set 1.3 · §2.1.4.4 · 文件頁 19 · PDF 19</li><li>NVM Command Set 1.3 · §2.1.4.5 · 文件頁 19–20 · PDF 19–20</li><li>NVM Command Set 1.3 · §4.1.5.1 · Figure 123 · Identify – Identify Namespace Data Structure, NVM Command Set · 文件頁 85, 88–89 · PDF 85, 88–89</li></ul></details></details>
 <a href="#exercise-toc">回情境索引</a></article>
 <article class="qr-card qr-case" id="exercise-io-04" data-scenario="io-04"><h3><span class="qr-number">練習 04</span>Write 已成功，資料現在一定不怕斷電嗎？</h3>
 <p class="qr-case-question">你只能看到能力資料、Feature 值與命令紀錄。如何判斷成功的 Write 是否已滿足持久化要求？</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
 <li>已確認此 namespace 有啟用中的 volatile write cache；Get Features FID=06h 的 WCE=1。</li>
 <li>A：一般 Write，FUA=0，成功，之後沒有 Flush。B：Write，FUA=1，成功。</li>
-</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
-<p class="qr-route"><strong>查詢次序：</strong>Identify CNS=01h 的 VWC、CNS=08h 的 VWCNP 與適用的 FDP 配置 → Get Features FID=06h、SEL=0 → 命令 FUA 與後續 Flush 紀錄。</p>
-<p data-reasoning="io-04-1"><span class="qr-step">推導 1</span>A 可能已經落到非揮發媒體，也可能仍依賴 volatile cache；從成功 CQE 無法區分這兩種情況。因此不能宣稱它一定已持久化，也不能反過來說它一定只在 cache。</p>
+</ul></div><details open class="qr-answer"><summary>沿著欄位一步步理解</summary>
+<p class="qr-route"><strong>查詢次序：</strong>Identify CNS=01h 的 VWC、CNS=08h 的 VWCNP 與適用的 FDP 配置 → Get Features FID=06h、SEL=0 → 命令 FUA 與後續 Flush 紀錄。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>FDP</dt><dd>Flexible Data Placement，彈性資料放置</dd></div></dl>
+<p data-reasoning="io-04-1"><span class="qr-step">推導 1</span>A 可能已經落到非揮發媒體，也可能仍依賴 volatile cache；從成功 CQE 無法區分這兩種情況。因此不能宣稱它一定已持久化，也不能反過來說它一定只在 cache。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry，佇列中的完成項目</dd></div></dl>
 <p data-reasoning="io-04-2"><span class="qr-step">推導 2</span>B 的 FUA=1 要求這筆命令的資料與 metadata 在回報完成前寫入非揮發媒體。持久性關注完成後能否保留，原子性則關注更新會不會部分發生；這兩個問題要分開回答。</p>
 <p data-reasoning="io-04-3"><span class="qr-step">推導 3</span>另一條路是先等 A 完成，再提交涵蓋它的 Flush，並確認 Flush 成功。Flush 保證涵蓋其提交前已完成的指定 namespace 寫入；若與 Write 同時送出，就少了這個先後條件。</p>
 <div class="qr-related">需要重看欄位時，接著查：<a href="/nvme/figure-reference/features/zh-tw/#figure-b471">Base 2.4 Figure 471 · Volatile Write Cache：目前 enable 位</a><a href="/nvme/figure-reference/identify/zh-tw/#figure-b338">Base 2.4 Figure 338 · Identify Controller：能力與限制的主要入口</a><a href="/nvme/figure-reference/identify/zh-tw/#figure-b346">Base 2.4 Figure 346 · Namespace 共通狀態：可用、受保護與儲存歸屬</a><a href="/nvme/figure-reference/io/zh-tw/#figure-n71">NVM Command Set 1.3 Figure 71 · Write CDW12：持久性、PI 與配置提示</a></div>
-<h4>本題原文定位</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.14.2.1 · Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent · 文件頁 374 · PDF 400</li><li>Base 2.4 · §5.2.14.2.8 · Figure 346 · Identify – I/O Command Set Independent Identify Namespace Data Structure · 文件頁 391–394 · PDF 417–420</li><li>Base 2.4 · §5.2.30.1.4 · Figure 471 · Volatile Write Cache – Command Dword 11 · 文件頁 464–465 · PDF 490–491</li><li>Base 2.4 · §7.2 · 文件頁 567 · PDF 593</li><li>NVM Command Set 1.3 · §3.3.6 · Figure 71 · Write – Command Dword 12 · 文件頁 54 · PDF 54</li></ul></details>
+<details class="st-source"><summary>完整原文定位</summary><ul class="qr-case-sources"><li>Base 2.4 · §5.2.14.2.1 · Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent · 文件頁 374 · PDF 400</li><li>Base 2.4 · §5.2.14.2.8 · Figure 346 · Identify – I/O Command Set Independent Identify Namespace Data Structure · 文件頁 391–394 · PDF 417–420</li><li>Base 2.4 · §5.2.30.1.4 · Figure 471 · Volatile Write Cache – Command Dword 11 · 文件頁 464–465 · PDF 490–491</li><li>Base 2.4 · §7.2 · 文件頁 567 · PDF 593</li><li>NVM Command Set 1.3 · §3.3.6 · Figure 71 · Write – Command Dword 12 · 文件頁 54 · PDF 54</li></ul></details></details>
 <a href="#exercise-toc">回情境索引</a></article>
 <article class="qr-card qr-case" id="exercise-io-05" data-scenario="io-05"><h3><span class="qr-number">練習 05</span>資料與索引都用 FUA，為什麼還要排順序？</h3>
-<p class="qr-case-question">應用先把資料 Write 放進 SQ，再把指向該資料的索引 Write 放進同一 SQ。兩筆都 FUA=1，是否已保證索引不會先持久化？</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
+<p class="qr-case-question">應用先把資料 Write 放進 SQ，再把指向該資料的索引 Write 放進同一 SQ。兩筆都 FUA=1，是否已保證索引不會先持久化？</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SQ</dt><dd>Submission Queue，提交佇列</dd></div></dl><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
 <li>資料與索引使用不同 LBA 範圍；不是 fused operation。</li>
 <li>兩筆命令一起提交，尚未等待第一筆完成；目標是斷電後不出現「新索引指向尚未保存的資料」。</li>
-</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
-<p class="qr-route"><strong>查詢次序：</strong>檢查原始 SQE 的 FUA 與提交／完成時序；用 NVM 的 command ordering 與 Write FUA 規則判讀。</p>
+</ul></div><details open class="qr-answer"><summary>沿著欄位一步步理解</summary>
+<p class="qr-route"><strong>查詢次序：</strong>檢查原始 SQE 的 FUA 與提交／完成時序；用 NVM 的 command ordering 與 Write FUA 規則判讀。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SQE</dt><dd>Submission Queue Entry，佇列中的命令項目</dd></div></dl>
 <p data-reasoning="io-05-1"><span class="qr-step">推導 1</span>同一 SQ 的位置先後，不能替代這裡所需的資料依賴。FUA=1 對各筆命令提出完成前持久化要求，並沒有額外規定不同命令之間誰先完成。</p>
 <p data-reasoning="io-05-2"><span class="qr-step">推導 2</span>符合目標的示範時序是：提交 data Write（FUA=1）→確認成功完成→才提交 index Write（FUA=1）→確認成功完成。第二步使資料的持久化先於索引寫入的提交。</p>
 <p data-reasoning="io-05-3"><span class="qr-step">推導 3</span>這只解決題目中的依賴順序，並不把資料與索引兩筆寫入合成一筆跨範圍交易。若要求兩者一起回到舊值或一起變新值，還需要更完整的交易或復原設計。</p>
 <div class="qr-table"><table class=""><thead><tr><th scope="col">順序</th><th scope="col">主機觀察／動作</th></tr></thead><tbody><tr><td>1</td><td>提交 data Write，FUA=1</td></tr><tr><td>2</td><td>等待並確認 data Write 成功</td></tr><tr><td>3</td><td>才提交 index Write，FUA=1</td></tr><tr><td>4</td><td>等待並確認 index Write 成功</td></tr></tbody></table></div>
 <div class="qr-related">需要重看欄位時，接著查：<a href="/nvme/figure-reference/io/zh-tw/#figure-n71">NVM Command Set 1.3 Figure 71 · Write CDW12：持久性、PI 與配置提示</a><a href="/nvme/figure-reference/io/zh-tw/#figure-n4">NVM Command Set 1.3 Figure 4 · Single Atomicity：單位、條件與邊界的關係</a></div>
-<h4>本題原文定位</h4><ul class="qr-case-sources"><li>NVM Command Set 1.3 · §2.1.2 · 文件頁 14 · PDF 14</li><li>NVM Command Set 1.3 · §3.3.6 · Figure 71 · Write – Command Dword 12 · 文件頁 54 · PDF 54</li></ul></details>
+<details class="st-source"><summary>完整原文定位</summary><ul class="qr-case-sources"><li>NVM Command Set 1.3 · §2.1.2 · 文件頁 14 · PDF 14</li><li>NVM Command Set 1.3 · §3.3.6 · Figure 71 · Write – Command Dword 12 · 文件頁 54 · PDF 54</li></ul></details></details>
 <a href="#exercise-toc">回情境索引</a></article>
-<article class="qr-card qr-case" id="exercise-io-06" data-scenario="io-06"><h3><span class="qr-number">練習 06</span>Metadata 比 PI 大，PRACT=1 要扣掉多少 bytes？</h3>
+<article class="qr-card qr-case" id="exercise-io-06" data-scenario="io-06"><h3><span class="qr-number">練習 06</span>Metadata 比 PI 大，PRACT=1 要扣掉多少 bytes？</h3><dl class="st-terms" aria-label="本段名詞"><div><dt>PI</dt><dd>Protection Information，資料保護資訊</dd></div></dl>
 <p class="qr-case-question">移植程式把 PRACT=1 的 metadata buffer 一律減掉 8 bytes／LBA。這在本例是否正確？</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
 <li>16-bit Guard 格式，PI 已啟用；LBA data=4096 bytes、MS=16，metadata 使用 separate buffer。</li>
 <li>Write 的 PRACT=1、NLB=3；其他保護設定均合法。</li>
-</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
-<p class="qr-route"><strong>查詢次序：</strong>Identify CNS=00h 的 LBAF／DPS／metadata 設定，必要時 CNS=05h、CSI=00h 的 ELBAF → 對照 Write 的 16-bit Guard processing 規則。</p>
+</ul></div><details open class="qr-answer"><summary>沿著欄位一步步理解</summary>
+<p class="qr-route"><strong>查詢次序：</strong>Identify CNS=00h 的 LBAF／DPS／metadata 設定，必要時 CNS=05h、CSI=00h 的 ELBAF → 對照 Write 的 16-bit Guard processing 規則。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CSI</dt><dd>Command Set Identifier，命令集識別碼</dd></div></dl>
 <p data-reasoning="io-06-1"><span class="qr-step">推導 1</span>NLB=3 是 4 blocks。資料 buffer 為 4×4096=16384 bytes；在這個 metadata 大於 8 bytes 的分支，host 仍傳輸 4×16=64 metadata bytes，不能只配置 32 bytes。</p>
-<p data-reasoning="io-06-2"><span class="qr-step">推導 2</span>PRACT 決定 PI 的產生與處理行為，不是通用的「buffer 長度減 8」開關。當 metadata 剛好只有 8 bytes 時，圖表中的另一個分支才有不同的傳輸規則，不能把它搬到 MS=16。</p>
+<p data-reasoning="io-06-2"><span class="qr-step">推導 2</span>PRACT 決定 PI 的產生與處理行為，不是通用的「buffer 長度減 8」開關。當 metadata 剛好只有 8 bytes 時，圖表中的另一個分支才有不同的傳輸規則，不能把它搬到 MS=16。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>PI</dt><dd>Protection Information，資料保護資訊</dd></div></dl>
 <p data-reasoning="io-06-3"><span class="qr-step">推導 3</span>除長度之外，還要對齊 separate／extended 的放置方式、PI 類型及 Guard 格式。只有這些條件都相同，才適合拿前後兩次傳輸的 bytes 作比較。</p>
 <div class="qr-related">需要重看欄位時，接著查：<a href="/nvme/figure-reference/identify/zh-tw/#figure-n125">NVM Command Set 1.3 Figure 125 · LBAF：資料大小、metadata 大小與相對效能</a><a href="/nvme/figure-reference/identify/zh-tw/#figure-n128">NVM Command Set 1.3 Figure 128 · ELBAF：Guard 格式與 Storage Tag 位數</a><a href="/nvme/figure-reference/io/zh-tw/#figure-n154">NVM Command Set 1.3 Figure 154 · Separate Metadata：兩個 buffer 依 LBA 配對</a><a href="/nvme/figure-reference/io/zh-tw/#figure-n174">NVM Command Set 1.3 Figure 174 · Write 的 PRACT：host 要提供多少 metadata</a></div>
-<h4>本題原文定位</h4><ul class="qr-case-sources"><li>NVM Command Set 1.3 · §4.1.5.1 · Figure 125 · LBA Format Data Structure, NVM Command Set Specific · 文件頁 94 · PDF 94</li><li>NVM Command Set 1.3 · §4.1.5.3 · Figure 128 · Extended LBA Format Data Structure, NVM Command Set Specific · 文件頁 101–102 · PDF 101–102</li><li>NVM Command Set 1.3 · §5.2.3 · Figure 154 · Metadata – Transferred as Separate Buffer · 文件頁 130 · PDF 130</li><li>NVM Command Set 1.3 · §5.3.2.1 · Figure 174 · Write Command 16b Guard Protection Information Processing · 文件頁 143 · PDF 143</li></ul></details>
+<details class="st-source"><summary>完整原文定位</summary><ul class="qr-case-sources"><li>NVM Command Set 1.3 · §4.1.5.1 · Figure 125 · LBA Format Data Structure, NVM Command Set Specific · 文件頁 94 · PDF 94</li><li>NVM Command Set 1.3 · §4.1.5.3 · Figure 128 · Extended LBA Format Data Structure, NVM Command Set Specific · 文件頁 101–102 · PDF 101–102</li><li>NVM Command Set 1.3 · §5.2.3 · Figure 154 · Metadata – Transferred as Separate Buffer · 文件頁 130 · PDF 130</li><li>NVM Command Set 1.3 · §5.3.2.1 · Figure 174 · Write Command 16b Guard Protection Information Processing · 文件頁 143 · PDF 143</li></ul></details></details>
 <a href="#exercise-toc">回情境索引</a></article>
 <article class="qr-card qr-case" id="exercise-io-07" data-scenario="io-07"><h3><span class="qr-number">練習 07</span>Deallocate 後讀到 FFh，是不是失敗？</h3>
 <p class="qr-case-question">驗證程式要求所有 deallocated LBA 都回傳 0。請判斷它是否把允許的行為誤當成錯誤。</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
 <li>該範圍已確認 deallocated；DLFEAT.DRB=010b；Get Features FID=05h 的 DULBE=0。</li>
 <li>本例不啟用 PI；Read 成功且全部 data bytes 為 FFh。</li>
-</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
-<p class="qr-route"><strong>查詢次序：</strong>Identify CNS=00h 查 DLFEAT 與相關能力；Get Features FID=05h、SEL=0、目標 NSID 查 DULBE；再看 Read 結果。</p>
+</ul></div><details open class="qr-answer"><summary>沿著欄位一步步理解</summary>
+<p class="qr-route"><strong>查詢次序：</strong>Identify CNS=00h 查 DLFEAT 與相關能力；Get Features FID=05h、SEL=0、目標 NSID 查 DULBE；再看 Read 結果。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>NSID</dt><dd>Namespace Identifier，邏輯儲存空間識別碼</dd></div></dl>
 <p data-reasoning="io-07-1"><span class="qr-step">推導 1</span>DRB=010b 所描述的 deallocated 讀取內容就是 FFh，所以此例與規格回報一致。Read 成功不要求一定回 0；驗證器應由 DRB 選擇預期內容。</p>
 <p data-reasoning="io-07-2"><span class="qr-step">推導 2</span>若 namespace 支援 DULBE 且目前設為 1，對 deallocated／unwritten block 的讀取又可能走錯誤回覆的路徑。比較兩個裝置前，要把 Feature 狀態一起保存，不能只比較讀回 bytes。</p>
 <p data-reasoning="io-07-3"><span class="qr-step">推導 3</span>這個讀取結果只驗證邏輯介面的 deallocation 行為，不能證明所有實體媒體副本已被安全清除。需要 Sanitize 保證時，應使用該操作的能力、目標及完成狀態證據。</p>
 <div class="qr-related">需要重看欄位時，接著查：<a href="/nvme/figure-reference/identify/zh-tw/#figure-n123">NVM Command Set 1.3 Figure 123 · NVM Namespace：容量、格式、原子性與建議粒度</a><a href="/nvme/figure-reference/io/zh-tw/#figure-n47">NVM Command Set 1.3 Figure 47 · Dataset Management：每段 LBA 範圍如何排列</a><a href="/nvme/figure-reference/features/zh-tw/#figure-b198">Base 2.4 Figure 198 · Get Features：現在值、預設值、保存值或能力</a></div>
-<h4>本題原文定位</h4><ul class="qr-case-sources"><li>NVM Command Set 1.3 · §4.1.5.1 · Figure 123 · Identify – Identify Namespace Data Structure, NVM Command Set · 文件頁 88 · PDF 88</li><li>NVM Command Set 1.3 · §3.3.3.2.1 · 文件頁 48 · PDF 48</li><li>NVM Command Set 1.3 · §4.1.3.3 · 文件頁 66 · PDF 66</li></ul></details>
+<details class="st-source"><summary>完整原文定位</summary><ul class="qr-case-sources"><li>NVM Command Set 1.3 · §4.1.5.1 · Figure 123 · Identify – Identify Namespace Data Structure, NVM Command Set · 文件頁 88 · PDF 88</li><li>NVM Command Set 1.3 · §3.3.3.2.1 · 文件頁 48 · PDF 48</li><li>NVM Command Set 1.3 · §4.1.3.3 · 文件頁 66 · PDF 66</li></ul></details></details>
 <a href="#exercise-toc">回情境索引</a></article>
 </section>
 <nav class="qr-toc" id="figure-index" aria-label="本冊圖表索引"><h2>本冊圖表</h2><ol>
@@ -149,7 +165,7 @@ description: "NVMe 情境練習與圖表速查：查詢路徑、欄位推導、�
 <p class="qr-original">NVM Command Set 1.3 · Figure 8 · Atomic Boundaries Example</p>
 <p class="qr-location">§2.1.4.4 · 文件頁 19 · PDF 19</p>
 <p class="qr-explanation" data-paragraph="N8-1"><span class="qr-step">02.1 · 用途</span>這張圖把原子性邊界畫成相鄰區間，適合快速判斷一段 LBA 是否跨界。圖中顏色區分區間，不代表不同 namespace 或不同媒體。</p>
-<p class="qr-explanation" data-paragraph="N8-2"><span class="qr-step">02.2 · 欄位與關係</span>第一個界線由 NABO 決定，後續界線依解碼後的 boundary size 等距排列。寫入範圍由 SLBA 與 blocks 數決定；NABSN 和 NABSPF 對應不同情境，原始欄位值還有 0 及減 1 編碼規則。</p>
+<p class="qr-explanation" data-paragraph="N8-2"><span class="qr-step">02.2 · 欄位與關係</span>第一個界線由 NABO 決定，後續界線依解碼後的 boundary size 等距排列。寫入範圍由 SLBA 與 blocks 數決定；NABSN 和 NABSPF 對應不同情境，原始欄位值還有 0 及減 1 編碼規則。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SLBA</dt><dd>Starting LBA，起始邏輯區塊位址</dd></div></dl>
 <p class="qr-explanation" data-paragraph="N8-3"><span class="qr-step">02.3 · 判讀與例子</span>以已解碼的 boundary size=8 blocks、offset=0 為例，LBA4～7 留在一區，LBA6～9 跨越 8 的界線。兩者都是 4 blocks，但後者不能只憑大小就宣稱享有 Single Atomicity 整筆保證。</p>
 <p class="qr-tags">搜尋詞：NABO · NABSN · NABSPF · atomic boundary · alignment</p>
 <div class="qr-related">接著查：<a href="/nvme/figure-reference/io/zh-tw/#figure-n4">NVM Command Set 1.3 Figure 4 · Single Atomicity：單位、條件與邊界的關係</a><a href="/nvme/figure-reference/identify/zh-tw/#figure-n123">NVM Command Set 1.3 Figure 123 · NVM Namespace：容量、格式、原子性與建議粒度</a></div>
@@ -160,12 +176,12 @@ description: "NVMe 情境練習與圖表速查：查詢路徑、欄位推導、�
 <p class="qr-location">§3.3 · 文件頁 27 · PDF 27</p>
 <p class="qr-explanation" data-paragraph="N22-1"><span class="qr-step">03.1 · 用途</span>解析 I/O trace 時，用這張表把 opcode 對回 NVM 命令。相同 opcode 在 Admin 與 I/O queue 不一定代表相同操作。</p>
 <p class="qr-explanation" data-paragraph="N22-2"><span class="qr-step">03.2 · 欄位與關係</span>表列出 opcode、命令名稱與定義位置，包括 Flush00h、Write01h、Read02h、Compare05h、Write Zeroes08h、Dataset Management09h、Verify0Ch、Copy19h。支援要求仍需搭配能力回報。</p>
-<p class="qr-explanation" data-paragraph="N22-3"><span class="qr-step">03.3 · 判讀與例子</span>OPC=02h 出現在 NVM I/O SQ 是 Read；出現在 Admin SQ 則不能套用這張表。保留 queue 種類、CSI 與 opcode 一起查，才不會把 log 讀取誤當成媒體讀取。</p>
+<p class="qr-explanation" data-paragraph="N22-3"><span class="qr-step">03.3 · 判讀與例子</span>OPC=02h 出現在 NVM I/O SQ 是 Read；出現在 Admin SQ 則不能套用這張表。保留 queue 種類、CSI 與 opcode 一起查，才不會把 log 讀取誤當成媒體讀取。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CSI</dt><dd>Command Set Identifier，命令集識別碼</dd></div></dl>
 <p class="qr-tags">搜尋詞：opcode · Read 02h · Write 01h · Flush 00h · Compare 05h · Copy 19h</p>
 <div class="qr-related">接著查：<a href="/nvme/figure-reference/command/zh-tw/#figure-b92">Base 2.4 Figure 92 · CDW0：先辨認命令與資料指標格式</a><a href="/nvme/figure-reference/io/zh-tw/#figure-n53">NVM Command Set 1.3 Figure 53 · Read 起點：64-bit SLBA</a><a href="/nvme/figure-reference/io/zh-tw/#figure-n70">NVM Command Set 1.3 Figure 70 · Write 起點：把 LBA 與 DMA 地址分開</a></div>
 <a href="#figure-index">回本冊圖表索引</a></article>
 <article class="qr-card" id="figure-n53" data-figure="N53">
-<h2><span class="qr-number">04</span>Read 起點：64-bit SLBA</h2>
+<h2><span class="qr-number">04</span>Read 起點：64-bit SLBA</h2><dl class="st-terms" aria-label="本段名詞"><div><dt>SLBA</dt><dd>Starting LBA，起始邏輯區塊位址</dd></div></dl>
 <p class="qr-original">NVM Command Set 1.3 · Figure 53 · Read – Command Dword 10 and Command Dword 11</p>
 <p class="qr-location">§3.3.4 · 文件頁 49 · PDF 49</p>
 <p class="qr-explanation" data-paragraph="N53-1"><span class="qr-step">04.1 · 用途</span>核對 Read 是否讀錯位置時，先從 CDW10／11 合成完整 SLBA。這是 namespace 內的 logical block 地址，不是 host buffer 地址。</p>
@@ -185,10 +201,10 @@ description: "NVMe 情境練習與圖表速查：查詢路徑、欄位推導、�
 <div class="qr-related">接著查：<a href="/nvme/figure-reference/io/zh-tw/#figure-n53">NVM Command Set 1.3 Figure 53 · Read 起點：64-bit SLBA</a><a href="/nvme/figure-reference/io/zh-tw/#figure-n175">NVM Command Set 1.3 Figure 175 · Read 的 PRACT：回主機時保留或移除哪些資料</a></div>
 <a href="#figure-index">回本冊圖表索引</a></article>
 <article class="qr-card" id="figure-n70" data-figure="N70">
-<h2><span class="qr-number">06</span>Write 起點：把 LBA 與 DMA 地址分開</h2>
+<h2><span class="qr-number">06</span>Write 起點：把 LBA 與 DMA 地址分開</h2><dl class="st-terms" aria-label="本段名詞"><div><dt>DMA</dt><dd>Direct Memory Access，裝置直接存取記憶體</dd></div></dl>
 <p class="qr-original">NVM Command Set 1.3 · Figure 70 · Write – Command Dword 10 and Command Dword 11</p>
 <p class="qr-location">§3.3.6 · 文件頁 54 · PDF 54</p>
-<p class="qr-explanation" data-paragraph="N70-1"><span class="qr-step">06.1 · 用途</span>寫錯區域的問題要分別查 NVM 目的 LBA 與主機來源 buffer。這張表只定義 Write 的 SLBA，不描述 PRP 或 SGL 地址。</p>
+<p class="qr-explanation" data-paragraph="N70-1"><span class="qr-step">06.1 · 用途</span>寫錯區域的問題要分別查 NVM 目的 LBA 與主機來源 buffer。這張表只定義 Write 的 SLBA，不描述 PRP 或 SGL 地址。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>PRP</dt><dd>Physical Region Page，描述資料頁位置的指標</dd></div><div><dt>SGL</dt><dd>Scatter Gather List，描述分散資料區段的清單</dd></div></dl>
 <p class="qr-explanation" data-paragraph="N70-2"><span class="qr-step">06.2 · 欄位與關係</span>CDW10／11 合成 64-bit SLBA，分別為低 32 與高 32bits。SLBA 以所選 namespace 格式的 blocks 為單位，不直接以 512-byte sectors 計。</p>
 <p class="qr-explanation" data-paragraph="N70-3"><span class="qr-step">06.3 · 判讀與例子</span>同樣 SLBA=8，在 512-byte 格式的資料起點是 4096bytes，在 4 KiB 格式是 32768bytes。先確認格式，再與應用程式的 byte offset 換算結果比較。</p>
 <p class="qr-tags">搜尋詞：Write · SLBA · destination LBA</p>
@@ -200,7 +216,7 @@ description: "NVMe 情境練習與圖表速查：查詢路徑、欄位推導、�
 <p class="qr-location">§3.3.6 · 文件頁 54 · PDF 54</p>
 <p class="qr-explanation" data-paragraph="N71-1"><span class="qr-step">07.1 · 用途</span>驗證 Write completion 代表哪些保證時，查這張表的 FUA 與 PI 控制，也要保留 namespace 格式和 cache 情境。完成不等於所有其他寫入也一起持久化。</p>
 <p class="qr-explanation" data-paragraph="N71-2"><span class="qr-step">07.2 · 欄位與關係</span>NLB bits15:0 是 blocks 數減 1，CETYPE19:16 與 DTYPE23:20 分別指定命令擴充和 Directive；STC24、PRINFO29:26 控制保護，FUA30 要求本命令資料與 metadata 在完成前寫入非揮發媒體，LR31 控制重試努力。</p>
-<p class="qr-explanation" data-paragraph="N71-3"><span class="qr-step">07.3 · 判讀與例子</span>FUA=1 強化的是這筆 Write 的完成條件，不建立與另一筆 Write 的隱含順序。使用 FDP 或 Streams 時，也要依 DTYPE 與 CETYPE 解 CDW13，不能把相同 16bits 永遠當同一種 identifier。</p>
+<p class="qr-explanation" data-paragraph="N71-3"><span class="qr-step">07.3 · 判讀與例子</span>FUA=1 強化的是這筆 Write 的完成條件，不建立與另一筆 Write 的隱含順序。使用 FDP 或 Streams 時，也要依 DTYPE 與 CETYPE 解 CDW13，不能把相同 16bits 永遠當同一種 identifier。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>FDP</dt><dd>Flexible Data Placement，彈性資料放置</dd></div></dl>
 <p class="qr-tags">搜尋詞：Write NLB · FUA · LR · PRINFO · DTYPE · CETYPE · STC</p>
 <div class="qr-related">接著查：<a href="/nvme/figure-reference/features/zh-tw/#figure-b471">Base 2.4 Figure 471 · Volatile Write Cache：目前 enable 位</a><a href="/nvme/figure-reference/io/zh-tw/#figure-n174">NVM Command Set 1.3 Figure 174 · Write 的 PRACT：host 要提供多少 metadata</a><a href="/nvme/figure-reference/features/zh-tw/#figure-b294">Base 2.4 Figure 294 · FDP Configuration：配置大小、資源數與 PID 切割</a></div>
 <a href="#figure-index">回本冊圖表索引</a></article>
@@ -208,7 +224,7 @@ description: "NVMe 情境練習與圖表速查：查詢路徑、欄位推導、�
 <h2><span class="qr-number">08</span>Copy 描述子：格式決定 namespace 與 PI 配置</h2>
 <p class="qr-original">NVM Command Set 1.3 · Figure 39 · Copy – Copy Descriptor Formats</p>
 <p class="qr-location">§3.3.2 · 文件頁 32 · PDF 32</p>
-<p class="qr-explanation" data-paragraph="N39-1"><span class="qr-step">08.1 · 用途</span>解析 Copy 來源清單前，先查描述子格式。格式決定是否有來源 NSID，以及保護資訊屬於哪種配置；選錯格式會把後續 bytes 全部讀錯。</p>
+<p class="qr-explanation" data-paragraph="N39-1"><span class="qr-step">08.1 · 用途</span>解析 Copy 來源清單前，先查描述子格式。格式決定是否有來源 NSID，以及保護資訊屬於哪種配置；選錯格式會把後續 bytes 全部讀錯。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>NSID</dt><dd>Namespace Identifier，邏輯儲存空間識別碼</dd></div></dl>
 <p class="qr-explanation" data-paragraph="N39-2"><span class="qr-step">08.2 · 欄位與關係</span>格式 0／1 沒有 SNSID，來源與目的 namespace 相同；格式 2／3 包含 SNSID，可指定不同來源 namespace。0／2 對應 8-byte、16-bit Guard PI；1／3 對應 16-byte、32 或 64-bit Guard PI。格式 4 另涉及 SLM 來源，其完整定義不在這三份來源規格中。</p>
 <p class="qr-explanation" data-paragraph="N39-3"><span class="qr-step">08.3 · 判讀與例子</span>若 DF=2，不能使用格式 0 的固定位置假設來源 NSID 不存在。是否允許跨 namespace、格式是否相容與範圍限制，仍需配合 Copy 能力及該命令條件。</p>
 <p class="qr-tags">搜尋詞：Copy · DF · SNSID · descriptor format</p>
@@ -249,7 +265,7 @@ description: "NVMe 情境練習與圖表速查：查詢路徑、欄位推導、�
 <p class="qr-original">NVM Command Set 1.3 · Figure 154 · Metadata – Transferred as Separate Buffer</p>
 <p class="qr-location">§5.2.3 · 文件頁 130 · PDF 130</p>
 <p class="qr-explanation" data-paragraph="N154-1"><span class="qr-step">12.1 · 用途</span>資料與 metadata 分開傳輸時，這張圖說明兩份 buffer 如何對應。它們雖不相鄰，每個 LBA 仍要配到自己那一份 metadata。</p>
-<p class="qr-explanation" data-paragraph="N154-2"><span class="qr-step">12.2 · 欄位與關係</span>DPTR 指向資料 buffer，MPTR 描述 metadata；資料與 metadata 分別依 LBA 順序排列。使用 PRP 形式的 metadata buffer 時要求實體連續；SGL 用法再依 PSDT 和支援條件解讀。</p>
+<p class="qr-explanation" data-paragraph="N154-2"><span class="qr-step">12.2 · 欄位與關係</span>DPTR 指向資料 buffer，MPTR 描述 metadata；資料與 metadata 分別依 LBA 順序排列。使用 PRP 形式的 metadata buffer 時要求實體連續；SGL 用法再依 PSDT 和支援條件解讀。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>PRP</dt><dd>Physical Region Page，描述資料頁位置的指標</dd></div><div><dt>SGL</dt><dd>Scatter Gather List，描述分散資料區段的清單</dd></div></dl>
 <p class="qr-explanation" data-paragraph="N154-3"><span class="qr-step">12.3 · 判讀與例子</span>2blocks、每 block4096+8bytes，資料 buffer 需 8192bytes，metadata 另需 16bytes；不是把 MPTR 指向資料 buffer 後第 8192byte 就能自動取得正確配置，必須是實際已準備好的 metadata 地址。</p>
 <p class="qr-tags">搜尋詞：MPTR · separate metadata · DPTR · metadata buffer</p>
 <div class="qr-related">接著查：<a href="/nvme/figure-reference/command/zh-tw/#figure-b93">Base 2.4 Figure 93 · 64-byte 命令的共同位置</a><a href="/nvme/figure-reference/io/zh-tw/#figure-n153">NVM Command Set 1.3 Figure 153 · Extended LBA：資料與 metadata 交錯</a></div>

@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "course": "pcie-course",
+  "chapter": 27,
+  "updated": "2026-10-24",
+  "claims": [
+    {
+      "id": "PCIE-CH27-001",
+      "claim": "ATS角色與查詢及存取權檢查。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "10.1.1"
+      ],
+      "document_pages": [
+        1470,
+        1471
+      ],
+      "pdf_pages": [
+        1470,
+        1471
+      ],
+      "figures": [
+        "10-1",
+        "10-2"
+      ],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH27-002",
+      "claim": "PASID上下文、布局與啟用。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.20",
+        "6.20.1"
+      ],
+      "document_pages": [
+        791
+      ],
+      "pdf_pages": [
+        791
+      ],
+      "figures": [],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH27-003",
+      "claim": "ATS失效同步與多完成示意。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "10.3",
+        "10.3.1"
+      ],
+      "document_pages": [
+        1476,
+        1497
+      ],
+      "pdf_pages": [
+        1476,
+        1497
+      ],
+      "figures": [
+        "10-5",
+        "10-18",
+        "10-19"
+      ],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH27-004",
+      "claim": "PRI分工、群組、TC0及額度。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "10.1.2",
+        "10.4",
+        "10.4.1"
+      ],
+      "document_pages": [
+        1476,
+        1505,
+        1506
+      ],
+      "pdf_pages": [
+        1476,
+        1505,
+        1506
+      ],
+      "figures": [],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    }
+  ]
+}

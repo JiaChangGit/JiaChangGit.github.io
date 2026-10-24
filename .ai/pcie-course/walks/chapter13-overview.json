@@ -1,0 +1,76 @@
+{
+  "title": "先取得平台描述，再協調執行期間的控制權",
+  "summary_html": "<p class=\"lead\">韌體先建立開機環境，OS 再依平台描述與控制權協商接手管理。本章把 Host Bridge 資源描述、設定空間位置與 _OSC（Operating System Capabilities，作業系統能力協商方法）串成一條閱讀路線。</p><p>前情提要：BAR 與 Bridge Window 的計算回到 Chapter 4；Hot-Plug、PME、AER 與 DPC 的硬體機制已在前章建立，現在確認由誰管理。</p><p><strong>規格路線：</strong>Firmware 3.3 §3.5 的交接要求 → §4.1 的平台描述 → §4.5.1 的 Support／Control 欄位 → Query、Control 與依賴條件。</p>",
+  "svg": "<svg viewBox=\"0 0 900 480\" role=\"img\" aria-labelledby=\"ch13-guide-title ch13-guide-desc\"><title id=\"ch13-guide-title\">本例先讀平台描述，再以 Query 了解控制政策，最後提出 Control 要求並依成功回覆接手。</title><desc id=\"ch13-guide-desc\">本例先讀平台描述，再以 Query 了解控制政策，最後提出 Control 要求並依成功回覆接手。</desc><g data-walk-target=\"os\"><rect x=\"30\" y=\"15\" width=\"320\" height=\"65\" rx=\"9\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"190.0\" y=\"40\" text-anchor=\"middle\" font-size=\"15\">OS：讀取平台描述並協商</text></g><g data-walk-target=\"firmware\"><rect x=\"550\" y=\"15\" width=\"320\" height=\"65\" rx=\"9\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"710.0\" y=\"40\" text-anchor=\"middle\" font-size=\"15\">平台韌體：資源與政策</text></g><g data-walk-target=\"ol\"><path d=\"M190 80 L190 455\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2\" stroke-dasharray=\"6 5\"/></g><g data-walk-target=\"fl\"><path d=\"M710 80 L710 455\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2\" stroke-dasharray=\"6 5\"/></g><g data-walk-target=\"description\"><path d=\"M710 135 L190 135\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2\"/><polygon points=\"190.0,135.0 200.0,140.0 200.0,130.0\" fill=\"var(--accent)\"/><text x=\"450.0\" y=\"126.0\" text-anchor=\"middle\" font-size=\"13\">平台描述：Root Bridge／資源／設定位置</text></g><g data-walk-target=\"query\"><path d=\"M190 235 L710 235\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2\"/><polygon points=\"710.0,235.0 700.0,230.0 700.0,240.0\" fill=\"var(--accent)\"/><text x=\"450.0\" y=\"226.0\" text-anchor=\"middle\" font-size=\"13\">本例先 Query：可依回覆調整再查 →</text></g><g data-walk-target=\"query-result\"><path d=\"M710 295 L190 295\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2\"/><polygon points=\"190.0,295.0 200.0,300.0 200.0,290.0\" fill=\"var(--accent)\"/><text x=\"450.0\" y=\"286.0\" text-anchor=\"middle\" font-size=\"13\">← 回覆可授予的控制範圍</text></g><g data-walk-target=\"control\"><path d=\"M190 365 L710 365\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2\"/><polygon points=\"710.0,365.0 700.0,360.0 700.0,370.0\" fill=\"var(--accent)\"/><text x=\"450.0\" y=\"356.0\" text-anchor=\"middle\" font-size=\"13\">提出 Control 要求 →</text></g><g data-walk-target=\"grant\"><path d=\"M710 425 L190 425\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2\"/><polygon points=\"190.0,425.0 200.0,430.0 200.0,420.0\" fill=\"var(--accent)\"/><text x=\"450.0\" y=\"416.0\" text-anchor=\"middle\" font-size=\"13\">← 依成功回覆取得對應控制權</text></g></svg>",
+  "order_html": "<p>由上往下看本章選用的協商策略。圖中把可重複的 Query 簡化成一回合，正文以三次呼叫的實際假設值展開。</p>",
+  "caption_html": "<p>作者依 PCI Firmware 3.3 繪製的交接示意；控制範圍由實際回覆與依賴條件決定。</p>",
+  "steps": [
+    {
+      "title": "先確認平台提供哪些資源描述",
+      "html": "<p>從 Host Bridge 的描述取得 Segment、Bus 及資源範圍，再區分 MCFG 的設定空間位置、_CRS 的資源與裝置 BAR。</p>",
+      "targets": [
+        "description",
+        "os",
+        "ol",
+        "fl"
+      ],
+      "condition_html": "<p>硬體欄位依 Base 6.0；本章的韌體交接依 Firmware 3.3，兩份來源分別保留版本。</p>",
+      "source_html": "<p>PCI Firmware 3.3 §3.5、§4.1.1–§4.1.5，pp.34–46。</p>",
+      "claim_ids": [
+        "PCIE-CH13-HANDOFF-001",
+        "PCIE-CH13-ECAM-001"
+      ]
+    },
+    {
+      "title": "用正確的 Support 與 Control 欄位協商",
+      "html": "<p>依 _OSC 的 PCI 專用欄位說明，分別宣告 OS 能力與提出管理需求；本例先用 Query 查詢政策。</p>",
+      "targets": [
+        "query",
+        "firmware"
+      ],
+      "condition_html": "<p>本章已限定 UUID、Revision 與 buffer 格式；實際成功狀態及回傳位元都要核對。</p>",
+      "source_html": "<p>PCI Firmware 3.3 §4.5.1／Tables 4-4–4-6，pp.48–58。</p>",
+      "claim_ids": [
+        "PCIE-CH13-OSC-001"
+      ]
+    },
+    {
+      "title": "沿回覆調整需求並保留依賴",
+      "html": "<p>比較要求與回傳的 Control 位元；某項能力被遮罩時，重新檢查相關依賴，再決定後續要求。</p>",
+      "targets": [
+        "query-result",
+        "control"
+      ],
+      "condition_html": "<p>已授予的控制權與各項依賴依規則保留；不能只因一個 Query 有回覆就開始改寫硬體。</p>",
+      "source_html": "<p>PCI Firmware 3.3 §4.5.1–§4.5.2／Tables 4-4–4-6，pp.49–60。</p>",
+      "claim_ids": [
+        "PCIE-CH13-DEPENDENCIES-001",
+        "PCIE-CH13-NEGOTIATION-001"
+      ]
+    },
+    {
+      "title": "依成功授權的範圍接手管理",
+      "html": "<p>成功的 Control 回覆決定 OS 接手哪些功能；仍由韌體管理的部分與交接限制，依平台政策及規格處理。</p>",
+      "targets": [
+        "grant",
+        "os"
+      ],
+      "condition_html": "<p>例如 Hot-Plug、AER 與 DPC 的控制需按各自依賴協調；本章不把 OS 已啟動視為全部控制權都已移交。</p>",
+      "source_html": "<p>PCI Firmware 3.3 §4.5.1–§4.5.3，pp.48–62。</p>",
+      "claim_ids": [
+        "PCIE-CH13-OSC-001",
+        "PCIE-CH13-EDR-001",
+        "PCIE-CH13-NEGOTIATION-001"
+      ]
+    }
+  ],
+  "components": [
+    {
+      "target": "firmware",
+      "title": "平台韌體",
+      "html": "<p>本圖負責提供平台描述並參與控制權協商。</p>",
+      "basic_html": "<p>UEFI 軟體介面、ACPI 平台描述與 PCI Firmware 的專用約定各有來源，不合併成一種硬體能力。</p>"
+    }
+  ],
+  "walk_id": "ch13-overview"
+}

@@ -7,18 +7,21 @@ permalink: /nvme/question-bank/doorbells/en/
 lang: en
 nvme_quickref: true
 nvme_qa: true
+spec_teaching: true
+last_modified_at: 2026-10-23
 ---
 
-<div class="nvme-quickref nvme-qa">
+<div class="nvme-quickref nvme-qa spec-teaching" data-spec-series="nvme">
 <nav class="qr-top" aria-label="Bank and editions"><a href="#content">Skip to content</a><a href="/nvme/question-bank/en/">Question index</a><a href="/nvme/question-bank/doorbells/zh-tw/">繁體中文</a><a href="/DOCS/nvme-question-bank/doorbells.html">Chinese tutorial HTML</a></nav>
-<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–328</p>
-<header><p class="qa-range">Q22–Q30</p><h1>Doorbells, full queues and wrap-around</h1><p class="qr-intro">Doorbells communicate pointer positions; phase tells the host whether a CQ slot belongs to the next completion generation. Together they distinguish wrap-around from an invalid movement and new completions from stale ones.</p><p>Practice first, then reveal the explanation. Each question uses the prose, field interpretation, comparison or flow that suits it. All numerical examples are hypothetical. Status is written SCT/SC; h indicates hexadecimal.</p></header>
-<aside class="qa-glossary"><h2>Terms used in this volume</h2><dl><dt>Controller / namespace</dt><dd>A controller receives commands and manages access. A namespace is a logical storage space that commands can address. An NVM subsystem contains controllers and nonvolatile storage resources.</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission and Completion Queues carry command entries (SQEs) and completion entries (CQEs). QID identifies a queue, CID distinguishes outstanding commands in one SQ, and NSID identifies a namespace.</dd><dt>Register / Identify / Feature / Log</dt><dd>A register exposes control or state. Identify queries capabilities and attributes; features query or configure operation; log pages report specific state or records. FID, LID, CNS and CSI select features, logs, Identify structures and command sets.</dd><dt>index / offset / zero-based</dt><dd>An index selects an entry, usually starting at 0; an offset measures distance from an origin in specified units. A zero-based count encodes count−1, but not every zero-valued field is a count. A Dword is 4 bytes; a byte is 8 bits.</dd><dt>Scope / reset / retention</dt><dd>Scope names the affected objects; retention means preserving state. Controller Reset (clearing CC.EN) is one form of Controller Level Reset, or CLR. Different CLR triggers can retain different registers.</dd></dl></aside>
-<section id="overview" class="qa-overview"><h2>An eight-entry CQ: wrap-around and phase together</h2><p class="qa-takeaway">Returning to slot 0 does not make old data valid again; the host must also compare the expected phase.</p>
-<div class="qr-table" tabindex="0" role="region" aria-label="Horizontally scrollable comparison table"><table><thead><tr><th scope="col">Point in time</th><th scope="col">Host next slot / expected phase</th><th scope="col">Read result and action</th></tr></thead><tbody><tr><td>Initialization</td><td>Slot 0, expect P=1; initialize memory P to 0</td><td>No new completion yet</td></tr><tr><td>End of first traversal</td><td>Slot 7, expect P=1</td><td>P=1: consume CQE, wrap to 0, change expectation to 0</td></tr><tr><td>Start of second traversal</td><td>Slot 0, expect P=0</td><td>Ignore stale P=1; consume only new P=0</td></tr><tr><td>Report consumption</td><td>CQ Head advances from 7 to 2</td><td>Consumed slots 7, 0, 1: 3 entries, not a retreat by 5</td></tr></tbody></table></div>
-<p><strong>Worked interpretation: </strong>Modular distance is (2−7+8) mod 8=3. The doorbell reports position 2, not “free two more slots.” Phase establishes CQE validity; the head doorbell reports consumption to the controller.</p>
+<main id="content"><p class="qr-eyebrow">NVMe · Q1–328</p>
+<div class="st-specs" aria-label="Specification editions"><span>NVM Express Base 2.4</span><span>NVM Command Set 1.3</span><span>NVMe over PCIe Transport 1.4</span></div>
+<header><p class="qa-range">Q22–Q30</p><h1>Doorbells, full queues and wrap-around</h1><aside class="st-context"><p>Doorbells notify the controller of updated queue pointers. SQs (Submission Queues) submit commands; CQs (Completion Queues) return CQEs (Completion Queue Entries). Follow wrap-around together with the phase tag that identifies the expected completion generation.</p></aside><p class="qr-intro">Doorbells communicate pointer positions; phase tells the host whether a CQ slot belongs to the next completion generation. Together they distinguish wrap-around from an invalid movement and new completions from stale ones.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>CQ</dt><dd>Completion Queue</dd></div></dl><p>Each question is followed by its explanation. Start with the volume overview, then follow the field interpretations, comparisons or processes. Essential conditions and the normal path are visible from the start. All numerical examples are hypothetical. Status is written SCT/SC; h indicates hexadecimal.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>SCT</dt><dd>Status Code Type</dd></div></dl></header>
+<section id="overview" class="qa-overview"><h2>An eight-entry CQ: wrap-around and phase together</h2><dl class="st-terms" aria-label="Terms in this passage"><div><dt>CQ</dt><dd>Completion Queue</dd></div></dl><p class="qa-takeaway">Returning to slot 0 does not make old data valid again; the host must also compare the expected phase.</p>
+<div class="qr-table" tabindex="0" role="region" aria-label="Horizontally scrollable comparison table"><table><thead><tr><th scope="col">Point in time</th><th scope="col">Host next slot / expected phase</th><th scope="col">Read result and action</th></tr></thead><tbody><tr><td>Initialization</td><td>Slot 0, expect P=1; initialize memory P to 0</td><td>No new completion yet</td></tr><tr><td>End of first traversal</td><td>Slot 7, expect P=1</td><td>P=1: consume CQE, wrap to 0, change expectation to 0</td></tr><tr><td>Start of second traversal</td><td>Slot 0, expect P=0</td><td>Ignore stale P=1; consume only new P=0</td></tr><tr><td>Report consumption</td><td>CQ Head advances from 7 to 2</td><td>Consumed slots 7, 0, 1: 3 entries, not a retreat by 5</td></tr></tbody></table><dl class="st-terms" aria-label="Terms in this passage"><div><dt>CQE</dt><dd>Completion Queue Entry</dd></div></dl></div>
+<p><strong>Worked interpretation: </strong>Modular distance is (2−7+8) mod 8=3. The doorbell reports position 2, not “free two more slots.” Phase establishes CQE validity; the head doorbell reports consumption to the controller.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>CQE</dt><dd>Completion Queue Entry</dd></div></dl>
 <p class="qa-citations">Sources: <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-pcie">PCIe Transport 1.4 §3.1–3.4</a></p>
 </section>
+<details class="qa-glossary st-glossary"><summary>Review the terminology when needed</summary><dl><dt>Controller / namespace</dt><dd>A controller receives commands and manages access. A namespace is a logical storage space that commands can address. An NVM subsystem contains controllers and nonvolatile storage resources.</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission and Completion Queues carry command entries (SQEs) and completion entries (CQEs). QID identifies a queue, CID distinguishes outstanding commands in one SQ, and NSID identifies a namespace.</dd><dt>Register / Identify / Feature / Log</dt><dd>A register exposes control or state. Identify queries capabilities and attributes; features query or configure operation; log pages report specific state or records. FID, LID, CNS and CSI select features, logs, Identify structures and command sets.</dd><dt>index / offset / zero-based</dt><dd>An index selects an entry, usually starting at 0; an offset measures distance from an origin in specified units. A zero-based count encodes count−1, but not every zero-valued field is a count. A Dword is 4 bytes; a byte is 8 bits.</dd><dt>Scope / reset / retention</dt><dd>Scope names the affected objects; retention means preserving state. Controller Reset (clearing CC.EN) is one form of Controller Level Reset, or CLR. Different CLR triggers can retain different registers.</dd></dl></details>
 <div class="qa-controls" hidden><label>Search this page <input type="search" id="qa-search" placeholder="Question number, field or keyword"></label><button type="button" data-expand="true">Expand all answers</button><button type="button" data-expand="false">Collapse all answers</button><output id="qa-count" aria-live="polite"></output></div>
 <section id="question-index"><h2>Questions in this volume</h2><ol class="qa-index">
 <li><a href="#q-022">Q22 · When should the host update SQ Tail and CQ Head doorbells?</a></li>
@@ -31,10 +34,10 @@ nvme_qa: true
 <li><a href="#q-029">Q29 · How does processing resume when the host releases CQ space?</a></li>
 <li><a href="#q-030">Q30 · How does the host identify completions from SQs sharing a CQ?</a></li>
 </ol></section>
-<article class="qa-question" id="q-022" data-question="22" data-answer-kind="process"><h2><a class="qa-qid" href="#q-022">Q22</a> When should the host update SQ Tail and CQ Head doorbells?</h2>
-<p class="qa-prompt">Order the actions and identify which completion must precede the next action.</p>
-<details class="qa-answer" id="q-022-answer"><summary>Reveal the explanation</summary>
-<p class="qa-answer-lead" id="q-022-a-01">Notify the controller of completed host memory work: SQ Tail submits commands, while CQ Head releases completion slots.</p><div class="qa-sections">
+<article class="qa-question" id="q-022" data-question="22" data-answer-kind="process"><h2><a class="qa-qid" href="#q-022">Q22</a> When should the host update SQ Tail and CQ Head doorbells?</h2><dl class="st-terms" aria-label="Terms in this passage"><div><dt>SQ</dt><dd>Submission Queue</dd></div></dl>
+
+<details open class="qa-answer" id="q-022-answer"><summary>Follow the explanation</summary>
+<p class="qa-answer-lead" id="q-022-a-01">Notify the controller of completed host memory work: SQ Tail submits commands, while CQ Head releases completion slots.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>SQ</dt><dd>Submission Queue</dd></div></dl><div class="qa-sections">
 <section class="qa-section" id="q-022-s-01" data-answer-section="1"><h3><span>1.</span> Prepare the operation</h3>
 <span class="qa-anchor" id="q-022-a-02"></span><p>Each SQ/CQ has its own doorbell; updating one does not update another.</p>
 <span class="qa-anchor" id="q-022-a-03"></span><p>Verify a valid queue, a ready controller, sufficient free slots and the register address derived from CAP.DSTRD.</p>
@@ -46,21 +49,22 @@ nvme_qa: true
 </section>
 <section class="qa-section" id="q-022-s-03" data-answer-section="3"><h3><span>3.</span> Handle unmet conditions</h3>
 <span class="qa-anchor" id="q-022-a-07"></span><p>Releasing unconsumed CQEs risks overwrite. Submitting incomplete SQEs violates usage ordering and has no guaranteed single error CQE.</p>
-<span class="qa-anchor" id="q-022-a-16"></span><p>Build a timeline of SQE writes, Tail updates, CQE phase changes and Head updates; they have distinct roles.</p>
+<span class="qa-anchor" id="q-022-a-16"></span><p>Build a timeline of SQE writes, Tail updates, CQE phase changes and Head updates; they have distinct roles.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>SQE</dt><dd>Submission Queue Entry</dd></div></dl>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-pcie">PCIe Transport 1.4 §3.1–3.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a></p>
 <span class="qa-anchor" id="q-022-a-17"></span><span class="qa-anchor" id="q-022-a-08"></span><span class="qa-anchor" id="q-022-a-09"></span><span class="qa-anchor" id="q-022-a-10"></span><span class="qa-anchor" id="q-022-a-11"></span><span class="qa-anchor" id="q-022-a-12"></span><span class="qa-anchor" id="q-022-a-13"></span><span class="qa-anchor" id="q-022-a-14"></span><span class="qa-anchor" id="q-022-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-pcie">PCIe Transport 1.4 §3.1–3.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-023" data-question="23" data-answer-kind="error"><h2><a class="qa-qid" href="#q-023">Q23</a> What happens with repeated, apparently backward, out-of-range or wrong-QID doorbells?</h2>
-<p class="qa-prompt">Distinguish failure conditions before deciding whether a particular response is required.</p>
-<details class="qa-answer" id="q-023-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-023-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-023-a-01">Validate pointer movement without treating a ring index as a monotonically increasing counter.</p><div class="qa-sections">
 <section class="qa-section" id="q-023-s-01" data-answer-section="1"><h3><span>1.</span> Distinguish the failure conditions</h3>
 <span class="qa-anchor" id="q-023-a-02"></span><p>Errors affect the target queue and possibly SQs sharing its CQ. Access to a nonexistent queue differs from an invalid value on an existing queue.</p>
 <span class="qa-anchor" id="q-023-a-04"></span><p>New values lie in 0..size−1. A repeated value announces no new slots; a numerically smaller value may be a valid wrap.</p>
-<span class="qa-anchor" id="q-023-a-07"></span><p>Invalid values on an existing queue have Invalid Doorbell Write Value asynchronous handling; writing a nonexistent queue doorbell is undefined. Event information is not a CQE status for the MMIO write.</p>
+<span class="qa-anchor" id="q-023-a-07"></span><p>Invalid values on an existing queue have Invalid Doorbell Write Value asynchronous handling; writing a nonexistent queue doorbell is undefined. Event information is not a CQE status for the MMIO write.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>MMIO</dt><dd>Memory-Mapped I/O, mapped device-register access</dd></div></dl>
 </section>
 <section class="qa-section" id="q-023-s-02" data-answer-section="2"><h3><span>2.</span> Establish the cause from evidence</h3>
 <span class="qa-anchor" id="q-023-a-03"></span><p>Need size, previous pointer, available/consumed slots and QID mapping. The new value alone is insufficient.</p>
@@ -73,16 +77,17 @@ nvme_qa: true
 </section>
 <section class="qa-section" id="q-023-s-04" data-answer-section="4"><h3><span>4.</span> Check notifications and log records separately</h3>
 <span class="qa-anchor" id="q-023-a-09"></span><p>Base §3.3.1.2 specifies an error event for an invalid doorbell value with an outstanding Asynchronous Event Request. An affected SQ may complete consumed commands but consumes no new ones; the host deletes and recreates the queue.</p>
-<span class="qa-anchor" id="q-023-a-10"></span><p>Follow the Error event’s indicated log for additional information; the MMIO write itself has no More bit. Do not invent mandatory logging for undefined nonexistent-QID accesses.</p>
+<span class="qa-anchor" id="q-023-a-10"></span><p>Follow the Error event’s indicated log for additional information; the MMIO write itself has no More bit. Do not invent mandatory logging for undefined nonexistent-QID accesses.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>MMIO</dt><dd>Memory-Mapped I/O, mapped device-register access</dd></div></dl>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-pcie">PCIe Transport 1.4 §3.1–3.4</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a></p>
 <span class="qa-anchor" id="q-023-a-08"></span><span class="qa-anchor" id="q-023-a-11"></span><span class="qa-anchor" id="q-023-a-12"></span><span class="qa-anchor" id="q-023-a-13"></span><span class="qa-anchor" id="q-023-a-14"></span><span class="qa-anchor" id="q-023-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-pcie">PCIe Transport 1.4 §3.1–3.4</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-024" data-question="24" data-answer-kind="fields"><h2><a class="qa-qid" href="#q-024">Q24</a> How are SQ/CQ doorbell addresses calculated from CAP.DSTRD?</h2>
-<p class="qa-prompt">Explain the units and encoding, then work through one set of values.</p>
-<details class="qa-answer" id="q-024-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-024-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-024-a-01">Derive the unique doorbell address from the NVMe register base and QID.</p><div class="qa-sections">
 <section class="qa-section" id="q-024-s-01" data-answer-section="1"><h3><span>1.</span> Establish the source and scope</h3>
 <span class="qa-anchor" id="q-024-a-02"></span><p>Offsets are relative to the controller&#x27;s MMIO base, not a queue&#x27;s memory address.</p>
@@ -95,16 +100,17 @@ nvme_qa: true
 </section>
 <section class="qa-section" id="q-024-s-03" data-answer-section="3"><h3><span>3.</span> Conditions that change the interpretation</h3>
 <span class="qa-anchor" id="q-024-a-07"></span><p>Address calculation has no status. A wrong address can select another valid queue or an undefined location; the controller cannot infer host intent.</p>
-<span class="qa-anchor" id="q-024-a-16"></span><p>Match results against created QIDs and the mapped BAR range. DSTRD is an exponent, not a byte count or a direct QID multiplier.</p>
+<span class="qa-anchor" id="q-024-a-16"></span><p>Match results against created QIDs and the mapped BAR range. DSTRD is an exponent, not a byte count or a direct QID multiplier.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>BAR</dt><dd>Base Address Register</dd></div></dl>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-cap">Base 2.4 §3.1.4 (CAP, VS)</a> · <a href="#ref-pcie">PCIe Transport 1.4 §3.1–3.4</a> · <a href="#ref-pciconfig">PCIe Transport 1.4 §3.8.1 (NVMe configuration access)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a></p>
 <span class="qa-anchor" id="q-024-a-17"></span><span class="qa-anchor" id="q-024-a-08"></span><span class="qa-anchor" id="q-024-a-09"></span><span class="qa-anchor" id="q-024-a-10"></span><span class="qa-anchor" id="q-024-a-11"></span><span class="qa-anchor" id="q-024-a-12"></span><span class="qa-anchor" id="q-024-a-13"></span><span class="qa-anchor" id="q-024-a-14"></span><span class="qa-anchor" id="q-024-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-cap">Base 2.4 §3.1.4 (CAP, VS)</a> · <a href="#ref-pcie">PCIe Transport 1.4 §3.1–3.4</a> · <a href="#ref-pciconfig">PCIe Transport 1.4 §3.8.1 (NVMe configuration access)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-025" data-question="25" data-answer-kind="concept"><h2><a class="qa-qid" href="#q-025">Q25</a> May the host access doorbells of uncreated/deleted queues or a disabled controller?</h2>
-<p class="qa-prompt">Explain the mechanism in your own words and identify a common misconception.</p>
-<details class="qa-answer" id="q-025-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-025-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-025-a-01">Respect queue lifetime: an address in the doorbell region does not mean a queue currently exists.</p><div class="qa-sections">
 <section class="qa-section" id="q-025-s-01" data-answer-section="1"><h3><span>1.</span> Establish the queue lifetime</h3>
 <span class="qa-anchor" id="q-025-a-02"></span><p>Use each queue after successful creation and retire it after successful deletion or controller reset.</p>
@@ -117,13 +123,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-025-a-16"></span><p>Use Create/Delete completion times to establish the valid interval and check doorbell timestamps against it.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-pcie">PCIe Transport 1.4 §3.1–3.4</a> · <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-qattr">Base 2.4 §3.3.3–3.4.1</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a></p>
 <span class="qa-anchor" id="q-025-a-06"></span><span class="qa-anchor" id="q-025-a-17"></span><span class="qa-anchor" id="q-025-a-08"></span><span class="qa-anchor" id="q-025-a-09"></span><span class="qa-anchor" id="q-025-a-10"></span><span class="qa-anchor" id="q-025-a-11"></span><span class="qa-anchor" id="q-025-a-12"></span><span class="qa-anchor" id="q-025-a-13"></span><span class="qa-anchor" id="q-025-a-14"></span><span class="qa-anchor" id="q-025-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-pcie">PCIe Transport 1.4 §3.1–3.4</a> · <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-qattr">Base 2.4 §3.3.3–3.4.1</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-026" data-question="26" data-answer-kind="process"><h2><a class="qa-qid" href="#q-026">Q26</a> How should SQ Tail and CQ Head wrap around?</h2>
-<p class="qa-prompt">Order the actions and identify which completion must precede the next action.</p>
-<details class="qa-answer" id="q-026-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-026-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-026-a-01">Reuse fixed storage as a ring without recreating the queue each turn.</p><div class="qa-sections">
 <section class="qa-section" id="q-026-s-01" data-answer-section="1"><h3><span>1.</span> Prepare the operation</h3>
 <span class="qa-anchor" id="q-026-a-02"></span><p>The host advances SQ Tail and CQ Head; the controller maintains SQ Head and CQ Tail.</p>
@@ -139,16 +146,17 @@ nvme_qa: true
 <span class="qa-anchor" id="q-026-a-16"></span><p>Validate modulo relationships among Head, Tail and size. A decreasing doorbell value alone is not a violation.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-pcie">PCIe Transport 1.4 §3.1–3.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a></p>
 <span class="qa-anchor" id="q-026-a-17"></span><span class="qa-anchor" id="q-026-a-08"></span><span class="qa-anchor" id="q-026-a-09"></span><span class="qa-anchor" id="q-026-a-10"></span><span class="qa-anchor" id="q-026-a-11"></span><span class="qa-anchor" id="q-026-a-12"></span><span class="qa-anchor" id="q-026-a-13"></span><span class="qa-anchor" id="q-026-a-14"></span><span class="qa-anchor" id="q-026-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-pcie">PCIe Transport 1.4 §3.1–3.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-027" data-question="27" data-answer-kind="process"><h2><a class="qa-qid" href="#q-027">Q27</a> How does the CQ phase change across wrap, and how does the host identify a new completion?</h2>
-<p class="qa-prompt">Order the actions and identify which completion must precede the next action.</p>
-<details class="qa-answer" id="q-027-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-027-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-027-a-01">Let the host distinguish a newly posted completion from data left in the same slot by a previous pass.</p><div class="qa-sections">
 <section class="qa-section" id="q-027-s-01" data-answer-section="1"><h3><span>1.</span> Prepare the operation</h3>
-<span class="qa-anchor" id="q-027-a-02"></span><p>Phase belongs to the CQ ring lifetime; it is neither CID success/failure nor an SQ pointer.</p>
+<span class="qa-anchor" id="q-027-a-02"></span><p>Phase belongs to the CQ ring lifetime; it is neither CID success/failure nor an SQ pointer.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>CID</dt><dd>Command Identifier, unique among outstanding commands in one SQ</dd></div></dl>
 <span class="qa-anchor" id="q-027-a-03"></span><p>This is a basic PCIe CQE mechanism, not an optional feature. Initialize every slot&#x27;s phase to zero before creation and initially expect one.</p>
 <span class="qa-anchor" id="q-027-a-04"></span><p>CQE DW3 bit 16 is P. Each new posting in a slot inverts that slot&#x27;s previous phase.</p>
 </section>
@@ -161,20 +169,21 @@ nvme_qa: true
 <li class="qa-flow-step"><strong>Inspect P at the current head</strong><p>If P does not match, wait: the slot has no new result for this traversal. Do not decode its stale CID or status.</p></li>
 <li class="qa-flow-step"><span class="qa-flow-arrow" aria-hidden="true">↓</span><strong>P matches → process the CQE</strong><p>Head visits 0, 1, 2 and 3. New CQEs in this traversal all use P=1.</p></li>
 <li class="qa-flow-step"><span class="qa-flow-arrow" aria-hidden="true">↓</span><strong>Head wraps from 3 to 0 → invert expected phase</strong><p>Expect P=0 in the next traversal. Moving from slot 1 to 2 does not change the expected phase.</p></li>
-</ol><p class="qa-flow-conclusion">Recreating the CQ requires reinitializing phase bits and the host expectation. Four entries are used only to illustrate wrapping.</p></figure>
+</ol><p class="qa-flow-conclusion">Recreating the CQ requires reinitializing phase bits and the host expectation. Four entries are used only to illustrate wrapping.</p></figure><dl class="st-terms" aria-label="Terms in this passage"><div><dt>CID</dt><dd>Command Identifier, unique among outstanding commands in one SQ</dd></div></dl>
 </section>
 <section class="qa-section" id="q-027-s-03" data-answer-section="3"><h3><span>3.</span> Handle unmet conditions</h3>
 <span class="qa-anchor" id="q-027-a-07"></span><p>A phase mismatch means no new completion at that position, not an error status. Do not decode stale CID/SC as a new result.</p>
 <span class="qa-anchor" id="q-027-a-16"></span><p>Exercise at least one wrap and compare Head, expected P and actual P. Reinitialize after queue recreation rather than inheriting the old phase.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-027-a-08"></span><span class="qa-anchor" id="q-027-a-09"></span><span class="qa-anchor" id="q-027-a-10"></span><span class="qa-anchor" id="q-027-a-11"></span><span class="qa-anchor" id="q-027-a-12"></span><span class="qa-anchor" id="q-027-a-13"></span><span class="qa-anchor" id="q-027-a-14"></span><span class="qa-anchor" id="q-027-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-028" data-question="28" data-answer-kind="concept"><h2><a class="qa-qid" href="#q-028">Q28</a> How does CQ Full arise, and may related SQ processing continue?</h2>
-<p class="qa-prompt">Explain the mechanism in your own words and identify a common misconception.</p>
-<details class="qa-answer" id="q-028-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-028-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-028-a-01">Flow control prevents overwriting unconsumed completions. Fullness usually means completions arrive faster than the host releases slots.</p><div class="qa-sections">
 <section class="qa-section" id="q-028-s-01" data-answer-section="1"><h3><span>1.</span> Mechanism and scope</h3>
 <span class="qa-anchor" id="q-028-a-02"></span><p>It affects the CQ and associated SQs. Processing must continue for SQs not associated with that full CQ.</p>
@@ -190,13 +199,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-028-a-16"></span><p>If only its associated SQs stall, inspect consumption first. If independent SQs stop because of this full CQ, check the requirement to continue their processing.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-order">Base 2.4 §3.4.1–3.4.5</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-028-a-17"></span><span class="qa-anchor" id="q-028-a-08"></span><span class="qa-anchor" id="q-028-a-09"></span><span class="qa-anchor" id="q-028-a-10"></span><span class="qa-anchor" id="q-028-a-11"></span><span class="qa-anchor" id="q-028-a-12"></span><span class="qa-anchor" id="q-028-a-13"></span><span class="qa-anchor" id="q-028-a-14"></span><span class="qa-anchor" id="q-028-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-order">Base 2.4 §3.4.1–3.4.5</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-029" data-question="29" data-answer-kind="process"><h2><a class="qa-qid" href="#q-029">Q29</a> How does processing resume when the host releases CQ space?</h2>
-<p class="qa-prompt">Order the actions and identify which completion must precede the next action.</p>
-<details class="qa-answer" id="q-029-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-029-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-029-a-01">Resume work after capacity becomes available rather than treating ordinary CQ Full as a recreation error.</p><div class="qa-sections">
 <section class="qa-section" id="q-029-s-01" data-answer-section="1"><h3><span>1.</span> Prepare the operation</h3>
 <span class="qa-anchor" id="q-029-a-02"></span><p>Released slots serve completions from associated SQs; queue allocations and namespace capabilities do not change.</p>
@@ -212,20 +222,21 @@ nvme_qa: true
 <span class="qa-anchor" id="q-029-a-16"></span><p>Verify legal reuse of released slots and compare progress on associated and independent SQs.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-pcie">PCIe Transport 1.4 §3.1–3.4</a> · <a href="#ref-order">Base 2.4 §3.4.1–3.4.5</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-029-a-17"></span><span class="qa-anchor" id="q-029-a-08"></span><span class="qa-anchor" id="q-029-a-09"></span><span class="qa-anchor" id="q-029-a-10"></span><span class="qa-anchor" id="q-029-a-11"></span><span class="qa-anchor" id="q-029-a-12"></span><span class="qa-anchor" id="q-029-a-13"></span><span class="qa-anchor" id="q-029-a-14"></span><span class="qa-anchor" id="q-029-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-pcie">PCIe Transport 1.4 §3.1–3.4</a> · <a href="#ref-order">Base 2.4 §3.4.1–3.4.5</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-030" data-question="30" data-answer-kind="fields"><h2><a class="qa-qid" href="#q-030">Q30</a> How does the host identify completions from SQs sharing a CQ?</h2>
-<p class="qa-prompt">Explain the units and encoding, then work through one set of values.</p>
-<details class="qa-answer" id="q-030-answer"><summary>Reveal the explanation</summary>
+
+<details open class="qa-answer" id="q-030-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-030-a-01">Deliver completion to the correct request. CID uniqueness is required among outstanding commands of the same SQ.</p><div class="qa-sections">
 <section class="qa-section" id="q-030-s-01" data-answer-section="1"><h3><span>1.</span> Establish the source and scope</h3>
-<span class="qa-anchor" id="q-030-a-02"></span><p>Matching includes controller, SQ lifetime, SQID and CID. Controller/lifetime are host context, not additional CQE fields.</p>
+<span class="qa-anchor" id="q-030-a-02"></span><p>Matching includes controller, SQ lifetime, SQID and CID. Controller/lifetime are host context, not additional CQE fields.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>SQID</dt><dd>Submission Queue Identifier</dd></div></dl>
 <span class="qa-anchor" id="q-030-a-03"></span><p>Use the creation-time SQ-to-CQ map and outstanding table, not Identify for per-command locations.</p>
 </section>
 <section class="qa-section" id="q-030-s-02" data-answer-section="2"><h3><span>2.</span> Fields, units and worked interpretation</h3>
-<span class="qa-anchor" id="q-030-a-04"></span><p>SQID identifies the SQ and CID its command. SQHD reports consumption progress, not the original slot of that command.</p>
+<span class="qa-anchor" id="q-030-a-04"></span><p>SQID identifies the SQ and CID its command. SQHD reports consumption progress, not the original slot of that command.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>SQID</dt><dd>Submission Queue Identifier</dd></div></dl>
 <span class="qa-anchor" id="q-030-a-05"></span><p>Validate phase first, match SQID/CID, process status/data, update that SQ&#x27;s head information, then release the CQ slot.</p>
 <span class="qa-anchor" id="q-030-a-06"></span><p>SQ1/CID 9 and SQ2/CID 9 are matched correctly even if they complete in reverse order.</p>
 </section>
@@ -234,6 +245,7 @@ nvme_qa: true
 <span class="qa-anchor" id="q-030-a-16"></span><p>Check that SQID is associated with this CQ and CID belongs to its current queue lifetime.</p>
 </section>
 </div>
+<p class="qa-citations">Sources: <a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-sqe">Base 2.4 §4.1.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-030-a-17"></span><span class="qa-anchor" id="q-030-a-08"></span><span class="qa-anchor" id="q-030-a-09"></span><span class="qa-anchor" id="q-030-a-10"></span><span class="qa-anchor" id="q-030-a-11"></span><span class="qa-anchor" id="q-030-a-12"></span><span class="qa-anchor" id="q-030-a-13"></span><span class="qa-anchor" id="q-030-a-14"></span><span class="qa-anchor" id="q-030-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-sqe">Base 2.4 §4.1.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>

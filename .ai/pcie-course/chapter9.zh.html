@@ -93,5 +93,5 @@
 <p>回到開頭的需求：03:00.1 繼續工作，軟體重新建立 03:00.0 的工作環境。先用 Figure 7-24 確認支援，再以 Figure 7-26 觀察未完成交易；本例先處理舊交易，才依 Figure 7-25 寫入觸發控制。設定就緒後，軟體按欄位屬性恢復配置，最後重建裝置工作與通知路徑。</p>
 <details class="question" open><summary>Link 沒有重新訓練，接下來要觀察哪裡？</summary><p>這正是單一功能重設的預期範圍。接下來觀察 03:00.0 的設定就緒與恢復過程；共用連線持續運作，03:00.1 也繼續工作。（§6.6.2，pp.724–726。）</p></details>
 <details class="question" open><summary>舊回覆還可能到達時，為什麼要延後恢復工作？</summary><p>重設會讓功能失去舊交易的追蹤資訊。若立即重用交易標記，遲到的回覆可能被配給新交易；因此要依觸發時的狀態與重設前的逾時設定，完成必要等待。重設後 Pending 清零是規定的狀態變化，不能代替這段等待。</p></details>
-<details class="question"><summary>電源狀態切換也會影響初始化，該從哪裡接著讀？</summary><p>D3hot→D0 的行為還受到 No_Soft_Reset（不進行軟重設）欄位影響。既有 <a href="chapter-10.html">Chapter 10</a> 會從 PMCSR（電源管理控制與狀態暫存器）說明；電源狀態切換有自己的條件，不保證等同本章的功能重設。</p></details></section>
+<details open class="question"><summary>電源狀態切換也會影響初始化，該從哪裡接著讀？</summary><p>D3hot→D0 的行為還受到 No_Soft_Reset（不進行軟重設）欄位影響。既有 <a href="chapter-10.html">Chapter 10</a> 會從 PMCSR（電源管理控制與狀態暫存器）說明；電源狀態切換有自己的條件，不保證等同本章的功能重設。</p></details></section>
 <section id="sources"><h2>版本與來源</h2><p>採 PCI Express Base Specification Revision 6.0，§6.6.1–§6.6.2 與本章就近標示的欄位表。引用頁碼同時是文件頁與 PDF 頁。正常流程依 p.727 的實作說明安排，數值與情境是作者推演；來源未把這個安排規定為所有裝置唯一的停工程序。</p></section>

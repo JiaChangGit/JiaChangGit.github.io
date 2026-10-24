@@ -1,0 +1,50 @@
+{
+  "walk_id": "ch34-overview",
+  "title": "Link 已啟動，軟體還要等多久才能讀設定空間？",
+  "summary_html": "<p>RN（Readiness Notifications，就緒通知）讓軟體在裝置或Function已可接受設定要求時得知消息。DRS（Device Readiness Status，裝置就緒狀態）與FRS（Function Readiness Status，功能就緒狀態）對應不同事件與範圍。先找事件與對象，再讀通知或等待條件。</p>",
+  "svg": "<svg viewBox=\"0 0 900 420\" role=\"img\" aria-labelledby=\"ch34-zh-t ch34-zh-d\"><title id=\"ch34-zh-t\">本章角色與事件</title><desc id=\"ch34-zh-d\">就緒通知縮短等待，但要保留事件、對象與時限。</desc><g data-walk-target=\"n0\"><rect x=\"30\" y=\"35\" width=\"350\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"205.0\" y=\"64\" text-anchor=\"middle\" font-size=\"16\">先辨識裝置／功能事件</text></g><g data-walk-target=\"n1\"><rect x=\"515\" y=\"35\" width=\"350\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"690.0\" y=\"64\" text-anchor=\"middle\" font-size=\"16\">確認管理者與支援機制</text></g><g data-walk-target=\"n2\"><rect x=\"515\" y=\"290\" width=\"350\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"690.0\" y=\"319\" text-anchor=\"middle\" font-size=\"16\">等對應就緒通知或有效時限</text></g><g data-walk-target=\"n3\"><rect x=\"30\" y=\"290\" width=\"350\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"205.0\" y=\"319\" text-anchor=\"middle\" font-size=\"16\">開始設定，再接事件處理</text></g><g data-walk-target=\"a\"><path d=\"M380 69 L515 69\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"515,69 505.0,74.0 505.0,64.0\" fill=\"var(--accent)\"/><text x=\"447.5\" y=\"59.0\" text-anchor=\"middle\" font-size=\"16\"></text></g><g data-walk-target=\"b\"><path d=\"M690 103 L690 290\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"690,290 685.0,280.0 695.0,280.0\" fill=\"var(--accent)\"/><text x=\"690.0\" y=\"186.5\" text-anchor=\"middle\" font-size=\"16\"></text></g><g data-walk-target=\"c\"><path d=\"M515 324 L380 324\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"380,324 390.0,319.0 390.0,329.0\" fill=\"var(--accent)\"/><text x=\"447.5\" y=\"314.0\" text-anchor=\"middle\" font-size=\"16\"></text></g></svg>",
+  "order_html": "<p>這是一條管理流程；通知與有效等待時限可形成不同入口，不要求先把所有等待方式依序用完。</p>",
+  "caption_html": "<p>作者依 Base 6.0 繪製的教學示意；省略與本章無關的交換。</p>",
+  "steps": [
+    {
+      "title": "先辨識事件範圍",
+      "targets": [
+        "n0",
+        "a",
+        "n1"
+      ],
+      "html": "<p>DRS（裝置範圍的就緒通知）對應指定裝置層級事件；FRS（特定功能的就緒通知）對應FLR、D3Hot到D0或VF啟停完成等事件。</p>",
+      "condition_html": "<p>事件改變，適用範圍也可能改變，不能把一個Function的就緒推成整張插卡都可用。</p>",
+      "source_html": "<p>Base 6.0 §6.22.1–§6.22.2，pp.808–809。</p>",
+      "claim_ids": [
+        "PCIE-CH34-001"
+      ]
+    },
+    {
+      "title": "等待有效的就緒依據",
+      "targets": [
+        "b",
+        "n2"
+      ],
+      "html": "<p>Readiness Time Reporting提供指定情境的可用時間；收到適用通知或符合其他合法等待條件，也可依規則開始。</p>",
+      "condition_html": "<p>回報時間可快取的前提，是同一裝置仍以同樣方式運作。</p>",
+      "source_html": "<p>Base 6.0 §7.9.16，p.1264。</p>",
+      "claim_ids": [
+        "PCIE-CH34-002"
+      ]
+    },
+    {
+      "title": "開始設定並保留事件責任",
+      "targets": [
+        "c",
+        "n3"
+      ],
+      "html": "<p>之後接上枚舉、資源與管理流程。非同步熱插拔另外要確認控制權、錯誤隔離與事件處理。</p>",
+      "condition_html": "<p>Appendix I是建議參考模型，沒有規範性要求，不能把整張表稱為唯一合法實作。</p>",
+      "source_html": "<p>Base 6.0 Appendix I，pp.1587、1589–1590。</p>",
+      "claim_ids": [
+        "PCIE-CH34-003"
+      ]
+    }
+  ]
+}

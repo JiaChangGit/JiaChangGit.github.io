@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "course": "pcie-course",
+  "chapter": 28,
+  "updated": "2026-10-24",
+  "claims": [
+    {
+      "id": "PCIE-CH28-001",
+      "claim": "ACS控制點與正常阻擋導引目的。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.12"
+      ],
+      "document_pages": [
+        751
+      ],
+      "pdf_pages": [
+        751
+      ],
+      "figures": [],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH28-002",
+      "claim": "導引方向、要求完成分工與P2P能力邊界。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.12.1"
+      ],
+      "document_pages": [
+        753
+      ],
+      "pdf_pages": [
+        753
+      ],
+      "figures": [],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH28-003",
+      "claim": "多播群組視窗、命中、公式與ACS例外。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.14",
+        "6.14.1"
+      ],
+      "document_pages": [
+        765,
+        766
+      ],
+      "pdf_pages": [
+        765,
+        766
+      ],
+      "figures": [
+        "6-14"
+      ],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    }
+  ]
+}

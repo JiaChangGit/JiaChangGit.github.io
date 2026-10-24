@@ -193,7 +193,12 @@ class NvmeReportContractTest(unittest.TestCase):
                     r'class="axis-paragraph-number"[^>]*>(\d{2}-\d{2})</span>', text
                 )
             ]
-            self.assertTrue(axis_labels, artifact["id"])
+            if artifact['report_id'] in {'pcie-transport-1.4','nvm-command-set-1.3'}:
+                self.assertIn('id="main-ideas"',text,artifact['id'])
+                self.assertIn('class="st-route"',text,artifact['id'])
+                self.assertIn('<svg ',text,artifact['id'])
+            else:
+                self.assertTrue(axis_labels, artifact["id"])
             by_axis = {}
             axis_order = []
             for axis, paragraph in axis_labels:

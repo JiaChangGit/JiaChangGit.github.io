@@ -1,0 +1,59 @@
+{
+  "walk_id": "ch0-query",
+  "title": "把查詢位置與欄位意思接起來",
+  "svg": "<svg viewBox=\"0 0 840 355\" class=\"course-diagram\" role=\"img\" aria-labelledby=\"ch0-query-svg-title ch0-query-svg-desc\"><title id=\"ch0-query-svg-title\">先找到結構，再分別讀能力與狀態</title><desc id=\"ch0-query-svg-desc\">從傳統清單找到0x70，再分別加上能力與狀態欄位的相對位移。</desc><g data-walk-target=\"header\"><rect x=\"20\" y=\"35\" width=\"230\" height=\"80\" rx=\"10\" fill=\"var(--blue-soft)\" stroke=\"var(--line)\" stroke-width=\"2\"/><text x=\"135\" y=\"62\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"18\">設定標頭</text><text x=\"135\" y=\"87\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"16\">0x34 → 0x40</text></g><g data-walk-target=\"pm\"><rect x=\"305\" y=\"35\" width=\"230\" height=\"80\" rx=\"10\" fill=\"var(--blue-soft)\" stroke=\"var(--line)\" stroke-width=\"2\"/><text x=\"420\" y=\"62\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"18\">電源管理結構</text><text x=\"420\" y=\"87\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"16\">ID=0x01；Next=0x70</text></g><g data-walk-target=\"cap\"><rect x=\"590\" y=\"35\" width=\"230\" height=\"80\" rx=\"10\" fill=\"var(--blue-soft)\" stroke=\"var(--line)\" stroke-width=\"2\"/><text x=\"705\" y=\"62\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"18\">PCIe 能力結構</text><text x=\"705\" y=\"87\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"16\">ID=0x10；起點=0x70</text></g><g data-walk-target=\"supported\"><rect x=\"120\" y=\"240\" width=\"270\" height=\"80\" rx=\"10\" fill=\"var(--blue-soft)\" stroke=\"var(--line)\" stroke-width=\"2\"/><text x=\"255\" y=\"267\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"18\">支援速率</text><text x=\"255\" y=\"292\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"16\">起點+0x2C → 0x9C</text></g><g data-walk-target=\"current\"><rect x=\"450\" y=\"240\" width=\"270\" height=\"80\" rx=\"10\" fill=\"var(--blue-soft)\" stroke=\"var(--line)\" stroke-width=\"2\"/><text x=\"585\" y=\"267\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"18\">目前連線狀態</text><text x=\"585\" y=\"292\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"16\">起點+0x12 → 0x82</text></g><g data-walk-target=\"to-pm\"><path d=\"M250 75 H305\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2.5\"/><path d=\"M296 70 L305 75 L296 80\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2.5\"/></g><g data-walk-target=\"to-cap\"><path d=\"M535 75 H590\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2.5\"/><path d=\"M581 70 L590 75 L581 80\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2.5\"/></g><g data-walk-target=\"to-fields\"><path d=\"M705 115 V175 H255 V240 M585 175 V240\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2.5\"/><text x=\"440\" y=\"160\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"15\">先核對版本與適用類型</text></g></svg>",
+  "steps": [
+    {
+      "title": "從設定標頭取得入口",
+      "html": "<p>確認標頭形式與清單存在後，讀 0x34，遮罩低位元取得第一個結構的位置 0x40。</p>",
+      "targets": [
+        "header",
+        "to-pm"
+      ],
+      "condition_html": "<p>本例設定讀取成功；所有位置以該 Function 設定空間為起點。</p>",
+      "source_html": "<p>Base 6.0 Figures 7-8／7-10、Table 7-7、§7.5.1.1.11，文件頁／PDF 頁 924–928。</p>",
+      "claim_ids": [
+        "PCIE-CONFIG-TYPE0-001",
+        "PCIE-CAP-POINTER-001"
+      ]
+    },
+    {
+      "title": "沿下一項指標找到能力結構",
+      "html": "<p>先辨識電源管理結構，再沿 Next Pointer（下一項位置）到 0x70，確認 ID=0x10。這個起點由本次清單取得。</p>",
+      "targets": [
+        "pm",
+        "to-cap",
+        "cap"
+      ],
+      "condition_html": "<p>0x70 是作者假設；其他裝置的清單順序與起點可以不同。</p>",
+      "source_html": "<p>Base 6.0 Figure 7-18／Table 7-14、Figure 7-22／Table 7-18，文件頁／PDF 頁 945、953。</p>",
+      "claim_ids": [
+        "PCIE-CAP-PM-FIRST-001",
+        "PCIE-CAP-ID-001"
+      ]
+    },
+    {
+      "title": "確認結構適用，再讀兩個欄位",
+      "html": "<p>先核對 Capability Version（結構版本）與 Device/Port Type（功能類型），再由起點加上相對位移。能力向量回答支援集合，狀態編碼回答目前速率與寬度。</p>",
+      "targets": [
+        "cap",
+        "to-fields",
+        "supported",
+        "current"
+      ],
+      "condition_html": "<p>本例是一般 Endpoint，排除 RCiEP 與 VF；速率向量已實作，Link 已建立且穩定。</p>",
+      "source_html": "<p>Base 6.0 Figures 7-21／7-23／7-38／7-29、Tables 7-19／7-35／7-26，文件頁／PDF 頁 952–954、998–1000、978–979。</p>",
+      "claim_ids": [
+        "PCIE-CAP-VERSION-TYPE-001",
+        "PCIE-CAP-LAYOUT-001",
+        "PCIE-LINK-SUPPORTED-SPEEDS-001",
+        "PCIE-LINK-CURRENT-SPEED-001",
+        "PCIE-LINK-CURRENT-WIDTH-001"
+      ]
+    }
+  ],
+  "caption_html": "作者的查詢閱讀圖。Next Pointer 從 Function 起點計算；欄位的相對位移從已找到的能力結構起點計算。",
+  "order_html": "<p>依箭頭讀取清單，再分別查能力與狀態；兩個分支是不同查詢目的，不是硬體狀態轉移。</p>",
+  "components": [],
+  "language": "zh"
+}

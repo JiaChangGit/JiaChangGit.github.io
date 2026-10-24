@@ -7,18 +7,21 @@ permalink: /nvme/question-bank/persistent-events/zh-tw/
 lang: zh-TW
 nvme_quickref: true
 nvme_qa: true
+spec_teaching: true
+last_modified_at: 2026-10-23
 ---
 
-<div class="nvme-quickref nvme-qa">
+<div class="nvme-quickref nvme-qa spec-teaching" data-spec-series="nvme">
 <nav class="qr-top" aria-label="題庫與版本"><a href="#content">跳到內容</a><a href="/nvme/question-bank/zh-tw/">題庫總索引</a><a href="/nvme/question-bank/persistent-events/en/">English</a><a href="/DOCS/nvme-question-bank/persistent-events.html">繁中教學 HTML</a></nav>
-<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–328</p>
-<header><p class="qa-range">Q205–Q216</p><h1>Persistent Event Log 與 Timestamp</h1><p class="qr-intro">PEL 保存重要事件，Timestamp 協助解釋事件時間。本冊先教一致地取回完整 Log，再說明可變長度、事件類型與時鐘變更。</p><p>先練習，再展開解答。各題依需要使用文字、欄位判讀、比較或流程說明，不要求相同的回答項目。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p></header>
-<aside class="qa-glossary"><h2>先認識本文使用的字詞</h2><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></aside>
+<main id="content"><p class="qr-eyebrow">NVMe · Q1–328</p>
+<div class="st-specs" aria-label="Specification editions"><span>NVM Express Base 2.4</span><span>NVM Command Set 1.3</span><span>NVMe over PCIe Transport 1.4</span></div>
+<header><p class="qa-range">Q205–Q216</p><h1>Persistent Event Log 與 Timestamp</h1><aside class="st-context"><p>PEL（Persistent Event Log，持續事件紀錄）保存受支援種類的歷史事件。LID（Log Page Identifier）選該紀錄頁，讀取 context 用來協調一次讀取所觀察的內容。以下把事件成立、是否記錄與如何取得同一份資料接起來。</p></aside><p class="qr-intro">PEL 保存重要事件，Timestamp 協助解釋事件時間。本冊先教一致地取回完整 Log，再說明可變長度、事件類型與時鐘變更。</p><p>每個問題都接著完整解說，依內容帶讀欄位、比較機制或追蹤流程。先看本冊總覽，再沿問題閱讀；必要條件與正常路徑直接顯示。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SCT</dt><dd>Status Code Type，完成狀態代碼類型</dd></div></dl></header>
 <section id="overview" class="qa-overview"><h2>讀取的 context 與事件的持久性分開</h2><p class="qa-takeaway">事件仍保留，不代表舊 context 在 reset 後仍可沿用。</p>
 <div class="qr-table" tabindex="0" role="region" aria-label="可橫向捲動的比較表"><table><thead><tr><th scope="col">讀取步驟</th><th scope="col">需要欄位</th><th scope="col">注意事項</th></tr></thead><tbody><tr><td>建立觀察範圍</td><td>ACT、RCE</td><td>ACT3 的 RCE=0 可表示剛建立成功</td></tr><tr><td>走訪 Log</td><td>LHL、TLL、TNEV</td><td>不能把每筆事件固定為同樣大小</td></tr><tr><td>解析事件</td><td>EHL、EL、VSIL</td><td>整筆=EHL+3+EL</td></tr><tr><td>解釋時間</td><td>Origin、SYNC、Timestamp Change</td><td>不能一律要求 timestamp 單調增加</td></tr></tbody></table></div>
 <p><strong>舉例看懂：</strong>EHL=21、EL=20、VSIL=4 時，整筆事件 44bytes，其中 Event Data 為 16bytes。VSIL 已包含在 EL，若再加一次就會走錯下一筆。</p>
 <p class="qa-citations">來源：<a href="#ref-pelcontext">Base 2.4 §5.2.13.1.14–5.2.13.1.14.2.5 (exclude PCIe link/packet decoding)</a> · <a href="#ref-nvmpel">NVM Command Set 1.3 §4.1.4.4</a> · <a href="#ref-timestamp">Base 2.4 §5.2.30.1.8</a></p>
 </section>
+<details class="qa-glossary st-glossary"><summary>需要時回顧本篇名詞</summary><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></details>
 <div class="qa-controls" hidden><label>搜尋本頁 <input type="search" id="qa-search" placeholder="題號、欄位或關鍵字"></label><button type="button" data-expand="true">展開全部解答</button><button type="button" data-expand="false">收合全部解答</button><output id="qa-count" aria-live="polite"></output></div>
 <section id="question-index"><h2>本冊題目</h2><ol class="qa-index">
 <li><a href="#q-205">Q205 · 如何確認 Persistent Event Log 及個別事件的支援能力？</a></li>
@@ -35,8 +38,8 @@ nvme_qa: true
 <li><a href="#q-216">Q216 · Timestamp 變更如何記錄，Reset 與 Power Cycle 後怎麼判讀？</a></li>
 </ol></section>
 <article class="qa-question" id="q-205" data-question="205" data-answer-kind="lookup"><h2><a class="qa-qid" href="#q-205">Q205</a> 如何確認 Persistent Event Log 及個別事件的支援能力？</h2>
-<p class="qa-prompt">先選查詢介面與目標，再說明哪個回傳欄位能支持你的結論。</p>
-<details class="qa-answer" id="q-205-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-205-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-205-a-01">先確認整份 Log，再確認事件種類，才能判斷缺少紀錄是否合理。支援 PEL 不表示所有選配事件都必須實作。</p><div class="qa-sections">
 <section class="qa-section" id="q-205-s-01" data-answer-section="1"><h3><span>1.</span> 要查哪個對象、哪份資料</h3>
 <span class="qa-anchor" id="q-205-a-02"></span><p>PEL 是 NVM subsystem 全域資訊；Header 中的 controller 識別不會把它變成私有 Log。</p>
@@ -48,18 +51,19 @@ nvme_qa: true
 <span class="qa-anchor" id="q-205-a-06"></span><p>取得支援矩陣，而不是只得到「有／沒有 PEL」一個結論。</p>
 </section>
 <section class="qa-section" id="q-205-s-03" data-answer-section="3"><h3><span>3.</span> 證據不足或不一致時怎麼判斷</h3>
-<span class="qa-anchor" id="q-205-a-07"></span><p>不支援的 LID 使用 Invalid Log Page 等對應錯誤；不能因某個選配事件未宣告就判定整份 Log 違規。</p>
+<span class="qa-anchor" id="q-205-a-07"></span><p>不支援的 LID 使用 Invalid Log Page 等對應錯誤；不能因某個選配事件未宣告就判定整份 Log 違規。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>LID</dt><dd>Log Page Identifier，紀錄頁識別碼</dd></div></dl>
 <span class="qa-anchor" id="q-205-a-16"></span><p>Figure 233 的 bitmap 將 bits221:16 列保留，但 Figure 236 又列 ET10h，這是來源內部不一致；涉及該事件時須保留差異，不自行編造一致的位元表。</p>
 <span class="qa-anchor" id="q-205-a-17"></span><p>先檢查測試期待的事件是 mandatory、依命令支援而 mandatory，還是 optional。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-pelcontext">Base 2.4 §5.2.13.1.14–5.2.13.1.14.2.5 (exclude PCIe link/packet decoding)</a> · <a href="#ref-timestamp">Base 2.4 §5.2.30.1.8</a> · <a href="#ref-nvmpel">NVM Command Set 1.3 §4.1.4.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-205-a-08"></span><span class="qa-anchor" id="q-205-a-09"></span><span class="qa-anchor" id="q-205-a-10"></span><span class="qa-anchor" id="q-205-a-11"></span><span class="qa-anchor" id="q-205-a-12"></span><span class="qa-anchor" id="q-205-a-13"></span><span class="qa-anchor" id="q-205-a-14"></span><span class="qa-anchor" id="q-205-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-pelcontext">Base 2.4 §5.2.13.1.14–5.2.13.1.14.2.5 (exclude PCIe link/packet decoding)</a> · <a href="#ref-timestamp">Base 2.4 §5.2.30.1.8</a> · <a href="#ref-nvmpel">NVM Command Set 1.3 §4.1.4.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-206" data-question="206" data-answer-kind="process"><h2><a class="qa-qid" href="#q-206">Q206</a> PEL Context 如何建立、分段讀取與釋放？</h2>
-<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
-<details class="qa-answer" id="q-206-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-206-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-206-a-01">Context 固定一份可一致讀取的事件集合，避免大型 Log 在分段傳輸期間被新事件改變內容。</p><div class="qa-sections">
 <section class="qa-section" id="q-206-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
 <span class="qa-anchor" id="q-206-a-02"></span><p>Context 是這次回報的視圖，不是停止 controller 記錄新事件。</p>
@@ -83,13 +87,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-206-a-07"></span><p>ACT=0 無 context 或 ACT=1 已有 context，須回 Command Sequence Error。ACT=2 沒有 context 也不是錯誤。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-pelcontext">Base 2.4 §5.2.13.1.14–5.2.13.1.14.2.5 (exclude PCIe link/packet decoding)</a> · <a href="#ref-timestamp">Base 2.4 §5.2.30.1.8</a> · <a href="#ref-nvmpel">NVM Command Set 1.3 §4.1.4.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-206-a-08"></span><span class="qa-anchor" id="q-206-a-09"></span><span class="qa-anchor" id="q-206-a-10"></span><span class="qa-anchor" id="q-206-a-11"></span><span class="qa-anchor" id="q-206-a-12"></span><span class="qa-anchor" id="q-206-a-13"></span><span class="qa-anchor" id="q-206-a-14"></span><span class="qa-anchor" id="q-206-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-pelcontext">Base 2.4 §5.2.13.1.14–5.2.13.1.14.2.5 (exclude PCIe link/packet decoding)</a> · <a href="#ref-timestamp">Base 2.4 §5.2.30.1.8</a> · <a href="#ref-nvmpel">NVM Command Set 1.3 §4.1.4.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-207" data-question="207" data-answer-kind="error"><h2><a class="qa-qid" href="#q-207">Q207</a> Context 不存在或重複建立時，應如何回應？</h2>
-<p class="qa-prompt">先區分失敗條件，再判斷是否有規範明定的回報結果。</p>
-<details class="qa-answer" id="q-207-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-207-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-207-a-01">這套介面不是讓 Host 建立多個不同 ID 的 Context。判斷命令順序是否正確，要看 ACT 要求的動作，以及目前是否已有 reporting context。</p><div class="qa-sections">
 <section class="qa-section" id="q-207-s-01" data-answer-section="1"><h3><span>1.</span> 先區分是哪一種失敗</h3>
 <span class="qa-anchor" id="q-207-a-02"></span><p>判斷的是處理命令當下，是否已有 persistent reporting context。</p>
@@ -102,17 +107,18 @@ nvme_qa: true
 </section>
 <section class="qa-section" id="q-207-s-03" data-answer-section="3"><h3><span>3.</span> 結果與後續驗證</h3>
 <span class="qa-anchor" id="q-207-a-06"></span><p>ACT=3 不論原本是否存在都成功回 Header，RCE 區分先前狀態；ACT=2 可重複釋放。</p>
-<span class="qa-anchor" id="q-207-a-16"></span><p>把 CQE 成功與 RCE 的前置狀態放在一起解讀，兩者並不矛盾。</p>
+<span class="qa-anchor" id="q-207-a-16"></span><p>把 CQE 成功與 RCE 的前置狀態放在一起解讀，兩者並不矛盾。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry，佇列中的完成項目</dd></div></dl>
 <span class="qa-anchor" id="q-207-a-17"></span><p>先檢查是否把 RCE 誤解成命令執行後的「目前已建立」布林值。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-pelcontext">Base 2.4 §5.2.13.1.14–5.2.13.1.14.2.5 (exclude PCIe link/packet decoding)</a> · <a href="#ref-timestamp">Base 2.4 §5.2.30.1.8</a> · <a href="#ref-nvmpel">NVM Command Set 1.3 §4.1.4.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-207-a-08"></span><span class="qa-anchor" id="q-207-a-09"></span><span class="qa-anchor" id="q-207-a-10"></span><span class="qa-anchor" id="q-207-a-11"></span><span class="qa-anchor" id="q-207-a-12"></span><span class="qa-anchor" id="q-207-a-13"></span><span class="qa-anchor" id="q-207-a-14"></span><span class="qa-anchor" id="q-207-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-pelcontext">Base 2.4 §5.2.13.1.14–5.2.13.1.14.2.5 (exclude PCIe link/packet decoding)</a> · <a href="#ref-timestamp">Base 2.4 §5.2.30.1.8</a> · <a href="#ref-nvmpel">NVM Command Set 1.3 §4.1.4.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-208" data-question="208" data-answer-kind="events"><h2><a class="qa-qid" href="#q-208">Q208</a> SMART、Firmware、Timestamp、Reset 與 Hardware Error 如何記錄？</h2>
-<p class="qa-prompt">先說明事件成立的條件，再區分通知、事件確認與紀錄。</p>
-<details class="qa-answer" id="q-208-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-208-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-208-a-01">每類事件有不同觸發點與資料格式；辨認事件後才能決定哪個欄位能回答問題。</p><div class="qa-sections">
 <section class="qa-section" id="q-208-s-01" data-answer-section="1"><h3><span>1.</span> 事件何時成立、由誰觀察</h3>
 <span class="qa-anchor" id="q-208-a-02"></span><p>Header.CNTLID 標示記錄來源；多 controller 的共同事件建議只記一次，事件資料可列多個 controller。</p>
@@ -125,23 +131,24 @@ nvme_qa: true
 </section>
 <section class="qa-section" id="q-208-s-03" data-answer-section="3"><h3><span>3.</span> 沒有通知或紀錄時怎麼判斷</h3>
 <span class="qa-anchor" id="q-208-a-07"></span><p>硬體錯誤只要求記錄已支援且符合條件者，並有高頻抑制例外；不能要求每個命令 Invalid Field 都有硬體錯誤事件。</p>
-<span class="qa-anchor" id="q-208-a-16"></span><p>使用實際 CQE、Identify.FR、SMART 快照與事件 payload 互證，避免只憑事件名稱猜結果。</p>
+<span class="qa-anchor" id="q-208-a-16"></span><p>使用實際 CQE、Identify.FR、SMART 快照與事件 payload 互證，避免只憑事件名稱猜結果。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry，佇列中的完成項目</dd></div></dl>
 <span class="qa-anchor" id="q-208-a-17"></span><p>先確認使用的 ETR 與 payload 格式一致，並分清「要求」與「完成」。</p>
 </section>
 <section class="qa-section" id="q-208-s-04" data-answer-section="4"><h3><span>4.</span> Persistent Event 的記錄條件</h3>
 <span class="qa-anchor" id="q-208-a-11"></span><p>PEL 的查詢不是另一筆 PEL 讀取事件。 <a class="qa-rule-link" href="#common-pel_query-11">完整條件見本冊說明</a></p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-fwpel">Base 2.4 §5.2.13.1.14.2.2, 5.2.13.1.14.2.4</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-pelcontext">Base 2.4 §5.2.13.1.14–5.2.13.1.14.2.5 (exclude PCIe link/packet decoding)</a> · <a href="#ref-timestamp">Base 2.4 §5.2.30.1.8</a> · <a href="#ref-nvmpel">NVM Command Set 1.3 §4.1.4.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-208-a-08"></span><span class="qa-anchor" id="q-208-a-09"></span><span class="qa-anchor" id="q-208-a-10"></span><span class="qa-anchor" id="q-208-a-12"></span><span class="qa-anchor" id="q-208-a-13"></span><span class="qa-anchor" id="q-208-a-14"></span><span class="qa-anchor" id="q-208-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-fwpel">Base 2.4 §5.2.13.1.14.2.2, 5.2.13.1.14.2.4</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-pelcontext">Base 2.4 §5.2.13.1.14–5.2.13.1.14.2.5 (exclude PCIe link/packet decoding)</a> · <a href="#ref-timestamp">Base 2.4 §5.2.30.1.8</a> · <a href="#ref-nvmpel">NVM Command Set 1.3 §4.1.4.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-209" data-question="209" data-answer-kind="events"><h2><a class="qa-qid" href="#q-209">Q209</a> Namespace、Format 與 Sanitize 對應哪些 Persistent Events？</h2>
-<p class="qa-prompt">先說明事件成立的條件，再區分通知、事件確認與紀錄。</p>
-<details class="qa-answer" id="q-209-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-209-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-209-a-01">管理操作的開始與完成可能相隔很久，需要不同事件才能重建過程。</p><div class="qa-sections">
 <section class="qa-section" id="q-209-s-01" data-answer-section="1"><h3><span>1.</span> 事件何時成立、由誰觀察</h3>
-<span class="qa-anchor" id="q-209-a-02"></span><p>Namespace 事件辨認目標 NSID；Format 與 Sanitize 還要依命令判斷單一 namespace 或較廣範圍。</p>
+<span class="qa-anchor" id="q-209-a-02"></span><p>Namespace 事件辨認目標 NSID；Format 與 Sanitize 還要依命令判斷單一 namespace 或較廣範圍。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>NSID</dt><dd>Namespace Identifier，邏輯儲存空間識別碼</dd></div></dl>
 <span class="qa-anchor" id="q-209-a-03"></span><p>確認操作支援與事件支援；PEL 的條件性必要事件隨對應命令能力判斷。</p>
 <span class="qa-anchor" id="q-209-a-04"></span><p>ET06h 記 Namespace Create／Delete；07h、08h 為 Format Start／Completion；09h、0Ah 為 Sanitize Start／Completion。NVM 的 FLBAS、DPS 解釋來自 NVM Command Set。</p>
 </section>
@@ -158,13 +165,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-209-a-11"></span><p>PEL 的查詢不是另一筆 PEL 讀取事件。 <a class="qa-rule-link" href="#common-pel_query-11">完整條件見本冊說明</a></p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-formatpel">Base 2.4 §5.2.13.1.14.2.7–5.2.13.1.14.2.8</a> · <a href="#ref-sanitizepel">Base 2.4 §5.2.13.1.14.2.9–5.2.13.1.14.2.10</a> · <a href="#ref-pelcontext">Base 2.4 §5.2.13.1.14–5.2.13.1.14.2.5 (exclude PCIe link/packet decoding)</a> · <a href="#ref-timestamp">Base 2.4 §5.2.30.1.8</a> · <a href="#ref-nvmpel">NVM Command Set 1.3 §4.1.4.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-209-a-08"></span><span class="qa-anchor" id="q-209-a-09"></span><span class="qa-anchor" id="q-209-a-10"></span><span class="qa-anchor" id="q-209-a-12"></span><span class="qa-anchor" id="q-209-a-13"></span><span class="qa-anchor" id="q-209-a-14"></span><span class="qa-anchor" id="q-209-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-formatpel">Base 2.4 §5.2.13.1.14.2.7–5.2.13.1.14.2.8</a> · <a href="#ref-sanitizepel">Base 2.4 §5.2.13.1.14.2.9–5.2.13.1.14.2.10</a> · <a href="#ref-pelcontext">Base 2.4 §5.2.13.1.14–5.2.13.1.14.2.5 (exclude PCIe link/packet decoding)</a> · <a href="#ref-timestamp">Base 2.4 §5.2.30.1.8</a> · <a href="#ref-nvmpel">NVM Command Set 1.3 §4.1.4.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-210" data-question="210" data-answer-kind="concept"><h2><a class="qa-qid" href="#q-210">Q210</a> PEL 達容量上限時，舊事件如何處理？</h2>
-<p class="qa-prompt">先用自己的話解釋機制，再舉一個常見誤解。</p>
-<details class="qa-answer" id="q-210-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-210-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-210-a-01">PEL 有容量限制，Host 不能假設所有事件從出廠開始永久逐筆保存。</p><div class="qa-sections">
 <section class="qa-section" id="q-210-s-01" data-answer-section="1"><h3><span>1.</span> 機制與適用範圍</h3>
 <span class="qa-anchor" id="q-210-a-02"></span><p>限制可能來自總 bytes、總事件數，或個別事件類別的內部容量。</p>
@@ -180,13 +188,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-210-a-16"></span><p>GNUM 表示新 context 的內容相較前次改變，不是累計事件總數；兩者不應混算。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-pelcontext">Base 2.4 §5.2.13.1.14–5.2.13.1.14.2.5 (exclude PCIe link/packet decoding)</a> · <a href="#ref-timestamp">Base 2.4 §5.2.30.1.8</a> · <a href="#ref-nvmpel">NVM Command Set 1.3 §4.1.4.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-210-a-17"></span><span class="qa-anchor" id="q-210-a-08"></span><span class="qa-anchor" id="q-210-a-09"></span><span class="qa-anchor" id="q-210-a-10"></span><span class="qa-anchor" id="q-210-a-11"></span><span class="qa-anchor" id="q-210-a-12"></span><span class="qa-anchor" id="q-210-a-13"></span><span class="qa-anchor" id="q-210-a-14"></span><span class="qa-anchor" id="q-210-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-pelcontext">Base 2.4 §5.2.13.1.14–5.2.13.1.14.2.5 (exclude PCIe link/packet decoding)</a> · <a href="#ref-timestamp">Base 2.4 §5.2.30.1.8</a> · <a href="#ref-nvmpel">NVM Command Set 1.3 §4.1.4.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-211" data-question="211" data-answer-kind="events"><h2><a class="qa-qid" href="#q-211">Q211</a> PEL 新增事件後，是否一定發送 Asynchronous Event？</h2>
-<p class="qa-prompt">先說明事件成立的條件，再區分通知、事件確認與紀錄。</p>
-<details class="qa-answer" id="q-211-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-211-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-211-a-01">PEL 新增紀錄，不代表一定會發出 AER。持久事件紀錄與非同步通知有各自的觸發條件，要分開判斷。</p><div class="qa-sections">
 <section class="qa-section" id="q-211-s-01" data-answer-section="1"><h3><span>1.</span> 紀錄與通知各自有哪些條件</h3>
 <span class="qa-anchor" id="q-211-a-02"></span><p>PEL 提供跨重設歷史；AER 回報受支援且符合通知條件的即時事件。</p>
@@ -199,13 +208,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-211-a-16"></span><p>為每個測試列出兩條獨立預期：是否記錄，以及是否通知。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-aerfull">Base 2.4 §5.2.2 (PCIe-applicable events)</a> · <a href="#ref-aec">Base 2.4 §5.2.30.1.6</a> · <a href="#ref-pelcontext">Base 2.4 §5.2.13.1.14–5.2.13.1.14.2.5 (exclude PCIe link/packet decoding)</a> · <a href="#ref-timestamp">Base 2.4 §5.2.30.1.8</a> · <a href="#ref-nvmpel">NVM Command Set 1.3 §4.1.4.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-211-a-07"></span><span class="qa-anchor" id="q-211-a-17"></span><span class="qa-anchor" id="q-211-a-08"></span><span class="qa-anchor" id="q-211-a-09"></span><span class="qa-anchor" id="q-211-a-10"></span><span class="qa-anchor" id="q-211-a-11"></span><span class="qa-anchor" id="q-211-a-12"></span><span class="qa-anchor" id="q-211-a-13"></span><span class="qa-anchor" id="q-211-a-14"></span><span class="qa-anchor" id="q-211-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-aerfull">Base 2.4 §5.2.2 (PCIe-applicable events)</a> · <a href="#ref-aec">Base 2.4 §5.2.30.1.6</a> · <a href="#ref-pelcontext">Base 2.4 §5.2.13.1.14–5.2.13.1.14.2.5 (exclude PCIe link/packet decoding)</a> · <a href="#ref-timestamp">Base 2.4 §5.2.30.1.8</a> · <a href="#ref-nvmpel">NVM Command Set 1.3 §4.1.4.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-212" data-question="212" data-answer-kind="lifecycle"><h2><a class="qa-qid" href="#q-212">Q212</a> Reset 與 Power Cycle 後，PEL 哪些東西應保留？</h2>
-<p class="qa-prompt">先指明重設或中斷的方式，再分別判斷設定、進行中的操作與資料。</p>
-<details class="qa-answer" id="q-212-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-212-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-212-a-01">要分清持久事件與暫時的讀取 context：事件保留不表示查詢可以從中斷處無條件接續。</p><div class="qa-sections">
 <section class="qa-section" id="q-212-s-01" data-answer-section="1"><h3><span>1.</span> 先界定觸發方式與影響對象</h3>
 <span class="qa-anchor" id="q-212-a-02"></span><p>持久性涵蓋 subsystem 的事件內容；context 則服務一次一致的報告讀取。</p>
@@ -228,13 +238,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-212-a-17"></span><p>先確認消失的是事件本身，還是只失去讀取 context。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-pelcontext">Base 2.4 §5.2.13.1.14–5.2.13.1.14.2.5 (exclude PCIe link/packet decoding)</a> · <a href="#ref-timestamp">Base 2.4 §5.2.30.1.8</a> · <a href="#ref-nvmpel">NVM Command Set 1.3 §4.1.4.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-212-a-08"></span><span class="qa-anchor" id="q-212-a-09"></span><span class="qa-anchor" id="q-212-a-10"></span><span class="qa-anchor" id="q-212-a-11"></span><span class="qa-anchor" id="q-212-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-pelcontext">Base 2.4 §5.2.13.1.14–5.2.13.1.14.2.5 (exclude PCIe link/packet decoding)</a> · <a href="#ref-timestamp">Base 2.4 §5.2.30.1.8</a> · <a href="#ref-nvmpel">NVM Command Set 1.3 §4.1.4.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-213" data-question="213" data-answer-kind="fields"><h2><a class="qa-qid" href="#q-213">Q213</a> PEL 的 Header、長度與事件順序如何驗證？</h2>
-<p class="qa-prompt">先試著說明欄位的單位與編碼，再用一組數值推導結果。</p>
-<details class="qa-answer" id="q-213-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-213-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-213-a-01">PEL 是可變長度紀錄，錯算一個長度會讓後面每筆事件都解析錯位。</p><div class="qa-sections">
 <section class="qa-section" id="q-213-s-01" data-answer-section="1"><h3><span>1.</span> 先確認資料的來源與範圍</h3>
 <span class="qa-anchor" id="q-213-a-02"></span><p>先區分「整份 Log」與「單筆事件」兩層資料。Log Revision（LREV）指出整份 Log 的格式版本；每筆事件內的 Event Type Revision（ETR）則指出該類事件資料的格式版本。兩者不是同一個版本欄位，解析時要分別確認。</p>
@@ -250,13 +261,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-213-a-16"></span><p>較新事件建議放較低 offset，但發生順序判定由廠商決定；Timestamp 可改變，不能直接依數值重排後宣稱原 Log 錯誤。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-pelcontext">Base 2.4 §5.2.13.1.14–5.2.13.1.14.2.5 (exclude PCIe link/packet decoding)</a> · <a href="#ref-timestamp">Base 2.4 §5.2.30.1.8</a> · <a href="#ref-nvmpel">NVM Command Set 1.3 §4.1.4.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-213-a-17"></span><span class="qa-anchor" id="q-213-a-08"></span><span class="qa-anchor" id="q-213-a-09"></span><span class="qa-anchor" id="q-213-a-10"></span><span class="qa-anchor" id="q-213-a-11"></span><span class="qa-anchor" id="q-213-a-12"></span><span class="qa-anchor" id="q-213-a-13"></span><span class="qa-anchor" id="q-213-a-14"></span><span class="qa-anchor" id="q-213-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-pelcontext">Base 2.4 §5.2.13.1.14–5.2.13.1.14.2.5 (exclude PCIe link/packet decoding)</a> · <a href="#ref-timestamp">Base 2.4 §5.2.30.1.8</a> · <a href="#ref-nvmpel">NVM Command Set 1.3 §4.1.4.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-214" data-question="214" data-answer-kind="process"><h2><a class="qa-qid" href="#q-214">Q214</a> Timestamp 如何設定並以 Get Features 驗證？</h2>
-<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
-<details class="qa-answer" id="q-214-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-214-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-214-a-01">Timestamp 讓 Host 提供事件關聯用的時間基準；它不保證可作安全用途，也不是所有 controller 共用的一只時鐘。</p><div class="qa-sections">
 <section class="qa-section" id="q-214-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
 <span class="qa-anchor" id="q-214-a-02"></span><p>設定作用於目標 controller；跨 controller 比對仍需處理時間差與 Reset 資訊。</p>
@@ -272,13 +284,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-214-a-16"></span><p>比較設定、Origin、SYNC 與讀取時間點，再決定差值是否合理。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-getfeat">Base 2.4 §5.2.12</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-pelcontext">Base 2.4 §5.2.13.1.14–5.2.13.1.14.2.5 (exclude PCIe link/packet decoding)</a> · <a href="#ref-timestamp">Base 2.4 §5.2.30.1.8</a> · <a href="#ref-nvmpel">NVM Command Set 1.3 §4.1.4.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-214-a-17"></span><span class="qa-anchor" id="q-214-a-08"></span><span class="qa-anchor" id="q-214-a-09"></span><span class="qa-anchor" id="q-214-a-10"></span><span class="qa-anchor" id="q-214-a-11"></span><span class="qa-anchor" id="q-214-a-12"></span><span class="qa-anchor" id="q-214-a-13"></span><span class="qa-anchor" id="q-214-a-14"></span><span class="qa-anchor" id="q-214-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-getfeat">Base 2.4 §5.2.12</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-pelcontext">Base 2.4 §5.2.13.1.14–5.2.13.1.14.2.5 (exclude PCIe link/packet decoding)</a> · <a href="#ref-timestamp">Base 2.4 §5.2.30.1.8</a> · <a href="#ref-nvmpel">NVM Command Set 1.3 §4.1.4.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-215" data-question="215" data-answer-kind="fields"><h2><a class="qa-qid" href="#q-215">Q215</a> Timestamp 如何增加、Wrap-around，Origin 與 SYNC 怎麼看？</h2>
-<p class="qa-prompt">先試著說明欄位的單位與編碼，再用一組數值推導結果。</p>
-<details class="qa-answer" id="q-215-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-215-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-215-a-01">同樣的數字可能是 UTC 時間，也可能只是 Reset 後經過時間；必須先解讀屬性。</p><div class="qa-sections">
 <section class="qa-section" id="q-215-s-01" data-answer-section="1"><h3><span>1.</span> 先確認資料的來源與範圍</h3>
 <span class="qa-anchor" id="q-215-a-02"></span><p>48-bit 值屬於該 controller 的時間基準，不能直接推論跨 controller 的絕對先後。</p>
@@ -294,13 +307,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-215-a-16"></span><p>用 Origin、SYNC、Reset 事件與 Timestamp Change 排除基準切換後，再比較先後。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-pelcontext">Base 2.4 §5.2.13.1.14–5.2.13.1.14.2.5 (exclude PCIe link/packet decoding)</a> · <a href="#ref-timestamp">Base 2.4 §5.2.30.1.8</a> · <a href="#ref-nvmpel">NVM Command Set 1.3 §4.1.4.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a></p>
 <span class="qa-anchor" id="q-215-a-17"></span><span class="qa-anchor" id="q-215-a-08"></span><span class="qa-anchor" id="q-215-a-09"></span><span class="qa-anchor" id="q-215-a-10"></span><span class="qa-anchor" id="q-215-a-11"></span><span class="qa-anchor" id="q-215-a-12"></span><span class="qa-anchor" id="q-215-a-13"></span><span class="qa-anchor" id="q-215-a-14"></span><span class="qa-anchor" id="q-215-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-pelcontext">Base 2.4 §5.2.13.1.14–5.2.13.1.14.2.5 (exclude PCIe link/packet decoding)</a> · <a href="#ref-timestamp">Base 2.4 §5.2.30.1.8</a> · <a href="#ref-nvmpel">NVM Command Set 1.3 §4.1.4.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-216" data-question="216" data-answer-kind="lifecycle"><h2><a class="qa-qid" href="#q-216">Q216</a> Timestamp 變更如何記錄，Reset 與 Power Cycle 後怎麼判讀？</h2>
-<p class="qa-prompt">先指明重設或中斷的方式，再分別判斷設定、進行中的操作與資料。</p>
-<details class="qa-answer" id="q-216-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-216-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-216-a-01">事件時間會因校時而不連續，Timestamp Change 提供連接新舊時間基準的資訊。</p><div class="qa-sections">
 <section class="qa-section" id="q-216-s-01" data-answer-section="1"><h3><span>1.</span> 先界定觸發方式與影響對象</h3>
 <span class="qa-anchor" id="q-216-a-02"></span><p>變更與 Reset 都要依相關 controller 判讀，不能把整個 subsystem 當成單一時鐘。</p>
@@ -327,6 +341,7 @@ nvme_qa: true
 <span class="qa-anchor" id="q-216-a-11"></span><p>Timestamp 使用專屬 Timestamp Change Event，不得記成一般 Set Feature Event。 <a class="qa-rule-link" href="#common-timestamp_op-11">完整條件見本冊說明</a></p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-pelcontext">Base 2.4 §5.2.13.1.14–5.2.13.1.14.2.5 (exclude PCIe link/packet decoding)</a> · <a href="#ref-timestamp">Base 2.4 §5.2.30.1.8</a> · <a href="#ref-nvmpel">NVM Command Set 1.3 §4.1.4.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a></p>
 <span class="qa-anchor" id="q-216-a-08"></span><span class="qa-anchor" id="q-216-a-10"></span><span class="qa-anchor" id="q-216-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-pelcontext">Base 2.4 §5.2.13.1.14–5.2.13.1.14.2.5 (exclude PCIe link/packet decoding)</a> · <a href="#ref-timestamp">Base 2.4 §5.2.30.1.8</a> · <a href="#ref-nvmpel">NVM Command Set 1.3 §4.1.4.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a></p>

@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "course": "pcie-course",
+  "chapter": 29,
+  "updated": "2026-10-24",
+  "claims": [
+    {
+      "id": "PCIE-CH29-001",
+      "claim": "ResizableBAR選擇、停用解碼與重寫BAR要求及VF邊界。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.8.6"
+      ],
+      "document_pages": [
+        1135,
+        1136,
+        1138
+      ],
+      "pdf_pages": [
+        1135,
+        1136,
+        1138
+      ],
+      "figures": [
+        "7-174",
+        "7-176"
+      ],
+      "tables": [
+        "7-152"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH29-002",
+      "claim": "EA用途、對應BAR去重與橋接不完整回報及解碼。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.23"
+      ],
+      "document_pages": [
+        810,
+        812
+      ],
+      "pdf_pages": [
+        810,
+        812
+      ],
+      "figures": [],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH29-003",
+      "claim": "HierarchyID識別範圍及FPB用途。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.25",
+        "6.26.1"
+      ],
+      "document_pages": [
+        815,
+        819,
+        820,
+        821
+      ],
+      "pdf_pages": [
+        815,
+        819,
+        820,
+        821
+      ],
+      "figures": [
+        "6-28",
+        "6-29"
+      ],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    }
+  ]
+}

@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "course": "pcie-course",
+  "chapter": 18,
+  "updated": "2026-10-24",
+  "claims": [
+    {
+      "id": "PCIE-CH18-001",
+      "claim": "速率編碼、Flit協商狀態與64GT/s模式。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "4.2.1",
+        "4.2.2",
+        "4.2.3.1"
+      ],
+      "document_pages": [
+        309,
+        318,
+        340
+      ],
+      "pdf_pages": [
+        309,
+        318,
+        340
+      ],
+      "figures": [],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH18-002",
+      "claim": "Flit四區域與跨Lane配置。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "4.2.3.3"
+      ],
+      "document_pages": [
+        351
+      ],
+      "pdf_pages": [
+        351
+      ],
+      "figures": [],
+      "tables": [
+        "4-10",
+        "4-11",
+        "4-12",
+        "4-13",
+        "4-14"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH18-003",
+      "claim": "PAM4錯誤敏感性及FEC、CRC、重送。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "4.2.3.1.1"
+      ],
+      "document_pages": [
+        343
+      ],
+      "pdf_pages": [
+        343
+      ],
+      "figures": [
+        "4-24"
+      ],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH18-004",
+      "claim": "編碼與擾碼附錄及實作輸出條件。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "B",
+        "C.1",
+        "J",
+        "J.2",
+        "K"
+      ],
+      "document_pages": [
+        1531,
+        1541,
+        1595,
+        1607,
+        1619
+      ],
+      "pdf_pages": [
+        1531,
+        1541,
+        1595,
+        1607,
+        1619
+      ],
+      "figures": [],
+      "tables": [
+        "B-1"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    }
+  ]
+}

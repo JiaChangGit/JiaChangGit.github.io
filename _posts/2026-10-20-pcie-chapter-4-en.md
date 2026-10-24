@@ -2,10 +2,14 @@
 layout: post
 title: "PCIe Chapter 4: BARs, Address Spaces, and Resource Allocation"
 date: 2026-10-20 00:00:00 +0800
+last_modified_at: 2026-10-23 00:00:00 +0800
 permalink: /pcie/chapter-4-en/
 categories: [PCIe]
 tags: [PCIe, Specification]
 lang: en
+spec_teaching: true
+spec_series: pcie
+description: "由 32-bit 與 64-bit BAR 讀回值計算大小和對齊，配置三層 Bridge Window，並分清 MSE 與 BME。"
 ---
 
 <style>
@@ -220,18 +224,164 @@ lang: en
 /* Self-contained teaching diagrams use the same theme in standalone pages and posts. */
 .pcie-article .course-diagram text { fill: var(--ink); font-family: inherit; font-size: 18px; }
 
+/* Applied only to explicitly authorized teaching roots. */
+html .spec-teaching[data-spec-series] .st-terms { margin:.35rem 0 1rem; padding:.5rem .8rem; border-inline-start:3px solid var(--st-accent); background:var(--st-soft); font-size:.88em; color:var(--st-muted); }
+html .spec-teaching[data-spec-series] .st-terms > div { display:flex; flex-wrap:wrap; gap:.2em .7em; }
+html .spec-teaching[data-spec-series] .st-terms dt { font-weight:650; }
+html .spec-teaching[data-spec-series] .st-terms dd { margin:0; flex:1 1 14em; }
+html .spec-teaching[data-spec-series] {
+ --st-diagram-width:900px;
+ --st-paper:#f2f6f8; --st-surface:#fff; --st-ink:#192d40; --st-muted:#4c6479;
+ --st-line:#cbd9e3; --st-accent:#145f9d; --st-soft:#edf5fc;
+ --paper:var(--st-paper); --surface:var(--st-surface); --surface-2:var(--st-soft); --surface-alt:var(--st-soft);
+ --ink:var(--st-ink); --muted:var(--st-muted); --line:var(--st-line);
+ --accent:var(--st-accent); --accent-2:var(--st-accent); --soft:var(--st-soft); --blue-soft:var(--st-soft); --teal-soft:var(--st-soft);
+ --qr-paper:var(--st-paper); --qr-surface:var(--st-surface); --qr-ink:var(--st-ink); --qr-muted:var(--st-muted);
+ --qr-line:var(--st-line); --qr-accent:var(--st-accent); --qr-soft:var(--st-soft);
+ color:var(--st-ink); background:var(--st-paper); font-size:17px; line-height:1.9;
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+}
+html .spec-teaching[data-spec-series="nvme"] { --st-accent:#086b56; --st-soft:#e7f4ee; }
+@media(prefers-color-scheme:dark) {
+ html:not([data-theme="light"]) .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+ html:not([data-theme="light"]) .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+}
+html[data-theme="dark"] .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+html[data-theme="dark"] .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+.spec-teaching * { box-sizing:border-box; }
+.spec-teaching :is(h1,h2,h3,h4,h5,p,li,td,th,summary,strong,figcaption) { color:var(--st-ink); }
+.spec-teaching svg text { font-family:inherit; }
+.spec-teaching h1 { font-size:clamp(1.8rem,3.2vw,2.65rem); line-height:1.4; }
+.spec-teaching h2 { font-size:clamp(1.3rem,2.5vw,1.7rem); line-height:1.55; }
+.spec-teaching h3 { font-size:1.15rem; line-height:1.65; }
+.spec-teaching h4 { font-size:1rem; line-height:1.7; }
+.spec-teaching :is(h1,h2,h3,h4) { overflow-wrap:anywhere; }
+.spec-teaching p { margin:.7rem 0 1.15rem; }
+.spec-teaching :is(a,summary) { text-underline-offset:.2em; }
+.spec-teaching :focus-visible { outline:3px solid var(--st-accent); outline-offset:4px; }
+.spec-teaching :is(.qa-takeaway,.qa-answer-lead,.st-takeaway) { color:var(--st-ink); font-weight:650; font-size:1.06rem; line-height:1.9; }
+.spec-teaching :is(.qa-question,.qr-card,.guided-walk) { border:1px solid var(--st-line); border-radius:12px; background:var(--st-surface); padding:clamp(18px,3vw,30px); margin:1.8rem 0; }
+.spec-teaching :is(.qa-flow,.qr-note,.qr-observations,.st-context,.st-route) { background:var(--st-soft); border-left:4px solid var(--st-accent); padding:1rem 1.2rem; margin:1.4rem 0; }
+.spec-teaching :is(.qr-step,.qa-qid,.st-label) { color:var(--st-accent); font-weight:700; }
+.spec-teaching :is(.qa-citations,.qa-source-links,.qr-case-sources,.walk-source,.st-source) { font-size:.84rem; line-height:1.75; color:var(--st-muted); overflow-wrap:anywhere; }
+.spec-teaching :is(.qr-table,.table-wrap) { overflow-x:auto; margin:1.4rem 0; border-radius:7px; }
+.spec-teaching :is(th,td) { line-height:1.8; vertical-align:top; min-width:120px; }
+.spec-teaching :is(table,td) { background:var(--st-surface); }
+.spec-teaching th { background:var(--st-soft); }
+.spec-teaching .st-step { border-left:3px solid var(--st-line); padding:.6rem 1rem; margin:1.2rem 0; }
+.spec-teaching .st-step:target { border-left-color:var(--st-accent); background:var(--st-soft); }
+.spec-teaching .st-glossary { border:1px solid var(--st-line); padding:.7rem 1rem; margin:1.4rem 0; border-radius:8px; }
+.spec-teaching .st-glossary > summary { min-height:44px; cursor:pointer; }
+.spec-teaching .st-specs { display:flex; flex-wrap:wrap; gap:.4rem 1rem; color:var(--st-muted); font-size:.8rem; line-height:1.8; margin:1rem 0; }
+.spec-teaching .st-specs span { border-bottom:2px solid var(--st-accent); padding:.2rem 0; }
+@media(max-width:620px) { .spec-teaching :is(.qa-question,.qr-card,.guided-walk) { padding:16px; } .spec-teaching .diagram svg { min-width:var(--st-diagram-width); } }
+@media print {
+ .spec-teaching { --st-paper:#fff!important; --st-surface:#fff!important; --st-ink:#000!important; --st-muted:#333!important; --st-line:#999!important; --st-accent:#000!important; --st-soft:#fff!important; }
+ .spec-teaching details > * { display:block!important; }
+ .spec-teaching details::details-content { content-visibility:visible!important; }
+ .spec-teaching .st-step { break-inside:avoid; }
+}
+
+/* Native reading guides: selection highlights; it never hides teaching content.
+   build_pcie_course.py changes .pcie-article to .pcie-article for the posts. */
+.pcie-article .guided-walk { margin: 1.8rem 0; padding: 1.2rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); min-width: 0; }
+.pcie-article .guided-walk > h3 { margin-top: 0; }
+.pcie-article .walk-help { color: var(--muted); font-size: .85rem; }
+.pcie-article .walk-order { margin-bottom: 1.1rem; }
+/* Keep native radio semantics and keyboard handling; the associated label is
+   the visible control, so a radio cannot wrap away from its own label. */
+.pcie-article .walk-choice { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.pcie-article .walk-label { display: inline-flex; align-items: center; min-height: 44px; padding: .35rem .7rem; margin: .25rem .8rem .25rem 0; border: 2px solid var(--line); border-radius: 8px; cursor: pointer; font-size: .9rem; line-height: 1.5; color: var(--ink); background: var(--surface-alt); }
+.pcie-article .walk-choice:checked + .walk-label { border-color: var(--accent); background: var(--blue-soft); font-weight: 700; }
+.pcie-article .walk-choice:focus-visible + .walk-label { outline: 3px solid var(--focus); outline-offset: 3px; }
+.pcie-article .walk-view { margin-top: 1rem; min-width: 0; }
+.pcie-article .walk-diagram { margin: 0 0 1.2rem; }
+.pcie-article .walk-diagram svg { width: 100%; height: auto; display: block; }
+.pcie-article .walk-diagram svg a { cursor: pointer; }
+.pcie-article .walk-diagram svg a:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
+.pcie-article .walk-diagram figcaption { margin-top: .8rem; }
+.pcie-article .walk-steps { max-width: none; padding-left: 1.6rem; }
+.pcie-article .walk-step { padding: .6rem .9rem; margin: .7rem 0; border: 2px solid transparent; border-left: 5px solid var(--line); border-radius: 5px; background: var(--surface); }
+.pcie-article .walk-step h4 { margin: .2rem 0 .5rem; }
+.pcie-article .walk-condition { font-size: .9rem; color: var(--muted); }
+.pcie-article .walk-source { border-top: 1px solid var(--line); padding-top: .35rem; color: var(--muted); font-size: .85rem; }
+.pcie-article .walk-step p:last-child { margin-bottom: .3rem; }
+.pcie-article .walk-components { border-top: 1px solid var(--line); margin-top: 1.4rem; padding-top: .4rem; }
+.pcie-article .walk-component-links { display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; list-style: none; padding-left: 0; }
+.pcie-article .walk-component-links a { min-height: 44px; min-width: 44px; }
+.pcie-article .walk-component { padding: .7rem 1rem; margin: 1rem 0; border: 1px solid var(--line); border-radius: 8px; }
+.pcie-article .walk-component > h4 { margin-top: .2rem; }
+.pcie-article .walk-component:target { outline: 3px solid var(--accent-2); outline-offset: 3px; }
+.pcie-article .walk-component details { margin-bottom: .3rem; }
+
+.pcie-article .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-step[data-walk-step="1"],
+.pcie-article .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-step[data-walk-step="2"],
+.pcie-article .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-step[data-walk-step="3"],
+.pcie-article .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-step[data-walk-step="4"],
+.pcie-article .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-step[data-walk-step="5"],
+.pcie-article .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-step[data-walk-step="6"],
+.pcie-article .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-step[data-walk-step="7"],
+.pcie-article .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-step[data-walk-step="8"] { border-color: var(--accent); background: var(--blue-soft); }
+
+.pcie-article .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-node[data-walk-steps~="1"],
+.pcie-article .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-node[data-walk-steps~="2"],
+.pcie-article .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-node[data-walk-steps~="3"],
+.pcie-article .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-node[data-walk-steps~="4"],
+.pcie-article .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-node[data-walk-steps~="5"],
+.pcie-article .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-node[data-walk-steps~="6"],
+.pcie-article .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-node[data-walk-steps~="7"],
+.pcie-article .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-node[data-walk-steps~="8"] { --walk-active-weight: 750; }
+.pcie-article .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-node[data-walk-steps~="1"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-node[data-walk-steps~="2"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-node[data-walk-steps~="3"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-node[data-walk-steps~="4"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-node[data-walk-steps~="5"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-node[data-walk-steps~="6"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-node[data-walk-steps~="7"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-node[data-walk-steps~="8"] > :is(rect, circle, ellipse, polygon, path, line, polyline) { stroke: var(--accent); stroke-width: 3.5px; vector-effect: non-scaling-stroke; }
+.pcie-article .walk-node text { font-weight: var(--walk-active-weight, inherit); }
+
+@media (max-width: 620px) {
+  .pcie-article .guided-walk { padding: .8rem; }
+  .pcie-article .walk-label { margin-right: .45rem; padding-left: .45rem; padding-right: .45rem; }
+  .pcie-article .walk-steps { padding-left: 1.15rem; }
+  .pcie-article .walk-step { padding: .5rem .6rem; }
+  .pcie-article .walk-diagram { overflow-x: auto; }
+  .pcie-article .walk-diagram svg { min-width: var(--st-diagram-width, 700px); }
+}
+@media (forced-colors: active) {
+  .pcie-article .walk-choice:checked + .walk-label { border-color: Highlight; }
+  .pcie-article .walk-step { border-color: CanvasText; }
+}
+@media print {
+  .pcie-article .guided-walk { border: 1px solid #999; padding: .7rem; break-inside: auto; }
+  .pcie-article .walk-choice, .pcie-article .walk-label, .pcie-article .walk-help { display: none; }
+  .pcie-article .walk-step { display: list-item !important; border-color: #999 !important; background: transparent !important; }
+  .pcie-article .walk-node { --walk-active-weight: 500 !important; }
+  .pcie-article .walk-node > :is(rect, circle, ellipse, polygon, path, line, polyline) { stroke: #333 !important; stroke-width: 1.5px !important; }
+  .pcie-article .walk-diagram { overflow: visible; }
+  .pcie-article .walk-diagram svg { min-width: 0; }
+  .pcie-article .walk-component details > * { display: block !important; }
+  .pcie-article .walk-component details::details-content { content-visibility: visible !important; }
+}
+
+/* SVG text follows the selected reading theme. */
+.pcie-article svg text { fill: var(--ink); }
+.pcie-article .walk-summary { margin: 1rem 0 1.5rem; }
+
 html:not([data-theme="dark"]) .pcie-article { color-scheme: light; }
 html[data-theme="dark"] .pcie-article { color-scheme: dark; }
 
 .pcie-article { background: transparent; margin: 1.5rem 0; }
 .pcie-article .lesson { padding: 0; border: 0; background: transparent; }
 </style>
-<div class="pcie-article" lang="en">
+<div class="pcie-article spec-teaching" data-spec-series="pcie" lang="en">
 <nav class="bottom-nav" aria-label="Course and editions"><a href="/DOCS/pcie-course/index.html">Course overview</a><a href="/DOCS/pcie-course/chapter-4.html">Full Chinese tutorial</a><a href="/pcie/chapter-4-zh-tw/">繁體中文</a></nav>
 <article class="lesson">
+<section id="chapter-overview"><h2>Connect a device resource to the CPU access path</h2><figure class="diagram"><svg viewBox="0 0 900 450" role="img" aria-labelledby="ch4-guide-title ch4-guide-desc"><title id="ch4-guide-title">Nested boxes show address coverage, not multiple copies of device memory. Platform translation determines the relationship between CPU addresses and the address encoded in a BAR.</title><desc id="ch4-guide-desc">Nested boxes show address coverage, not multiple copies of device memory. Platform translation determines the relationship between CPU addresses and the address encoded in a BAR.</desc><g data-walk-target="cpu"><rect x="300" y="10" width="300" height="60" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="450.0" y="35" text-anchor="middle" font-size="16">CPU access to a device resource</text></g><g data-walk-target="request"><path d="M450 70 L450 115" fill="none" stroke="var(--accent)" stroke-width="2" /><polygon points="450.0,115.0 455.0,105.0 445.0,105.0" fill="var(--accent)" /><text x="450.0" y="83.5" text-anchor="middle" font-size="16">Apply platform address translation</text></g><g data-walk-target="root-window"><rect x="40" y="115" width="820" height="305" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="450.0" y="140" text-anchor="middle" font-size="16">Root Port window: covers downstream allocations</text></g><g data-walk-target="switch-window"><rect x="135" y="190" width="630" height="205" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="450.0" y="215" text-anchor="middle" font-size="16">Each switch-path window covers the same target</text></g><g data-walk-target="bar"><rect x="250" y="270" width="400" height="95" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="450.0" y="295" text-anchor="middle" font-size="16">Endpoint Memory BAR</text><text x="450.0" y="318" text-anchor="middle" font-size="16">Configured base, size and alignment</text></g></svg><figcaption>Nested boxes show address coverage, not multiple copies of device memory. Platform translation determines the relationship between CPU addresses and the address encoded in a BAR.</figcaption></figure><dl class="st-terms" aria-label="Terms in this passage"><div><dt>BAR</dt><dd>Base Address Register</dd></div></dl><p class="lead">A BAR (Base Address Register) describes a device resource and its allocation interface. Determine type and size, allocate an aligned base, cover the range with every bridge window, then enable the applicable decoding.</p><p><strong>Specification route:</strong> Figures 7-10–7-12 and Table 7-9 → bridge-window rules and Figure 7-14 → Command controls in Figure 7-5 and Table 7-4.</p></section>
 <p class="lead">Discovering a Function is followed by resource allocation and forwarding setup. BARs describe the Endpoint's own resources, Bridge Windows determine which address ranges reach downstream, and Command bits control permitted accesses. All three must be consistent.</p>
 <p><a href="/DOCS/pcie-course/chapter-4.html">Full Chinese tutorial</a> · <a href="/DOCS/pcie-course/index.html">Course roadmap</a> · <a href="/pcie/chapter-4-zh-tw/">繁體中文</a></p>
-<aside class="note"><strong>Versions and assumptions</strong><p>Fields follow Base 6.0; address views and handoff follow PCI Firmware 3.3, which is not its matching edition. The example is an ordinary Type 0 PCI Express Endpoint, not a VF, without Enhanced Allocation or Resizable BAR. Values are author-created, with no hardware operation. During sizing the driver is not using the device, no transactions are outstanding, and MSE/BME are clear. Software saves original BARs and confirms configuration write completion. Printed and PDF page numbers coincide.</p></aside>
+<aside class="note"><strong>Versions and assumptions</strong><p>Fields follow Base 6.0; address views and handoff follow PCI Firmware 3.3, which is not its matching edition. The example is an ordinary Type 0 PCI Express Endpoint, not a VF, without Enhanced Allocation or Resizable BAR. Values are author-created, with no hardware operation. During sizing the driver is not using the device, no transactions are outstanding, and MSE/BME are clear. Software saves original BARs and confirms configuration write completion. Printed and PDF page numbers coincide.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>VF</dt><dd>Virtual Function</dd></div></dl></aside>
 <section id="format"><h2>Identify the format before calculating size</h2>
 <p>A BAR resides in Configuration Space; it is not a workload buffer. A Type 0 Header has six DWORD locations, and a 64-bit BAR consumes two consecutive locations. A Bridge's Type 1 Header has only two BAR locations, distinct from its downstream Memory Windows.</p>
 <p>A Memory BAR has bit 0 clear; bits 2:1 encode 32-bit as 00b and 64-bit as 10b, with Prefetchable in bit 3. An I/O BAR has bit 0 set and address bits beginning at bit 2, so the Memory BAR's four-bit mask does not apply. This example uses no I/O BAR: an ordinary PCIe Endpoint must not depend on OS allocation of I/O resources and must not generate I/O Requests.</p>
@@ -255,14 +405,14 @@ size = ((~mask) &amp; 0xFFFFFFFFFFFFFFFF) + 1 = 0x200000</code></pre>
 <details class="source-note"><summary>Sources</summary><p>Figure 7-14, p.936; §7.5.1.3.8–§7.5.1.3.10, pp.940–941. The full tutorial derives the masks, shifts, and range containment.</p></details></section>
 <section id="control"><h2>MSE and BME control different behavior</h2>
 <p>Command is a 16-bit Register at 0x04. Bit 0 controls I/O Space, bit 1 MSE controls received Memory accesses, and bit 2 BME controls Function-originated Memory/I/O Requests. A Type 1 Port's BME also controls forwarding those Requests upstream, without blocking Completions.</p>
-<p>With resources, windows, platform mapping, and the device interface ready, Command=0x0002 on the Endpoint and all three Bridges permits the example's CPU MMIO read while prohibiting Endpoint-originated DMA Memory Requests. BME does not block the read's Completion. BME=0 also prohibits MSI/MSI-X because they use in-band Memory Writes.</p>
+<p>With resources, windows, platform mapping, and the device interface ready, Command=0x0002 on the Endpoint and all three Bridges permits the example's CPU MMIO read while prohibiting Endpoint-originated DMA Memory Requests. BME does not block the read's Completion. BME=0 also prohibits MSI/MSI-X because they use in-band Memory Writes.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>MMIO</dt><dd>Memory-Mapped I/O, mapped device-register access</dd></div><div><dt>DMA</dt><dd>Direct Memory Access, device access to memory</dd></div><div><dt>MSI</dt><dd>Message Signaled Interrupt</dd></div><div><dt>MSI-X</dt><dd>Message Signaled Interrupts Extension</dd></div></dl>
 <p>Changing the Endpoint to 0x0006 adds permission to originate the relevant Requests, but does not prepare buffers, device work, platform translation, or upstream Port BME. Do not update Command by blindly writing back a DWORD that includes Status at 0x06, since Status contains RW1C bits.</p>
 <details class="source-note"><summary>Control sources</summary><p>Base 6.0 §7.5.1.1.3, Figure 7-5/Table 7-4, pp.917–920; BME, Completion, and MSI behavior on p.919. Command/Status layout: Figure 7-4, p.916; Status RW1C: Table 7-5, pp.922–923.</p></details></section>
 <section id="checks"><h2>Keep allocation and handoff conclusions separate</h2>
-<p>Firmware 3.3 §3.5 (pp.34–35) uses I/O/Memory Enable and ROM Enable to determine corresponding resource configuration, not BME to establish BAR validity. Enabled resources must be correctly configured by firmware, but drivers still prepare device-specific work.</p>
+<p>Firmware 3.3 §3.5 (pp.34–35) uses I/O/Memory Enable and ROM Enable to determine corresponding resource configuration, not BME to establish BAR validity. Enabled resources must be correctly configured by firmware, but drivers still prepare device-specific work.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>ROM</dt><dd>Read-Only Memory</dd></div></dl>
 <details class="question"><summary>Can the 16 KiB BAR move to 0x80005000?</summary><p>No. Its lower 14 bits are not all zero, violating natural alignment. The example's 0x80004000 base meets the requirement. (§7.5.1.2.1, p.930.)</p></details>
 <details class="question"><summary>Do correct windows permit a successful MMIO read when Endpoint MSE is clear?</summary><p>Success cannot be expected. With MSE clear, the Endpoint handles received Memory Space accesses as UR. A forwarding path does not replace target enablement. (Table 7-4, p.918.)</p></details></section>
-<p><a href="/DOCS/pcie-course/chapter-5.html">Chapter 5</a> follows Requests and Completions; Chapters 6–7 cover DMA and interrupts.</p>
+<p><a href="/DOCS/pcie-course/chapter-5.html">Chapter 5</a> follows Requests and Completions; Chapters 6–7 cover DMA and interrupts.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>DMA</dt><dd>Direct Memory Access, device access to memory</dd></div></dl>
 </article>
 <nav class="bottom-nav" aria-label="Course and editions"><a href="/DOCS/pcie-course/index.html">Course overview</a><a href="/DOCS/pcie-course/chapter-4.html">Full Chinese tutorial</a><a href="/pcie/chapter-4-zh-tw/">繁體中文</a></nav>
 </div>

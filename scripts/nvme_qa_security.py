@@ -44,7 +44,7 @@ Receive 的 AL 與 Send 的 TL 依 Security Protocol In／Out、INC_512=0 的定
 合法傳輸取得對應資料或協定回覆；應按協定結果決定認證或安全操作是否成功。 || Valid transport returns protocol results that separately establish security success.
 Receive 不支援 SECP、Send 使用保留 SECP 須 Invalid Field。內層認證失敗可能以協定 payload 表示，不能全部改寫成 Invalid Field 或 Access Denied CQE。 || Unsupported Receive/reserved Send SECP requires Invalid Field; inner authentication failure may be a protocol result rather than those CQE statuses.
 對同一測試記錄外層 CQE 與內層 result，避免把兩者混為一個錯誤碼。 || Preserve both outer CQE and inner result.
-先檢查 AL／TL 單位與實際 buffer 是否足夠，而不是直接猜密碼錯誤。 || First check lengths and buffer capacity before diagnosing credentials.
+先按 AL／TL 的單位核對傳輸長度與 buffer 容量，確認資料已完整送達後，再依安全協定的回覆檢查認證資料。 || Check the AL/TL units, transfer length, and buffer capacity first. Once the data transfer is complete, use the security protocol response to diagnose credentials.
 ''')
 q(239,"Security 資料傳輸失敗應如何區分 Status 與協定錯誤？ || How are security transfer and protocol failures distinguished?", '''
 資料根本沒有正確傳送，與資料送到後協定拒絕，是不同故障階段。 || Failed transport differs from a protocol rejecting successfully delivered data.

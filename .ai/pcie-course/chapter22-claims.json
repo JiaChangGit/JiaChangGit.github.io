@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "course": "pcie-course",
+  "chapter": 22,
+  "updated": "2026-10-24",
+  "claims": [
+    {
+      "id": "PCIE-CH22-001",
+      "claim": "Lane Margining出現位置、ID、布局、編號及有效項目。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.7.10",
+        "7.7.10.1"
+      ],
+      "document_pages": [
+        1077,
+        1078,
+        1079,
+        1080
+      ],
+      "pdf_pages": [
+        1077,
+        1078,
+        1079,
+        1080
+      ],
+      "figures": [
+        "7-125",
+        "7-126"
+      ],
+      "tables": [
+        "7-111"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH22-002",
+      "claim": "就緒限制與每Lane控制狀態。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.7.10.3",
+        "7.7.10.4",
+        "7.7.10.5"
+      ],
+      "document_pages": [
+        1081,
+        1082
+      ],
+      "pdf_pages": [
+        1081,
+        1082
+      ],
+      "figures": [
+        "7-128",
+        "7-129"
+      ],
+      "tables": [
+        "7-113",
+        "7-114"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH22-003",
+      "claim": "診斷能力用途與模式限制及初始寬度。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.7.7",
+        "7.7.8",
+        "7.7.9",
+        "7.8.13"
+      ],
+      "document_pages": [
+        1055,
+        1060,
+        1072,
+        1077,
+        1171
+      ],
+      "pdf_pages": [
+        1055,
+        1060,
+        1072,
+        1077,
+        1171
+      ],
+      "figures": [
+        "7-97",
+        "7-103",
+        "7-120",
+        "7-211"
+      ],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    }
+  ]
+}

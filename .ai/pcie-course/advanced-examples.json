@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "kind": "author_assumptions",
+  "note": "These values are teaching assumptions. Validation recomputes the models and reconciles results with the visible text in all three editions; it does not verify device behavior.",
+  "cases": [
+    {"chapter":14,"section":"bytes","model":"byte_enable","inputs":{"length_dw":2,"first_be":12,"last_be":3}},
+    {"chapter":22,"section":"walk","model":"lane","inputs":{"lane":3,"control_base":8,"stride":4,"status_delta":2}},
+    {"chapter":24,"section":"ltr","model":"ltr","inputs":{"value":10,"scale":2,"requirement":1}},
+    {"chapter":26,"section":"rid","model":"vf_rid","inputs":{"pf":768,"first":16,"stride":2,"count":3}},
+    {"chapter":26,"section":"bar","model":"vf_bar","inputs":{"base":2415919104,"aperture":65536,"ordinal":3}},
+    {"chapter":35,"section":"image","model":"rom","inputs":{"image":4096,"pointer":48,"length_units":4}},
+    {"chapter":37,"section":"capacity","model":"capacity","inputs":{"gt_s":64,"lanes":4,"tlp_bytes":236,"flit_bytes":256}},
+    {"chapter":37,"section":"flight","model":"flight","inputs":{"bytes_s":16000000000,"bytes_per_request":512,"delay_us":2,"limited_requests":8}}
+  ]
+}

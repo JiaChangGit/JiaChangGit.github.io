@@ -11,7 +11,7 @@ LID03h 中 CAFS 是目前 Active slot，NAFS 是預定下一次適用 Reset 啟�
 先讀 FRMW，再讀 LID03h，選可寫且符合更新計畫的 slot；不要透過嘗試覆寫 slot1 來探測它是否唯讀。 || Read FRMW then LID03h and choose a writable slot; do not probe protection by attempting overwrite.
 能分清「存在幾個 slot」、「哪個已有映像」、「目前執行哪個」與「下次準備啟用哪個」。 || Establish count, populated slots, running slot and pending activation separately.
 某 slot revision 全為 0 可表示沒有有效映像或不支援，不能只靠 Log 反推 slot 數。非法或唯讀 slot 可回 Invalid Firmware Slot。 || All-zero revision can mean empty or unsupported and cannot establish count; invalid/read-only slots use Invalid Firmware Slot.
-Identify.FR 應對應真正執行中的版本，而不是直接取 NAFS 指向的 pending revision。 || Identify.FR reflects the running image, not automatically the pending slot revision.
+Identify.FR 應回報目前執行的韌體版本。NAFS 指向的是待啟用 slot，須等啟用完成後，再核對它與執行版本的關係。 || Identify.FR reports the running firmware revision. NAFS identifies the slot selected for the next activation; check its relation to the running image after activation completes.
 先查 FRMW，避免把尚未使用的 slot 當成不存在。 || First read FRMW before interpreting an empty slot as nonexistent.
 ''')
 

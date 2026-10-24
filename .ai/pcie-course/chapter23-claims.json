@@ -1,0 +1,124 @@
+{
+  "schema_version": 1,
+  "course": "pcie-course",
+  "chapter": 23,
+  "updated": "2026-10-24",
+  "claims": [
+    {
+      "id": "PCIE-CH23-001",
+      "claim": "功率預算部署、回報範圍及啟用前限制。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.8",
+        "6.8.1"
+      ],
+      "document_pages": [
+        742,
+        743
+      ],
+      "pdf_pages": [
+        742,
+        743
+      ],
+      "figures": [],
+      "tables": [
+        "6-10"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH23-002",
+      "claim": "功率預算結構、Data Select索引與預設值。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.8.1",
+        "7.8.1.2"
+      ],
+      "document_pages": [
+        1090,
+        1091
+      ],
+      "pdf_pages": [
+        1090,
+        1091
+      ],
+      "figures": [
+        "7-136"
+      ],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH23-003",
+      "claim": "DPA子狀態、轉換狀態與VF限制。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.16",
+        "6.16.1"
+      ],
+      "document_pages": [
+        777,
+        778
+      ],
+      "pdf_pages": [
+        777,
+        778
+      ],
+      "figures": [],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH23-004",
+      "claim": "緊急降載目的與觸發條件。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.24"
+      ],
+      "document_pages": [
+        812
+      ],
+      "pdf_pages": [
+        812
+      ],
+      "figures": [],
+      "tables": [
+        "6-16"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH23-005",
+      "claim": "PF/VF電源狀態條件。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "5.10",
+        "5.10.1"
+      ],
+      "document_pages": [
+        655
+      ],
+      "pdf_pages": [
+        655
+      ],
+      "figures": [],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    }
+  ]
+}

@@ -7,18 +7,21 @@ permalink: /nvme/question-bank/capacity/zh-tw/
 lang: zh-TW
 nvme_quickref: true
 nvme_qa: true
+spec_teaching: true
+last_modified_at: 2026-10-23
 ---
 
-<div class="nvme-quickref nvme-qa">
+<div class="nvme-quickref nvme-qa spec-teaching" data-spec-series="nvme">
 <nav class="qr-top" aria-label="題庫與版本"><a href="#content">跳到內容</a><a href="/nvme/question-bank/zh-tw/">題庫總索引</a><a href="/nvme/question-bank/capacity/en/">English</a><a href="/DOCS/nvme-question-bank/capacity.html">繁中教學 HTML</a></nav>
-<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–328</p>
-<header><p class="qa-range">Q256–Q267</p><h1>NVM Set、Endurance Group 與容量</h1><p class="qr-intro">容量欄位分布於不同管理層級，健康計數也有自己的範圍。本冊先理解歸屬，再計算 Create／Delete 實際改變哪一層的容量。</p><p>先練習，再展開解答。各題依需要使用文字、欄位判讀、比較或流程說明，不要求相同的回答項目。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p></header>
-<aside class="qa-glossary"><h2>先認識本文使用的字詞</h2><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></aside>
+<main id="content"><p class="qr-eyebrow">NVMe · Q1–328</p>
+<div class="st-specs" aria-label="Specification editions"><span>NVM Express Base 2.4</span><span>NVM Command Set 1.3</span><span>NVMe over PCIe Transport 1.4</span></div>
+<header><p class="qa-range">Q256–Q267</p><h1>NVM Set、Endurance Group 與容量</h1><aside class="st-context"><p>NVM Set、Endurance Group 與 Domain 用來描述不同的資源與管理範圍。NVMSETID、ENDGID 與 DOMID 分別識別這些物件；namespace 則是命令可存取的邏輯儲存空間。以下依識別值查關係，再讀容量、配置與回收條件。</p></aside><p class="qr-intro">容量欄位分布於不同管理層級，健康計數也有自己的範圍。本冊先理解歸屬，再計算 Create／Delete 實際改變哪一層的容量。</p><p>每個問題都接著完整解說，依內容帶讀欄位、比較機制或追蹤流程。先看本冊總覽，再沿問題閱讀；必要條件與正常路徑直接顯示。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SCT</dt><dd>Status Code Type，完成狀態代碼類型</dd></div></dl></header>
 <section id="overview" class="qa-overview"><h2>容量不是只有一個剩餘數字</h2><p class="qa-takeaway">namespace 的 blocks、Group 的 bytes 與實體容量調整不能混算。</p>
-<div class="qr-table" tabindex="0" role="region" aria-label="可橫向捲動的比較表"><table><thead><tr><th scope="col">層級</th><th scope="col">觀察</th><th scope="col">常見誤解</th></tr></thead><tbody><tr><td>Namespace</td><td>NSZE、NCAP、LBA Format</td><td>把 blocks 直接當 bytes</td></tr><tr><td>Set／Group</td><td>總容量與未配置容量</td><td>把不同資源池加總兩次</td></tr><tr><td>實體配置</td><td>CAF、配置粒度</td><td>假設邏輯容量等於消耗量</td></tr><tr><td>健康</td><td>LID09h、EGCW</td><td>用 SMART 單位解 Group 計數</td></tr></tbody></table></div>
-<p><strong>舉例看懂：</strong>CAF=200 時，要求 5GiB 的 Group 可消耗 10GiB 的上層容量，還需考慮配置粒度。這不表示 namespace 的每個 LBA 大小也加倍。</p>
+<div class="qr-table" tabindex="0" role="region" aria-label="可橫向捲動的比較表"><table><thead><tr><th scope="col">層級</th><th scope="col">觀察</th><th scope="col">常見誤解</th></tr></thead><tbody><tr><td>Namespace</td><td>NSZE、NCAP、LBA Format</td><td>把 blocks 直接當 bytes</td></tr><tr><td>Set／Group</td><td>總容量與未配置容量</td><td>把不同資源池加總兩次</td></tr><tr><td>實體配置</td><td>CAF、配置粒度</td><td>假設邏輯容量等於消耗量</td></tr><tr><td>健康</td><td>LID09h、EGCW</td><td>用 SMART 單位解 Group 計數</td></tr></tbody></table><dl class="st-terms" aria-label="本段名詞"><div><dt>LBA</dt><dd>Logical Block Address，邏輯區塊位址</dd></div></dl></div>
+<p><strong>舉例看懂：</strong>CAF=200 時，要求 5GiB 的 Group 可消耗 10GiB 的上層容量，還需考慮配置粒度。這不表示 namespace 的每個 LBA 大小也加倍。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>LBA</dt><dd>Logical Block Address，邏輯區塊位址</dd></div></dl>
 <p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-capacitycmd">Base 2.4 §5.2.3</a> · <a href="#ref-capacityop">Base 2.4 §8.1.4</a> · <a href="#ref-eghealth">Base 2.4 §5.2.13.1.10</a> · <a href="#ref-egevents">Base 2.4 §3.2.3.1, 5.2.13.1.15, 5.2.30.1.17</a></p>
 </section>
+<details class="qa-glossary st-glossary"><summary>需要時回顧本篇名詞</summary><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></details>
 <div class="qa-controls" hidden><label>搜尋本頁 <input type="search" id="qa-search" placeholder="題號、欄位或關鍵字"></label><button type="button" data-expand="true">展開全部解答</button><button type="button" data-expand="false">收合全部解答</button><output id="qa-count" aria-live="polite"></output></div>
 <section id="question-index"><h2>本冊題目</h2><ol class="qa-index">
 <li><a href="#q-256">Q256 · NVM Set、Endurance Group 與 Namespace 是什麼關係？</a></li>
@@ -35,8 +38,8 @@ nvme_qa: true
 <li><a href="#q-267">Q267 · Reset 與 Power Cycle 後 Group、Set 與容量配置如何保留？</a></li>
 </ol></section>
 <article class="qa-question" id="q-256" data-question="256" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-256">Q256</a> NVM Set、Endurance Group 與 Namespace 是什麼關係？</h2>
-<p class="qa-prompt">先說出比較對象最重要的差別，並舉一個不能互相代用的例子。</p>
-<details class="qa-answer" id="q-256-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-256-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-256-a-01">這些物件分別組織容量、耐用度與邏輯存取，不能把它們當作同一個 ID 的不同名字。</p><div class="qa-sections">
 <section class="qa-section" id="q-256-s-01" data-answer-section="1"><h3><span>1.</span> 差別在哪裡</h3>
 <span class="qa-anchor" id="q-256-a-02"></span><p>支援 NVM Set 時，formatted namespace 完整位於一個 Set；Set 完整位於一個 Endurance Group；Group 完整位於一個 domain。</p>
@@ -47,18 +50,19 @@ nvme_qa: true
 <span class="qa-anchor" id="q-256-a-05"></span><p>先畫支援的層級，再填實際 ID。未支援 NVM Sets 時，不要畫出虛構的 Set0 當必要中間層。</p>
 <span class="qa-anchor" id="q-256-a-06"></span><p>例如 EG1 有 Set2、Set3，各有 namespaces；同 Group 的 Sets 由該 Group 共同管理耐用度。</p>
 </section>
-<section class="qa-section" id="q-256-s-03" data-answer-section="3"><h3><span>3.</span> 哪些結論不能互相套用</h3>
+<section class="qa-section" id="q-256-s-03" data-answer-section="3"><h3><span>3.</span> 比較時要保留的條件</h3>
 <span class="qa-anchor" id="q-256-a-07"></span><p>NVM Sets 支援要求同時支援 Endurance Groups；反方向不成立，Group 可以存在而沒有 Set 功能。</p>
 <span class="qa-anchor" id="q-256-a-16"></span><p>用 namespace、Set、Group 三種查詢確認相同歸屬，避免只看一個名稱相近的 ID。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-capacitycmd">Base 2.4 §5.2.3</a> · <a href="#ref-capacityop">Base 2.4 §8.1.4</a> · <a href="#ref-eghealth">Base 2.4 §5.2.13.1.10</a> · <a href="#ref-egevents">Base 2.4 §3.2.3.1, 5.2.13.1.15, 5.2.30.1.17</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nvmcreate">NVM Command Set 1.3 §4.1.5.8, 4.1.6, 5.8</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-256-a-17"></span><span class="qa-anchor" id="q-256-a-08"></span><span class="qa-anchor" id="q-256-a-09"></span><span class="qa-anchor" id="q-256-a-10"></span><span class="qa-anchor" id="q-256-a-11"></span><span class="qa-anchor" id="q-256-a-12"></span><span class="qa-anchor" id="q-256-a-13"></span><span class="qa-anchor" id="q-256-a-14"></span><span class="qa-anchor" id="q-256-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-capacitycmd">Base 2.4 §5.2.3</a> · <a href="#ref-capacityop">Base 2.4 §8.1.4</a> · <a href="#ref-eghealth">Base 2.4 §5.2.13.1.10</a> · <a href="#ref-egevents">Base 2.4 §3.2.3.1, 5.2.13.1.15, 5.2.30.1.17</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nvmcreate">NVM Command Set 1.3 §4.1.5.8, 4.1.6, 5.8</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-257" data-question="257" data-answer-kind="lookup"><h2><a class="qa-qid" href="#q-257">Q257</a> 如何從 Identify 探索 NVM Set 與 Endurance Group？</h2>
-<p class="qa-prompt">先選查詢介面與目標，再說明哪個回傳欄位能支持你的結論。</p>
-<details class="qa-answer" id="q-257-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-257-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-257-a-01">支援位元回答有沒有能力，清單回答目前有哪些物件，最大 ID 則不是目前物件數。</p><div class="qa-sections">
 <section class="qa-section" id="q-257-s-01" data-answer-section="1"><h3><span>1.</span> 要查哪個對象、哪份資料</h3>
 <span class="qa-anchor" id="q-257-a-02"></span><p>探索以所查 controller 能取得的 subsystem／domain 資訊為準。</p>
@@ -75,13 +79,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-257-a-17"></span><p>先檢查是否把 NSETIDMAX／ENDGIDMAX 誤當成現有總數。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-capacitycmd">Base 2.4 §5.2.3</a> · <a href="#ref-capacityop">Base 2.4 §8.1.4</a> · <a href="#ref-eghealth">Base 2.4 §5.2.13.1.10</a> · <a href="#ref-egevents">Base 2.4 §3.2.3.1, 5.2.13.1.15, 5.2.30.1.17</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nvmcreate">NVM Command Set 1.3 §4.1.5.8, 4.1.6, 5.8</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-257-a-08"></span><span class="qa-anchor" id="q-257-a-09"></span><span class="qa-anchor" id="q-257-a-10"></span><span class="qa-anchor" id="q-257-a-11"></span><span class="qa-anchor" id="q-257-a-12"></span><span class="qa-anchor" id="q-257-a-13"></span><span class="qa-anchor" id="q-257-a-14"></span><span class="qa-anchor" id="q-257-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-capacitycmd">Base 2.4 §5.2.3</a> · <a href="#ref-capacityop">Base 2.4 §8.1.4</a> · <a href="#ref-eghealth">Base 2.4 §5.2.13.1.10</a> · <a href="#ref-egevents">Base 2.4 §3.2.3.1, 5.2.13.1.15, 5.2.30.1.17</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nvmcreate">NVM Command Set 1.3 §4.1.5.8, 4.1.6, 5.8</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-258" data-question="258" data-answer-kind="process"><h2><a class="qa-qid" href="#q-258">Q258</a> Namespace 如何建立於指定 Set 或 Group？</h2>
-<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
-<details class="qa-answer" id="q-258-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-258-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-258-a-01">選擇歸屬可讓新 namespace 使用指定資源池；邏輯容量還需換算成該格式的 blocks。</p><div class="qa-sections">
 <section class="qa-section" id="q-258-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
 <span class="qa-anchor" id="q-258-a-02"></span><p>Create 的歸屬欄位決定新物件所在位置，不是把既有 namespace 搬過去。</p>
@@ -90,20 +95,21 @@ nvme_qa: true
 </section>
 <section class="qa-section" id="q-258-s-02" data-answer-section="2"><h3><span>2.</span> 先後順序與完成條件</h3>
 <span class="qa-anchor" id="q-258-a-05"></span><p>兩個 ID 都為 0 可由 controller 選擇；指定 Group 而 Set=0 時在該 Group 中選；指定 Set 必須搭配正確的非零 Group。</p>
-<span class="qa-anchor" id="q-258-a-06"></span><p>成功 CQE.DW0 回新 NSID，再讀 allocated Identify 確認實際歸屬；Create 不會自動完成 Attachment。</p>
+<span class="qa-anchor" id="q-258-a-06"></span><p>成功 CQE.DW0 回新 NSID，再讀 allocated Identify 確認實際歸屬；Create 不會自動完成 Attachment。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry，佇列中的完成項目</dd></div><div><dt>NSID</dt><dd>Namespace Identifier，邏輯儲存空間識別碼</dd></div></dl>
 </section>
 <section class="qa-section" id="q-258-s-03" data-answer-section="3"><h3><span>3.</span> 未符合條件時如何處理</h3>
 <span class="qa-anchor" id="q-258-a-07"></span><p>指定不存在或不匹配的組合不能當成自動選擇；須按 Create 的非法欄位／資源錯誤處理。</p>
 <span class="qa-anchor" id="q-258-a-16"></span><p>比對回傳 NVMSETID、ENDGID 與容量扣除的層級，確認不是只建立成功卻查錯物件。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-capacitycmd">Base 2.4 §5.2.3</a> · <a href="#ref-capacityop">Base 2.4 §8.1.4</a> · <a href="#ref-eghealth">Base 2.4 §5.2.13.1.10</a> · <a href="#ref-egevents">Base 2.4 §3.2.3.1, 5.2.13.1.15, 5.2.30.1.17</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nvmcreate">NVM Command Set 1.3 §4.1.5.8, 4.1.6, 5.8</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-258-a-17"></span><span class="qa-anchor" id="q-258-a-08"></span><span class="qa-anchor" id="q-258-a-09"></span><span class="qa-anchor" id="q-258-a-10"></span><span class="qa-anchor" id="q-258-a-11"></span><span class="qa-anchor" id="q-258-a-12"></span><span class="qa-anchor" id="q-258-a-13"></span><span class="qa-anchor" id="q-258-a-14"></span><span class="qa-anchor" id="q-258-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-capacitycmd">Base 2.4 §5.2.3</a> · <a href="#ref-capacityop">Base 2.4 §8.1.4</a> · <a href="#ref-eghealth">Base 2.4 §5.2.13.1.10</a> · <a href="#ref-egevents">Base 2.4 §3.2.3.1, 5.2.13.1.15, 5.2.30.1.17</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nvmcreate">NVM Command Set 1.3 §4.1.5.8, 4.1.6, 5.8</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-259" data-question="259" data-answer-kind="error"><h2><a class="qa-qid" href="#q-259">Q259</a> 指定不存在的 NVM Set 或 Endurance Group 時會怎樣？</h2>
-<p class="qa-prompt">先區分失敗條件，再判斷是否有規範明定的回報結果。</p>
-<details class="qa-answer" id="q-259-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-259-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-259-a-01">ID0 與不存在的非零 ID 可能有不同意義，而且同一個零值在不同命令也不同。</p><div class="qa-sections">
 <section class="qa-section" id="q-259-s-01" data-answer-section="1"><h3><span>1.</span> 先區分是哪一種失敗</h3>
 <span class="qa-anchor" id="q-259-a-02"></span><p>先限定操作是 Namespace Create、Capacity Create/Delete、Get Log 還是 Feature。</p>
@@ -120,13 +126,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-259-a-17"></span><p>先查該命令對 0 的明確定義，不能套一個全域「0 永遠非法」規則。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-capacitycmd">Base 2.4 §5.2.3</a> · <a href="#ref-capacityop">Base 2.4 §8.1.4</a> · <a href="#ref-eghealth">Base 2.4 §5.2.13.1.10</a> · <a href="#ref-egevents">Base 2.4 §3.2.3.1, 5.2.13.1.15, 5.2.30.1.17</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nvmcreate">NVM Command Set 1.3 §4.1.5.8, 4.1.6, 5.8</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-259-a-08"></span><span class="qa-anchor" id="q-259-a-09"></span><span class="qa-anchor" id="q-259-a-10"></span><span class="qa-anchor" id="q-259-a-11"></span><span class="qa-anchor" id="q-259-a-12"></span><span class="qa-anchor" id="q-259-a-13"></span><span class="qa-anchor" id="q-259-a-14"></span><span class="qa-anchor" id="q-259-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-capacitycmd">Base 2.4 §5.2.3</a> · <a href="#ref-capacityop">Base 2.4 §8.1.4</a> · <a href="#ref-eghealth">Base 2.4 §5.2.13.1.10</a> · <a href="#ref-egevents">Base 2.4 §3.2.3.1, 5.2.13.1.15, 5.2.30.1.17</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nvmcreate">NVM Command Set 1.3 §4.1.5.8, 4.1.6, 5.8</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-260" data-question="260" data-answer-kind="fields"><h2><a class="qa-qid" href="#q-260">Q260</a> Endurance Group Information Log 提供哪些健康與容量資訊？</h2>
-<p class="qa-prompt">先試著說明欄位的單位與編碼，再用一組數值推導結果。</p>
-<details class="qa-answer" id="q-260-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-260-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-260-a-01">這份 Log 將健康與工作量縮小到一個 Group，適合比較不同資源池，而不只看整顆 SSD 的 SMART。</p><div class="qa-sections">
 <section class="qa-section" id="q-260-s-01" data-answer-section="1"><h3><span>1.</span> 先確認資料的來源與範圍</h3>
 <span class="qa-anchor" id="q-260-a-02"></span><p>LID09h 以 LSI.ENDGID 選目標，資料涵蓋該 Group 的生命週期。</p>
@@ -149,13 +156,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-260-a-15"></span><p>健康資料以 Group 為範圍；多個 controllers 可能查看同一資料。RAE 確認也會影響後續事件觀察，需保存讀取者與時間。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-capacitycmd">Base 2.4 §5.2.3</a> · <a href="#ref-capacityop">Base 2.4 §8.1.4</a> · <a href="#ref-eghealth">Base 2.4 §5.2.13.1.10</a> · <a href="#ref-egevents">Base 2.4 §3.2.3.1, 5.2.13.1.15, 5.2.30.1.17</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nvmcreate">NVM Command Set 1.3 §4.1.5.8, 4.1.6, 5.8</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-260-a-17"></span><span class="qa-anchor" id="q-260-a-08"></span><span class="qa-anchor" id="q-260-a-09"></span><span class="qa-anchor" id="q-260-a-10"></span><span class="qa-anchor" id="q-260-a-11"></span><span class="qa-anchor" id="q-260-a-12"></span><span class="qa-anchor" id="q-260-a-13"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-capacitycmd">Base 2.4 §5.2.3</a> · <a href="#ref-capacityop">Base 2.4 §8.1.4</a> · <a href="#ref-eghealth">Base 2.4 §5.2.13.1.10</a> · <a href="#ref-egevents">Base 2.4 §3.2.3.1, 5.2.13.1.15, 5.2.30.1.17</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nvmcreate">NVM Command Set 1.3 §4.1.5.8, 4.1.6, 5.8</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-261" data-question="261" data-answer-kind="events"><h2><a class="qa-qid" href="#q-261">Q261</a> Endurance Group 的警告、Spare 與壽命事件如何更新？</h2>
-<p class="qa-prompt">先說明事件成立的條件，再區分通知、事件確認與紀錄。</p>
-<details class="qa-answer" id="q-261-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-261-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-261-a-01">Group 健康值、待確認事件清單與 Host AER 通知各負責不同階段，要分開設定和確認。</p><div class="qa-sections">
 <section class="qa-section" id="q-261-s-01" data-answer-section="1"><h3><span>1.</span> 事件何時成立、由誰觀察</h3>
 <span class="qa-anchor" id="q-261-a-02"></span><p>FID18h 逐 Group 設定，AEC 則控制 aggregate log change 通知。</p>
@@ -177,14 +185,15 @@ nvme_qa: true
 <span class="qa-anchor" id="q-261-a-15"></span><p>健康資料以 Group 為範圍；多個 controllers 可能查看同一資料。RAE 確認也會影響後續事件觀察，需保存讀取者與時間。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-capacitycmd">Base 2.4 §5.2.3</a> · <a href="#ref-capacityop">Base 2.4 §8.1.4</a> · <a href="#ref-eghealth">Base 2.4 §5.2.13.1.10</a> · <a href="#ref-egevents">Base 2.4 §3.2.3.1, 5.2.13.1.15, 5.2.30.1.17</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nvmcreate">NVM Command Set 1.3 §4.1.5.8, 4.1.6, 5.8</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-261-a-08"></span><span class="qa-anchor" id="q-261-a-11"></span><span class="qa-anchor" id="q-261-a-12"></span><span class="qa-anchor" id="q-261-a-13"></span><span class="qa-anchor" id="q-261-a-14"></span>
 <p class="qa-related">相關機制：<a href="/nvme/question-bank/capacity/zh-tw/#q-260">Q260</a></p>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-capacitycmd">Base 2.4 §5.2.3</a> · <a href="#ref-capacityop">Base 2.4 §8.1.4</a> · <a href="#ref-eghealth">Base 2.4 §5.2.13.1.10</a> · <a href="#ref-egevents">Base 2.4 §3.2.3.1, 5.2.13.1.15, 5.2.30.1.17</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nvmcreate">NVM Command Set 1.3 §4.1.5.8, 4.1.6, 5.8</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-262" data-question="262" data-answer-kind="lookup"><h2><a class="qa-qid" href="#q-262">Q262</a> 如何確認總容量與未配置容量？</h2>
-<p class="qa-prompt">先選查詢介面與目標，再說明哪個回傳欄位能支持你的結論。</p>
-<details class="qa-answer" id="q-262-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-262-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-262-a-01">未配置容量必須先問「還沒分給哪一層」，否則容易把已分給 Group 但尚未建立 namespace 的空間算錯。</p><div class="qa-sections">
 <section class="qa-section" id="q-262-s-01" data-answer-section="1"><h3><span>1.</span> 要查哪個對象、哪份資料</h3>
 <span class="qa-anchor" id="q-262-a-02"></span><p>可能分別是 subsystem、domain、Group 或 Set 的容量池。</p>
@@ -201,13 +210,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-262-a-17"></span><p>先明確說出這次要建立的是 Group、Set 還是 namespace。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-capacitycmd">Base 2.4 §5.2.3</a> · <a href="#ref-capacityop">Base 2.4 §8.1.4</a> · <a href="#ref-eghealth">Base 2.4 §5.2.13.1.10</a> · <a href="#ref-egevents">Base 2.4 §3.2.3.1, 5.2.13.1.15, 5.2.30.1.17</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nvmcreate">NVM Command Set 1.3 §4.1.5.8, 4.1.6, 5.8</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-262-a-08"></span><span class="qa-anchor" id="q-262-a-09"></span><span class="qa-anchor" id="q-262-a-10"></span><span class="qa-anchor" id="q-262-a-11"></span><span class="qa-anchor" id="q-262-a-12"></span><span class="qa-anchor" id="q-262-a-13"></span><span class="qa-anchor" id="q-262-a-14"></span><span class="qa-anchor" id="q-262-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-capacitycmd">Base 2.4 §5.2.3</a> · <a href="#ref-capacityop">Base 2.4 §8.1.4</a> · <a href="#ref-eghealth">Base 2.4 §5.2.13.1.10</a> · <a href="#ref-egevents">Base 2.4 §3.2.3.1, 5.2.13.1.15, 5.2.30.1.17</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nvmcreate">NVM Command Set 1.3 §4.1.5.8, 4.1.6, 5.8</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-263" data-question="263" data-answer-kind="concept"><h2><a class="qa-qid" href="#q-263">Q263</a> Namespace 建立與刪除如何改變未配置容量？</h2>
-<p class="qa-prompt">先用自己的話解釋機制，再舉一個常見誤解。</p>
-<details class="qa-answer" id="q-263-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-263-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-263-a-01">Namespace 使用所屬容量池，並非每次都直接改變 Identify Controller.UNVMCAP。</p><div class="qa-sections">
 <section class="qa-section" id="q-263-s-01" data-answer-section="1"><h3><span>1.</span> 機制與適用範圍</h3>
 <span class="qa-anchor" id="q-263-a-02"></span><p>有 Set 用 Set 容量；無 Set 但有 Group 用 Group；更簡單配置則使用對應 domain／subsystem 容量。</p>
@@ -219,17 +229,18 @@ nvme_qa: true
 <span class="qa-anchor" id="q-263-a-06"></span><p>容量應依該層級與規則釋出／扣除；Detach 只移除路徑，不能當成 Delete 來預期容量歸還。</p>
 </section>
 <section class="qa-section" id="q-263-s-03" data-answer-section="3"><h3><span>3.</span> 容易誤判的地方</h3>
-<span class="qa-anchor" id="q-263-a-07"></span><p>容量不足與 NSID 數量耗盡是不同錯誤，不能只看到 Create 失敗就判定 bytes 不足。</p>
+<span class="qa-anchor" id="q-263-a-07"></span><p>容量不足與 NSID 數量耗盡是不同錯誤，不能只看到 Create 失敗就判定 bytes 不足。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>NSID</dt><dd>Namespace Identifier，邏輯儲存空間識別碼</dd></div></dl>
 <span class="qa-anchor" id="q-263-a-16"></span><p>把有效資料內容、namespace 存在與容量帳目分開驗證，刪 namespace 也不等於已做資料抹除。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-capacitycmd">Base 2.4 §5.2.3</a> · <a href="#ref-capacityop">Base 2.4 §8.1.4</a> · <a href="#ref-eghealth">Base 2.4 §5.2.13.1.10</a> · <a href="#ref-egevents">Base 2.4 §3.2.3.1, 5.2.13.1.15, 5.2.30.1.17</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nvmcreate">NVM Command Set 1.3 §4.1.5.8, 4.1.6, 5.8</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-263-a-17"></span><span class="qa-anchor" id="q-263-a-08"></span><span class="qa-anchor" id="q-263-a-09"></span><span class="qa-anchor" id="q-263-a-10"></span><span class="qa-anchor" id="q-263-a-11"></span><span class="qa-anchor" id="q-263-a-12"></span><span class="qa-anchor" id="q-263-a-13"></span><span class="qa-anchor" id="q-263-a-14"></span><span class="qa-anchor" id="q-263-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-capacitycmd">Base 2.4 §5.2.3</a> · <a href="#ref-capacityop">Base 2.4 §8.1.4</a> · <a href="#ref-eghealth">Base 2.4 §5.2.13.1.10</a> · <a href="#ref-egevents">Base 2.4 §3.2.3.1, 5.2.13.1.15, 5.2.30.1.17</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nvmcreate">NVM Command Set 1.3 §4.1.5.8, 4.1.6, 5.8</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-264" data-question="264" data-answer-kind="process"><h2><a class="qa-qid" href="#q-264">Q264</a> Capacity Management 如何配置或釋放 Group 與 Set？</h2>
-<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
-<details class="qa-answer" id="q-264-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-264-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-264-a-01">Fixed 模式選既有配置，Variable 模式指定新物件容量，兩者不是同一組操作流程。</p><div class="qa-sections">
 <section class="qa-section" id="q-264-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
 <span class="qa-anchor" id="q-264-a-02"></span><p>Group／Set 變更可連帶影響包含的 namespaces 與所有存取路徑。</p>
@@ -238,20 +249,21 @@ nvme_qa: true
 </section>
 <section class="qa-section" id="q-264-s-02" data-answer-section="2"><h3><span>2.</span> 先後順序與完成條件</h3>
 <span class="qa-anchor" id="q-264-a-05"></span><p>Variable 通常先 Group 再 Set 再 namespace；Fixed 改到另一配置前須依條件清除原配置，不能任意覆蓋正在使用的配置。</p>
-<span class="qa-anchor" id="q-264-a-06"></span><p>Create 成功 CQE.DW0.CELID 回建立的 ID；其他操作不能把同一欄當作永遠有效的物件 ID。</p>
+<span class="qa-anchor" id="q-264-a-06"></span><p>Create 成功 CQE.DW0.CELID 回建立的 ID；其他操作不能把同一欄當作永遠有效的物件 ID。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry，佇列中的完成項目</dd></div></dl>
 </section>
 <section class="qa-section" id="q-264-s-03" data-answer-section="3"><h3><span>3.</span> 未符合條件時如何處理</h3>
 <span class="qa-anchor" id="q-264-a-07"></span><p>刪 Group／Set 會連帶刪子物件；恢復預設前仍有 Group／Set 時須 Command Sequence Error。</p>
 <span class="qa-anchor" id="q-264-a-16"></span><p>完成後重新讀清單、歸屬與容量；操作過程中的中間觀察可能 indeterminate，不宜拿單一中間快照作最終結果。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-capacitycmd">Base 2.4 §5.2.3</a> · <a href="#ref-capacityop">Base 2.4 §8.1.4</a> · <a href="#ref-eghealth">Base 2.4 §5.2.13.1.10</a> · <a href="#ref-egevents">Base 2.4 §3.2.3.1, 5.2.13.1.15, 5.2.30.1.17</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nvmcreate">NVM Command Set 1.3 §4.1.5.8, 4.1.6, 5.8</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-264-a-17"></span><span class="qa-anchor" id="q-264-a-08"></span><span class="qa-anchor" id="q-264-a-09"></span><span class="qa-anchor" id="q-264-a-10"></span><span class="qa-anchor" id="q-264-a-11"></span><span class="qa-anchor" id="q-264-a-12"></span><span class="qa-anchor" id="q-264-a-13"></span><span class="qa-anchor" id="q-264-a-14"></span><span class="qa-anchor" id="q-264-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-capacitycmd">Base 2.4 §5.2.3</a> · <a href="#ref-capacityop">Base 2.4 §8.1.4</a> · <a href="#ref-eghealth">Base 2.4 §5.2.13.1.10</a> · <a href="#ref-egevents">Base 2.4 §3.2.3.1, 5.2.13.1.15, 5.2.30.1.17</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nvmcreate">NVM Command Set 1.3 §4.1.5.8, 4.1.6, 5.8</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-265" data-question="265" data-answer-kind="error"><h2><a class="qa-qid" href="#q-265">Q265</a> 要求容量或物件數超過可用資源時應回什麼？</h2>
-<p class="qa-prompt">先區分失敗條件，再判斷是否有規範明定的回報結果。</p>
-<details class="qa-answer" id="q-265-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-265-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-265-a-01">容量 bytes 不夠與沒有可用 ID 是不同限制，題目應先固定是哪一種。</p><div class="qa-sections">
 <section class="qa-section" id="q-265-s-01" data-answer-section="1"><h3><span>1.</span> 先區分是哪一種失敗</h3>
 <span class="qa-anchor" id="q-265-a-02"></span><p>Create Group 核對 domain／subsystem 可配置量與最大 Group 大小；Create Set 核對 Group 的 UEGCAP。</p>
@@ -271,13 +283,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-265-a-10"></span><p>容量不足的 Create Group／Set 在支援 Error Log 時，必須記錄明定的 CSINFO 補充容量資訊；其數字語意在正文與 Figure165 有差異，應一併記錄來源。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-capacitycmd">Base 2.4 §5.2.3</a> · <a href="#ref-capacityop">Base 2.4 §8.1.4</a> · <a href="#ref-eghealth">Base 2.4 §5.2.13.1.10</a> · <a href="#ref-egevents">Base 2.4 §3.2.3.1, 5.2.13.1.15, 5.2.30.1.17</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nvmcreate">NVM Command Set 1.3 §4.1.5.8, 4.1.6, 5.8</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-265-a-08"></span><span class="qa-anchor" id="q-265-a-09"></span><span class="qa-anchor" id="q-265-a-11"></span><span class="qa-anchor" id="q-265-a-12"></span><span class="qa-anchor" id="q-265-a-13"></span><span class="qa-anchor" id="q-265-a-14"></span><span class="qa-anchor" id="q-265-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-capacitycmd">Base 2.4 §5.2.3</a> · <a href="#ref-capacityop">Base 2.4 §8.1.4</a> · <a href="#ref-eghealth">Base 2.4 §5.2.13.1.10</a> · <a href="#ref-egevents">Base 2.4 §3.2.3.1, 5.2.13.1.15, 5.2.30.1.17</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nvmcreate">NVM Command Set 1.3 §4.1.5.8, 4.1.6, 5.8</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-266" data-question="266" data-answer-kind="process"><h2><a class="qa-qid" href="#q-266">Q266</a> 容量配置完成後，哪些 Identify 與 Log 應更新？</h2>
-<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
-<details class="qa-answer" id="q-266-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-266-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-266-a-01">單一成功 CQE 不足以驗證配置；所有描述同一物件的查詢都應形成一致結果。</p><div class="qa-sections">
 <section class="qa-section" id="q-266-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
 <span class="qa-anchor" id="q-266-a-02"></span><p>依變更層級檢查 Group、Set、namespace、domain 及 Media Unit 歸屬。</p>
@@ -293,13 +306,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-266-a-16"></span><p>用完整變更鏈確認：物件消失、子物件消失、容量回到正確父層、通知讓其他讀者重查。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-capacitycmd">Base 2.4 §5.2.3</a> · <a href="#ref-capacityop">Base 2.4 §8.1.4</a> · <a href="#ref-eghealth">Base 2.4 §5.2.13.1.10</a> · <a href="#ref-egevents">Base 2.4 §3.2.3.1, 5.2.13.1.15, 5.2.30.1.17</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nvmcreate">NVM Command Set 1.3 §4.1.5.8, 4.1.6, 5.8</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-266-a-17"></span><span class="qa-anchor" id="q-266-a-08"></span><span class="qa-anchor" id="q-266-a-09"></span><span class="qa-anchor" id="q-266-a-10"></span><span class="qa-anchor" id="q-266-a-11"></span><span class="qa-anchor" id="q-266-a-12"></span><span class="qa-anchor" id="q-266-a-13"></span><span class="qa-anchor" id="q-266-a-14"></span><span class="qa-anchor" id="q-266-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-capacitycmd">Base 2.4 §5.2.3</a> · <a href="#ref-capacityop">Base 2.4 §8.1.4</a> · <a href="#ref-eghealth">Base 2.4 §5.2.13.1.10</a> · <a href="#ref-egevents">Base 2.4 §3.2.3.1, 5.2.13.1.15, 5.2.30.1.17</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nvmcreate">NVM Command Set 1.3 §4.1.5.8, 4.1.6, 5.8</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-267" data-question="267" data-answer-kind="lifecycle"><h2><a class="qa-qid" href="#q-267">Q267</a> Reset 與 Power Cycle 後 Group、Set 與容量配置如何保留？</h2>
-<p class="qa-prompt">先指明重設或中斷的方式，再分別判斷設定、進行中的操作與資料。</p>
-<details class="qa-answer" id="q-267-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-267-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-267-a-01">容量配置代表儲存組織，與需要重建的 I/O queues 不同，重設不能被當成清空配置命令。</p><div class="qa-sections">
 <section class="qa-section" id="q-267-s-01" data-answer-section="1"><h3><span>1.</span> 先界定觸發方式與影響對象</h3>
 <span class="qa-anchor" id="q-267-a-02"></span><p>已完成的 Group、Set、namespace 歸屬與容量帳目是比對對象。</p>
@@ -322,6 +336,7 @@ nvme_qa: true
 <span class="qa-anchor" id="q-267-a-17"></span><p>先查這段期間是否還執行了 Restore、Delete 或其他容量管理操作。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-capacitycmd">Base 2.4 §5.2.3</a> · <a href="#ref-capacityop">Base 2.4 §8.1.4</a> · <a href="#ref-eghealth">Base 2.4 §5.2.13.1.10</a> · <a href="#ref-egevents">Base 2.4 §3.2.3.1, 5.2.13.1.15, 5.2.30.1.17</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nvmcreate">NVM Command Set 1.3 §4.1.5.8, 4.1.6, 5.8</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-267-a-08"></span><span class="qa-anchor" id="q-267-a-09"></span><span class="qa-anchor" id="q-267-a-10"></span><span class="qa-anchor" id="q-267-a-11"></span><span class="qa-anchor" id="q-267-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-capacitycmd">Base 2.4 §5.2.3</a> · <a href="#ref-capacityop">Base 2.4 §8.1.4</a> · <a href="#ref-eghealth">Base 2.4 §5.2.13.1.10</a> · <a href="#ref-egevents">Base 2.4 §3.2.3.1, 5.2.13.1.15, 5.2.30.1.17</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nvmcreate">NVM Command Set 1.3 §4.1.5.8, 4.1.6, 5.8</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>

@@ -3,6 +3,10 @@ from __future__ import annotations
 import html
 import re
 try:
+    from scripts.spec_teaching import SERIES_REPORTS
+except ModuleNotFoundError:
+    from spec_teaching import SERIES_REPORTS
+try:
     from scripts.nvme_review_bank import BANK
 except ModuleNotFoundError:
     from nvme_review_bank import BANK
@@ -18,6 +22,9 @@ def render_questions(report_id, modules, claims, language, fmt, section_no=0):
     by_id = {c['id']: c for c in claims}
     key = 'citation_en' if language == 'en' else 'citation_zh_tw'
     heading = 'Check your understanding' if language == 'en' else '學完後想一想'
+    if report_id in SERIES_REPORTS:
+        heading = 'Connect the ideas in this article' if language == 'en' else '把本篇的觀念接起來'
+    open_attribute = ' open' if report_id in SERIES_REPORTS else ''
     label = 'Sources' if language == 'en' else '來源'
     lines = [f'<section id="knowledge-check"><h2 id="review-questions">{heading}</h2>']
     paragraph_no = 0
@@ -30,7 +37,7 @@ def render_questions(report_id, modules, claims, language, fmt, section_no=0):
             f'<span class="paragraph-text">{answer}</span></p>'
         )
         lines.extend([f'<!-- qa:{q["id"]} -->',
-            f'<details class="review-question" id="qa-{q["id"]}"><summary>{index}. {html.escape(q["question"][language])}</summary>',
+            f'<details{open_attribute} class="review-question" id="qa-{q["id"]}"><summary>{index}. {html.escape(q["question"][language])}</summary>',
             f'<div data-qa-answer="{q["id"]}">{answer_paragraph}</div>',
             f'<details class="source-note"><summary>{label}</summary>'])
         lines.extend('<p>' + html.escape(by_id[s][key]) + '</p>' for s in q['sources'])

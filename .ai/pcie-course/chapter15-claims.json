@@ -1,0 +1,117 @@
+{
+  "schema_version": 1,
+  "course": "pcie-course",
+  "chapter": 15,
+  "updated": "2026-10-24",
+  "claims": [
+    {
+      "id": "PCIE-CH15-001",
+      "claim": "接收交易層的入口在鏈結完整性檢查後，Malformed須丟棄並依種類處理。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.3"
+      ],
+      "document_pages": [
+        204,
+        205
+      ],
+      "pdf_pages": [
+        204,
+        205
+      ],
+      "figures": [],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH15-002",
+      "claim": "AtomicOp種類、大小、端到端能力及後續等待規則。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.15",
+        "6.15.2"
+      ],
+      "document_pages": [
+        772,
+        773,
+        774
+      ],
+      "pdf_pages": [
+        772,
+        773,
+        774
+      ],
+      "figures": [],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH15-003",
+      "claim": "DMWr原子操作、重試狀態與目標保持規則。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.32"
+      ],
+      "document_pages": [
+        857,
+        858
+      ],
+      "pdf_pages": [
+        857,
+        858
+      ],
+      "figures": [],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH15-004",
+      "claim": "完成逾時不可用於正常延遲估計，分段讀須收齊。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.8"
+      ],
+      "document_pages": [
+        259
+      ],
+      "pdf_pages": [
+        259
+      ],
+      "figures": [],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH15-005",
+      "claim": "鎖定交易僅RC發起及新軟體與PCIe Endpoint限制。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.5.1"
+      ],
+      "document_pages": [
+        718
+      ],
+      "pdf_pages": [
+        718
+      ],
+      "figures": [],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "title": "把插入事件接到可使用的裝置",
+  "summary_html": "<p class=\"lead\">熱插拔把實體插入、供電、Link 建立與軟體配置接成一個受管理的過程。讀到插入狀態後，管理軟體還要依插槽能力完成後續準備。</p><p>前情提要：Chapter 3／4 的枚舉與資源配置會在新裝置加入時再次用到；Chapter 8／9 提供連線與重設後等待條件。</p><p><strong>規格路線：</strong>Slot Implemented／Hot-Plug 能力 → Figures 7-30–7-32 的能力、控制、狀態 → §6.7.3 的操作與通知 → 枚舉及資源。</p>",
+  "svg": "<svg viewBox=\"0 0 900 500\" role=\"img\" aria-labelledby=\"ch11-guide-title ch11-guide-desc\"><title id=\"ch11-guide-title\">管理軟體先處理插入事件與供電，再等待適用的 Reset、Link 條件，最後枚舉與配置新 Function。</title><desc id=\"ch11-guide-desc\">管理軟體先處理插入事件與供電，再等待適用的 Reset、Link 條件，最後枚舉與配置新 Function。</desc><g data-walk-target=\"software\"><rect x=\"25\" y=\"15\" width=\"260\" height=\"60\" rx=\"9\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"155.0\" y=\"40\" text-anchor=\"middle\" font-size=\"15\">Hot-Plug 管理軟體</text></g><g data-walk-target=\"slot\"><rect x=\"320\" y=\"15\" width=\"260\" height=\"60\" rx=\"9\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"450.0\" y=\"40\" text-anchor=\"middle\" font-size=\"15\">Port／插槽控制</text></g><g data-walk-target=\"function\"><rect x=\"615\" y=\"15\" width=\"260\" height=\"60\" rx=\"9\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"745.0\" y=\"40\" text-anchor=\"middle\" font-size=\"15\">新加入的 Function</text></g><g data-walk-target=\"sl\"><path d=\"M155 75 L155 475\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2\" stroke-dasharray=\"6 5\"/></g><g data-walk-target=\"cl\"><path d=\"M450 75 L450 475\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2\" stroke-dasharray=\"6 5\"/></g><g data-walk-target=\"fl\"><path d=\"M745 75 L745 475\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2\" stroke-dasharray=\"6 5\"/></g><g data-walk-target=\"presence\"><path d=\"M450 135 L155 135\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2\"/><polygon points=\"155.0,135.0 165.0,140.0 165.0,130.0\" fill=\"var(--accent)\"/><text x=\"302.5\" y=\"126.0\" text-anchor=\"middle\" font-size=\"13\">Presence／事件通知 ←</text></g><g data-walk-target=\"power\"><path d=\"M155 225 L450 225\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2\"/><polygon points=\"450.0,225.0 440.0,220.0 440.0,230.0\" fill=\"var(--accent)\"/><text x=\"302.5\" y=\"216.0\" text-anchor=\"middle\" font-size=\"13\">依能力控制供電 →</text></g><g data-walk-target=\"ready\"><path d=\"M450 320 L745 320\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2\"/><polygon points=\"745.0,320.0 735.0,315.0 735.0,325.0\" fill=\"var(--accent)\"/><text x=\"597.5\" y=\"311.0\" text-anchor=\"middle\" font-size=\"13\">依序確認電源、Reset 與 Link</text></g><g data-walk-target=\"configure\"><path d=\"M155 415 L745 415\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2\"/><polygon points=\"745.0,415.0 735.0,410.0 735.0,420.0\" fill=\"var(--accent)\"/><text x=\"450.0\" y=\"406.0\" text-anchor=\"middle\" font-size=\"13\">完成等待後枚舉、配置並交給驅動</text></g></svg>",
+  "order_html": "<p>由上往下看本章的有管理插入路徑；是否具有 Power Controller 與哪些通知能力，先由插槽欄位決定。</p>",
+  "caption_html": "<p>作者的插入流程示意。控制操作完成、Link 可用與裝置已配置是沿途不同的條件。</p>",
+  "steps": [
+    {
+      "title": "先找到負責這個插槽的 Port",
+      "html": "<p>查 Slot Implemented 與 Hot-Plug 相關能力，確認本章的欄位適用，再定位 Slot Capabilities、Control、Status。</p>",
+      "targets": [
+        "slot",
+        "cl"
+      ],
+      "condition_html": "<p>實體連接器不直接代表具備標準 Hot-Plug 管理能力；本章以有管理的 PCIe 插槽為例。</p>",
+      "source_html": "<p>Base 6.0 §6.7／Table 6-7，pp.727–728；Figure 7-23／Table 7-19，pp.953–954。</p>",
+      "claim_ids": [
+        "PCIE-CH11-ELEMENTS-001"
+      ]
+    },
+    {
+      "title": "把目前狀態和事件分開讀",
+      "html": "<p>Presence Detect State 表示目前偵測狀態；Presence Detect Changed 表示變動事件。軟體保存事件，再依 Enable 與通知方式接手。</p>",
+      "targets": [
+        "presence",
+        "software",
+        "sl"
+      ],
+      "condition_html": "<p>事件狀態與目前狀態各有用途；Command Completed 也有自己的支援及通知規則。</p>",
+      "source_html": "<p>Base 6.0 Figures 7-30–7-32／Tables 7-27–7-29，pp.980–986；§6.7.3.1／§6.7.3.4，pp.735–737。</p>",
+      "claim_ids": [
+        "PCIE-CH11-FIELDS-001",
+        "PCIE-CH11-EVENTS-001"
+      ]
+    },
+    {
+      "title": "完成供電與可存取條件",
+      "html": "<p>依插槽能力控制供電，再等待適用的電源、Reset 與 Link 條件。通知某次控制操作完成後，仍繼續檢查裝置存取條件。</p>",
+      "targets": [
+        "power",
+        "ready",
+        "function",
+        "fl"
+      ],
+      "condition_html": "<p>本文會區分控制完成及 Link／Reset 後等待的起算點；支援能力不相同時，流程須依相應規則調整。</p>",
+      "source_html": "<p>Base 6.0 §6.7.3.2–§6.7.3.3，pp.735–736；§6.6.1，pp.721–723。</p>",
+      "claim_ids": [
+        "PCIE-CH11-TIMING-001",
+        "PCIE-CH11-EXAMPLE-001"
+      ]
+    },
+    {
+      "title": "找到 Function，配置資源後再使用",
+      "html": "<p>走回枚舉與 BAR／Bridge Window 配置，確認可用資源後再交給驅動程式。有秩序移除則先停止使用，再處理實體離開。</p>",
+      "targets": [
+        "configure",
+        "function",
+        "software"
+      ],
+      "condition_html": "<p>新裝置仍可能遇到 Bus 或位址資源不足；突然消失另依錯誤及隔離條件處理。</p>",
+      "source_html": "<p>Firmware 3.3 §3.5、§4.3.2、§4.5.1，pp.34–37、46–49、53；Base 6.0 §6.7、§6.2.11，pp.727、694–697。</p>",
+      "claim_ids": [
+        "PCIE-CH11-PLATFORM-001",
+        "PCIE-CH11-ASYNC-001"
+      ]
+    }
+  ],
+  "components": [
+    {
+      "target": "slot",
+      "title": "Port／插槽控制",
+      "html": "<p>本例由這個 Port 的 Slot 欄位提供插槽能力、控制與狀態。</p>",
+      "basic_html": "<p>Presence、事件狀態、供電控制與通知各有欄位，不以其中一項代替全部準備條件。</p>"
+    }
+  ],
+  "walk_id": "ch11-overview"
+}

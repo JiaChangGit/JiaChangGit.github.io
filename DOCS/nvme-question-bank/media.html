@@ -119,26 +119,85 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 .nvme-qa :focus-visible {outline:3px solid var(--qr-accent);outline-offset:3px;}
 @media(max-width:600px){.nvme-qa .qa-question{padding:1rem}.nvme-qa .qa-glossary{padding:1rem}.nvme-qa .qa-state{flex-direction:column}.nvme-qa .qa-flow{padding:.8rem}.nvme-qa .qa-flow-steps>li.qa-flow-branch{margin-left:.3rem}}
 @media print{.nvme-qa .qa-controls,.nvme-qa .qa-theme,.nvme-qa .qa-back{display:none}.nvme-qa details::details-content{display:block}.nvme-qa details>*{display:block!important}.nvme-qa .qa-question{break-inside:auto}.nvme-qa .qa-flow-steps>li{break-inside:avoid}}
+
+/* Applied only to explicitly authorized teaching roots. */
+html .spec-teaching[data-spec-series] .st-terms { margin:.35rem 0 1rem; padding:.5rem .8rem; border-inline-start:3px solid var(--st-accent); background:var(--st-soft); font-size:.88em; color:var(--st-muted); }
+html .spec-teaching[data-spec-series] .st-terms > div { display:flex; flex-wrap:wrap; gap:.2em .7em; }
+html .spec-teaching[data-spec-series] .st-terms dt { font-weight:650; }
+html .spec-teaching[data-spec-series] .st-terms dd { margin:0; flex:1 1 14em; }
+html .spec-teaching[data-spec-series] {
+ --st-diagram-width:900px;
+ --st-paper:#f2f6f8; --st-surface:#fff; --st-ink:#192d40; --st-muted:#4c6479;
+ --st-line:#cbd9e3; --st-accent:#145f9d; --st-soft:#edf5fc;
+ --paper:var(--st-paper); --surface:var(--st-surface); --surface-2:var(--st-soft); --surface-alt:var(--st-soft);
+ --ink:var(--st-ink); --muted:var(--st-muted); --line:var(--st-line);
+ --accent:var(--st-accent); --accent-2:var(--st-accent); --soft:var(--st-soft); --blue-soft:var(--st-soft); --teal-soft:var(--st-soft);
+ --qr-paper:var(--st-paper); --qr-surface:var(--st-surface); --qr-ink:var(--st-ink); --qr-muted:var(--st-muted);
+ --qr-line:var(--st-line); --qr-accent:var(--st-accent); --qr-soft:var(--st-soft);
+ color:var(--st-ink); background:var(--st-paper); font-size:17px; line-height:1.9;
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+}
+html .spec-teaching[data-spec-series="nvme"] { --st-accent:#086b56; --st-soft:#e7f4ee; }
+@media(prefers-color-scheme:dark) {
+ html:not([data-theme="light"]) .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+ html:not([data-theme="light"]) .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+}
+html[data-theme="dark"] .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+html[data-theme="dark"] .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+.spec-teaching * { box-sizing:border-box; }
+.spec-teaching :is(h1,h2,h3,h4,h5,p,li,td,th,summary,strong,figcaption) { color:var(--st-ink); }
+.spec-teaching svg text { font-family:inherit; }
+.spec-teaching h1 { font-size:clamp(1.8rem,3.2vw,2.65rem); line-height:1.4; }
+.spec-teaching h2 { font-size:clamp(1.3rem,2.5vw,1.7rem); line-height:1.55; }
+.spec-teaching h3 { font-size:1.15rem; line-height:1.65; }
+.spec-teaching h4 { font-size:1rem; line-height:1.7; }
+.spec-teaching :is(h1,h2,h3,h4) { overflow-wrap:anywhere; }
+.spec-teaching p { margin:.7rem 0 1.15rem; }
+.spec-teaching :is(a,summary) { text-underline-offset:.2em; }
+.spec-teaching :focus-visible { outline:3px solid var(--st-accent); outline-offset:4px; }
+.spec-teaching :is(.qa-takeaway,.qa-answer-lead,.st-takeaway) { color:var(--st-ink); font-weight:650; font-size:1.06rem; line-height:1.9; }
+.spec-teaching :is(.qa-question,.qr-card,.guided-walk) { border:1px solid var(--st-line); border-radius:12px; background:var(--st-surface); padding:clamp(18px,3vw,30px); margin:1.8rem 0; }
+.spec-teaching :is(.qa-flow,.qr-note,.qr-observations,.st-context,.st-route) { background:var(--st-soft); border-left:4px solid var(--st-accent); padding:1rem 1.2rem; margin:1.4rem 0; }
+.spec-teaching :is(.qr-step,.qa-qid,.st-label) { color:var(--st-accent); font-weight:700; }
+.spec-teaching :is(.qa-citations,.qa-source-links,.qr-case-sources,.walk-source,.st-source) { font-size:.84rem; line-height:1.75; color:var(--st-muted); overflow-wrap:anywhere; }
+.spec-teaching :is(.qr-table,.table-wrap) { overflow-x:auto; margin:1.4rem 0; border-radius:7px; }
+.spec-teaching :is(th,td) { line-height:1.8; vertical-align:top; min-width:120px; }
+.spec-teaching :is(table,td) { background:var(--st-surface); }
+.spec-teaching th { background:var(--st-soft); }
+.spec-teaching .st-step { border-left:3px solid var(--st-line); padding:.6rem 1rem; margin:1.2rem 0; }
+.spec-teaching .st-step:target { border-left-color:var(--st-accent); background:var(--st-soft); }
+.spec-teaching .st-glossary { border:1px solid var(--st-line); padding:.7rem 1rem; margin:1.4rem 0; border-radius:8px; }
+.spec-teaching .st-glossary > summary { min-height:44px; cursor:pointer; }
+.spec-teaching .st-specs { display:flex; flex-wrap:wrap; gap:.4rem 1rem; color:var(--st-muted); font-size:.8rem; line-height:1.8; margin:1rem 0; }
+.spec-teaching .st-specs span { border-bottom:2px solid var(--st-accent); padding:.2rem 0; }
+@media(max-width:620px) { .spec-teaching :is(.qa-question,.qr-card,.guided-walk) { padding:16px; } .spec-teaching .diagram svg { min-width:var(--st-diagram-width); } }
+@media print {
+ .spec-teaching { --st-paper:#fff!important; --st-surface:#fff!important; --st-ink:#000!important; --st-muted:#333!important; --st-line:#999!important; --st-accent:#000!important; --st-soft:#fff!important; }
+ .spec-teaching details > * { display:block!important; }
+ .spec-teaching details::details-content { content-visibility:visible!important; }
+ .spec-teaching .st-step { break-inside:avoid; }
+}
 </style></head><body class="qr-standalone">
-<div class="nvme-quickref nvme-qa">
+<div class="nvme-quickref nvme-qa spec-teaching" data-spec-series="nvme">
 <nav class="qr-top" aria-label="題庫與版本"><a href="#content">跳到內容</a><a href="index.html">題庫總索引</a><a href="/nvme/question-bank/media/zh-tw/">Pages 中文</a><a href="/nvme/question-bank/media/en/">English</a></nav>
 <button class="qa-theme" type="button" data-theme-toggle>切換明／暗色</button>
-<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–328</p>
-<header><p class="qa-range">Q268–Q275</p><h1>Domain、Reclaim Group 與 Media Unit</h1><p class="qr-intro">管理歸屬與 FDP 放置關係要用不同視角閱讀。本冊先辨認各種 ID 的範圍，再追蹤一筆 Write 如何選到 RU，最後解讀媒體資訊的限制。</p><p>先練習，再展開解答。各題依需要使用文字、欄位判讀、比較或流程說明，不要求相同的回答項目。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p></header>
-<aside class="qa-glossary"><h2>先認識本文使用的字詞</h2><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></aside>
+<main id="content"><p class="qr-eyebrow">NVMe · Q1–328</p>
+<div class="st-specs" aria-label="Specification editions"><span>NVM Express Base 2.4</span><span>NVM Command Set 1.3</span><span>NVMe over PCIe Transport 1.4</span></div>
+<header><p class="qa-range">Q268–Q275</p><h1>Domain、Reclaim Group 與 Media Unit</h1><aside class="st-context"><p>本冊先定位 Domain、Endurance Group 與 Media Unit，再讀可查詢的資源資訊及管理操作。DOMID（Domain Identifier）與 ENDGID（Endurance Group Identifier）用來選目標；回覆內容仍依本次命令與結構的有效條件判讀。</p></aside><p class="qr-intro">管理歸屬與 FDP 放置關係要用不同視角閱讀。本冊先辨認各種 ID 的範圍，再追蹤一筆 Write 如何選到 RU，最後解讀媒體資訊的限制。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>FDP</dt><dd>Flexible Data Placement，彈性資料放置</dd></div></dl><p>每個問題都接著完整解說，依內容帶讀欄位、比較機制或追蹤流程。先看本冊總覽，再沿問題閱讀；必要條件與正常路徑直接顯示。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SCT</dt><dd>Status Code Type，完成狀態代碼類型</dd></div></dl></header>
 <section id="overview" class="qa-overview"><h2>從 Write 的 PID 走到目前 RU</h2><p class="qa-takeaway">PID 裡的 PH 不是 RUH ID；必須先經過 namespace 的對照表。</p>
 <div class="qr-table" tabindex="0" role="region" aria-label="可橫向捲動的比較表"><table><thead><tr><th scope="col">步驟</th><th scope="col">假設值</th><th scope="col">選到什麼</th></tr></thead><tbody><tr><td>解 PID</td><td>RGID=1、PH=0</td><td>指定 RG1 及 namespace 的 PH0</td></tr><tr><td>查對照</td><td>NS1.PH0→RUH2</td><td>選 RUH2</td></tr><tr><td>查目前參照</td><td>RUH2 在 RG1 參照 RU 乙</td><td>這次 Write 使用的 RU</td></tr><tr><td>RU 用滿後</td><td>controller 更換目前 RU</td><td>PH 可不變，實際 RU 改變</td></tr></tbody></table></div>
-<p><strong>舉例看懂：</strong>若另一 namespace 的 PH0 對 RUH3，即使兩筆 Write 的 PID 數字相同，也可能使用不同 RUH。比較前必須保留 NSID 與配置。</p>
+<p><strong>舉例看懂：</strong>若另一 namespace 的 PH0 對 RUH3，即使兩筆 Write 的 PID 數字相同，也可能使用不同 RUH。比較前必須保留 NSID 與配置。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>NSID</dt><dd>Namespace Identifier，邏輯儲存空間識別碼</dd></div></dl>
 <p class="qa-citations">來源：<a href="#ref-fdpmodel">Base 2.4 §3.2.4, 8.1.12</a> · <a href="#ref-fdpcontrol">Base 2.4 §5.2.13.1.29–5.2.13.1.32, 5.2.30.1.21–5.2.30.1.22, 7.3–7.4</a> · <a href="#ref-fdpnvm">NVM Command Set 1.3 §3.2, 4.1.4.6–4.1.4.7</a> · <a href="#ref-mediaunit">Base 2.4 §5.2.13.1.16</a></p>
 </section>
 <section class="qa-lesson"><h2>先把觀念接起來</h2>
 <article><h3>教學 1 · 歸屬圖與放置圖各有用途</h3><p>歸屬圖回答 namespace 用哪個 Group 的容量；放置圖回答這筆資料要透過哪個 handle 與 RG 放進目前 RU。兩者互相關聯，但不能把所有名詞塞成一條包含鏈。畫圖時標清楚箭頭代表歸屬還是參照，才不會把可變的 RU 參照誤當永久物件位置。</p>
 </article>
-<article><h3>教學 2 · Write容錯不等於所有FDP命令容錯</h3><p>Write 帶非法 PID 時有特定 fallback 與事件規則，目的在讓資料仍能被放到可用位置。但 RUH Update 是明確的管理要求，非法參數不能自動套用同一種補救。閱讀錯誤規則時先確認是哪個命令，不能只因都使用 RUH 就共用答案。</p>
+<article><h3>教學 2 · Write容錯不等於所有FDP命令容錯</h3><dl class="st-terms" aria-label="本段名詞"><div><dt>FDP</dt><dd>Flexible Data Placement，彈性資料放置</dd></div></dl><p>Write 帶非法 PID 時有特定 fallback 與事件規則，目的在讓資料仍能被放到可用位置。但 RUH Update 是明確的管理要求，非法參數不能自動套用同一種補救。閱讀錯誤規則時先確認是哪個命令，不能只因都使用 RUH 就共用答案。</p>
 </article>
-<article><h3>教學 3 · 耗損資訊不能直接變成Ready判斷</h3><p>Media Unit 的 PUSED 及 AVSP 提供耗損與 spare 資訊，沒有一個通用位元能直接推論 namespace 已不可用。PUSED 超過 100 也不代表所有 I/O 必須失敗。要判斷存取問題，還需看 attachment、controller 狀態、ANA 及實際 CQE，媒體欄位只是補充證據。</p>
+<article><h3>教學 3 · 耗損資訊不能直接變成Ready判斷</h3><p>Media Unit 的 PUSED 及 AVSP 提供耗損與 spare 資訊，沒有一個通用位元能直接推論 namespace 已不可用。PUSED 超過 100 也不代表所有 I/O 必須失敗。要判斷存取問題，還需看 attachment、controller 狀態、ANA 及實際 CQE，媒體欄位只是補充證據。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry，佇列中的完成項目</dd></div></dl>
 </article>
 </section>
+<details class="qa-glossary st-glossary"><summary>需要時回顧本篇名詞</summary><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></details>
 <div class="qa-controls" hidden><label>搜尋本頁 <input type="search" id="qa-search" placeholder="題號、欄位或關鍵字"></label><button type="button" data-expand="true">展開全部解答</button><button type="button" data-expand="false">收合全部解答</button><output id="qa-count" aria-live="polite"></output></div>
 <section id="question-index"><h2>本冊題目</h2><ol class="qa-index">
 <li><a href="#q-268">Q268 · Domain、Set、Group、Media Unit 與 Namespace 是單一層級嗎？</a></li>
@@ -151,8 +210,8 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <li><a href="#q-275">Q275 · 如何辨識管理實體的 Scope，避免混用 ID？</a></li>
 </ol></section>
 <article class="qa-question" id="q-268" data-question="268" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-268">Q268</a> Domain、Set、Group、Media Unit 與 Namespace 是單一層級嗎？</h2>
-<p class="qa-prompt">先說出比較對象最重要的差別，並舉一個不能互相代用的例子。</p>
-<details class="qa-answer" id="q-268-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-268-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-268-a-01">這些名稱描述不同觀點：Domain 是管理與通訊邊界，Group 管耐用度，Set 組織容量，Namespace 提供邏輯位址，FDP 則決定資料放置。</p><div class="qa-sections">
 <section class="qa-section" id="q-268-s-01" data-answer-section="1"><h3><span>1.</span> 差別在哪裡</h3>
 <span class="qa-anchor" id="q-268-a-02"></span><p>支援 Set 時，namespace 位於一個 Set，Set 位於一個 Endurance Group，Group 位於一個 Domain；Reclaim Group 不是再插入這條鏈的一層 namespace 容器。</p>
@@ -163,18 +222,19 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-268-a-05"></span><p>先畫管理歸屬，再另外畫 Placement Handle 如何選到 RUH 與 RU。兩張圖各自回答「屬於誰」和「放在哪裡」。</p>
 <span class="qa-anchor" id="q-268-a-06"></span><p>可以說明一個 namespace 的歸屬，以及它的資料如何透過 FDP 放到所選資源，而不虛構一對一關係。</p>
 </section>
-<section class="qa-section" id="q-268-s-03" data-answer-section="3"><h3><span>3.</span> 哪些結論不能互相套用</h3>
+<section class="qa-section" id="q-268-s-03" data-answer-section="3"><h3><span>3.</span> 比較時要保留的條件</h3>
 <span class="qa-anchor" id="q-268-a-07"></span><p>Media Unit 不保證等於一顆 die；Channel 與 Media Unit 的關係也不能一律當成單一路徑。</p>
 <span class="qa-anchor" id="q-268-a-16"></span><p>對照各 ID 的定義、有效範圍及查詢時點；相同數值出現在不同 ID 欄不表示同一物件。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-mediaunit">Base 2.4 §5.2.13.1.16</a> · <a href="#ref-fdpmodel">Base 2.4 §3.2.4, 8.1.12</a> · <a href="#ref-fdpcontrol">Base 2.4 §5.2.13.1.29–5.2.13.1.32, 5.2.30.1.21–5.2.30.1.22, 7.3–7.4</a> · <a href="#ref-fdpnvm">NVM Command Set 1.3 §3.2, 4.1.4.6–4.1.4.7</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-ana">Base 2.4 §2.4.2, 8.1.1 (PCIe namespace access)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-268-a-17"></span><span class="qa-anchor" id="q-268-a-08"></span><span class="qa-anchor" id="q-268-a-09"></span><span class="qa-anchor" id="q-268-a-10"></span><span class="qa-anchor" id="q-268-a-11"></span><span class="qa-anchor" id="q-268-a-12"></span><span class="qa-anchor" id="q-268-a-13"></span><span class="qa-anchor" id="q-268-a-14"></span><span class="qa-anchor" id="q-268-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-mediaunit">Base 2.4 §5.2.13.1.16</a> · <a href="#ref-fdpmodel">Base 2.4 §3.2.4, 8.1.12</a> · <a href="#ref-fdpcontrol">Base 2.4 §5.2.13.1.29–5.2.13.1.32, 5.2.30.1.21–5.2.30.1.22, 7.3–7.4</a> · <a href="#ref-fdpnvm">NVM Command Set 1.3 §3.2, 4.1.4.6–4.1.4.7</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-ana">Base 2.4 §2.4.2, 8.1.1 (PCIe namespace access)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-269" data-question="269" data-answer-kind="lookup"><h2><a class="qa-qid" href="#q-269">Q269</a> 如何取得 Domain 與資源歸屬？</h2>
-<p class="qa-prompt">先選查詢介面與目標，再說明哪個回傳欄位能支持你的結論。</p>
-<details class="qa-answer" id="q-269-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-269-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-269-a-01">在多 Domain 裝置中，先確定查詢視角，才知道容量與資源清單涵蓋哪個範圍。</p><div class="qa-sections">
 <section class="qa-section" id="q-269-s-01" data-answer-section="1"><h3><span>1.</span> 要查哪個對象、哪份資料</h3>
 <span class="qa-anchor" id="q-269-a-02"></span><p>Domain 可以沒有 controller，也可以沒有 Endurance Group，不能只靠目前看得到的 controller 數量推算所有 Domain。</p>
@@ -191,13 +251,14 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-269-a-17"></span><p>先看查詢是送到哪個 controller，以及 selector 是否明確指定 Domain。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-mediaunit">Base 2.4 §5.2.13.1.16</a> · <a href="#ref-fdpmodel">Base 2.4 §3.2.4, 8.1.12</a> · <a href="#ref-fdpcontrol">Base 2.4 §5.2.13.1.29–5.2.13.1.32, 5.2.30.1.21–5.2.30.1.22, 7.3–7.4</a> · <a href="#ref-fdpnvm">NVM Command Set 1.3 §3.2, 4.1.4.6–4.1.4.7</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-ana">Base 2.4 §2.4.2, 8.1.1 (PCIe namespace access)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-269-a-08"></span><span class="qa-anchor" id="q-269-a-09"></span><span class="qa-anchor" id="q-269-a-10"></span><span class="qa-anchor" id="q-269-a-11"></span><span class="qa-anchor" id="q-269-a-12"></span><span class="qa-anchor" id="q-269-a-13"></span><span class="qa-anchor" id="q-269-a-14"></span><span class="qa-anchor" id="q-269-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-mediaunit">Base 2.4 §5.2.13.1.16</a> · <a href="#ref-fdpmodel">Base 2.4 §3.2.4, 8.1.12</a> · <a href="#ref-fdpcontrol">Base 2.4 §5.2.13.1.29–5.2.13.1.32, 5.2.30.1.21–5.2.30.1.22, 7.3–7.4</a> · <a href="#ref-fdpnvm">NVM Command Set 1.3 §3.2, 4.1.4.6–4.1.4.7</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-ana">Base 2.4 §2.4.2, 8.1.1 (PCIe namespace access)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-270" data-question="270" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-270">Q270</a> Reclaim Group、Reclaim Unit 與 RU Handle 各代表什麼？</h2>
-<p class="qa-prompt">先說出比較對象最重要的差別，並舉一個不能互相代用的例子。</p>
-<details class="qa-answer" id="q-270-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-270-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-270-a-01">FDP 讓 Host 表達資料放置意圖，controller 仍負責實際回收及更換使用中的 RU。</p><div class="qa-sections">
 <section class="qa-section" id="q-270-s-01" data-answer-section="1"><h3><span>1.</span> 差別在哪裡</h3>
 <span class="qa-anchor" id="q-270-a-02"></span><p>FDP 配置以 Endurance Group 為範圍；RG 與 RUH 的 ID 只在該配置中有意義。</p>
@@ -208,18 +269,19 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-270-a-05"></span><p>Host 先選 RG 與 Placement Handle，再由 handle 對到 RUH。當目前 RU 用滿，controller 在同一 RG 換成另一個空 RU。</p>
 <span class="qa-anchor" id="q-270-a-06"></span><p>教學例：RUH2 可同時參照 RG0 的 RU 甲與 RG1 的 RU 乙；只給 RUH2 還不能唯一指定這兩者之一。</p>
 </section>
-<section class="qa-section" id="q-270-s-03" data-answer-section="3"><h3><span>3.</span> 哪些結論不能互相套用</h3>
+<section class="qa-section" id="q-270-s-03" data-answer-section="3"><h3><span>3.</span> 比較時要保留的條件</h3>
 <span class="qa-anchor" id="q-270-a-07"></span><p>Initially Isolated 與 Persistently Isolated 對回收時混放資料的要求不同，不能只靠 RUH 編號推論永久隔離。</p>
 <span class="qa-anchor" id="q-270-a-16"></span><p>將所選配置、RG、RUH 類型與目前狀態一起比對；RUH ID 固定不代表其參照的 RU 永遠不變。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-mediaunit">Base 2.4 §5.2.13.1.16</a> · <a href="#ref-fdpmodel">Base 2.4 §3.2.4, 8.1.12</a> · <a href="#ref-fdpcontrol">Base 2.4 §5.2.13.1.29–5.2.13.1.32, 5.2.30.1.21–5.2.30.1.22, 7.3–7.4</a> · <a href="#ref-fdpnvm">NVM Command Set 1.3 §3.2, 4.1.4.6–4.1.4.7</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-ana">Base 2.4 §2.4.2, 8.1.1 (PCIe namespace access)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-270-a-17"></span><span class="qa-anchor" id="q-270-a-08"></span><span class="qa-anchor" id="q-270-a-09"></span><span class="qa-anchor" id="q-270-a-10"></span><span class="qa-anchor" id="q-270-a-11"></span><span class="qa-anchor" id="q-270-a-12"></span><span class="qa-anchor" id="q-270-a-13"></span><span class="qa-anchor" id="q-270-a-14"></span><span class="qa-anchor" id="q-270-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-mediaunit">Base 2.4 §5.2.13.1.16</a> · <a href="#ref-fdpmodel">Base 2.4 §3.2.4, 8.1.12</a> · <a href="#ref-fdpcontrol">Base 2.4 §5.2.13.1.29–5.2.13.1.32, 5.2.30.1.21–5.2.30.1.22, 7.3–7.4</a> · <a href="#ref-fdpnvm">NVM Command Set 1.3 §3.2, 4.1.4.6–4.1.4.7</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-ana">Base 2.4 §2.4.2, 8.1.1 (PCIe namespace access)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-271" data-question="271" data-answer-kind="process"><h2><a class="qa-qid" href="#q-271">Q271</a> Namespace 如何透過 Placement Handle 選擇 RU？</h2>
-<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
-<details class="qa-answer" id="q-271-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-271-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-271-a-01">Namespace 使用自己的 Placement Handle 清單，將 Write 中的放置意圖轉成 Group 內的 RUH。</p><div class="qa-sections">
 <section class="qa-section" id="q-271-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
 <span class="qa-anchor" id="q-271-a-02"></span><p>同一 PH 數值在不同 namespace 可以對到不同 RUH；不同 namespaces 也可能共用 RUH，須符合配置限制。</p>
@@ -235,13 +297,14 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-271-a-16"></span><p>未使用 FDP Directive 的 Write 走 PH0 與 controller 所選 RG；不能因此宣稱完全繞過 FDP 配置。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-mediaunit">Base 2.4 §5.2.13.1.16</a> · <a href="#ref-fdpmodel">Base 2.4 §3.2.4, 8.1.12</a> · <a href="#ref-fdpcontrol">Base 2.4 §5.2.13.1.29–5.2.13.1.32, 5.2.30.1.21–5.2.30.1.22, 7.3–7.4</a> · <a href="#ref-fdpnvm">NVM Command Set 1.3 §3.2, 4.1.4.6–4.1.4.7</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-ana">Base 2.4 §2.4.2, 8.1.1 (PCIe namespace access)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-271-a-17"></span><span class="qa-anchor" id="q-271-a-08"></span><span class="qa-anchor" id="q-271-a-09"></span><span class="qa-anchor" id="q-271-a-10"></span><span class="qa-anchor" id="q-271-a-11"></span><span class="qa-anchor" id="q-271-a-12"></span><span class="qa-anchor" id="q-271-a-13"></span><span class="qa-anchor" id="q-271-a-14"></span><span class="qa-anchor" id="q-271-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-mediaunit">Base 2.4 §5.2.13.1.16</a> · <a href="#ref-fdpmodel">Base 2.4 §3.2.4, 8.1.12</a> · <a href="#ref-fdpcontrol">Base 2.4 §5.2.13.1.29–5.2.13.1.32, 5.2.30.1.21–5.2.30.1.22, 7.3–7.4</a> · <a href="#ref-fdpnvm">NVM Command Set 1.3 §3.2, 4.1.4.6–4.1.4.7</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-ana">Base 2.4 §2.4.2, 8.1.1 (PCIe namespace access)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-272" data-question="272" data-answer-kind="fields"><h2><a class="qa-qid" href="#q-272">Q272</a> Media Unit Status Log 提供哪些資訊，如何走訪描述資料？</h2>
-<p class="qa-prompt">先試著說明欄位的單位與編碼，再用一組數值推導結果。</p>
-<details class="qa-answer" id="q-272-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-272-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-272-a-01">這份 Log 用來查看 Domain 中媒體單位的歸屬、容量調整與耗損資訊，不是逐筆 I/O 的完成紀錄。</p><div class="qa-sections">
 <section class="qa-section" id="q-272-s-01" data-answer-section="1"><h3><span>1.</span> 先確認資料的來源與範圍</h3>
 <span class="qa-anchor" id="q-272-a-02"></span><p>LID10h 以 LSI.DID 選 Domain；Media Unit ID 與 Channel ID 的唯一性範圍是 Domain。</p>
@@ -257,13 +320,14 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-272-a-16"></span><p>Media Unit 的 AVSP、PUSED 與 Endurance Group 健康值之間，規範沒有要求簡單平均關係。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-mediaunit">Base 2.4 §5.2.13.1.16</a> · <a href="#ref-fdpmodel">Base 2.4 §3.2.4, 8.1.12</a> · <a href="#ref-fdpcontrol">Base 2.4 §5.2.13.1.29–5.2.13.1.32, 5.2.30.1.21–5.2.30.1.22, 7.3–7.4</a> · <a href="#ref-fdpnvm">NVM Command Set 1.3 §3.2, 4.1.4.6–4.1.4.7</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-ana">Base 2.4 §2.4.2, 8.1.1 (PCIe namespace access)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-272-a-17"></span><span class="qa-anchor" id="q-272-a-08"></span><span class="qa-anchor" id="q-272-a-09"></span><span class="qa-anchor" id="q-272-a-10"></span><span class="qa-anchor" id="q-272-a-11"></span><span class="qa-anchor" id="q-272-a-12"></span><span class="qa-anchor" id="q-272-a-13"></span><span class="qa-anchor" id="q-272-a-14"></span><span class="qa-anchor" id="q-272-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-mediaunit">Base 2.4 §5.2.13.1.16</a> · <a href="#ref-fdpmodel">Base 2.4 §3.2.4, 8.1.12</a> · <a href="#ref-fdpcontrol">Base 2.4 §5.2.13.1.29–5.2.13.1.32, 5.2.30.1.21–5.2.30.1.22, 7.3–7.4</a> · <a href="#ref-fdpnvm">NVM Command Set 1.3 §3.2, 4.1.4.6–4.1.4.7</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-ana">Base 2.4 §2.4.2, 8.1.1 (PCIe namespace access)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-273" data-question="273" data-answer-kind="concept"><h2><a class="qa-qid" href="#q-273">Q273</a> 能從 Media Unit Status 直接判斷 Namespace 不可用嗎？</h2>
-<p class="qa-prompt">先用自己的話解釋機制，再舉一個常見誤解。</p>
-<details class="qa-answer" id="q-273-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-273-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-273-a-01">不能直接判斷。Media Unit Status Log（LID10h）沒有一個能直接換算成 Namespace Ready 的通用狀態；必須再查看 namespace 與存取路徑的證據。</p><div class="qa-sections">
 <section class="qa-section" id="q-273-s-01" data-answer-section="1"><h3><span>1.</span> 耗損數值不是 Ready 狀態</h3>
 <span class="qa-anchor" id="q-273-a-02"></span><p>媒體耗損、namespace 存取狀態與某條 controller 路徑是否可用，是不同觀察範圍。</p>
@@ -277,13 +341,14 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-273-a-16"></span><p>若多個 namespaces 同時受影響，檢查共用的 Group、Set 或 controller，仍不能只憑同時發生就證明因果。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-mediaunit">Base 2.4 §5.2.13.1.16</a> · <a href="#ref-fdpmodel">Base 2.4 §3.2.4, 8.1.12</a> · <a href="#ref-fdpcontrol">Base 2.4 §5.2.13.1.29–5.2.13.1.32, 5.2.30.1.21–5.2.30.1.22, 7.3–7.4</a> · <a href="#ref-fdpnvm">NVM Command Set 1.3 §3.2, 4.1.4.6–4.1.4.7</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-ana">Base 2.4 §2.4.2, 8.1.1 (PCIe namespace access)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-273-a-17"></span><span class="qa-anchor" id="q-273-a-08"></span><span class="qa-anchor" id="q-273-a-09"></span><span class="qa-anchor" id="q-273-a-10"></span><span class="qa-anchor" id="q-273-a-11"></span><span class="qa-anchor" id="q-273-a-12"></span><span class="qa-anchor" id="q-273-a-13"></span><span class="qa-anchor" id="q-273-a-14"></span><span class="qa-anchor" id="q-273-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-mediaunit">Base 2.4 §5.2.13.1.16</a> · <a href="#ref-fdpmodel">Base 2.4 §3.2.4, 8.1.12</a> · <a href="#ref-fdpcontrol">Base 2.4 §5.2.13.1.29–5.2.13.1.32, 5.2.30.1.21–5.2.30.1.22, 7.3–7.4</a> · <a href="#ref-fdpnvm">NVM Command Set 1.3 §3.2, 4.1.4.6–4.1.4.7</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-ana">Base 2.4 §2.4.2, 8.1.1 (PCIe namespace access)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-274" data-question="274" data-answer-kind="events"><h2><a class="qa-qid" href="#q-274">Q274</a> 媒體狀態變化會產生哪些通知與紀錄？</h2>
-<p class="qa-prompt">先說明事件成立的條件，再區分通知、事件確認與紀錄。</p>
-<details class="qa-answer" id="q-274-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-274-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-274-a-01">規範沒有通用的「Media Unit 任一欄變更」AER。必須先辨識實際變化屬於健康警告、ANA、namespace 屬性還是 FDP 事件。</p><div class="qa-sections">
 <section class="qa-section" id="q-274-s-01" data-answer-section="1"><h3><span>1.</span> 事件何時成立、由誰觀察</h3>
 <span class="qa-anchor" id="q-274-a-02"></span><p>警告可能屬於 Endurance Group、subsystem，或僅屬於某 controller 的路徑；這些通知不能互相代替。</p>
@@ -291,7 +356,7 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-274-a-04"></span><p>SMART／Endurance Group Logs 提供警告，ANA Log 提供路徑狀態，FDP Events 記錄已啟用的放置事件。</p>
 </section>
 <section class="qa-section" id="q-274-s-02" data-answer-section="2"><h3><span>2.</span> 通知、讀取與確認的關係</h3>
-<span class="qa-anchor" id="q-274-a-05"></span><p>先保存 AER 的 Type、Information、LID，再讀相符 Log；需要保留事件時使用 RAE=1。</p>
+<span class="qa-anchor" id="q-274-a-05"></span><p>先保存 AER 的 Type、Information、LID，再讀相符 Log；需要保留事件時使用 RAE=1。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>LID</dt><dd>Log Page Identifier，紀錄頁識別碼</dd></div></dl>
 <span class="qa-anchor" id="q-274-a-06"></span><p>例如某 Group spare 低於門檻，應檢查 EGCW 與已啟用的 aggregate notice，而非期待一個 Media Unit Lost 事件。</p>
 </section>
 <section class="qa-section" id="q-274-s-03" data-answer-section="3"><h3><span>3.</span> 沒有通知或紀錄時怎麼判斷</h3>
@@ -305,14 +370,15 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-274-a-11"></span><p>Get Log Page 不是 PEL 中逐筆記錄的讀取歷史。 <a class="qa-rule-link" href="#common-log_query-11">完整條件見本冊說明</a></p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-mediaunit">Base 2.4 §5.2.13.1.16</a> · <a href="#ref-fdpmodel">Base 2.4 §3.2.4, 8.1.12</a> · <a href="#ref-fdpcontrol">Base 2.4 §5.2.13.1.29–5.2.13.1.32, 5.2.30.1.21–5.2.30.1.22, 7.3–7.4</a> · <a href="#ref-fdpnvm">NVM Command Set 1.3 §3.2, 4.1.4.6–4.1.4.7</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-ana">Base 2.4 §2.4.2, 8.1.1 (PCIe namespace access)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-274-a-08"></span><span class="qa-anchor" id="q-274-a-12"></span><span class="qa-anchor" id="q-274-a-13"></span><span class="qa-anchor" id="q-274-a-14"></span><span class="qa-anchor" id="q-274-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-mediaunit">Base 2.4 §5.2.13.1.16</a> · <a href="#ref-fdpmodel">Base 2.4 §3.2.4, 8.1.12</a> · <a href="#ref-fdpcontrol">Base 2.4 §5.2.13.1.29–5.2.13.1.32, 5.2.30.1.21–5.2.30.1.22, 7.3–7.4</a> · <a href="#ref-fdpnvm">NVM Command Set 1.3 §3.2, 4.1.4.6–4.1.4.7</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-ana">Base 2.4 §2.4.2, 8.1.1 (PCIe namespace access)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-275" data-question="275" data-answer-kind="concept"><h2><a class="qa-qid" href="#q-275">Q275</a> 如何辨識管理實體的 Scope，避免混用 ID？</h2>
-<p class="qa-prompt">先用自己的話解釋機制，再舉一個常見誤解。</p>
-<details class="qa-answer" id="q-275-answer"><summary>展開解答與推導</summary>
-<p class="qa-answer-lead" id="q-275-a-01">相同數字可以同時是 NSID、DID、ENDGID 或 RGID；完整識別需要欄位種類與其所屬範圍。</p><div class="qa-sections">
+
+<details open class="qa-answer" id="q-275-answer"><summary>跟著解說理解</summary>
+<p class="qa-answer-lead" id="q-275-a-01">相同數字可以同時是 NSID、DID、ENDGID 或 RGID；完整識別需要欄位種類與其所屬範圍。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>NSID</dt><dd>Namespace Identifier，邏輯儲存空間識別碼</dd></div></dl><div class="qa-sections">
 <section class="qa-section" id="q-275-s-01" data-answer-section="1"><h3><span>1.</span> 機制與適用範圍</h3>
 <span class="qa-anchor" id="q-275-a-02"></span><p>操作的命令入口、設定的範圍與資料的歸屬可能不同。</p>
 <span class="qa-anchor" id="q-275-a-04"></span><p>記錄 controller ID、Domain、Group、Namespace 與命令 selector；不適用的欄位明確留空，不填猜測的 0。</p>
@@ -327,13 +393,14 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-275-a-16"></span><p>同一物件的比較需保持 selector 與時間一致；若管理操作途中改變歸屬，先重新探索。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-mediaunit">Base 2.4 §5.2.13.1.16</a> · <a href="#ref-fdpmodel">Base 2.4 §3.2.4, 8.1.12</a> · <a href="#ref-fdpcontrol">Base 2.4 §5.2.13.1.29–5.2.13.1.32, 5.2.30.1.21–5.2.30.1.22, 7.3–7.4</a> · <a href="#ref-fdpnvm">NVM Command Set 1.3 §3.2, 4.1.4.6–4.1.4.7</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-ana">Base 2.4 §2.4.2, 8.1.1 (PCIe namespace access)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-275-a-17"></span><span class="qa-anchor" id="q-275-a-08"></span><span class="qa-anchor" id="q-275-a-09"></span><span class="qa-anchor" id="q-275-a-10"></span><span class="qa-anchor" id="q-275-a-11"></span><span class="qa-anchor" id="q-275-a-12"></span><span class="qa-anchor" id="q-275-a-13"></span><span class="qa-anchor" id="q-275-a-14"></span><span class="qa-anchor" id="q-275-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-mediaunit">Base 2.4 §5.2.13.1.16</a> · <a href="#ref-fdpmodel">Base 2.4 §3.2.4, 8.1.12</a> · <a href="#ref-fdpcontrol">Base 2.4 §5.2.13.1.29–5.2.13.1.32, 5.2.30.1.21–5.2.30.1.22, 7.3–7.4</a> · <a href="#ref-fdpnvm">NVM Command Set 1.3 §3.2, 4.1.4.6–4.1.4.7</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-ana">Base 2.4 §2.4.2, 8.1.1 (PCIe namespace access)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <section id="common-rules" class="qa-common"><h2>共用規則：各題連到的完整解釋</h2><p>這些規則在本冊只完整說明一次。返回剛才的題目可用瀏覽器「上一頁」；特定命令或 Feature 的明文例外優先。</p>
 <article id="common-log_query-9"><h3>本主題的共用條件 · 是否產生 Asynchronous Event？</h3><p>讀取 Log 本身不是新增一個事件的理由；不過，RAE=0 的成功讀取可能確認並清除對應事件。RAE=1 保留事件，讀取失敗也必須保留。Immediate 與 One-Shot 事件另有清除方式，不能全部套用讀 Log 確認。</p></article>
-<article id="common-log_query-10"><h3>本主題的共用條件 · 是否更新 Error Information Log 或其他 Log？</h3><p>Get Log Page 回傳指定 Log 的資料。某些清單會因讀取而清除已回報的變更，某些事件也受 RAE 影響；讀取前先保存需要比對的狀態。讀取成功本身不要求新增 Error Information，失敗時則依 CQE 與錯誤記錄規則判斷。</p></article>
+<article id="common-log_query-10"><h3>本主題的共用條件 · 是否更新 Error Information Log 或其他 Log？</h3><p>Get Log Page 回傳指定 Log 的資料。某些清單會因讀取而清除已回報的變更，某些事件也受 RAE 影響；讀取前先保存需要比對的狀態。讀取成功本身不要求新增 Error Information，失敗時則依 CQE 與錯誤記錄規則判斷。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry，佇列中的完成項目</dd></div></dl></article>
 <article id="common-log_query-11"><h3>本主題的共用條件 · 是否記錄於 Persistent Event Log？</h3><p>Get Log Page 不是 PEL 中逐筆記錄的讀取歷史。即使讀取的是 PEL，也不表示這次讀取會新增同類事件；只有另行發生且符合支援與記錄條件的事件，才依規則記錄。</p></article>
 </section>
 <section id="source-index"><h2>原文定位與既有圖表判讀</h2><p>Base 的文件頁碼等於 PDF 頁碼減 26；NVM 與 PCIe 兩份規格的文件頁碼則與 PDF 頁碼相同。以下依提供的 PDF 本文列出章節、頁碼及 Figure 編號。若同一頁包含其他主題，只引用本題需要的定義，不納入 Fabrics 或 PCIe Link、封包內容。</p><ul class="qa-references">

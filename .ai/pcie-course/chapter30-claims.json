@@ -1,0 +1,132 @@
+{
+  "schema_version": 1,
+  "course": "pcie-course",
+  "chapter": 30,
+  "updated": "2026-10-24",
+  "claims": [
+    {
+      "id": "PCIE-CH30-001",
+      "claim": "RootComplex透明與不透明拓樸。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.10"
+      ],
+      "document_pages": [
+        748
+      ],
+      "pdf_pages": [
+        748
+      ],
+      "figures": [],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH30-002",
+      "claim": "產品資料用途與格式。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.27"
+      ],
+      "document_pages": [
+        830,
+        831
+      ],
+      "pdf_pages": [
+        830,
+        831
+      ],
+      "figures": [],
+      "tables": [
+        "6-19",
+        "6-20",
+        "6-21"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH30-003",
+      "claim": "VPD存取交握與有效條件。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.9.18"
+      ],
+      "document_pages": [
+        1274,
+        1275
+      ],
+      "pdf_pages": [
+        1274,
+        1275
+      ],
+      "figures": [
+        "7-328",
+        "7-329"
+      ],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH30-004",
+      "claim": "序號、VSEC與DVSEC的身分版本與私有語意邊界。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.9.3",
+        "7.9.4",
+        "7.9.5",
+        "7.9.6"
+      ],
+      "document_pages": [
+        1207,
+        1208,
+        1210
+      ],
+      "pdf_pages": [
+        1207,
+        1208,
+        1210
+      ],
+      "figures": [
+        "7-244",
+        "7-245",
+        "7-248"
+      ],
+      "tables": [
+        "7-222"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH30-005",
+      "claim": "RCEC宣告關聯整合端點。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.9.10"
+      ],
+      "document_pages": [
+        1227
+      ],
+      "pdf_pages": [
+        1227
+      ],
+      "figures": [],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    }
+  ]
+}

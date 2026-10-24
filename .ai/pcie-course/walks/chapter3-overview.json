@@ -1,0 +1,82 @@
+{
+  "title": "沿同一棵樹找到各個 Function",
+  "summary_html": "<p class=\"lead\">枚舉是由已知根部向下發現 Function 的過程。本章沿用前兩章的拓樸，先替橋接路徑建立可轉送的 Bus 範圍，再探查下游，最後記錄已找到的功能。</p><p>前情提要：Chapter 1 教你辨認 Port 與 Function；Chapter 2 教你在已知 Function 的設定空間中找欄位。現在要建立那些已知位置。</p><p><strong>規格路線：</strong>Figures 7-1／7-2 的階層 → Figure 7-14 的橋接 Bus 欄位 → Figures 7-7／7-8 的身分與標頭。</p>",
+  "svg": "<svg viewBox=\"0 0 900 470\" role=\"img\" aria-labelledby=\"ch3-guide-title ch3-guide-desc\"><title id=\"ch3-guide-title\">完成後的橋接範圍快照；導圖以這張結果圖定位每次探查，編號先後在步驟中說明。</title><desc id=\"ch3-guide-desc\">完成後的橋接範圍快照；導圖以這張結果圖定位每次探查，編號先後在步驟中說明。</desc><g data-walk-target=\"root\"><rect x=\"300\" y=\"20\" width=\"300\" height=\"65\" rx=\"9\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"450.0\" y=\"45\" text-anchor=\"middle\" font-size=\"15\">Root Port 00:01.0</text><text x=\"450.0\" y=\"68\" text-anchor=\"middle\" font-size=\"15\">完成後下游範圍 01–04</text></g><g data-walk-target=\"e-root\"><path d=\"M450 85 L450 135\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2\"/><polygon points=\"450.0,135.0 455.0,125.0 445.0,125.0\" fill=\"var(--accent)\"/></g><g data-walk-target=\"up\"><rect x=\"300\" y=\"135\" width=\"300\" height=\"65\" rx=\"9\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"450.0\" y=\"160\" text-anchor=\"middle\" font-size=\"15\">Switch Upstream 01:00.0</text><text x=\"450.0\" y=\"183\" text-anchor=\"middle\" font-size=\"15\">完成後下游範圍 02–04</text></g><g data-walk-target=\"a\"><path d=\"M450 200 L225 260\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2\"/><polygon points=\"225.0,260.0 236.0,262.3 233.4,252.6\" fill=\"var(--accent)\"/></g><g data-walk-target=\"b\"><path d=\"M450 200 L675 260\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2\"/><polygon points=\"675.0,260.0 666.6,252.6 664.0,262.3\" fill=\"var(--accent)\"/></g><g data-walk-target=\"dp-a\"><rect x=\"75\" y=\"260\" width=\"300\" height=\"65\" rx=\"9\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"225.0\" y=\"285\" text-anchor=\"middle\" font-size=\"15\">Downstream A 02:01.0</text><text x=\"225.0\" y=\"308\" text-anchor=\"middle\" font-size=\"15\">完成後範圍 03–03</text></g><g data-walk-target=\"dp-b\"><rect x=\"525\" y=\"260\" width=\"300\" height=\"65\" rx=\"9\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"675.0\" y=\"285\" text-anchor=\"middle\" font-size=\"15\">Downstream B 02:02.0</text><text x=\"675.0\" y=\"308\" text-anchor=\"middle\" font-size=\"15\">完成後範圍 04–04</text></g><g data-walk-target=\"to-a\"><path d=\"M225 325 L225 375\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2\"/><polygon points=\"225.0,375.0 230.0,365.0 220.0,365.0\" fill=\"var(--accent)\"/></g><g data-walk-target=\"to-b\"><path d=\"M675 325 L675 375\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2\"/><polygon points=\"675.0,375.0 680.0,365.0 670.0,365.0\" fill=\"var(--accent)\"/></g><g data-walk-target=\"ep-a\"><rect x=\"75\" y=\"375\" width=\"300\" height=\"65\" rx=\"9\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"225.0\" y=\"400\" text-anchor=\"middle\" font-size=\"15\">Endpoint：03:00.0／03:00.1</text></g><g data-walk-target=\"ep-b\"><rect x=\"525\" y=\"375\" width=\"300\" height=\"65\" rx=\"9\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"675.0\" y=\"400\" text-anchor=\"middle\" font-size=\"15\">Endpoint：04:00.0</text></g></svg>",
+  "order_html": "<p>圖中標的是本例完成後的範圍。閱讀時從根部向下追蹤；探查期間的暫時上限及回填動作見下方步驟與正常枚舉時間表。</p>",
+  "caption_html": "<p>作者的教學拓樸；Bus Number 配置策略是示範，規格定義欄位及路由條件。</p>",
+  "steps": [
+    {
+      "title": "從平台提供的根部開始",
+      "html": "<p>先取得 Root Bridge 的設定存取介面、Segment 與 Bus 範圍，再從已知 Root Port 探查。</p>",
+      "targets": [
+        "root"
+      ],
+      "condition_html": "<p>平台已提供本例的合法根部範圍；路徑的 Link 與 Reset 後等待條件已滿足。</p>",
+      "source_html": "<p>Base 6.0 §7.1／Figures 7-1–7-2，pp.903–904；Firmware 3.3 §3.1.1／§3.5，pp.32、34–35。</p>",
+      "claim_ids": [
+        "PCIE-CH3-PLATFORM-001",
+        "PCIE-CH3-ROUTE-001"
+      ]
+    },
+    {
+      "title": "配置通往下一層的橋接範圍",
+      "html": "<p>在 Figure 7-14 找到 Primary、Secondary、Subordinate Bus Number。軟體先讓待探查分支具有合法的轉送範圍，再往下發設定要求。</p>",
+      "targets": [
+        "root",
+        "up",
+        "e-root"
+      ],
+      "condition_html": "<p>本章示範先往一條分支走到底的配置策略；暫時上限採平台提供範圍，沒有其他管理者同時修改。</p>",
+      "source_html": "<p>Base 6.0 §7.5.1.3.2–§7.5.1.3.4／Figure 7-14，pp.936–937。</p>",
+      "claim_ids": [
+        "PCIE-CH3-BUS-001",
+        "PCIE-CH3-EXAMPLE-001"
+      ]
+    },
+    {
+      "title": "探查分支並收斂範圍",
+      "html": "<p>沿 A 分支找到 Bus 03 的功能，再回來處理 B 分支。找到最深一層後，依本例策略回填各橋接器的最高下游 Bus。</p>",
+      "targets": [
+        "dp-a",
+        "to-a",
+        "ep-a",
+        "dp-b",
+        "to-b",
+        "ep-b",
+        "a",
+        "b"
+      ],
+      "condition_html": "<p>每筆設定存取先依成功、未就緒或失敗分流；後文另說明 RRS（Request Retry Status，暫時未就緒回覆）。</p>",
+      "source_html": "<p>Base 6.0 §7.3.1–§7.3.3，pp.911–913；§7.5.1.3.3–§7.5.1.3.4，p.937。</p>",
+      "claim_ids": [
+        "PCIE-CH3-PROBE-001",
+        "PCIE-CH3-ROUTE-001",
+        "PCIE-CH3-EXAMPLE-001"
+      ]
+    },
+    {
+      "title": "記錄身分，接到後續配置",
+      "html": "<p>讀取 Vendor ID、Device ID、Header Type 與 Class Code，辨認功能及下一層橋接關係。這些資料接到 Chapter 4 的資源配置。</p>",
+      "targets": [
+        "ep-a",
+        "ep-b"
+      ],
+      "condition_html": "<p>探查 Function 1 前仍須依多功能裝置規則確認存在；完成發現後，資源與使用條件還需逐項建立。</p>",
+      "source_html": "<p>Base 6.0 §7.5.1.1／Figures 7-7–7-8、Tables 7-6–7-7，pp.923–925。</p>",
+      "claim_ids": [
+        "PCIE-CH3-CANDIDATES-001",
+        "PCIE-CH3-IDENTITY-001",
+        "PCIE-CH3-HANDOFF-001"
+      ]
+    }
+  ],
+  "components": [
+    {
+      "target": "up",
+      "title": "Switch 的 Upstream Port",
+      "html": "<p>本例從 Bus 01 的橋接功能走到內部 Bus 02。</p>",
+      "basic_html": "<p>Port 是連接介面；設定空間把相關路徑表示為可配置的橋接功能。</p>"
+    }
+  ],
+  "walk_id": "ch3-overview"
+}

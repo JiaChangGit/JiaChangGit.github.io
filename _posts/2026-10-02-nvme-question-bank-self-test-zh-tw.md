@@ -7,18 +7,21 @@ permalink: /nvme/question-bank/self-test/zh-tw/
 lang: zh-TW
 nvme_quickref: true
 nvme_qa: true
+spec_teaching: true
+last_modified_at: 2026-10-23
 ---
 
-<div class="nvme-quickref nvme-qa">
+<div class="nvme-quickref nvme-qa spec-teaching" data-spec-series="nvme">
 <nav class="qr-top" aria-label="題庫與版本"><a href="#content">跳到內容</a><a href="/nvme/question-bank/zh-tw/">題庫總索引</a><a href="/nvme/question-bank/self-test/en/">English</a><a href="/DOCS/nvme-question-bank/self-test.html">繁中教學 HTML</a></nav>
-<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–328</p>
-<header><p class="qa-range">Q149–Q156</p><h1>Device Self-test</h1><p class="qr-intro">Self-test 將裝置內部診斷結果回報給 Host。先確認能啟動哪種測試，再分清進度、最終結果與失敗欄位有效性。</p><p>先練習，再展開解答。各題依需要使用文字、欄位判讀、比較或流程說明，不要求相同的回答項目。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p></header>
-<aside class="qa-glossary"><h2>先認識本文使用的字詞</h2><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></aside>
-<section id="overview" class="qa-overview"><h2>啟動、執行、結果是三種資訊</h2><p class="qa-takeaway">啟動 CQE 成功，不表示測試通過。</p>
+<main id="content"><p class="qr-eyebrow">NVMe · Q1–328</p>
+<div class="st-specs" aria-label="Specification editions"><span>NVM Express Base 2.4</span><span>NVM Command Set 1.3</span><span>NVMe over PCIe Transport 1.4</span></div>
+<header><p class="qa-range">Q149–Q156</p><h1>Device Self-test</h1><aside class="st-context"><p>Device Self-test 是裝置自我測試機制。STC（Self-test Code）選擇操作，DSTO（Device Self-test Options）描述相關能力；主機再由 Device Self-test Log 觀察目前工作與結果。命令被接受與測試結束各有觀察位置。</p></aside><p class="qr-intro">Self-test 將裝置內部診斷結果回報給 Host。先確認能啟動哪種測試，再分清進度、最終結果與失敗欄位有效性。</p><p>每個問題都接著完整解說，依內容帶讀欄位、比較機制或追蹤流程。先看本冊總覽，再沿問題閱讀；必要條件與正常路徑直接顯示。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SCT</dt><dd>Status Code Type，完成狀態代碼類型</dd></div></dl></header>
+<section id="overview" class="qa-overview"><h2>啟動、執行、結果是三種資訊</h2><p class="qa-takeaway">啟動 CQE 成功，不表示測試通過。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry，佇列中的完成項目</dd></div></dl>
 <div class="qr-table" tabindex="0" role="region" aria-label="可橫向捲動的比較表"><table><thead><tr><th scope="col">觀察</th><th scope="col">欄位／介面</th><th scope="col">用途</th></tr></thead><tbody><tr><td>可否執行</td><td>OACS、DSTO</td><td>確認支援與並行條件</td></tr><tr><td>目前執行</td><td>Current Operation、Completion Percentage</td><td>了解還在做什麼</td></tr><tr><td>本次結果</td><td>最新 Result 的 DSTC、DSTR</td><td>辨識通過、失敗或中止</td></tr><tr><td>失敗細節</td><td>VDINFO、SEGN、FLBA</td><td>只有有效欄位才可推論</td></tr></tbody></table></div>
 <p><strong>舉例看懂：</strong>Short 在 CLR 下需要中止；Extended 有跨 CLR 持續與失電恢復的規則。不能只看測試名稱都有 Self-test，就要求相同 reset 結果。</p>
 <p class="qa-citations">來源：<a href="#ref-selftest">Base 2.4 §5.2.6, 8.1.8</a> · <a href="#ref-dstlog">Base 2.4 §5.2.13.1.7</a> · <a href="#ref-nvmselftest">NVM Command Set 1.3 §4.1.4.3</a></p>
 </section>
+<details class="qa-glossary st-glossary"><summary>需要時回顧本篇名詞</summary><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></details>
 <div class="qa-controls" hidden><label>搜尋本頁 <input type="search" id="qa-search" placeholder="題號、欄位或關鍵字"></label><button type="button" data-expand="true">展開全部解答</button><button type="button" data-expand="false">收合全部解答</button><output id="qa-count" aria-live="polite"></output></div>
 <section id="question-index"><h2>本冊題目</h2><ol class="qa-index">
 <li><a href="#q-149">Q149 · 如何確認 Device Self-test 支援與可測範圍？</a></li>
@@ -31,17 +34,17 @@ nvme_qa: true
 <li><a href="#q-156">Q156 · Self-test 結果如何排列，超過 20 次後怎麼辦？</a></li>
 </ol></section>
 <article class="qa-question" id="q-149" data-question="149" data-answer-kind="lookup"><h2><a class="qa-qid" href="#q-149">Q149</a> 如何確認 Device Self-test 支援與可測範圍？</h2>
-<p class="qa-prompt">先選查詢介面與目標，再說明哪個回傳欄位能支持你的結論。</p>
-<details class="qa-answer" id="q-149-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-149-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-149-a-01">Self-test 提供裝置內部的診斷流程，可檢查 controller 與指定媒體，但它不能取代 Host 對資料內容的完整驗證。</p><div class="qa-sections">
 <section class="qa-section" id="q-149-s-01" data-answer-section="1"><h3><span>1.</span> 要查哪個對象、哪份資料</h3>
-<span class="qa-anchor" id="q-149-a-02"></span><p>NSID=0 只測 controller；特定 active NSID 加入該 namespace；FFFFFFFFh 包含開始時此 controller 可存取的全部 attached namespaces。</p>
+<span class="qa-anchor" id="q-149-a-02"></span><p>NSID=0 只測 controller；特定 active NSID 加入該 namespace；FFFFFFFFh 包含開始時此 controller 可存取的全部 attached namespaces。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>NSID</dt><dd>Namespace Identifier，邏輯儲存空間識別碼</dd></div></dl>
 <span class="qa-anchor" id="q-149-a-03"></span><p>Identify.OACS 確認支援，DSTO.SDSO 決定單一測試限制的範圍，EDSTT 提供延伸測試時間。</p>
 <span class="qa-anchor" id="q-149-a-04"></span><p>Device Self-test 使用 STC 選操作；Get Log Page LID06h 查目前測試與最近 20 次結果。</p>
 </section>
 <section class="qa-section" id="q-149-s-02" data-answer-section="2"><h3><span>2.</span> 查詢順序與回覆判讀</h3>
 <span class="qa-anchor" id="q-149-a-05"></span><p>先確認能力與 namespace 狀態，保存舊 Log，再啟動選定測試並追蹤新狀態。</p>
-<span class="qa-anchor" id="q-149-a-06"></span><p>啟動成功表示背景測試已開始；真正通過要看新 Result 的 DSTR=0，而非只看啟動 CQE。</p>
+<span class="qa-anchor" id="q-149-a-06"></span><p>啟動成功表示背景測試已開始；真正通過要看新 Result 的 DSTR=0，而非只看啟動 CQE。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry，佇列中的完成項目</dd></div></dl>
 </section>
 <section class="qa-section" id="q-149-s-03" data-answer-section="3"><h3><span>3.</span> 證據不足或不一致時怎麼判斷</h3>
 <span class="qa-anchor" id="q-149-a-07"></span><p>不存在的 NSID 回 Invalid Namespace or Format；已配置但 inactive 的 NSID 回 Invalid Field in Command，這兩種情況不能混寫。</p>
@@ -49,13 +52,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-149-a-17"></span><p>先確認「不存在」與「存在但未 active」的差別。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-selftest">Base 2.4 §5.2.6, 8.1.8</a> · <a href="#ref-dstlog">Base 2.4 §5.2.13.1.7</a> · <a href="#ref-nvmselftest">NVM Command Set 1.3 §4.1.4.3</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-aerfull">Base 2.4 §5.2.2 (PCIe-applicable events)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-149-a-08"></span><span class="qa-anchor" id="q-149-a-09"></span><span class="qa-anchor" id="q-149-a-10"></span><span class="qa-anchor" id="q-149-a-11"></span><span class="qa-anchor" id="q-149-a-12"></span><span class="qa-anchor" id="q-149-a-13"></span><span class="qa-anchor" id="q-149-a-14"></span><span class="qa-anchor" id="q-149-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-selftest">Base 2.4 §5.2.6, 8.1.8</a> · <a href="#ref-dstlog">Base 2.4 §5.2.13.1.7</a> · <a href="#ref-nvmselftest">NVM Command Set 1.3 §4.1.4.3</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-aerfull">Base 2.4 §5.2.2 (PCIe-applicable events)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-150" data-question="150" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-150">Q150</a> Short 與 Extended Self-test 有何差別？</h2>
-<p class="qa-prompt">先說出比較對象最重要的差別，並舉一個不能互相代用的例子。</p>
-<details class="qa-answer" id="q-150-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-150-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-150-a-01">兩者提供不同深度與時間的診斷；實際 segments 與測試內容由廠商設計，規格中的 RAM／媒體檢查圖只是教學示例。</p><div class="qa-sections">
 <section class="qa-section" id="q-150-s-01" data-answer-section="1"><h3><span>1.</span> 差別在哪裡</h3>
 <span class="qa-anchor" id="q-150-a-02"></span><p>兩者都依 NSID 選範圍，且可能因共享資源影響其他工作的效能。</p>
@@ -66,18 +70,19 @@ nvme_qa: true
 <span class="qa-anchor" id="q-150-a-05"></span><p>依所需診斷與可接受影響選測試，保存開始時間並查進度；若命令需要暫停測試，controller 先暫停、完成該命令，再恢復測試。</p>
 <span class="qa-anchor" id="q-150-a-06"></span><p>測試結束後由 Result 判定成功或哪個 segment 失敗；短程通過不保證延伸測試也必然通過。</p>
 </section>
-<section class="qa-section" id="q-150-s-03" data-answer-section="3"><h3><span>3.</span> 哪些結論不能互相套用</h3>
+<section class="qa-section" id="q-150-s-03" data-answer-section="3"><h3><span>3.</span> 比較時要保留的條件</h3>
 <span class="qa-anchor" id="q-150-a-07"></span><p>關鍵差異是 Reset：Short 必須被影響它的 CLR 中止；Extended 必須跨 CLR 與恢復供電後繼續。</p>
 <span class="qa-anchor" id="q-150-a-16"></span><p>驗證時間時保留其他工作與暫停因素；驗證 Reset 時分別套用兩種測試規則。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-selftest">Base 2.4 §5.2.6, 8.1.8</a> · <a href="#ref-dstlog">Base 2.4 §5.2.13.1.7</a> · <a href="#ref-nvmselftest">NVM Command Set 1.3 §4.1.4.3</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-aerfull">Base 2.4 §5.2.2 (PCIe-applicable events)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-150-a-17"></span><span class="qa-anchor" id="q-150-a-08"></span><span class="qa-anchor" id="q-150-a-09"></span><span class="qa-anchor" id="q-150-a-10"></span><span class="qa-anchor" id="q-150-a-11"></span><span class="qa-anchor" id="q-150-a-12"></span><span class="qa-anchor" id="q-150-a-13"></span><span class="qa-anchor" id="q-150-a-14"></span><span class="qa-anchor" id="q-150-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-selftest">Base 2.4 §5.2.6, 8.1.8</a> · <a href="#ref-dstlog">Base 2.4 §5.2.13.1.7</a> · <a href="#ref-nvmselftest">NVM Command Set 1.3 §4.1.4.3</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-aerfull">Base 2.4 §5.2.2 (PCIe-applicable events)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-151" data-question="151" data-answer-kind="error"><h2><a class="qa-qid" href="#q-151">Q151</a> Self-test 進行中再次啟動或要求中止會怎樣？</h2>
-<p class="qa-prompt">先區分失敗條件，再判斷是否有規範明定的回報結果。</p>
-<details class="qa-answer" id="q-151-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-151-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-151-a-01">避免同一限制範圍同時跑多個測試，並提供明確的背景操作中止方法。中止 Self-test 操作應使用 STC=Fh。</p><div class="qa-sections">
 <section class="qa-section" id="q-151-s-01" data-answer-section="1"><h3><span>1.</span> 先區分是哪一種失敗</h3>
 <span class="qa-anchor" id="q-151-a-02"></span><p>DSTO.SDSO=0 以 controller 判斷是否已有測試；SDSO=1 則以 subsystem 判斷。</p>
@@ -94,13 +99,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-151-a-17"></span><p>先查使用的是 STC=Fh，還是誤用 Abort 去中止早已完成的啟動命令。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-selftest">Base 2.4 §5.2.6, 8.1.8</a> · <a href="#ref-dstlog">Base 2.4 §5.2.13.1.7</a> · <a href="#ref-nvmselftest">NVM Command Set 1.3 §4.1.4.3</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-aerfull">Base 2.4 §5.2.2 (PCIe-applicable events)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-151-a-08"></span><span class="qa-anchor" id="q-151-a-09"></span><span class="qa-anchor" id="q-151-a-10"></span><span class="qa-anchor" id="q-151-a-11"></span><span class="qa-anchor" id="q-151-a-12"></span><span class="qa-anchor" id="q-151-a-13"></span><span class="qa-anchor" id="q-151-a-14"></span><span class="qa-anchor" id="q-151-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-selftest">Base 2.4 §5.2.6, 8.1.8</a> · <a href="#ref-dstlog">Base 2.4 §5.2.13.1.7</a> · <a href="#ref-nvmselftest">NVM Command Set 1.3 §4.1.4.3</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-aerfull">Base 2.4 §5.2.2 (PCIe-applicable events)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-152" data-question="152" data-answer-kind="fields"><h2><a class="qa-qid" href="#q-152">Q152</a> Current Operation 與 Completion Percentage 如何解讀？</h2>
-<p class="qa-prompt">先試著說明欄位的單位與編碼，再用一組數值推導結果。</p>
-<details class="qa-answer" id="q-152-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-152-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-152-a-01">Log 開頭描述正在執行的工作，後面的 Result List 描述已結束的測試。兩者可能同時存在，不應用舊結果取代當前進度。</p><div class="qa-sections">
 <section class="qa-section" id="q-152-s-01" data-answer-section="1"><h3><span>1.</span> 先確認資料的來源與範圍</h3>
 <span class="qa-anchor" id="q-152-a-02"></span><p>依測試的 controller／共享範圍讀正確 Log，並保存取樣時間。</p>
@@ -116,13 +122,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-152-a-16"></span><p>比較連續快照的 operation、進度與最新結果，避免只用一個百分比斷言韌體卡住。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-selftest">Base 2.4 §5.2.6, 8.1.8</a> · <a href="#ref-dstlog">Base 2.4 §5.2.13.1.7</a> · <a href="#ref-nvmselftest">NVM Command Set 1.3 §4.1.4.3</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-aerfull">Base 2.4 §5.2.2 (PCIe-applicable events)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-152-a-17"></span><span class="qa-anchor" id="q-152-a-08"></span><span class="qa-anchor" id="q-152-a-09"></span><span class="qa-anchor" id="q-152-a-10"></span><span class="qa-anchor" id="q-152-a-11"></span><span class="qa-anchor" id="q-152-a-12"></span><span class="qa-anchor" id="q-152-a-13"></span><span class="qa-anchor" id="q-152-a-14"></span><span class="qa-anchor" id="q-152-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-selftest">Base 2.4 §5.2.6, 8.1.8</a> · <a href="#ref-dstlog">Base 2.4 §5.2.13.1.7</a> · <a href="#ref-nvmselftest">NVM Command Set 1.3 §4.1.4.3</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-aerfull">Base 2.4 §5.2.2 (PCIe-applicable events)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-153" data-question="153" data-answer-kind="lifecycle"><h2><a class="qa-qid" href="#q-153">Q153</a> 成功、失敗、中止、Reset 與斷電後的 Self-test 結果怎麼看？</h2>
-<p class="qa-prompt">先指明重設或中斷的方式，再分別判斷設定、進行中的操作與資料。</p>
-<details class="qa-answer" id="q-153-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-153-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-153-a-01">測試結果需要保留原因，才能區分裝置診斷失敗與 Host 主動中止。Extended 因 Reset 暫停後恢復，不應被錯記成測試已失敗。</p><div class="qa-sections">
 <section class="qa-section" id="q-153-s-01" data-answer-section="1"><h3><span>1.</span> 先界定觸發方式與影響對象</h3>
 <span class="qa-anchor" id="q-153-a-02"></span><p>結果屬於一次測試，包含當時測試代碼與時間；不是啟動命令的 CQE Status。</p>
@@ -145,13 +152,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-153-a-17"></span><p>先確認 Extended 是否本來就應該繼續，避免把沒有 Reset-aborted Result 視為錯誤。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-selftest">Base 2.4 §5.2.6, 8.1.8</a> · <a href="#ref-dstlog">Base 2.4 §5.2.13.1.7</a> · <a href="#ref-nvmselftest">NVM Command Set 1.3 §4.1.4.3</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-aerfull">Base 2.4 §5.2.2 (PCIe-applicable events)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-153-a-08"></span><span class="qa-anchor" id="q-153-a-09"></span><span class="qa-anchor" id="q-153-a-10"></span><span class="qa-anchor" id="q-153-a-11"></span><span class="qa-anchor" id="q-153-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-selftest">Base 2.4 §5.2.6, 8.1.8</a> · <a href="#ref-dstlog">Base 2.4 §5.2.13.1.7</a> · <a href="#ref-nvmselftest">NVM Command Set 1.3 §4.1.4.3</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-aerfull">Base 2.4 §5.2.2 (PCIe-applicable events)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-154" data-question="154" data-answer-kind="events"><h2><a class="qa-qid" href="#q-154">Q154</a> Self-test 完成一定有 Asynchronous Event 嗎？</h2>
-<p class="qa-prompt">先說明事件成立的條件，再區分通知、事件確認與紀錄。</p>
-<details class="qa-answer" id="q-154-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-154-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-154-a-01">正常 Self-test 完成要從 Device Self-test Log 判斷；規範沒有定義通用的 Self-test Completed 通知，因此不能把等到 AER 當成完成條件。</p><div class="qa-sections">
 <section class="qa-section" id="q-154-s-01" data-answer-section="1"><h3><span>1.</span> 正常測試完成，要看哪裡</h3>
 <span class="qa-anchor" id="q-154-a-02"></span><p>啟動命令先完成，背景測試稍後結束；兩者不同，也不會自動轉成 AER。</p>
@@ -164,21 +172,22 @@ nvme_qa: true
 <span class="qa-anchor" id="q-154-a-16"></span><p>以實際定義的事件與 Log 驗證，避免把 Sanitize Completed 的機制套到 Self-test。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-selftest">Base 2.4 §5.2.6, 8.1.8</a> · <a href="#ref-dstlog">Base 2.4 §5.2.13.1.7</a> · <a href="#ref-nvmselftest">NVM Command Set 1.3 §4.1.4.3</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-aerfull">Base 2.4 §5.2.2 (PCIe-applicable events)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-154-a-07"></span><span class="qa-anchor" id="q-154-a-17"></span><span class="qa-anchor" id="q-154-a-08"></span><span class="qa-anchor" id="q-154-a-09"></span><span class="qa-anchor" id="q-154-a-10"></span><span class="qa-anchor" id="q-154-a-11"></span><span class="qa-anchor" id="q-154-a-12"></span><span class="qa-anchor" id="q-154-a-13"></span><span class="qa-anchor" id="q-154-a-14"></span><span class="qa-anchor" id="q-154-a-15"></span>
 <p class="qa-related">相關機制：<a href="/nvme/question-bank/format-sanitize/zh-tw/#q-133">Q133</a></p>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-selftest">Base 2.4 §5.2.6, 8.1.8</a> · <a href="#ref-dstlog">Base 2.4 §5.2.13.1.7</a> · <a href="#ref-nvmselftest">NVM Command Set 1.3 §4.1.4.3</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-aerfull">Base 2.4 §5.2.2 (PCIe-applicable events)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
-<article class="qa-question" id="q-155" data-question="155" data-answer-kind="fields"><h2><a class="qa-qid" href="#q-155">Q155</a> Segment、Diagnostic Information 與 Failing LBA 何時有效？</h2>
-<p class="qa-prompt">先試著說明欄位的單位與編碼，再用一組數值推導結果。</p>
-<details class="qa-answer" id="q-155-answer"><summary>展開解答與推導</summary>
+<article class="qa-question" id="q-155" data-question="155" data-answer-kind="fields"><h2><a class="qa-qid" href="#q-155">Q155</a> Segment、Diagnostic Information 與 Failing LBA 何時有效？</h2><dl class="st-terms" aria-label="本段名詞"><div><dt>LBA</dt><dd>Logical Block Address，邏輯區塊位址</dd></div></dl>
+
+<details open class="qa-answer" id="q-155-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-155-a-01">欄位有值不代表有效。有效位元讓 Host 避免把保留或未知資料當成精確故障位置。</p><div class="qa-sections">
 <section class="qa-section" id="q-155-s-01" data-answer-section="1"><h3><span>1.</span> 先確認資料的來源與範圍</h3>
 <span class="qa-anchor" id="q-155-a-02"></span><p>SEGN 指內部測試 segment；FLBA 指 namespace 的 logical block，兩者沒有固定換算關係。</p>
 <span class="qa-anchor" id="q-155-a-03"></span><p>先看 DSTR，再看 VDINFO 的 NSIDVLD、FVLD、SCTVLD、SCVLD。</p>
 </section>
 <section class="qa-section" id="q-155-s-02" data-answer-section="2"><h3><span>2.</span> 欄位、單位與判讀例子</h3>
-<span class="qa-anchor" id="q-155-a-04"></span><p>只有 DSTR=7 時 SEGN 表示第一個已知失敗 segment；FLBA 只有 FVLD=1 才有效，NVM 定義它是造成失敗的某一個 LBA。</p>
+<span class="qa-anchor" id="q-155-a-04"></span><p>只有 DSTR=7 時 SEGN 表示第一個已知失敗 segment；FLBA 只有 FVLD=1 才有效，NVM 定義它是造成失敗的某一個 LBA。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>LBA</dt><dd>Logical Block Address，邏輯區塊位址</dd></div></dl>
 <span class="qa-anchor" id="q-155-a-05"></span><p>先確認結果非空，再確認各 valid bit，最後用有效 NSID 與 FLBA 對回 namespace；沒有有效 NSID 時，不能自行猜測其歸屬。</p>
 <span class="qa-anchor" id="q-155-a-06"></span><p>多個 LBA 失敗時，只回其中一個是合法，不保證列出全部，也不保證是最低 LBA。</p>
 </section>
@@ -187,13 +196,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-155-a-16"></span><p>以有效位元、測試結果與格式共同驗證，區分「未知位置」與「已知位置不合理」。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-selftest">Base 2.4 §5.2.6, 8.1.8</a> · <a href="#ref-dstlog">Base 2.4 §5.2.13.1.7</a> · <a href="#ref-nvmselftest">NVM Command Set 1.3 §4.1.4.3</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-aerfull">Base 2.4 §5.2.2 (PCIe-applicable events)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-155-a-17"></span><span class="qa-anchor" id="q-155-a-08"></span><span class="qa-anchor" id="q-155-a-09"></span><span class="qa-anchor" id="q-155-a-10"></span><span class="qa-anchor" id="q-155-a-11"></span><span class="qa-anchor" id="q-155-a-12"></span><span class="qa-anchor" id="q-155-a-13"></span><span class="qa-anchor" id="q-155-a-14"></span><span class="qa-anchor" id="q-155-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-selftest">Base 2.4 §5.2.6, 8.1.8</a> · <a href="#ref-dstlog">Base 2.4 §5.2.13.1.7</a> · <a href="#ref-nvmselftest">NVM Command Set 1.3 §4.1.4.3</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-aerfull">Base 2.4 §5.2.2 (PCIe-applicable events)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-156" data-question="156" data-answer-kind="concept"><h2><a class="qa-qid" href="#q-156">Q156</a> Self-test 結果如何排列，超過 20 次後怎麼辦？</h2>
-<p class="qa-prompt">先用自己的話解釋機制，再舉一個常見誤解。</p>
-<details class="qa-answer" id="q-156-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-156-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-156-a-01">固定大小歷史讓 Host 查最近測試，但不能當成裝置出廠以來所有診斷的永久清單。</p><div class="qa-sections">
 <section class="qa-section" id="q-156-s-01" data-answer-section="1"><h3><span>1.</span> 機制與適用範圍</h3>
 <span class="qa-anchor" id="q-156-a-02"></span><p>LID06h 保存 20 個結果，每個 28 bytes，前 4 bytes 是目前狀態。</p>
@@ -209,6 +219,7 @@ nvme_qa: true
 <span class="qa-anchor" id="q-156-a-16"></span><p>用 DSTC、DSTR、POH 與診斷內容比較前後快照，避免只用可能重複的時間值辨識唯一測試。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-selftest">Base 2.4 §5.2.6, 8.1.8</a> · <a href="#ref-dstlog">Base 2.4 §5.2.13.1.7</a> · <a href="#ref-nvmselftest">NVM Command Set 1.3 §4.1.4.3</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-aerfull">Base 2.4 §5.2.2 (PCIe-applicable events)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-156-a-17"></span><span class="qa-anchor" id="q-156-a-08"></span><span class="qa-anchor" id="q-156-a-09"></span><span class="qa-anchor" id="q-156-a-10"></span><span class="qa-anchor" id="q-156-a-11"></span><span class="qa-anchor" id="q-156-a-12"></span><span class="qa-anchor" id="q-156-a-13"></span><span class="qa-anchor" id="q-156-a-14"></span><span class="qa-anchor" id="q-156-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-selftest">Base 2.4 §5.2.6, 8.1.8</a> · <a href="#ref-dstlog">Base 2.4 §5.2.13.1.7</a> · <a href="#ref-nvmselftest">NVM Command Set 1.3 §4.1.4.3</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-aerfull">Base 2.4 §5.2.2 (PCIe-applicable events)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>

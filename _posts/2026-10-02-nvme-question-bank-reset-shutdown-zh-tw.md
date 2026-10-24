@@ -7,18 +7,21 @@ permalink: /nvme/question-bank/reset-shutdown/zh-tw/
 lang: zh-TW
 nvme_quickref: true
 nvme_qa: true
+spec_teaching: true
+last_modified_at: 2026-10-23
 ---
 
-<div class="nvme-quickref nvme-qa">
+<div class="nvme-quickref nvme-qa spec-teaching" data-spec-series="nvme">
 <nav class="qr-top" aria-label="題庫與版本"><a href="#content">跳到內容</a><a href="/nvme/question-bank/zh-tw/">題庫總索引</a><a href="/nvme/question-bank/reset-shutdown/en/">English</a><a href="/DOCS/nvme-question-bank/reset-shutdown.html">繁中教學 HTML</a></nav>
-<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–328</p>
-<header><p class="qa-range">Q174–Q187</p><h1>Reset 與 Shutdown</h1><p class="qr-intro">Reset 結束操作環境，Shutdown 準備安全停止；兩者的目的和完成證據不同。先看影響範圍，再分辨哪些狀態需要重建，哪些操作仍持續。</p><p>先練習，再展開解答。各題依需要使用文字、欄位判讀、比較或流程說明，不要求相同的回答項目。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p></header>
-<aside class="qa-glossary"><h2>先認識本文使用的字詞</h2><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></aside>
+<main id="content"><p class="qr-eyebrow">NVMe · Q1–328</p>
+<div class="st-specs" aria-label="Specification editions"><span>NVM Express Base 2.4</span><span>NVM Command Set 1.3</span><span>NVMe over PCIe Transport 1.4</span></div>
+<header><p class="qa-range">Q174–Q187</p><h1>Reset 與 Shutdown</h1><aside class="st-context"><p>Shutdown 是有管理的停止流程，Reset 則依觸發方式影響對應狀態。CC（Controller Configuration）是主機的配置入口，CSTS（Controller Status）是觀察控制器狀態的入口；先分清本次事件，再讀設定、命令與資料的保留規則。</p></aside><p class="qr-intro">Reset 結束操作環境，Shutdown 準備安全停止；兩者的目的和完成證據不同。先看影響範圍，再分辨哪些狀態需要重建，哪些操作仍持續。</p><p>每個問題都接著完整解說，依內容帶讀欄位、比較機制或追蹤流程。先看本冊總覽，再沿問題閱讀；必要條件與正常路徑直接顯示。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SCT</dt><dd>Status Code Type，完成狀態代碼類型</dd></div></dl></header>
 <section id="overview" class="qa-overview"><h2>停止的要求與停止的完成</h2><p class="qa-takeaway">Host 寫入要求不等於 controller 已完成；等待條件必須看回報狀態。</p>
 <div class="qr-table" tabindex="0" role="region" aria-label="可橫向捲動的比較表"><table><thead><tr><th scope="col">動作</th><th scope="col">要求</th><th scope="col">完成後的主要處理</th></tr></thead><tbody><tr><td>Controller Reset</td><td>CC.EN→0</td><td>等 RDY=0，重建 queues</td></tr><tr><td>Subsystem Reset</td><td>適用的 reset 介面</td><td>確認全部受影響 controller</td></tr><tr><td>Normal Shutdown</td><td>CC.SHN=01b</td><td>等 SHST=10b，核對斷電範圍</td></tr><tr><td>Abrupt Shutdown</td><td>CC.SHN=10b</td><td>仍觀察完成狀態</td></tr></tbody></table></div>
 <p><strong>舉例看懂：</strong>Normal 要求送出後若 SHST 還未完成就掉電，仍可能增加 UPL；Abrupt 已完成後才掉電則不必然增加。關鍵是掉電當時狀態。</p>
 <p class="qa-citations">來源：<a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a></p>
 </section>
+<details class="qa-glossary st-glossary"><summary>需要時回顧本篇名詞</summary><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></details>
 <div class="qa-controls" hidden><label>搜尋本頁 <input type="search" id="qa-search" placeholder="題號、欄位或關鍵字"></label><button type="button" data-expand="true">展開全部解答</button><button type="button" data-expand="false">收合全部解答</button><output id="qa-count" aria-live="polite"></output></div>
 <section id="question-index"><h2>本冊題目</h2><ol class="qa-index">
 <li><a href="#q-174">Q174 · Controller、Subsystem 與 Queue Level Reset 範圍有何不同？</a></li>
@@ -37,8 +40,8 @@ nvme_qa: true
 <li><a href="#q-187">Q187 · 非正常失電後為何查 SMART、Error 與 PEL？</a></li>
 </ol></section>
 <article class="qa-question" id="q-174" data-question="174" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-174">Q174</a> Controller、Subsystem 與 Queue Level Reset 範圍有何不同？</h2>
-<p class="qa-prompt">先說出比較對象最重要的差別，並舉一個不能互相代用的例子。</p>
-<details class="qa-answer" id="q-174-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-174-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-174-a-01">選擇合適的範圍，才能恢復故障並掌握哪些工作會被中止。</p><div class="qa-sections">
 <section class="qa-section" id="q-174-s-01" data-answer-section="1"><h3><span>1.</span> 差別在哪裡</h3>
 <span class="qa-anchor" id="q-174-a-02"></span><p>Queue Reset 刪除重建指定 I/O queue；CLR 重設一個 controller 的命令環境；Subsystem Reset 涵蓋一個或全部 domains。</p>
@@ -46,27 +49,28 @@ nvme_qa: true
 </section>
 <section class="qa-section" id="q-174-s-02" data-answer-section="2"><h3><span>2.</span> 如何選擇與確認</h3>
 <span class="qa-anchor" id="q-174-a-03"></span><p>查 CAP.NSSRS、controller／domain 拓樸與 queue 相依關係。</p>
-<span class="qa-anchor" id="q-174-a-05"></span><p>停止受影響提交，選擇範圍，完成等待與重建，再恢復命令。重建 CQ 前先處理依賴它的 SQ。</p>
+<span class="qa-anchor" id="q-174-a-05"></span><p>停止受影響提交，選擇範圍，完成等待與重建，再恢復命令。重建 CQ 前先處理依賴它的 SQ。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CQ</dt><dd>Completion Queue，完成佇列</dd></div><div><dt>SQ</dt><dd>Submission Queue，提交佇列</dd></div></dl>
 <span class="qa-anchor" id="q-174-a-06"></span><p>新 queue 或 controller 恢復可用，原使用期間的追蹤不再沿用。</p>
 </section>
-<section class="qa-section" id="q-174-s-03" data-answer-section="3"><h3><span>3.</span> 哪些結論不能互相套用</h3>
-<span class="qa-anchor" id="q-174-a-07"></span><p>Register 觸發 Reset 沒有 CQE；Delete／Create 才有其命令完成。</p>
+<section class="qa-section" id="q-174-s-03" data-answer-section="3"><h3><span>3.</span> 比較時要保留的條件</h3>
+<span class="qa-anchor" id="q-174-a-07"></span><p>Register 觸發 Reset 沒有 CQE；Delete／Create 才有其命令完成。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry，佇列中的完成項目</dd></div></dl>
 <span class="qa-anchor" id="q-174-a-16"></span><p>用實際被刪除的 queues 與受影響 controllers 驗證範圍，不能只看 Host 函式名稱。</p>
 </section>
-<section class="qa-section" id="q-174-s-04" data-answer-section="4"><h3><span>4.</span> CQE、DNR 與 More 在這裡是否適用</h3>
-<span class="qa-anchor" id="q-174-a-08"></span><p>Queue Level Reset 若透過 Delete／Create 命令處理，要解讀各命令的 CQE；CC.EN 與 NSSR 等 Register 操作沒有 NVMe CQE，因此沒有 DNR／More。不能將這幾種機制的回報方式混用。</p>
+<section class="qa-section" id="q-174-s-04" data-answer-section="4"><h3><span>4.</span> CQE、DNR 與 More 在這裡是否適用</h3><dl class="st-terms" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry，佇列中的完成項目</dd></div><div><dt>DNR</dt><dd>Do Not Retry，命令重試的狀態提示</dd></div></dl>
+<span class="qa-anchor" id="q-174-a-08"></span><p>Queue Level Reset 若透過 Delete／Create 命令處理，要解讀各命令的 CQE；CC.EN 與 NSSR 等 Register 操作沒有 NVMe CQE，因此沒有 DNR／More。不能將這幾種機制的回報方式混用。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>DNR</dt><dd>Do Not Retry，命令重試的狀態提示</dd></div></dl>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-174-a-17"></span><span class="qa-anchor" id="q-174-a-09"></span><span class="qa-anchor" id="q-174-a-10"></span><span class="qa-anchor" id="q-174-a-11"></span><span class="qa-anchor" id="q-174-a-12"></span><span class="qa-anchor" id="q-174-a-13"></span><span class="qa-anchor" id="q-174-a-14"></span><span class="qa-anchor" id="q-174-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
-<article class="qa-question" id="q-175" data-question="175" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-175">Q175</a> Conventional、FLR、Hot 與 Fundamental Reset 如何對應 NVMe？</h2>
-<p class="qa-prompt">先說出比較對象最重要的差別，並舉一個不能互相代用的例子。</p>
-<details class="qa-answer" id="q-175-answer"><summary>展開解答與推導</summary>
+<article class="qa-question" id="q-175" data-question="175" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-175">Q175</a> Conventional、FLR、Hot 與 Fundamental Reset 如何對應 NVMe？</h2><dl class="st-terms" aria-label="本段名詞"><div><dt>FLR</dt><dd>Function Level Reset，以功能為範圍的重設</dd></div></dl>
+
+<details open class="qa-answer" id="q-175-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-175-a-01">本題只教 NVMe 可觀察的重設效果，不展開 Link 或封包。不同來源會影響 Register 保留與韌體啟用。</p><div class="qa-sections">
 <section class="qa-section" id="q-175-s-01" data-answer-section="1"><h3><span>1.</span> 差別在哪裡</h3>
-<span class="qa-anchor" id="q-175-a-02"></span><p>FLR 針對 function；Conventional Reset 包含適用的 Hot／Fundamental 形式，實際影響須依裝置拓樸確認。</p>
+<span class="qa-anchor" id="q-175-a-02"></span><p>FLR 針對 function；Conventional Reset 包含適用的 Hot／Fundamental 形式，實際影響須依裝置拓樸確認。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>FLR</dt><dd>Function Level Reset，以功能為範圍的重設</dd></div></dl>
 <span class="qa-anchor" id="q-175-a-04"></span><p>PCIe Transport3.3 將 Conventional 與 FLR 列為 CLR 來源；CC.EN 的 Controller Reset 不重設 PCI configuration space。</p>
 </section>
 <section class="qa-section" id="q-175-s-02" data-answer-section="2"><h3><span>2.</span> 如何選擇與確認</h3>
@@ -74,18 +78,19 @@ nvme_qa: true
 <span class="qa-anchor" id="q-175-a-05"></span><p>記錄實際來源，恢復適用 PCI 配置，再執行 NVMe 初始化。</p>
 <span class="qa-anchor" id="q-175-a-06"></span><p>受影響 NVMe queues 依 CLR 重建；不能期待 FLR 保留 I/O queues。</p>
 </section>
-<section class="qa-section" id="q-175-s-03" data-answer-section="3"><h3><span>3.</span> 哪些結論不能互相套用</h3>
+<section class="qa-section" id="q-175-s-03" data-answer-section="3"><h3><span>3.</span> 比較時要保留的條件</h3>
 <span class="qa-anchor" id="q-175-a-07"></span><p>要求 Conventional Reset 才能啟用的映像，不會因 FLR 或 CC.EN Reset 提前啟用。</p>
 <span class="qa-anchor" id="q-175-a-16"></span><p>CMBMSC 對 FLR 另有保留例外，不能概括成所有 Register 皆歸零。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-175-a-17"></span><span class="qa-anchor" id="q-175-a-08"></span><span class="qa-anchor" id="q-175-a-09"></span><span class="qa-anchor" id="q-175-a-10"></span><span class="qa-anchor" id="q-175-a-11"></span><span class="qa-anchor" id="q-175-a-12"></span><span class="qa-anchor" id="q-175-a-13"></span><span class="qa-anchor" id="q-175-a-14"></span><span class="qa-anchor" id="q-175-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-176" data-question="176" data-answer-kind="lifecycle"><h2><a class="qa-qid" href="#q-176">Q176</a> Reset 發生在 Idle、命令或背景操作中，如何判斷結果？</h2>
-<p class="qa-prompt">先指明重設或中斷的方式，再分別判斷設定、進行中的操作與資料。</p>
-<details class="qa-answer" id="q-176-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-176-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-176-a-01">Reset 對命令通道與背景操作可能有不同效果，不能只用「全部中止」概括。</p><div class="qa-sections">
 <section class="qa-section" id="q-176-s-01" data-answer-section="1"><h3><span>1.</span> 先界定觸發方式與影響對象</h3>
 <span class="qa-anchor" id="q-176-a-02"></span><p>受影響 queues 結束，但資料與持久管理狀態各依自己的規則。</p>
@@ -102,13 +107,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-176-a-17"></span><p>先區分命令本身與它啟動的背景工作。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-sanitizecmd">Base 2.4 §5.2.26–5.2.27</a> · <a href="#ref-selftest">Base 2.4 §5.2.6, 8.1.8</a> · <a href="#ref-firmware">Base 2.4 §3.11–3.11.1, 5.2.9–5.2.10</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-176-a-08"></span><span class="qa-anchor" id="q-176-a-09"></span><span class="qa-anchor" id="q-176-a-10"></span><span class="qa-anchor" id="q-176-a-11"></span><span class="qa-anchor" id="q-176-a-12"></span><span class="qa-anchor" id="q-176-a-13"></span><span class="qa-anchor" id="q-176-a-14"></span><span class="qa-anchor" id="q-176-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-sanitizecmd">Base 2.4 §5.2.26–5.2.27</a> · <a href="#ref-selftest">Base 2.4 §5.2.6, 8.1.8</a> · <a href="#ref-firmware">Base 2.4 §3.11–3.11.1, 5.2.9–5.2.10</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-177" data-question="177" data-answer-kind="process"><h2><a class="qa-qid" href="#q-177">Q177</a> Reset 期間 CSTS.RDY 應如何變化？</h2>
-<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
-<details class="qa-answer" id="q-177-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-177-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-177-a-01">RDY 確認停用或重新就緒，不能以 Host 寫入 EN 代替觀察。</p><div class="qa-sections">
 <section class="qa-section" id="q-177-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
 <span class="qa-anchor" id="q-177-a-02"></span><p>RDY 是 controller 狀態，不保證每個 namespace ready。</p>
@@ -124,21 +130,22 @@ nvme_qa: true
 <span class="qa-anchor" id="q-177-a-16"></span><p>保存 EN、RDY、CFS 與時間，區分請求與確認。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-cap">Base 2.4 §3.1.4 (CAP, VS)</a> · <a href="#ref-crto">Base 2.4 §3.1.4 (CRTO)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-177-a-17"></span><span class="qa-anchor" id="q-177-a-08"></span><span class="qa-anchor" id="q-177-a-09"></span><span class="qa-anchor" id="q-177-a-10"></span><span class="qa-anchor" id="q-177-a-11"></span><span class="qa-anchor" id="q-177-a-12"></span><span class="qa-anchor" id="q-177-a-13"></span><span class="qa-anchor" id="q-177-a-14"></span><span class="qa-anchor" id="q-177-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-cap">Base 2.4 §3.1.4 (CAP, VS)</a> · <a href="#ref-crto">Base 2.4 §3.1.4 (CRTO)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-178" data-question="178" data-answer-kind="process"><h2><a class="qa-qid" href="#q-178">Q178</a> Reset 後哪些 Register、Feature 與 Queue 要重建？</h2>
-<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
-<details class="qa-answer" id="q-178-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-178-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-178-a-01">重建依 Reset 來源與 Feature 規則，不能照抄舊記憶體。</p><div class="qa-sections">
 <section class="qa-section" id="q-178-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
 <span class="qa-anchor" id="q-178-a-02"></span><p>I/O queues 失效、Admin 指標重設；持久 namespace 與 Saved 設定是另一層。</p>
 <span class="qa-anchor" id="q-178-a-03"></span><p>查 Register 例外、Feature 能力／Current 與 queue 配額。</p>
-<span class="qa-anchor" id="q-178-a-04"></span><p>CC.EN Reset 保留 AQA／ASQ／ACQ、指定 PMR registers 與 CMBMSC，但不保留 queue 指標。</p>
+<span class="qa-anchor" id="q-178-a-04"></span><p>CC.EN Reset 保留 AQA／ASQ／ACQ、指定 PMR registers 與 CMBMSC，但不保留 queue 指標。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>PMR</dt><dd>Persistent Memory Region，持久性記憶體區域</dd></div></dl>
 </section>
 <section class="qa-section" id="q-178-s-02" data-answer-section="2"><h3><span>2.</span> 先後順序與完成條件</h3>
-<span class="qa-anchor" id="q-178-a-05"></span><p>恢復必要 PCI／Register 設定，初始化 Admin Phase，Enable 等 RDY，配置功能，再建 CQ／SQ。</p>
+<span class="qa-anchor" id="q-178-a-05"></span><p>恢復必要 PCI／Register 設定，初始化 Admin Phase，Enable 等 RDY，配置功能，再建 CQ／SQ。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CQ</dt><dd>Completion Queue，完成佇列</dd></div><div><dt>SQ</dt><dd>Submission Queue，提交佇列</dd></div></dl>
 <span class="qa-anchor" id="q-178-a-06"></span><p>新 queue 正常完成命令，Current Feature 符合恢復規則。</p>
 </section>
 <section class="qa-section" id="q-178-s-03" data-answer-section="3"><h3><span>3.</span> 未符合條件時如何處理</h3>
@@ -146,17 +153,18 @@ nvme_qa: true
 <span class="qa-anchor" id="q-178-a-16"></span><p>比較 Saved、Current 與例外，不用「全部歸零」的固定斷言。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-adminreg">Base 2.4 §3.1.4 (AQA, ASQ, ACQ, CMBLOC)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-178-a-17"></span><span class="qa-anchor" id="q-178-a-08"></span><span class="qa-anchor" id="q-178-a-09"></span><span class="qa-anchor" id="q-178-a-10"></span><span class="qa-anchor" id="q-178-a-11"></span><span class="qa-anchor" id="q-178-a-12"></span><span class="qa-anchor" id="q-178-a-13"></span><span class="qa-anchor" id="q-178-a-14"></span><span class="qa-anchor" id="q-178-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-adminreg">Base 2.4 §3.1.4 (AQA, ASQ, ACQ, CMBLOC)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-179" data-question="179" data-answer-kind="lifecycle"><h2><a class="qa-qid" href="#q-179">Q179</a> Reset 後舊 Outstanding 與 Completion 應如何處理？</h2>
-<p class="qa-prompt">先指明重設或中斷的方式，再分別判斷設定、進行中的操作與資料。</p>
-<details class="qa-answer" id="q-179-answer"><summary>展開解答與推導</summary>
-<p class="qa-answer-lead" id="q-179-a-01">避免舊完成誤配新 CID，以及舊命令晚到的存取干擾新工作。</p><div class="qa-sections">
+
+<details open class="qa-answer" id="q-179-answer"><summary>跟著解說理解</summary>
+<p class="qa-answer-lead" id="q-179-a-01">避免舊完成誤配新 CID，以及舊命令晚到的存取干擾新工作。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CID</dt><dd>Command Identifier，同一提交佇列內的命令識別碼</dd></div></dl><div class="qa-sections">
 <section class="qa-section" id="q-179-s-01" data-answer-section="1"><h3><span>1.</span> 先界定觸發方式與影響對象</h3>
 <span class="qa-anchor" id="q-179-a-02"></span><p>追蹤按 queue 使用期間隔離，共享資料的其他 controller 也可能參與復原。</p>
-<span class="qa-anchor" id="q-179-a-03"></span><p>保存 Reset 完成證據與舊 SQID／CID 清單。</p>
+<span class="qa-anchor" id="q-179-a-03"></span><p>保存 Reset 完成證據與舊 SQID／CID 清單。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SQID</dt><dd>Submission Queue Identifier，提交佇列識別碼</dd></div><div><dt>CID</dt><dd>Command Identifier，同一提交佇列內的命令識別碼</dd></div></dl>
 </section>
 <section class="qa-section" id="q-179-s-02" data-answer-section="2"><h3><span>2.</span> 哪些狀態改變，恢復後怎麼處理</h3>
 <span class="qa-anchor" id="q-179-a-04"></span><p>重新初始化 Phase 與指標，不把 Reset 前 CQE 當新完成。</p>
@@ -169,13 +177,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-179-a-17"></span><p>先查 Phase 初始化與 CID 重用紀錄。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-commrecovery">Base 2.4 §9.1–9.6.2.1 (PCIe-applicable rules; stop before 9.6.2.2)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-179-a-08"></span><span class="qa-anchor" id="q-179-a-09"></span><span class="qa-anchor" id="q-179-a-10"></span><span class="qa-anchor" id="q-179-a-11"></span><span class="qa-anchor" id="q-179-a-12"></span><span class="qa-anchor" id="q-179-a-13"></span><span class="qa-anchor" id="q-179-a-14"></span><span class="qa-anchor" id="q-179-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-commrecovery">Base 2.4 §9.1–9.6.2.1 (PCIe-applicable rules; stop before 9.6.2.2)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-180" data-question="180" data-answer-kind="process"><h2><a class="qa-qid" href="#q-180">Q180</a> Reset 後如何確認 Feature、Log、Namespace 與 Firmware？</h2>
-<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
-<details class="qa-answer" id="q-180-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-180-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-180-a-01">RDY=1 之外，還要知道哪些設定恢復、哪些背景操作持續。</p><div class="qa-sections">
 <section class="qa-section" id="q-180-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
 <span class="qa-anchor" id="q-180-a-02"></span><p>依 controller、namespace、subsystem 的各自範圍查詢。</p>
@@ -191,13 +200,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-180-a-16"></span><p>按持久、恢復及即時欄位分類比對。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-firmware">Base 2.4 §3.11–3.11.1, 5.2.9–5.2.10</a> · <a href="#ref-sanitizelog">Base 2.4 §5.2.13.1.38</a> · <a href="#ref-dstlog">Base 2.4 §5.2.13.1.7</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-180-a-17"></span><span class="qa-anchor" id="q-180-a-08"></span><span class="qa-anchor" id="q-180-a-09"></span><span class="qa-anchor" id="q-180-a-10"></span><span class="qa-anchor" id="q-180-a-11"></span><span class="qa-anchor" id="q-180-a-12"></span><span class="qa-anchor" id="q-180-a-13"></span><span class="qa-anchor" id="q-180-a-14"></span><span class="qa-anchor" id="q-180-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-firmware">Base 2.4 §3.11–3.11.1, 5.2.9–5.2.10</a> · <a href="#ref-sanitizelog">Base 2.4 §5.2.13.1.38</a> · <a href="#ref-dstlog">Base 2.4 §5.2.13.1.7</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-181" data-question="181" data-answer-kind="diagnose"><h2><a class="qa-qid" href="#q-181">Q181</a> Reset 超時或 CFS 未清除時怎麼辦？</h2>
-<p class="qa-prompt">先列出已知證據與仍缺少的資訊，再決定能不能判定韌體違規。</p>
-<details class="qa-answer" id="q-181-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-181-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-181-a-01">先區分期限用錯與持續故障，不無限重送。</p><div class="qa-sections">
 <section class="qa-section" id="q-181-s-01" data-answer-section="1"><h3><span>1.</span> 先保留哪些證據</h3>
 <span class="qa-anchor" id="q-181-a-02"></span><p>先處理該 controller，擴大範圍前確認平台支援及其他使用者。</p>
@@ -208,19 +218,20 @@ nvme_qa: true
 <span class="qa-anchor" id="q-181-a-17"></span><p>先核對期限與 controller 角色。</p>
 <span class="qa-anchor" id="q-181-a-05"></span><p>確認讀值有效，先 Controller Reset；CFS 仍未清除才評估適用的 Subsystem Reset。</p>
 </section>
-<section class="qa-section" id="q-181-s-03" data-answer-section="3"><h3><span>3.</span> 什麼結果足以支持結論</h3>
+<section class="qa-section" id="q-181-s-03" data-answer-section="3"><h3><span>3.</span> 把觀察結果接回規格條件</h3>
 <span class="qa-anchor" id="q-181-a-06"></span><p>恢復後狀態與命令通道都可用，不只是一個 CFS 位元清零。</p>
 <span class="qa-anchor" id="q-181-a-07"></span><p>不能以任意更短的 Host timeout 判違規，也不盲目要求不適合平台的 Subsystem Reset。</p>
 <span class="qa-anchor" id="q-181-a-16"></span><p>先排除 Secondary Offline 預期造成的 CFS。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a> · <a href="#ref-cap">Base 2.4 §3.1.4 (CAP, VS)</a> · <a href="#ref-crto">Base 2.4 §3.1.4 (CRTO)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-181-a-08"></span><span class="qa-anchor" id="q-181-a-09"></span><span class="qa-anchor" id="q-181-a-10"></span><span class="qa-anchor" id="q-181-a-11"></span><span class="qa-anchor" id="q-181-a-12"></span><span class="qa-anchor" id="q-181-a-13"></span><span class="qa-anchor" id="q-181-a-14"></span><span class="qa-anchor" id="q-181-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a> · <a href="#ref-cap">Base 2.4 §3.1.4 (CAP, VS)</a> · <a href="#ref-crto">Base 2.4 §3.1.4 (CRTO)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-182" data-question="182" data-answer-kind="process"><h2><a class="qa-qid" href="#q-182">Q182</a> Host 如何用 CC.SHN 做 Normal Shutdown？</h2>
-<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
-<details class="qa-answer" id="q-182-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-182-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-182-a-01">Normal Shutdown 準備保存與媒體關機，不等於停用 controller。</p><div class="qa-sections">
 <section class="qa-section" id="q-182-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
 <span class="qa-anchor" id="q-182-a-02"></span><p>可斷電範圍須依 CAP.CPS 協調相關 controllers。</p>
@@ -236,13 +247,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-182-a-16"></span><p>確認實際 SHST，不能只看送出 SHN。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-182-a-17"></span><span class="qa-anchor" id="q-182-a-08"></span><span class="qa-anchor" id="q-182-a-09"></span><span class="qa-anchor" id="q-182-a-10"></span><span class="qa-anchor" id="q-182-a-11"></span><span class="qa-anchor" id="q-182-a-12"></span><span class="qa-anchor" id="q-182-a-13"></span><span class="qa-anchor" id="q-182-a-14"></span><span class="qa-anchor" id="q-182-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-183" data-question="183" data-answer-kind="process"><h2><a class="qa-qid" href="#q-183">Q183</a> 何時算 Shutdown Complete，可以移除電源？</h2>
-<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
-<details class="qa-answer" id="q-183-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-183-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-183-a-01">發出通知不等於完成保存，需等實際完成狀態。</p><div class="qa-sections">
 <section class="qa-section" id="q-183-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
 <span class="qa-anchor" id="q-183-a-02"></span><p>domain／subsystem scope 須全部相關 controllers ready。</p>
@@ -258,13 +270,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-183-a-16"></span><p>用最後狀態與實際失電時點比對，不忽略中間操作。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-cap">Base 2.4 §3.1.4 (CAP, VS)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-183-a-17"></span><span class="qa-anchor" id="q-183-a-08"></span><span class="qa-anchor" id="q-183-a-09"></span><span class="qa-anchor" id="q-183-a-10"></span><span class="qa-anchor" id="q-183-a-11"></span><span class="qa-anchor" id="q-183-a-12"></span><span class="qa-anchor" id="q-183-a-13"></span><span class="qa-anchor" id="q-183-a-14"></span><span class="qa-anchor" id="q-183-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-cap">Base 2.4 §3.1.4 (CAP, VS)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-184" data-question="184" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-184">Q184</a> Normal、Abrupt Shutdown 與直接斷電有何不同？</h2>
-<p class="qa-prompt">先說出比較對象最重要的差別，並舉一個不能互相代用的例子。</p>
-<details class="qa-answer" id="q-184-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-184-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-184-a-01">Normal 與 Abrupt 都有通知；直接失電可能沒有準備時間。</p><div class="qa-sections">
 <section class="qa-section" id="q-184-s-01" data-answer-section="1"><h3><span>1.</span> 差別在哪裡</h3>
 <span class="qa-anchor" id="q-184-a-02"></span><p>流程不同會影響未完成工作與持久性，但仍需確認 power scope。</p>
@@ -275,18 +288,19 @@ nvme_qa: true
 <span class="qa-anchor" id="q-184-a-05"></span><p>Normal 建議排空與刪 queue；Abrupt 停止新 I/O 再通知；直接斷電無法等待。</p>
 <span class="qa-anchor" id="q-184-a-06"></span><p>Abrupt 若完成且失電時仍 ready，不必只因名稱就增加 UPL。</p>
 </section>
-<section class="qa-section" id="q-184-s-03" data-answer-section="3"><h3><span>3.</span> 哪些結論不能互相套用</h3>
+<section class="qa-section" id="q-184-s-03" data-answer-section="3"><h3><span>3.</span> 比較時要保留的條件</h3>
 <span class="qa-anchor" id="q-184-a-07"></span><p>未完成 volatile writes 的持久性不能只靠 Shutdown 名稱保證。</p>
 <span class="qa-anchor" id="q-184-a-16"></span><p>分別觀察要求、完成與失電三個時點。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-184-a-17"></span><span class="qa-anchor" id="q-184-a-08"></span><span class="qa-anchor" id="q-184-a-09"></span><span class="qa-anchor" id="q-184-a-10"></span><span class="qa-anchor" id="q-184-a-11"></span><span class="qa-anchor" id="q-184-a-12"></span><span class="qa-anchor" id="q-184-a-13"></span><span class="qa-anchor" id="q-184-a-14"></span><span class="qa-anchor" id="q-184-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-185" data-question="185" data-answer-kind="concept"><h2><a class="qa-qid" href="#q-185">Q185</a> Shutdown 期間能否繼續新命令或保留 Outstanding？</h2>
-<p class="qa-prompt">先用自己的話解釋機制，再舉一個常見誤解。</p>
-<details class="qa-answer" id="q-185-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-185-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-185-a-01">持續提交新 I/O 會妨礙有序關機，因此先停止新工作。</p><div class="qa-sections">
 <section class="qa-section" id="q-185-s-01" data-answer-section="1"><h3><span>1.</span> 機制與適用範圍</h3>
 <span class="qa-anchor" id="q-185-a-02"></span><p>I/O 與 Admin 不同，AER outstanding 不等於資料尚未寫完。</p>
@@ -302,13 +316,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-185-a-16"></span><p>確認 Host 沒把 AER 計入資料排空條件。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-185-a-17"></span><span class="qa-anchor" id="q-185-a-08"></span><span class="qa-anchor" id="q-185-a-09"></span><span class="qa-anchor" id="q-185-a-10"></span><span class="qa-anchor" id="q-185-a-11"></span><span class="qa-anchor" id="q-185-a-12"></span><span class="qa-anchor" id="q-185-a-13"></span><span class="qa-anchor" id="q-185-a-14"></span><span class="qa-anchor" id="q-185-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-186" data-question="186" data-answer-kind="concept"><h2><a class="qa-qid" href="#q-186">Q186</a> Normal／Abrupt 如何影響 Unsafe Shutdowns？</h2>
-<p class="qa-prompt">先用自己的話解釋機制，再舉一個常見誤解。</p>
-<details class="qa-answer" id="q-186-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-186-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-186-a-01">Base2.4 改稱 Unexpected Power Losses（UPL），依真正失去 main power 時的狀態計數。</p><div class="qa-sections">
 <section class="qa-section" id="q-186-s-01" data-answer-section="1"><h3><span>1.</span> 機制與適用範圍</h3>
 <span class="qa-anchor" id="q-186-a-02"></span><p>UPL 是 SMART 生命週期資訊，不是每筆 Shutdown 的結果。</p>
@@ -324,29 +339,31 @@ nvme_qa: true
 <span class="qa-anchor" id="q-186-a-16"></span><p>依 if-and-only-if 條件驗證，排除額外失電及錯誤取樣。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-186-a-17"></span><span class="qa-anchor" id="q-186-a-08"></span><span class="qa-anchor" id="q-186-a-09"></span><span class="qa-anchor" id="q-186-a-10"></span><span class="qa-anchor" id="q-186-a-11"></span><span class="qa-anchor" id="q-186-a-12"></span><span class="qa-anchor" id="q-186-a-13"></span><span class="qa-anchor" id="q-186-a-14"></span><span class="qa-anchor" id="q-186-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-187" data-question="187" data-answer-kind="diagnose"><h2><a class="qa-qid" href="#q-187">Q187</a> 非正常失電後為何查 SMART、Error 與 PEL？</h2>
-<p class="qa-prompt">先列出已知證據與仍缺少的資訊，再決定能不能判定韌體違規。</p>
-<details class="qa-answer" id="q-187-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-187-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-187-a-01">各資料補充計數、目前錯誤與持久事件，填補失電時沒有 CQE 的觀察空白。</p><div class="qa-sections">
 <section class="qa-section" id="q-187-s-01" data-answer-section="1"><h3><span>1.</span> 先保留哪些證據</h3>
 <span class="qa-anchor" id="q-187-a-02"></span><p>使用相同身分，分清累計與即時狀態。</p>
-<span class="qa-anchor" id="q-187-a-03"></span><p>確認 PEL 支援與事件，使用正確 LID。</p>
+<span class="qa-anchor" id="q-187-a-03"></span><p>確認 PEL 支援與事件，使用正確 LID。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>LID</dt><dd>Log Page Identifier，紀錄頁識別碼</dd></div></dl>
 <span class="qa-anchor" id="q-187-a-04"></span><p>SMART 看 UPL／Power Cycles／MDIE，Error 看 ECNT，PEL 看 Reset 與相關操作。</p>
 </section>
 <section class="qa-section" id="q-187-s-02" data-answer-section="2"><h3><span>2.</span> 依什麼順序排除原因</h3>
 <span class="qa-anchor" id="q-187-a-17"></span><p>先保存恢復後第一份快照。</p>
 <span class="qa-anchor" id="q-187-a-05"></span><p>恢復 Admin 後先保存 Log，再做可能覆寫歷史的測試。</p>
 </section>
-<section class="qa-section" id="q-187-s-03" data-answer-section="3"><h3><span>3.</span> 什麼結果足以支持結論</h3>
+<section class="qa-section" id="q-187-s-03" data-answer-section="3"><h3><span>3.</span> 把觀察結果接回規格條件</h3>
 <span class="qa-anchor" id="q-187-a-06"></span><p>可知道失電與未確認操作；無 Error entry 不代表資料全部安全。</p>
 <span class="qa-anchor" id="q-187-a-07"></span><p>Error entries 建議於 power cycle 清除，空 Log 不必然違規，持久 counters 另看。</p>
 <span class="qa-anchor" id="q-187-a-16"></span><p>比較計數、事件及電源時間線，不要求紀錄一對一。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a></p>
 <span class="qa-anchor" id="q-187-a-08"></span><span class="qa-anchor" id="q-187-a-09"></span><span class="qa-anchor" id="q-187-a-10"></span><span class="qa-anchor" id="q-187-a-11"></span><span class="qa-anchor" id="q-187-a-12"></span><span class="qa-anchor" id="q-187-a-13"></span><span class="qa-anchor" id="q-187-a-14"></span><span class="qa-anchor" id="q-187-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a></p>

@@ -1,6 +1,6 @@
 {
   "title": "PCIe 系統觀與規格閱讀課程",
-  "description": "以懂基本程式與 CPU／記憶體、但尚未學過 PCIe 的讀者為對象。先建立系統觀，再透過情境問題、規格查詢與明確標示的教學假設深入各領域。目前完成 Chapter 0–13 與全課程規劃；Chapter 14–19 尚待逐章查證、撰寫與校閱。",
+  "description": "先建立系統觀，再依角色、流程與規格圖表深入各領域。Chapter 0–37 依 PCI Express Base 6.0 全文及附錄安排主題導讀；逐條涵蓋狀態另由規格對照表追蹤，主題導讀不等於完整條文已全部帶讀。",
   "chapters": [
     {
       "number": 0,
@@ -20,7 +20,9 @@
       "sources": [
         "PCIE-BASE-6.0",
         "PCI-FW-3.3"
-      ]
+      ],
+      "teaching_revision": 2,
+      "revision_date": "2026-10-23"
     },
     {
       "number": 1,
@@ -44,7 +46,9 @@
       ],
       "title_en": "Topology, Functions, and PCIe Identity",
       "description": "沿著含 Switch 的拓樸，釐清實體卡、Function 與 Port 的關係，再從欄位判讀 BDF、下游 Bus 範圍與 Requester ID。",
-      "publication_date": "2026-10-20"
+      "publication_date": "2026-10-20",
+      "teaching_revision": 2,
+      "revision_date": "2026-10-23"
     },
     {
       "number": 2,
@@ -69,7 +73,9 @@
       ],
       "title_en": "Reading Configuration Space and Finding Capabilities",
       "description": "從傳統與 Extended 清單找到 Device Serial Number，練習指標、欄位版本、位元組順序與存取屬性的判讀。",
-      "publication_date": "2026-10-20"
+      "publication_date": "2026-10-20",
+      "teaching_revision": 2,
+      "revision_date": "2026-10-23"
     },
     {
       "number": 3,
@@ -95,7 +101,9 @@
       ],
       "title_en": "From Unknown Topology to Function Discovery",
       "description": "沿著含 Switch 的拓樸配置 Bus Number，分清存在性、RRS 未就緒與存取失敗，再追蹤 Configuration Request 路由。",
-      "publication_date": "2026-10-20"
+      "publication_date": "2026-10-20",
+      "teaching_revision": 2,
+      "revision_date": "2026-10-23"
     },
     {
       "number": 4,
@@ -121,7 +129,9 @@
       ],
       "title_en": "BARs, Address Spaces, and Resource Allocation",
       "description": "由 32-bit 與 64-bit BAR 讀回值計算大小和對齊，配置三層 Bridge Window，並分清 MSE 與 BME。",
-      "publication_date": "2026-10-20"
+      "publication_date": "2026-10-20",
+      "teaching_revision": 2,
+      "revision_date": "2026-10-23"
     },
     {
       "number": 5,
@@ -147,7 +157,9 @@
       ],
       "title_en": "From a Read or Write to a PCIe Transaction",
       "description": "從一次 MMIO 讀取推演 Request、Completion、Byte Enable、分段回覆與 4 KiB 邊界。",
-      "publication_date": "2026-10-21"
+      "publication_date": "2026-10-21",
+      "teaching_revision": 2,
+      "revision_date": "2026-10-23"
     },
     {
       "number": 6,
@@ -174,7 +186,9 @@
       ],
       "title_en": "DMA, Visibility, and Transaction Ordering",
       "description": "分清 DMA 位址、所有權交接與 PCIe 排序，再以資料和旗標判讀 RO、No Snoop 及其限制。",
-      "publication_date": "2026-10-21"
+      "publication_date": "2026-10-21",
+      "teaching_revision": 2,
+      "revision_date": "2026-10-23"
     },
     {
       "number": 7,
@@ -203,7 +217,7 @@
       "description": "從 MSI-X Capability 找到 Table 與 PBA，推演 entry 設定、遮罩、Pending 和中斷寫入。",
       "publication_date": "2026-10-21",
       "revision_date": "2026-10-23",
-      "teaching_revision": 1
+      "teaching_revision": 2
     },
     {
       "number": 8,
@@ -231,7 +245,7 @@
       "description": "從雙端速率證據、有限 credit 帳本與 replay，釐清連線訓練、流量控制及 Flit 模式的責任。",
       "publication_date": "2026-10-21",
       "revision_date": "2026-10-23",
-      "teaching_revision": 1
+      "teaching_revision": 2
     },
     {
       "number": 9,
@@ -260,7 +274,7 @@
       "description": "從單一 Function 的 FLR 查詢，判斷重設範圍、舊 Completion、就緒時間與設定恢復。",
       "publication_date": "2026-10-21",
       "revision_date": "2026-10-23",
-      "teaching_revision": 1
+      "teaching_revision": 2
     },
     {
       "number": 10,
@@ -287,7 +301,9 @@
       ],
       "title_en": "Device and Link Power Management",
       "description": "用 PMCSR 讀改寫與 L1.2 雙端設定案例，串起 D-state、ASPM、LTR、恢復與平台喚醒。",
-      "publication_date": "2026-10-21"
+      "publication_date": "2026-10-21",
+      "teaching_revision": 2,
+      "revision_date": "2026-10-23"
     },
     {
       "number": 11,
@@ -317,7 +333,9 @@
       ],
       "title_en": "Hot-Plug and Topology Changes",
       "description": "從插槽能力、事件通知與插入時序，判讀熱插拔的資源與移除條件。",
-      "publication_date": "2026-10-21"
+      "publication_date": "2026-10-21",
+      "teaching_revision": 2,
+      "revision_date": "2026-10-23"
     },
     {
       "number": 12,
@@ -347,7 +365,9 @@
       ],
       "title_en": "Error Evidence, Reporting, and Containment",
       "description": "以 AER、Header Log、Root 記錄與 DPC 分清錯誤證據、回報路徑與隔離結果。",
-      "publication_date": "2026-10-21"
+      "publication_date": "2026-10-21",
+      "teaching_revision": 2,
+      "revision_date": "2026-10-23"
     },
     {
       "number": 13,
@@ -379,172 +399,617 @@
       ],
       "title_en": "Firmware, ACPI, and OS Ownership",
       "description": "區分 UEFI、ACPI 與 PCI Firmware 的角色，以 MCFG、_CRS 和 _OSC 串起資源與控制權。",
-      "publication_date": "2026-10-21"
+      "publication_date": "2026-10-21",
+      "teaching_revision": 2,
+      "revision_date": "2026-10-23"
     },
     {
       "number": 14,
-      "title": "開機裝置、Option ROM 與相容機制",
-      "question": "OS 尚未載入驅動程式，韌體如何利用 PCIe 裝置開機？哪些流程只適用於舊式系統？",
+      "title": "從 TLP 標頭到 Flit 封包布局",
+      "title_en": "TLP Headers and Flit Packet Layouts",
+      "question": "收到一段封包資料，要從哪個欄位開始讀？",
       "topics": [
-        "Expansion ROM BAR 與 ROM 映像",
-        "ROM Header、PCI Data Structure 與映像選擇",
-        "UEFI Driver 與裝置初始化的關係",
-        "開機服務、裝置路徑與 OS 驅動程式的交接",
-        "Legacy BIOS 介面與歷史相容需求",
-        "原生 PCIe 機制與沿用 PCI 規則的區別",
-        "避免把某平台的啟動行為當成所有系統要求"
+        "Non-Flit 與 Flit 的封包類別、長度與位置",
+        "Memory、I/O、Configuration、Message 與 Completion 的格式",
+        "Prefix、OHC、識別、路由與有效條件",
+        "保留位元及資料負載的判讀路線"
+      ],
+      "prerequisites": [
+        2,
+        5,
+        8
+      ],
+      "status": "ready",
+      "sources": [
+        "PCIE-BASE-6.0"
+      ],
+      "publication_date": "2026-10-24",
+      "revision_date": "2026-10-24",
+      "teaching_revision": 2
+    },
+    {
+      "number": 15,
+      "title": "接收要求、完成回覆與進階交易",
+      "title_en": "Request Handling, Completions, and Advanced Transactions",
+      "question": "要求到了接收端，什麼時候才算完成？",
+      "topics": [
+        "Completer 檢查、回覆、Byte Count 與分段條件",
+        "Completion Timeout 與進行中要求的生命週期",
+        "Locked Transactions 與 AtomicOps 的目標、路由及保證",
+        "Deferrable Memory Write 的能力、請求與回覆"
+      ],
+      "prerequisites": [
+        5,
+        6,
+        9,
+        14
+      ],
+      "status": "ready",
+      "sources": [
+        "PCIE-BASE-6.0"
+      ],
+      "publication_date": "2026-10-24",
+      "revision_date": "2026-10-24",
+      "teaching_revision": 2
+    },
+    {
+      "number": 16,
+      "title": "Traffic Class、Virtual Channel 與仲裁",
+      "title_en": "Traffic Classes, Virtual Channels, and Arbitration",
+      "question": "不同流量共用一條 Link，如何避免一起被堵住？",
+      "topics": [
+        "TC 到 VC 的對應與獨立資源",
+        "Port 與多功能裝置的 VC 能力、資源及仲裁",
+        "VC 配置、啟用與協調條件",
+        "Appendix A 的等時性需求與端到端預算"
+      ],
+      "prerequisites": [
+        5,
+        8,
+        14
+      ],
+      "status": "ready",
+      "sources": [
+        "PCIE-BASE-6.0"
+      ],
+      "publication_date": "2026-10-24",
+      "revision_date": "2026-10-24",
+      "teaching_revision": 2
+    },
+    {
+      "number": 17,
+      "title": "資料連結初始化、流量控制與重送細節",
+      "title_en": "Data Link Initialization, Flow Control, and Replay",
+      "question": "credit、Ack 和 Completion 各自在哪一步發生？",
+      "topics": [
+        "Data Link 管理狀態、Feature Exchange 與 FC 初始化",
+        "Scaled Flow Control、不同封包類別與額度更新",
+        "Non-Flit 與 Flit 的確認、序號、錯誤及重送差異",
+        "ECRC、LCRC、Poison 的責任邊界",
+        "Appendix H 的更新與 ACK 延遲計算"
+      ],
+      "prerequisites": [
+        8,
+        14,
+        16
+      ],
+      "status": "ready",
+      "sources": [
+        "PCIE-BASE-6.0"
+      ],
+      "publication_date": "2026-10-24",
+      "revision_date": "2026-10-24",
+      "teaching_revision": 2
+    },
+    {
+      "number": 18,
+      "title": "編碼、Flit、CRC 與 FEC 如何合作",
+      "title_en": "Encoding, Flits, CRC, and FEC",
+      "question": "Flit、編碼與錯誤更正，怎麼放在同一張圖裡？",
+      "topics": [
+        "8b/10b、128b/130b 與 1b/1b 的適用範圍",
+        "封包框定、Ordered Sets、Scrambling 與 Flit 布局",
+        "CRC 與 Forward Error Correction 的各自用途",
+        "Appendices B、J、K 的編碼與矩陣閱讀方法"
+      ],
+      "prerequisites": [
+        8,
+        14,
+        17
+      ],
+      "status": "ready",
+      "sources": [
+        "PCIE-BASE-6.0"
+      ],
+      "publication_date": "2026-10-24",
+      "revision_date": "2026-10-24",
+      "teaching_revision": 2
+    },
+    {
+      "number": 19,
+      "title": "LTSSM、Equalization 與 Retimer",
+      "title_en": "LTSSM, Equalization, and Retimers",
+      "question": "Link 還沒到正常傳送狀態，應該追哪個階段？",
+      "topics": [
+        "完整訓練狀態、狀態進入與離開條件",
+        "速率、Lane 寬度、Lane 編號與降級",
+        "不同速率的 Equalization 與訓練交換",
+        "Retimer 的分段、轉送、設定與重設關係"
+      ],
+      "prerequisites": [
+        8,
+        9,
+        18
+      ],
+      "status": "ready",
+      "sources": [
+        "PCIE-BASE-6.0"
+      ],
+      "publication_date": "2026-10-24",
+      "revision_date": "2026-10-24",
+      "teaching_revision": 2
+    },
+    {
+      "number": 20,
+      "title": "發射端電氣條件與量測觀點",
+      "title_en": "Transmitter Electrical Requirements",
+      "question": "要判讀發送端電氣規格，為什麼不能先抄一個電壓上限？",
+      "topics": [
+        "電氣規格的量測位置、方向與單位",
+        "不同速率的發射電壓、抖動與等化參數",
+        "PAM4 發射條件與線性相關量",
+        "以規格表串起量測條件與允收範圍"
+      ],
+      "prerequisites": [
+        18,
+        19
+      ],
+      "status": "ready",
+      "sources": [
+        "PCIE-BASE-6.0"
+      ],
+      "publication_date": "2026-10-24",
+      "revision_date": "2026-10-24",
+      "teaching_revision": 2
+    },
+    {
+      "number": 21,
+      "title": "接收端、通道與參考時脈",
+      "title_en": "Receiver, Channel, and Reference Clock",
+      "question": "發送端符合規格，為什麼接收端還要另做測試？",
+      "topics": [
+        "接收器容忍條件與測試情境",
+        "通道損耗、串擾、拓樸及量測位置",
+        "Refclk 架構與各自的時脈條件",
+        "Appendix C 與板級實作邊界"
+      ],
+      "prerequisites": [
+        18,
+        19,
+        20
+      ],
+      "status": "ready",
+      "sources": [
+        "PCIE-BASE-6.0"
+      ],
+      "publication_date": "2026-10-24",
+      "revision_date": "2026-10-24",
+      "teaching_revision": 2
+    },
+    {
+      "number": 22,
+      "title": "連線診斷、Lane Margining 與 Flit 紀錄",
+      "title_en": "Link Diagnostics, Lane Margining, and Flit Records",
+      "question": "要檢查某條 Lane，設定空間應該怎麼查？",
+      "topics": [
+        "不同 PHY Extended Capability 的定位與判讀",
+        "Lane Margining 的能力、控制、狀態及觀察範圍",
+        "Flit Logging、錯誤注入與計數的不同用途",
+        "Device 3 與 Secondary PCIe 欄位如何接回主機制"
+      ],
+      "prerequisites": [
+        12,
+        17,
+        19,
+        21
+      ],
+      "status": "ready",
+      "sources": [
+        "PCIE-BASE-6.0"
+      ],
+      "publication_date": "2026-10-24",
+      "revision_date": "2026-10-24",
+      "teaching_revision": 2
+    },
+    {
+      "number": 23,
+      "title": "功率預算、動態分配與緊急降功耗",
+      "title_en": "Power Budgeting, Allocation, and Emergency Reduction",
+      "question": "裝置已進 D0，功率限制還有哪些層次？",
+      "topics": [
+        "完整電源狀態、輔助電源、事件與橋接分工",
+        "Power Budgeting 與 Slot Power Limit 的對象",
+        "Dynamic Power Allocation 的能力、狀態與控制",
+        "Emergency Power Reduction 與 SR-IOV 電源關係"
+      ],
+      "prerequisites": [
+        10,
+        16
+      ],
+      "status": "ready",
+      "sources": [
+        "PCIE-BASE-6.0"
+      ],
+      "publication_date": "2026-10-24",
+      "revision_date": "2026-10-24",
+      "teaching_revision": 2
+    },
+    {
+      "number": 24,
+      "title": "TPH、LTR 與 OBFF 的平台協調",
+      "title_en": "TPH, LTR, and OBFF",
+      "question": "裝置如何告訴平台「資料會怎麼用、多久需要服務」？",
+      "topics": [
+        "TPH 的提示、Steering Tag 與資料移動位置",
+        "LTR 的延遲容忍回報、編碼及更新",
+        "OBFF 的通知模式、條件與緩衝區協作",
+        "支援、配置、目前狀態與效益的證據"
+      ],
+      "prerequisites": [
+        6,
+        10,
+        16,
+        23
+      ],
+      "status": "ready",
+      "sources": [
+        "PCIE-BASE-6.0"
+      ],
+      "publication_date": "2026-10-24",
+      "revision_date": "2026-10-24",
+      "teaching_revision": 2
+    },
+    {
+      "number": 25,
+      "title": "PTM 與時間同步的角色、交換與精度",
+      "title_en": "PTM Roles, Exchanges, and Precision",
+      "question": "兩個裝置的本地時鐘不同，要如何對齊事件時間？",
+      "topics": [
+        "PTM Root、Requester、Responder 的角色",
+        "能力查詢、Enable、Context 與交換流程",
+        "時間、延遲、粒度及結果有效性",
+        "狀態改變後何時需要重新建立有效資訊"
+      ],
+      "prerequisites": [
+        5,
+        16,
+        19
+      ],
+      "status": "ready",
+      "sources": [
+        "PCIE-BASE-6.0"
+      ],
+      "publication_date": "2026-10-24",
+      "revision_date": "2026-10-24",
+      "teaching_revision": 2
+    },
+    {
+      "number": 26,
+      "title": "多功能、ARI、SR-IOV 與 Shadow Functions",
+      "title_en": "Multifunction, ARI, SR-IOV, and Shadow Functions",
+      "question": "一個裝置提供很多 Function，身分與資源怎麼算？",
+      "topics": [
+        "ARI 的 Function 身分、探索與轉送",
+        "PF、VF、資源分配與啟用生命週期",
+        "VF BAR、VF Resizable BAR、MSI-X 與 Reset",
+        "Shadow Functions 的能力與使用條件",
+        "Base Chapter 9 的架構、初始化與完整欄位路線"
+      ],
+      "prerequisites": [
+        1,
+        2,
+        4,
+        7,
+        9
+      ],
+      "status": "ready",
+      "sources": [
+        "PCIE-BASE-6.0"
+      ],
+      "publication_date": "2026-10-24",
+      "revision_date": "2026-10-24",
+      "teaching_revision": 2
+    },
+    {
+      "number": 27,
+      "title": "ATS、PRI 與 PASID 的位址轉譯流程",
+      "title_en": "ATS, PRI, and PASID Address-Translation Flows",
+      "question": "裝置快取了位址轉譯，映射改變時怎麼辦？",
+      "topics": [
+        "Base Chapter 10 的 ATS 架構、Translation Request 與 Completion",
+        "已轉譯及未轉譯位址、Memory Attributes 與 PASID",
+        "轉譯快取、Invalidation Request 與完成條件",
+        "Page Request Interface 的群組、請求及回覆",
+        "ATS、PRI、PASID 的能力、控制、重設及失敗生命週期"
+      ],
+      "prerequisites": [
+        6,
+        14,
+        26
+      ],
+      "status": "ready",
+      "sources": [
+        "PCIE-BASE-6.0"
+      ],
+      "publication_date": "2026-10-24",
+      "revision_date": "2026-10-24",
+      "teaching_revision": 2
+    },
+    {
+      "number": 28,
+      "title": "ACS、Peer-to-Peer 與 Multicast",
+      "title_en": "ACS, Peer-to-Peer, and Multicast",
+      "question": "兩張卡在同一個 Switch 下，可以直接互相存取嗎？",
+      "topics": [
+        "ACS 的能力、控制與請求轉送條件",
+        "Peer-to-Peer 的路由、隔離及平台前提",
+        "Multicast 的群組、位址窗口、轉送及阻擋",
+        "同一筆交易如何依條件走不同路徑"
+      ],
+      "prerequisites": [
+        1,
+        5,
+        14,
+        26,
+        27
+      ],
+      "status": "ready",
+      "sources": [
+        "PCIE-BASE-6.0"
+      ],
+      "publication_date": "2026-10-24",
+      "revision_date": "2026-10-24",
+      "teaching_revision": 2
+    },
+    {
+      "number": 29,
+      "title": "Enhanced Allocation、Resizable BAR 與拓樸轉譯",
+      "title_en": "Enhanced Allocation, Resizable BARs, and Topology Translation",
+      "question": "裝置支援很大的 BAR，系統就一定能分配嗎？",
+      "topics": [
+        "Enhanced Allocation 的資源描述與有效欄位",
+        "Resizable BAR 的支援大小、選擇與重新配置",
+        "Hierarchy ID 與 FPB 的識別及範圍轉譯",
+        "沿能力、設定與路由核對同一個 Function"
       ],
       "prerequisites": [
         2,
         3,
         4,
-        13
+        26
       ],
-      "status": "planned",
+      "status": "ready",
       "sources": [
-        "PCI-FW-3.3",
-        "PCIE-BASE-6.0",
-        "UEFI-SPEC-TO-SELECT"
-      ]
+        "PCIE-BASE-6.0"
+      ],
+      "publication_date": "2026-10-24",
+      "revision_date": "2026-10-24",
+      "teaching_revision": 2
     },
     {
-      "number": 15,
-      "title": "多功能、ARI 與 SR-IOV",
-      "question": "一個實體裝置如何提供多個獨立的軟體使用對象？",
+      "number": 30,
+      "title": "Root Complex 連結宣告、身分與裝置資料",
+      "title_en": "Root Complex Declarations, Identity, and Device Data",
+      "question": "裝置身分、產品資料與內部拓樸，要用同一份資訊嗎？",
       "topics": [
-        "多功能裝置與虛擬化的不同需求",
-        "ARI 對 Function 識別與轉送的影響",
-        "Physical Function 與 Virtual Function",
-        "SR-IOV 能力、VF 數量與啟用條件",
-        "VF 位址資源、身分與中斷",
-        "Reset 及資源共享的隔離界線",
-        "以假設拓樸追蹤 PF 與 VF 的查詢入口"
+        "Root Complex 拓樸宣告、內部連結與 RCRB",
+        "Root Complex Event Collector 的關聯資訊",
+        "DSN、Subsystem ID、VPD 的查詢與用途",
+        "Vendor-Specific、VSEC、DVSEC 與 Null 結構的閱讀邊界"
       ],
       "prerequisites": [
         1,
         2,
         3,
-        4,
-        7,
-        9
-      ],
-      "status": "planned",
-      "sources": [
-        "PCIE-BASE-6.0",
-        "PCI-FW-3.3",
-        "PCI-SIG-IOV-SOURCES-TO-VERIFY"
-      ]
-    },
-    {
-      "number": 16,
-      "title": "ATS、PRI 與 PASID",
-      "question": "裝置需要替不同工作存取記憶體時，如何辨識位址空間並處理轉譯需求？",
-      "topics": [
-        "未轉譯位址、已轉譯位址與平台 IOMMU",
-        "ATS 的能力、啟用與轉譯快取",
-        "失效通知與快取一致性要求",
-        "PASID 所辨識的對象及有效條件",
-        "PRI 的用途、請求與回應",
-        "ATS、PRI、PASID 之間的關係與獨立能力",
-        "缺少其中一項能力時能做與不能做的事"
-      ],
-      "prerequisites": [
-        2,
-        5,
-        6,
         12,
-        15
+        29
       ],
-      "status": "planned",
+      "status": "ready",
       "sources": [
-        "PCIE-BASE-6.0",
-        "PCI-SIG-ADDRESS-TRANSLATION-SOURCES-TO-VERIFY",
-        "IOMMU-SPEC-TO-SELECT"
-      ]
+        "PCIE-BASE-6.0"
+      ],
+      "publication_date": "2026-10-24",
+      "revision_date": "2026-10-24",
+      "teaching_revision": 2
     },
     {
-      "number": 17,
-      "title": "隔離、存取控制與傳輸安全",
-      "question": "裝置能傳送合法的 PCIe 交易，是否就表示它可以安全地存取任何目標？",
+      "number": 31,
+      "title": "DOE 與元件量測、認證",
+      "title_en": "DOE and Component Measurement and Authentication",
+      "question": "想取得元件的安全量測資料，先如何交換物件？",
       "topics": [
-        "威脅情境與信任邊界",
-        "ACS 與 Peer-to-Peer 路由限制",
-        "IOMMU 隔離和 PCIe 存取控制的分工",
-        "IDE 的保護目標、能力與適用範圍",
-        "安全建立所需的其他規格與平台前提",
-        "支援、啟用、驗證成功與保護生效的證據區分",
-        "不把封包完整性、身分驗證與資料保密混為一談"
+        "DOE 的協定探索、信箱、控制與狀態",
+        "物件交換的先後、長度、等待與錯誤處理",
+        "CMA／SPDM 的角色、測量與信任邊界",
+        "Base 規則與外部安全協定的來源分工"
       ],
       "prerequisites": [
         2,
         5,
-        6,
+        28,
+        30
+      ],
+      "status": "ready",
+      "sources": [
+        "PCIE-BASE-6.0"
+      ],
+      "publication_date": "2026-10-24",
+      "revision_date": "2026-10-24",
+      "teaching_revision": 2
+    },
+    {
+      "number": 32,
+      "title": "IDE 的保護範圍、Stream 與金鑰生命週期",
+      "title_en": "IDE Protection, Streams, and Key Lifecycles",
+      "question": "IDE 開啟後，資料到底受到哪一段保護？",
+      "topics": [
+        "Link IDE 與 Selective IDE 的保護範圍",
+        "Stream 的身分、位址關聯、配置與狀態",
+        "金鑰、IV、完整性與資料保密的角色",
+        "啟用、狀態改變、失敗與恢復條件",
+        "Appendix L 的封包範例閱讀"
+      ],
+      "prerequisites": [
+        14,
+        17,
+        28,
+        31
+      ],
+      "status": "ready",
+      "sources": [
+        "PCIE-BASE-6.0"
+      ],
+      "publication_date": "2026-10-24",
+      "revision_date": "2026-10-24",
+      "teaching_revision": 2
+    },
+    {
+      "number": 33,
+      "title": "Protocol Multiplexing 與替代協定",
+      "title_en": "Protocol Multiplexing and Alternate Protocols",
+      "question": "同一條 Link 承載其他協定，PCIe 的哪些規則還適用？",
+      "topics": [
+        "Appendix G 的協定多工角色與交換",
+        "Alternate Protocol 能力、選擇與適用條件",
+        "流量分類、轉送與原生 PCIe 的分工",
+        "重設、模式改變及互通性邊界"
+      ],
+      "prerequisites": [
+        14,
+        18,
+        19
+      ],
+      "status": "ready",
+      "sources": [
+        "PCIE-BASE-6.0"
+      ],
+      "publication_date": "2026-10-24",
+      "revision_date": "2026-10-24",
+      "teaching_revision": 2
+    },
+    {
+      "number": 34,
+      "title": "Readiness、進階熱插拔與平台管理",
+      "title_en": "Readiness, Advanced Hot-Plug, and Platform Management",
+      "question": "Link 已啟動，軟體還要等多久才能讀設定空間？",
+      "topics": [
+        "Readiness Notifications、FRS Queueing 與時間回報",
+        "Async Hot-Plug 與 Appendix I 參考模型",
+        "NPEM 的能力、控制、狀態與外殼管理",
+        "Conventional PCI AF 與 SFI 的平台約定",
+        "不同管理者、就緒狀態及事件的串接"
+      ],
+      "prerequisites": [
+        9,
+        11,
         12,
         13,
-        15,
-        16
+        23,
+        26
       ],
-      "status": "planned",
+      "status": "ready",
       "sources": [
-        "PCIE-BASE-6.0",
-        "IOMMU-SPEC-TO-SELECT",
-        "PCI-SIG-SECURITY-SOURCES-TO-VERIFY",
-        "DMTF-SECURITY-SOURCES-TO-SELECT"
-      ]
+        "PCIE-BASE-6.0"
+      ],
+      "publication_date": "2026-10-24",
+      "revision_date": "2026-10-24",
+      "teaching_revision": 2
     },
     {
-      "number": 18,
-      "title": "實體連線、訊號與板級限制",
-      "question": "規格欄位看起來相容，為什麼實體連線仍可能無法達到預期速度或寬度？",
+      "number": 35,
+      "title": "Expansion ROM 與開機路徑",
+      "title_en": "Expansion ROMs and the Boot Path",
+      "question": "開機韌體如何從 ROM 位址走到正確的映像？",
       "topics": [
-        "差動訊號、Lane 與雙向傳輸的必要背景",
-        "時脈、編碼與 PCIe 6.0 訊號傳輸方式",
-        "Equalization、通道條件與訓練結果",
-        "Retimer 與其他中間元件的作用",
-        "連接器、卡片、供電與 Base Specification 的範圍差異",
-        "Link 寬度、速度與實體條件的關係",
-        "用規格證據縮小原因範圍，避免僅憑狀態值推斷訊號品質"
+        "Expansion ROM BAR 與裝置初始化前提",
+        "Firmware 3.3 的 ROM 結構、映像與選擇",
+        "開機前存取、驅動與 OS 接手的界線",
+        "相容規則與平台政策分開標示"
       ],
       "prerequisites": [
-        8,
-        9,
-        10
-      ],
-      "status": "planned",
-      "sources": [
-        "PCIE-BASE-6.0",
-        "PCI-SIG-CEM-SPEC-TO-SELECT",
-        "SIGNAL-INTEGRITY-BACKGROUND-TO-SELECT"
-      ]
-    },
-    {
-      "number": 19,
-      "title": "效能推估與跨章判讀",
-      "question": "Link 已達預期速度與寬度，應用程式為什麼仍未達到預期傳輸量？",
-      "topics": [
-        "GT/s、編碼效率、協定開銷與有效資料量",
-        "MPS、MRRS、Completion 切分與交易數量",
-        "可並行要求數、延遲與吞吐量",
-        "拓樸共享、Peer-to-Peer 與上游瓶頸",
-        "電源狀態、重送與軟體工作負載的影響",
-        "把能力、設定、狀態、量測分成不同證據",
-        "整合多個欄位與假設工作負載，推導上限及不確定性"
-      ],
-      "prerequisites": [
+        2,
         4,
-        5,
-        6,
-        7,
-        8,
-        10,
-        12,
-        18
+        13,
+        30
       ],
-      "status": "planned",
+      "status": "ready",
       "sources": [
         "PCIE-BASE-6.0",
         "PCI-FW-3.3"
-      ]
+      ],
+      "publication_date": "2026-10-24",
+      "revision_date": "2026-10-24",
+      "teaching_revision": 2
+    },
+    {
+      "number": 36,
+      "title": "交易依賴、ID-Based Ordering 與 Message",
+      "title_en": "Dependencies, ID-Based Ordering, and Messages",
+      "question": "先送資料、再送通知，讀者要確認哪些排序條件？",
+      "topics": [
+        "Device Synchronization 與交易依賴",
+        "Appendix D 的相依關係與等待條件",
+        "Appendix E 的 ID-Based Ordering 使用情境",
+        "Appendix F 的 Message Code 分配與選擇",
+        "以跨元件案例核對允許及禁止的先後"
+      ],
+      "prerequisites": [
+        5,
+        6,
+        14,
+        15,
+        16,
+        17
+      ],
+      "status": "ready",
+      "sources": [
+        "PCIE-BASE-6.0"
+      ],
+      "publication_date": "2026-10-24",
+      "revision_date": "2026-10-24",
+      "teaching_revision": 2
+    },
+    {
+      "number": 37,
+      "title": "效能推估與跨章觀察",
+      "title_en": "Performance Estimation and Integrated Observation",
+      "question": "速率與寬度都很高，為什麼應用仍跑不滿？",
+      "topics": [
+        "GT/s、編碼、Flit、協定開銷與有效資料",
+        "MPS、MRRS、分段、Tag 數與往返延遲",
+        "Virtual Channel、仲裁、共享路徑與瓶頸",
+        "Flit Performance Measurement 的能力與讀值",
+        "以假設工作負載串起欄位、限制及觀察結果"
+      ],
+      "prerequisites": [
+        14,
+        16,
+        17,
+        18,
+        19,
+        22,
+        24,
+        26,
+        29,
+        36
+      ],
+      "status": "ready",
+      "sources": [
+        "PCIE-BASE-6.0"
+      ],
+      "publication_date": "2026-10-24",
+      "revision_date": "2026-10-24",
+      "teaching_revision": 2
     }
   ]
 }

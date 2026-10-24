@@ -1,0 +1,79 @@
+{
+  "title": "把描述項、DMA 資料與完成通知接起來",
+  "summary_html": "<p class=\"lead\">DMA（Direct Memory Access，直接記憶體存取）讓裝置發起記憶體交易。要讓一次工作正確完成，軟體還需交接緩衝區所有權，並處理平台要求的同步。</p><p>前情提要：Chapter 5 已建立 Request／Completion 的概念。本章沿著軟體準備工作、裝置寫入資料、軟體接手結果的過程，區分 PCIe 排序與 CPU／快取同步的責任。</p><p><strong>閱讀路線：</strong>DMA 位址與映射背景 → 描述項發布 → Base Table 2-42 的交易排序 → 封包屬性與主機接手條件。</p>",
+  "svg": "<svg viewBox=\"0 0 900 565\" role=\"img\" aria-labelledby=\"ch6-guide-title ch6-guide-desc\"><title id=\"ch6-guide-title\">軟體發布描述項，裝置寫入資料與旗標，再由主機依平台同步條件接手。</title><desc id=\"ch6-guide-desc\">軟體發布描述項，裝置寫入資料與旗標，再由主機依平台同步條件接手。</desc><g data-walk-target=\"software\"><rect x=\"20\" y=\"15\" width=\"250\" height=\"60\" rx=\"9\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"145.0\" y=\"40\" text-anchor=\"middle\" font-size=\"15\">驅動程式／主機端</text></g><g data-walk-target=\"device\"><rect x=\"325\" y=\"15\" width=\"250\" height=\"60\" rx=\"9\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"450.0\" y=\"40\" text-anchor=\"middle\" font-size=\"15\">裝置：執行工作</text></g><g data-walk-target=\"memory\"><rect x=\"630\" y=\"15\" width=\"250\" height=\"60\" rx=\"9\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"755.0\" y=\"40\" text-anchor=\"middle\" font-size=\"15\">平台可供 DMA 的記憶體</text></g><g data-walk-target=\"s-line\"><path d=\"M145 75 L145 540\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2\" stroke-dasharray=\"6 5\"/></g><g data-walk-target=\"d-line\"><path d=\"M450 75 L450 540\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2\" stroke-dasharray=\"6 5\"/></g><g data-walk-target=\"m-line\"><path d=\"M755 75 L755 540\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2\" stroke-dasharray=\"6 5\"/></g><g data-walk-target=\"descriptor\"><path d=\"M145 145 L755 145\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2\"/><polygon points=\"755.0,145.0 745.0,140.0 745.0,150.0\" fill=\"var(--accent)\"/><text x=\"450.0\" y=\"136.0\" text-anchor=\"middle\" font-size=\"13\">寫入描述項及資料</text></g><g data-walk-target=\"notify\"><path d=\"M145 235 L450 235\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2\"/><polygon points=\"450.0,235.0 440.0,230.0 440.0,240.0\" fill=\"var(--accent)\"/><text x=\"297.5\" y=\"226.0\" text-anchor=\"middle\" font-size=\"13\">依平台規則發布後通知裝置</text></g><g data-walk-target=\"data\"><path d=\"M450 335 L755 335\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2\"/><polygon points=\"755.0,335.0 745.0,330.0 745.0,340.0\" fill=\"var(--accent)\"/><text x=\"602.5\" y=\"326.0\" text-anchor=\"middle\" font-size=\"13\">裝置寫入結果資料</text></g><g data-walk-target=\"flag\"><path d=\"M450 425 L755 425\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2\"/><polygon points=\"755.0,425.0 745.0,420.0 745.0,430.0\" fill=\"var(--accent)\"/><text x=\"602.5\" y=\"416.0\" text-anchor=\"middle\" font-size=\"13\">依適用排序寫完成旗標</text></g><g data-walk-target=\"consume\"><path d=\"M755 515 L145 515\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2\"/><polygon points=\"145.0,515.0 155.0,520.0 155.0,510.0\" fill=\"var(--accent)\"/><text x=\"450.0\" y=\"506.0\" text-anchor=\"middle\" font-size=\"13\">主機依平台同步條件接手結果</text></g></svg>",
+  "order_html": "<p>由上往下看本例的所有權交接。同步動作依平台及 DMA API 決定；圖中的先後關係不替平台補出額外的快取保證。</p>",
+  "caption_html": "<p>作者的簡化工作週期。PCIe 交易排序與 CPU／快取同步各有責任，兩者共同決定資料何時可用。</p>",
+  "steps": [
+    {
+      "title": "先取得裝置可用的位址",
+      "html": "<p>由平台的 DMA 映射機制取得裝置可使用的位址，確認方向、範圍與緩衝區生命週期。</p>",
+      "targets": [
+        "software",
+        "memory",
+        "s-line",
+        "m-line"
+      ],
+      "condition_html": "<p>本例已具備適用的映射及裝置位址範圍；CPU 指標與 DMA 位址依平台規則處理。</p>",
+      "source_html": "<p>Linux 6.12 DMA API HOWTO：CPU and DMA addresses、Types of DMA mappings。</p>",
+      "claim_ids": [
+        "PCIE-CH6-MAPPING-001",
+        "PCIE-CH6-EXAMPLE-001"
+      ]
+    },
+    {
+      "title": "發布描述項，再交給裝置",
+      "html": "<p>先準備描述項與資料，再依平台要求執行記憶體及 I/O 同步，最後通知裝置有新工作。</p>",
+      "targets": [
+        "descriptor",
+        "notify",
+        "d-line",
+        "device"
+      ],
+      "condition_html": "<p>此處的同步須使用平台與作業系統定義的介面；PCIe 排序表本身不定義 CPU 的全部記憶體模型。</p>",
+      "source_html": "<p>Linux 6.12 memory barriers：dma_wmb／dma_rmb／dma_mb、Kernel I/O barrier effects。</p>",
+      "claim_ids": [
+        "PCIE-CH6-BARRIER-001"
+      ]
+    },
+    {
+      "title": "依適用交易排序寫資料與旗標",
+      "html": "<p>裝置先寫結果資料，再以另一筆交易寫完成旗標；判讀這兩筆交易時，保留 TC、Requester ID 與 RO 等適用條件。</p>",
+      "targets": [
+        "data",
+        "flag"
+      ],
+      "condition_html": "<p>RO 是 Relaxed Ordering，允許在規定條件下放寬排序。能力允許與這兩筆封包是否實際使用 RO，需分別查明。</p>",
+      "source_html": "<p>Base 6.0 §2.4.1／Table 2-42，pp.222–224；§2.2.6.4–§2.2.6.5，pp.160–161。</p>",
+      "claim_ids": [
+        "PCIE-CH6-ORDER-001",
+        "PCIE-CH6-ATTR-001"
+      ]
+    },
+    {
+      "title": "主機取得所有權後讀取結果",
+      "html": "<p>主機確認完成條件，再依 DMA 映射與快取規則同步並讀取資料。封包已發出、旗標已被觀察與 CPU 可用資料，是同一工作週期中的不同階段。</p>",
+      "targets": [
+        "consume",
+        "software",
+        "memory"
+      ],
+      "condition_html": "<p>No Snoop 是封包的快取窺探屬性，不能單靠它指定平台的快取一致性行為。</p>",
+      "source_html": "<p>Base 6.0 §2.2.6.5，p.161；Linux 6.12 DMA API 與 memory barriers 的相關段落。</p>",
+      "claim_ids": [
+        "PCIE-CH6-ATTR-001",
+        "PCIE-CH6-MAPPING-001",
+        "PCIE-CH6-BARRIER-001"
+      ]
+    }
+  ],
+  "components": [
+    {
+      "target": "device",
+      "title": "裝置端的 DMA",
+      "html": "<p>本圖由裝置把結果寫到平台提供的 DMA 緩衝區。</p>",
+      "basic_html": "<p>DMA 描述誰發起資料搬移；實際 PCIe 仍使用適用的 Memory Request 等交易。</p>"
+    }
+  ],
+  "walk_id": "ch6-overview"
+}

@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="data:,">
+  <meta name="theme-color" content="#f2f6f8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#101b26" media="(prefers-color-scheme: dark)">
+  <meta name="description" content="裝置已進 D0，功率限制還有哪些層次？">
+  <title>功率預算、動態分配與緊急降功耗 · PCIe 系統與規格閱讀</title>
+  <style>
+/* Every selector is scoped so the same reading styles can be embedded in Jekyll. */
+.pcie-surface {
+  --paper: #f2f6f8;
+  --surface: #ffffff;
+  --surface-alt: #f4f8fb;
+  --ink: #192d40;
+  --muted: #4c6479;
+  --accent: #145f9d;
+  --accent-2: #0b756c;
+  --line: #cbd9e3;
+  --blue-soft: #edf5fc;
+  --teal-soft: #edf8f5;
+  --warm-soft: #fff7e8;
+  --warm-ink: #775016;
+  --focus: #95530c;
+  --radius: 14px;
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  font-size: 17px;
+  line-height: 1.85;
+  -webkit-text-size-adjust: 100%;
+  color-scheme: light dark;
+  overflow-wrap: break-word;
+}
+.pcie-surface *, .pcie-surface *::before, .pcie-surface *::after { box-sizing: border-box; }
+.pcie-surface a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: .2em; display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; }
+.pcie-surface a:hover { text-decoration-thickness: 2px; }
+.pcie-surface :focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; border-radius: 3px; }
+.pcie-surface [id] { scroll-margin-top: 28px; }
+.pcie-surface .skip-link { position: absolute; left: 16px; top: -100px; padding: .5rem 1rem; background: var(--surface); z-index: 20; }
+.pcie-surface .skip-link:focus { top: 12px; }
+.pcie-surface .site-shell { width: min(100% - 56px, 1360px); margin: 0 auto; }
+.pcie-surface .topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: max(22px, env(safe-area-inset-top)) 0 18px; border-bottom: 1px solid var(--line); }
+.pcie-surface .topbar a { font-size: .88rem; text-decoration: none; }
+.pcie-surface .series-name { font-weight: 750; letter-spacing: .04em; gap: 12px; }
+.pcie-surface .series-name span { color: var(--muted); font-weight: 450; letter-spacing: .02em; }
+.pcie-surface .page-header { padding: 50px 0 36px; max-width: 1050px; }
+.pcie-surface .eyebrow { font-size: .76rem; font-weight: 750; letter-spacing: .14em; color: var(--accent-2); margin: 0 0 15px; }
+.pcie-surface h1 { font-size: clamp(2rem, 3.4vw, 3.2rem); line-height: 1.35; letter-spacing: -.025em; font-weight: 750; margin: 0 0 20px; max-width: 24em; text-wrap: balance; }
+.pcie-surface .header-description { max-width: 49em; color: var(--muted); font-size: 1.08rem; line-height: 1.8; margin: 0; }
+.pcie-surface .edition { display: flex; flex-wrap: wrap; gap: 6px 22px; margin-top: 22px; font-size: .78rem; color: var(--muted); }
+.pcie-surface .reading-layout { display: grid; gap: 30px; align-items: start; padding-bottom: 48px; }
+.pcie-surface .toc-panel { border-top: 3px solid var(--accent-2); border-bottom: 1px solid var(--line); padding: 14px 0; }
+.pcie-surface .toc-label { margin: 0 0 9px; font-size: .74rem; font-weight: 750; letter-spacing: .12em; color: var(--muted); }
+.pcie-surface .toc-panel ol { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px 20px; list-style: none; padding: 0; margin: 0; }
+.pcie-surface .toc-panel a { width: 100%; font-size: .84rem; line-height: 1.55; color: var(--muted); text-decoration: none; padding: 8px 0; }
+.pcie-surface .toc-panel a:hover { color: var(--accent); text-decoration: underline; }
+.pcie-surface main { min-width: 0; }
+.pcie-surface .lesson { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: clamp(24px, 4vw, 54px); }
+.pcie-surface .lesson > :first-child { margin-top: 0; }
+.pcie-surface .lesson > section { margin-top: 3.1rem; }
+.pcie-surface .lesson > section:first-child { margin-top: 0; }
+.pcie-surface .lesson > section + section { border-top: 1px solid var(--line); padding-top: 2.7rem; }
+.pcie-surface h2 { font-size: 1.6rem; line-height: 1.55; letter-spacing: -.015em; margin: 0 0 1.2rem; font-weight: 700; }
+.pcie-surface h3 { font-size: 1.17rem; line-height: 1.6; margin: 2rem 0 .7rem; font-weight: 700; }
+.pcie-surface h4 { font-size: 1rem; line-height: 1.7; margin: 1.6rem 0 .5rem; }
+.pcie-surface p, .pcie-surface ul, .pcie-surface ol, .pcie-surface dl, .pcie-surface blockquote { max-width: 76ch; }
+.pcie-surface p { margin: .85rem 0 1.1rem; }
+.pcie-surface ul, .pcie-surface ol { padding-left: 1.45rem; margin: .8rem 0 1.3rem; }
+.pcie-surface li { margin: .45rem 0; padding-left: .12rem; }
+.pcie-surface li::marker { color: var(--accent-2); }
+.pcie-surface strong { font-weight: 700; }
+.pcie-surface code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; font-size: .87em; background: var(--surface-alt); border: 1px solid var(--line); border-radius: 4px; padding: .08em .28em; overflow-wrap: anywhere; }
+.pcie-surface pre { overflow-x: auto; padding: 1rem; background: var(--surface-alt); border: 1px solid var(--line); border-radius: 8px; font-size: .88rem; line-height: 1.7; }
+.pcie-surface pre code { background: none; border: 0; padding: 0; }
+.pcie-surface blockquote { margin: 1.3rem 0; padding: .2rem 1.3rem; border-left: 3px solid var(--accent-2); color: var(--muted); }
+.pcie-surface .lead { font-size: 1.08rem; line-height: 1.95; }
+.pcie-surface .question { color: var(--accent); font-weight: 700; }
+.pcie-surface .answer { margin-top: 1rem; }
+.pcie-surface .question .answer { font-weight: 400; color: var(--ink); }
+.pcie-surface details.question > :not(summary) { font-weight: 400; color: var(--ink); }
+.pcie-surface .term-note { color: var(--muted); font-size: .88rem; padding-left: 1rem; border-left: 2px solid var(--line); margin: 1rem 0 1.4rem; }
+.pcie-surface .example, .pcie-surface .note, .pcie-surface .takeaway { border: 1px solid var(--line); border-left: 4px solid var(--accent-2); border-radius: 0 10px 10px 0; background: var(--teal-soft); padding: 1rem 1.3rem; margin: 1.6rem 0; }
+.pcie-surface .example > :first-child, .pcie-surface .note > :first-child, .pcie-surface .takeaway > :first-child { margin-top: 0; }
+.pcie-surface .example > :last-child, .pcie-surface .note > :last-child, .pcie-surface .takeaway > :last-child { margin-bottom: 0; }
+.pcie-surface .note { border-left-color: var(--accent); background: var(--blue-soft); }
+.pcie-surface .takeaway { font-weight: 600; }
+.pcie-surface .table-wrap { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 1.5rem 0; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); }
+.pcie-surface table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: .9rem; line-height: 1.75; text-align: left; }
+.pcie-surface caption { text-align: left; padding: 12px 16px; font-weight: 650; color: var(--ink); background: var(--surface-alt); border-bottom: 1px solid var(--line); }
+.pcie-surface th, .pcie-surface td { padding: 13px 16px; vertical-align: top; border-bottom: 1px solid var(--line); min-width: 9em; }
+.pcie-surface th { font-weight: 650; color: var(--ink); background: var(--blue-soft); }
+.pcie-surface thead th { position: sticky; top: 0; z-index: 2; }
+.pcie-surface tbody th, .pcie-surface tbody td:first-child { position: sticky; left: 0; z-index: 1; background: var(--surface-alt); }
+.pcie-surface thead th:first-child { left: 0; z-index: 3; }
+.pcie-surface tbody tr:last-child td, .pcie-surface tbody tr:last-child th { border-bottom: 0; }
+.pcie-surface td p, .pcie-surface th p { margin: .2rem 0 .5rem; }
+.pcie-surface .field { font-family: "SFMono-Regular", Consolas, monospace; color: var(--accent); overflow-wrap: anywhere; }
+.pcie-surface figure { margin: 1.6rem 0; }
+.pcie-surface .diagram { padding: 20px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-alt); }
+.pcie-surface svg { display: block; width: 100%; height: auto; max-width: 100%; color: var(--ink); }
+.pcie-surface svg text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif; }
+.pcie-surface .diagram .box { fill: var(--surface); stroke: var(--accent); stroke-width: 2; }
+.pcie-surface .diagram .arrow { fill: none; stroke: var(--accent); stroke-width: 2; }
+.pcie-surface .diagram svg[aria-labelledby="journey-title journey-desc"] text,
+.pcie-surface .diagram svg[aria-labelledby="msix-title msix-desc"] text { fill: var(--ink); font-size: 18px; }
+.pcie-surface figcaption { color: var(--muted); font-size: .85rem; line-height: 1.75; margin-top: 12px; }
+.pcie-surface details { border: 1px solid var(--line); border-radius: 9px; background: var(--surface-alt); padding: 0 18px; margin: 1.2rem 0; }
+.pcie-surface summary { cursor: pointer; min-height: 44px; padding: 12px 0; font-weight: 650; line-height: 1.65; }
+.pcie-surface summary::marker { color: var(--accent-2); }
+.pcie-surface details[open] { padding-bottom: 8px; }
+.pcie-surface details[open] > summary { border-bottom: 1px solid var(--line); margin-bottom: 12px; }
+.pcie-surface .source-note { background: transparent; font-size: .84rem; color: var(--muted); }
+.pcie-surface .source-note summary { font-weight: 500; }
+.pcie-surface .source-ref { font-size: .81rem; color: var(--muted); }
+.pcie-surface .route { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; padding: 0; margin: 1.5rem 0; list-style-position: inside; max-width: none; }
+.pcie-surface .route > li { margin: 0; padding: 15px; border: 1px solid var(--line); border-top: 3px solid var(--accent-2); border-radius: 7px; background: var(--surface-alt); font-size: .88rem; }
+.pcie-surface .steps > li { margin: 1rem 0; padding-left: .3rem; }
+.pcie-surface .route > li::marker, .pcie-surface .steps > li::marker { font-weight: 750; }
+.pcie-surface :target { outline: 2px solid var(--accent-2); outline-offset: 7px; }
+.pcie-surface main:target { outline: none; }
+.pcie-surface .bottom-nav { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 24px 4px 0; font-size: .88rem; }
+.pcie-surface .page-footer { border-top: 1px solid var(--line); padding: 22px 0 38px; font-size: .78rem; color: var(--muted); }
+.pcie-surface .page-footer p { margin: .3rem 0; }
+.pcie-surface .chapter-list { display: grid; gap: 18px; margin-top: 1.5rem; }
+.pcie-surface .chapter-card { padding: 21px 24px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+.pcie-surface .chapter-card.ready { border-top: 4px solid var(--accent-2); background: var(--teal-soft); }
+.pcie-surface .chapter-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; font-size: .75rem; color: var(--muted); font-weight: 650; }
+.pcie-surface .status { padding: 2px 9px; border: 1px solid var(--line); border-radius: 4px; }
+.pcie-surface .ready .status { color: var(--accent-2); border-color: var(--accent-2); }
+.pcie-surface .chapter-card h3 { font-size: 1.15rem; margin: 10px 0 8px; }
+.pcie-surface .chapter-card h3 a { min-height: 44px; }
+.pcie-surface .chapter-card .chapter-question { margin: 0 0 10px; color: var(--muted); font-size: .94rem; }
+.pcie-surface .chapter-card ul { font-size: .9rem; margin: .6rem 0; }
+.pcie-surface .prerequisites { font-size: .8rem; color: var(--muted); margin-bottom: 0; }
+.pcie-surface .start-link { padding: 9px 18px; border-radius: 6px; background: var(--accent); color: var(--surface); text-decoration: none; font-weight: 650; }
+@media (min-width: 1200px) {
+  .pcie-surface .reading-layout { grid-template-columns: 232px minmax(0, 1fr); gap: 38px; }
+  .pcie-surface .toc-panel { position: sticky; top: calc(24px + env(safe-area-inset-top)); }
+  .pcie-surface .toc-panel ol { display: block; }
+  .pcie-surface .toc-panel li { margin: 2px 0; }
+  .pcie-surface .toc-panel a { padding: 7px 0; font-size: .8rem; }
+  .pcie-surface .page-header { padding-left: 270px; max-width: none; }
+}
+@media (min-width: 760px) and (max-width: 1199px) {
+  .pcie-surface .site-shell { width: min(100% - 48px, 900px); }
+}
+@media (max-width: 759px) {
+  .pcie-surface .site-shell { width: min(100% - 28px, 700px); }
+  .pcie-surface .topbar { gap: 10px; }
+  .pcie-surface .series-name { gap: 6px; }
+  .pcie-surface .series-name span { font-size: .72rem; }
+  .pcie-surface .page-header { padding: 32px 2px 26px; }
+  .pcie-surface .header-description { font-size: 1rem; }
+  .pcie-surface .toc-panel ol { grid-template-columns: 1fr; }
+  .pcie-surface .lesson { padding: 25px 19px; }
+  .pcie-surface h2 { font-size: 1.4rem; }
+  .pcie-surface .lesson > section + section { padding-top: 2rem; }
+  .pcie-surface .diagram { padding: 10px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .pcie-surface .diagram::before { content: "圖可左右捲動"; display: block; color: var(--muted); font-size: .8rem; margin-bottom: 8px; }
+  .pcie-surface[lang="en"] .diagram::before { content: "Scroll horizontally to view the diagram"; }
+  .pcie-surface .diagram svg { min-width: 700px; }
+  .pcie-surface .example, .pcie-surface .note { padding: 1rem; }
+  .pcie-surface .chapter-card { padding: 18px; }
+  .pcie-surface .route { grid-template-columns: 1fr; }
+}
+@media (prefers-color-scheme: dark) {
+  .pcie-surface {
+    --paper: #101b26;
+    --surface: #172635;
+    --surface-alt: #1c3041;
+    --ink: #e0ebf5;
+    --muted: #b2c4d4;
+    --accent: #8ac9ff;
+    --accent-2: #75d4c4;
+    --line: #40596b;
+    --blue-soft: #203a50;
+    --teal-soft: #183b3c;
+    --warm-soft: #3e3324;
+    --warm-ink: #edd09a;
+    --focus: #ffcf83;
+  }
+  .pcie-surface .start-link { color: #102334; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pcie-surface *, .pcie-surface *::before, .pcie-surface *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+@media print {
+  .pcie-surface { --paper: #fff; --surface: #fff; --surface-alt: #f6f6f6; --ink: #111; --muted: #444; --accent: #174d73; --accent-2: #1e5a4c; --line: #aaa; --blue-soft: #f2f5f7; --teal-soft: #f0f6f3; color-scheme: light; font-size: 11pt; line-height: 1.7; background: #fff; }
+  .pcie-surface .site-shell { width: 100%; }
+  .pcie-surface .topbar, .pcie-surface .skip-link, .pcie-surface .toc-panel, .pcie-surface .bottom-nav { display: none; }
+  .pcie-surface .reading-layout { display: block; padding: 0; }
+  .pcie-surface .page-header { padding: 0 0 20px; }
+  .pcie-surface h1 { font-size: 24pt; }
+  .pcie-surface h2 { font-size: 17pt; }
+  .pcie-surface h3 { font-size: 13pt; }
+  .pcie-surface .lesson { border: 0; padding: 0; }
+  .pcie-surface a { display: inline; min-width: 0; min-height: 0; text-decoration: underline; }
+  .pcie-surface h2, .pcie-surface h3, .pcie-surface h4, .pcie-surface summary { break-after: avoid; }
+  .pcie-surface figure, .pcie-surface tr, .pcie-surface .example, .pcie-surface .chapter-card { break-inside: avoid; }
+  .pcie-surface .table-wrap { overflow: visible; }
+  .pcie-surface th, .pcie-surface td { min-width: 0; padding: 7px 9px; position: static !important; }
+  .pcie-surface details { background: transparent; }
+  .pcie-surface details > * { display: block !important; }
+  .pcie-surface details::details-content { content-visibility: visible !important; }
+  .pcie-surface .diagram { overflow: visible; }
+  .pcie-surface .diagram::before { display: none; }
+  .pcie-surface .diagram svg { min-width: 0; }
+  .pcie-surface .page-footer { margin-top: 20px; }
+  .pcie-surface :target { outline: 0; }
+}
+@media (forced-colors: active) {
+  .pcie-surface { --paper: Canvas; --surface: Canvas; --surface-alt: Canvas; --ink: CanvasText; --muted: CanvasText; --accent: LinkText; --accent-2: LinkText; --line: CanvasText; --blue-soft: Canvas; --teal-soft: Canvas; --warm-soft: Canvas; --warm-ink: CanvasText; --focus: Highlight; }
+  .pcie-surface a { text-decoration: underline; }
+  .pcie-surface .start-link { border: 1px solid LinkText; color: LinkText; background: Canvas; }
+  .pcie-surface svg { forced-color-adjust: none; }
+}
+
+/* Self-contained teaching diagrams use the same theme in standalone pages and posts. */
+.pcie-surface .course-diagram text { fill: var(--ink); font-family: inherit; font-size: 18px; }
+
+/* Applied only to explicitly authorized teaching roots. */
+html .spec-teaching[data-spec-series] .st-terms { margin:.35rem 0 1rem; padding:.5rem .8rem; border-inline-start:3px solid var(--st-accent); background:var(--st-soft); font-size:.88em; color:var(--st-muted); }
+html .spec-teaching[data-spec-series] .st-terms > div { display:flex; flex-wrap:wrap; gap:.2em .7em; }
+html .spec-teaching[data-spec-series] .st-terms dt { font-weight:650; }
+html .spec-teaching[data-spec-series] .st-terms dd { margin:0; flex:1 1 14em; }
+html .spec-teaching[data-spec-series] {
+ --st-diagram-width:900px;
+ --st-paper:#f2f6f8; --st-surface:#fff; --st-ink:#192d40; --st-muted:#4c6479;
+ --st-line:#cbd9e3; --st-accent:#145f9d; --st-soft:#edf5fc;
+ --paper:var(--st-paper); --surface:var(--st-surface); --surface-2:var(--st-soft); --surface-alt:var(--st-soft);
+ --ink:var(--st-ink); --muted:var(--st-muted); --line:var(--st-line);
+ --accent:var(--st-accent); --accent-2:var(--st-accent); --soft:var(--st-soft); --blue-soft:var(--st-soft); --teal-soft:var(--st-soft);
+ --qr-paper:var(--st-paper); --qr-surface:var(--st-surface); --qr-ink:var(--st-ink); --qr-muted:var(--st-muted);
+ --qr-line:var(--st-line); --qr-accent:var(--st-accent); --qr-soft:var(--st-soft);
+ color:var(--st-ink); background:var(--st-paper); font-size:17px; line-height:1.9;
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+}
+html .spec-teaching[data-spec-series="nvme"] { --st-accent:#086b56; --st-soft:#e7f4ee; }
+@media(prefers-color-scheme:dark) {
+ html:not([data-theme="light"]) .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+ html:not([data-theme="light"]) .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+}
+html[data-theme="dark"] .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+html[data-theme="dark"] .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+.spec-teaching * { box-sizing:border-box; }
+.spec-teaching :is(h1,h2,h3,h4,h5,p,li,td,th,summary,strong,figcaption) { color:var(--st-ink); }
+.spec-teaching svg text { font-family:inherit; }
+.spec-teaching h1 { font-size:clamp(1.8rem,3.2vw,2.65rem); line-height:1.4; }
+.spec-teaching h2 { font-size:clamp(1.3rem,2.5vw,1.7rem); line-height:1.55; }
+.spec-teaching h3 { font-size:1.15rem; line-height:1.65; }
+.spec-teaching h4 { font-size:1rem; line-height:1.7; }
+.spec-teaching :is(h1,h2,h3,h4) { overflow-wrap:anywhere; }
+.spec-teaching p { margin:.7rem 0 1.15rem; }
+.spec-teaching :is(a,summary) { text-underline-offset:.2em; }
+.spec-teaching :focus-visible { outline:3px solid var(--st-accent); outline-offset:4px; }
+.spec-teaching :is(.qa-takeaway,.qa-answer-lead,.st-takeaway) { color:var(--st-ink); font-weight:650; font-size:1.06rem; line-height:1.9; }
+.spec-teaching :is(.qa-question,.qr-card,.guided-walk) { border:1px solid var(--st-line); border-radius:12px; background:var(--st-surface); padding:clamp(18px,3vw,30px); margin:1.8rem 0; }
+.spec-teaching :is(.qa-flow,.qr-note,.qr-observations,.st-context,.st-route) { background:var(--st-soft); border-left:4px solid var(--st-accent); padding:1rem 1.2rem; margin:1.4rem 0; }
+.spec-teaching :is(.qr-step,.qa-qid,.st-label) { color:var(--st-accent); font-weight:700; }
+.spec-teaching :is(.qa-citations,.qa-source-links,.qr-case-sources,.walk-source,.st-source) { font-size:.84rem; line-height:1.75; color:var(--st-muted); overflow-wrap:anywhere; }
+.spec-teaching :is(.qr-table,.table-wrap) { overflow-x:auto; margin:1.4rem 0; border-radius:7px; }
+.spec-teaching :is(th,td) { line-height:1.8; vertical-align:top; min-width:120px; }
+.spec-teaching :is(table,td) { background:var(--st-surface); }
+.spec-teaching th { background:var(--st-soft); }
+.spec-teaching .st-step { border-left:3px solid var(--st-line); padding:.6rem 1rem; margin:1.2rem 0; }
+.spec-teaching .st-step:target { border-left-color:var(--st-accent); background:var(--st-soft); }
+.spec-teaching .st-glossary { border:1px solid var(--st-line); padding:.7rem 1rem; margin:1.4rem 0; border-radius:8px; }
+.spec-teaching .st-glossary > summary { min-height:44px; cursor:pointer; }
+.spec-teaching .st-specs { display:flex; flex-wrap:wrap; gap:.4rem 1rem; color:var(--st-muted); font-size:.8rem; line-height:1.8; margin:1rem 0; }
+.spec-teaching .st-specs span { border-bottom:2px solid var(--st-accent); padding:.2rem 0; }
+@media(max-width:620px) { .spec-teaching :is(.qa-question,.qr-card,.guided-walk) { padding:16px; } .spec-teaching .diagram svg { min-width:var(--st-diagram-width); } }
+@media print {
+ .spec-teaching { --st-paper:#fff!important; --st-surface:#fff!important; --st-ink:#000!important; --st-muted:#333!important; --st-line:#999!important; --st-accent:#000!important; --st-soft:#fff!important; }
+ .spec-teaching details > * { display:block!important; }
+ .spec-teaching details::details-content { content-visibility:visible!important; }
+ .spec-teaching .st-step { break-inside:avoid; }
+}
+
+/* Native reading guides: selection highlights; it never hides teaching content.
+   build_pcie_course.py changes .pcie-surface to .pcie-article for the posts. */
+.pcie-surface .guided-walk { margin: 1.8rem 0; padding: 1.2rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); min-width: 0; }
+.pcie-surface .guided-walk > h3 { margin-top: 0; }
+.pcie-surface .walk-help { color: var(--muted); font-size: .85rem; }
+.pcie-surface .walk-order { margin-bottom: 1.1rem; }
+/* Keep native radio semantics and keyboard handling; the associated label is
+   the visible control, so a radio cannot wrap away from its own label. */
+.pcie-surface .walk-choice { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.pcie-surface .walk-label { display: inline-flex; align-items: center; min-height: 44px; padding: .35rem .7rem; margin: .25rem .8rem .25rem 0; border: 2px solid var(--line); border-radius: 8px; cursor: pointer; font-size: .9rem; line-height: 1.5; color: var(--ink); background: var(--surface-alt); }
+.pcie-surface .walk-choice:checked + .walk-label { border-color: var(--accent); background: var(--blue-soft); font-weight: 700; }
+.pcie-surface .walk-choice:focus-visible + .walk-label { outline: 3px solid var(--focus); outline-offset: 3px; }
+.pcie-surface .walk-view { margin-top: 1rem; min-width: 0; }
+.pcie-surface .walk-diagram { margin: 0 0 1.2rem; }
+.pcie-surface .walk-diagram svg { width: 100%; height: auto; display: block; }
+.pcie-surface .walk-diagram svg a { cursor: pointer; }
+.pcie-surface .walk-diagram svg a:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
+.pcie-surface .walk-diagram figcaption { margin-top: .8rem; }
+.pcie-surface .walk-steps { max-width: none; padding-left: 1.6rem; }
+.pcie-surface .walk-step { padding: .6rem .9rem; margin: .7rem 0; border: 2px solid transparent; border-left: 5px solid var(--line); border-radius: 5px; background: var(--surface); }
+.pcie-surface .walk-step h4 { margin: .2rem 0 .5rem; }
+.pcie-surface .walk-condition { font-size: .9rem; color: var(--muted); }
+.pcie-surface .walk-source { border-top: 1px solid var(--line); padding-top: .35rem; color: var(--muted); font-size: .85rem; }
+.pcie-surface .walk-step p:last-child { margin-bottom: .3rem; }
+.pcie-surface .walk-components { border-top: 1px solid var(--line); margin-top: 1.4rem; padding-top: .4rem; }
+.pcie-surface .walk-component-links { display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; list-style: none; padding-left: 0; }
+.pcie-surface .walk-component-links a { min-height: 44px; min-width: 44px; }
+.pcie-surface .walk-component { padding: .7rem 1rem; margin: 1rem 0; border: 1px solid var(--line); border-radius: 8px; }
+.pcie-surface .walk-component > h4 { margin-top: .2rem; }
+.pcie-surface .walk-component:target { outline: 3px solid var(--accent-2); outline-offset: 3px; }
+.pcie-surface .walk-component details { margin-bottom: .3rem; }
+
+.pcie-surface .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-step[data-walk-step="1"],
+.pcie-surface .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-step[data-walk-step="2"],
+.pcie-surface .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-step[data-walk-step="3"],
+.pcie-surface .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-step[data-walk-step="4"],
+.pcie-surface .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-step[data-walk-step="5"],
+.pcie-surface .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-step[data-walk-step="6"],
+.pcie-surface .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-step[data-walk-step="7"],
+.pcie-surface .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-step[data-walk-step="8"] { border-color: var(--accent); background: var(--blue-soft); }
+
+.pcie-surface .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-node[data-walk-steps~="1"],
+.pcie-surface .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-node[data-walk-steps~="2"],
+.pcie-surface .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-node[data-walk-steps~="3"],
+.pcie-surface .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-node[data-walk-steps~="4"],
+.pcie-surface .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-node[data-walk-steps~="5"],
+.pcie-surface .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-node[data-walk-steps~="6"],
+.pcie-surface .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-node[data-walk-steps~="7"],
+.pcie-surface .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-node[data-walk-steps~="8"] { --walk-active-weight: 750; }
+.pcie-surface .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-node[data-walk-steps~="1"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-node[data-walk-steps~="2"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-node[data-walk-steps~="3"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-node[data-walk-steps~="4"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-node[data-walk-steps~="5"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-node[data-walk-steps~="6"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-node[data-walk-steps~="7"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-surface .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-node[data-walk-steps~="8"] > :is(rect, circle, ellipse, polygon, path, line, polyline) { stroke: var(--accent); stroke-width: 3.5px; vector-effect: non-scaling-stroke; }
+.pcie-surface .walk-node text { font-weight: var(--walk-active-weight, inherit); }
+
+@media (max-width: 620px) {
+  .pcie-surface .guided-walk { padding: .8rem; }
+  .pcie-surface .walk-label { margin-right: .45rem; padding-left: .45rem; padding-right: .45rem; }
+  .pcie-surface .walk-steps { padding-left: 1.15rem; }
+  .pcie-surface .walk-step { padding: .5rem .6rem; }
+  .pcie-surface .walk-diagram { overflow-x: auto; }
+  .pcie-surface .walk-diagram svg { min-width: var(--st-diagram-width, 700px); }
+}
+@media (forced-colors: active) {
+  .pcie-surface .walk-choice:checked + .walk-label { border-color: Highlight; }
+  .pcie-surface .walk-step { border-color: CanvasText; }
+}
+@media print {
+  .pcie-surface .guided-walk { border: 1px solid #999; padding: .7rem; break-inside: auto; }
+  .pcie-surface .walk-choice, .pcie-surface .walk-label, .pcie-surface .walk-help { display: none; }
+  .pcie-surface .walk-step { display: list-item !important; border-color: #999 !important; background: transparent !important; }
+  .pcie-surface .walk-node { --walk-active-weight: 500 !important; }
+  .pcie-surface .walk-node > :is(rect, circle, ellipse, polygon, path, line, polyline) { stroke: #333 !important; stroke-width: 1.5px !important; }
+  .pcie-surface .walk-diagram { overflow: visible; }
+  .pcie-surface .walk-diagram svg { min-width: 0; }
+  .pcie-surface .walk-component details > * { display: block !important; }
+  .pcie-surface .walk-component details::details-content { content-visibility: visible !important; }
+}
+
+/* SVG text follows the selected reading theme. */
+.pcie-surface svg text { fill: var(--ink); }
+.pcie-surface .walk-summary { margin: 1rem 0 1.5rem; }
+  </style>
+</head>
+<body class="pcie-surface spec-teaching" data-spec-series="pcie">
+  <a class="skip-link" href="#content">跳到正文</a>
+  <div class="site-shell">
+    <nav class="topbar" aria-label="課程導覽">
+      <a class="series-name" href="index.html">PCIe <span>系統與規格閱讀</span></a>
+      <a href="index.html">課程總覽</a>
+    </nav>
+    <header class="page-header">
+      <p class="eyebrow">PCIe · 系統與規格閱讀 / CHAPTER 23</p>
+      <h1>功率預算、動態分配與緊急降功耗</h1>
+      <p class="header-description">裝置已進 D0，功率限制還有哪些層次？</p>
+      <div class="edition"><span>繁體中文 · 規格與情境推演</span><span>2026-10-24</span></div>
+    </header>
+    <div class="reading-layout">
+      <aside class="toc-panel" aria-label="本頁目錄">
+        <p class="toc-label">本章閱讀路徑</p>
+        <nav aria-label="章節段落"><ol><li><a href="#overview">裝置已進 D0，功率限制還有哪些層次？</a></li><li><a href="#budget">要替新插卡預留功率，先查哪裡？</a></li><li><a href="#dpa">DPA 子狀態能直接當成 D1、D2 嗎？</a></li><li><a href="#emergency">緊急降載與一般省電如何接？</a></li><li><a href="#sources">版本與來源</a></li></ol></nav>
+      </aside>
+      <main id="content" tabindex="-1">
+        <article class="lesson">
+<section id="overview"><h2>裝置已進 D0，功率限制還有哪些層次？</h2><!-- pcie-walk: walks/chapter23-overview.json -->
+<div class="guided-walk" id="ch23-overview" role="group" aria-labelledby="ch23-overview-title" data-walk-version="1">
+<h3 id="ch23-overview-title">裝置已進 D0，功率限制還有哪些層次？</h3>
+<p class="walk-help" id="ch23-overview-help">選擇步驟後，圖中對應的元件與下方解說會加上重點標示。完整圖與所有解說會持續顯示；也可用方向鍵切換步驟。</p>
+<div class="walk-order"><p>圖先串起供應、回報與限制；不同功率機制的詳細啟用條件須各自核對，不代表每張卡都有全部功能。</p></div>
+<input class="walk-choice" type="radio" name="ch23-overview-step" id="ch23-overview-choice-1" value="1" data-walk-step="1" aria-describedby="ch23-overview-help" aria-controls="ch23-overview-view ch23-overview-step-1" checked="checked">
+<label class="walk-label" for="ch23-overview-choice-1">1. 先確認預算資料代表誰</label>
+<input class="walk-choice" type="radio" name="ch23-overview-step" id="ch23-overview-choice-2" value="2" data-walk-step="2" aria-describedby="ch23-overview-help" aria-controls="ch23-overview-view ch23-overview-step-2">
+<label class="walk-label" for="ch23-overview-choice-2">2. 再找相應的配置入口</label>
+<input class="walk-choice" type="radio" name="ch23-overview-step" id="ch23-overview-choice-3" value="3" data-walk-step="3" aria-describedby="ch23-overview-help" aria-controls="ch23-overview-view ch23-overview-step-3">
+<label class="walk-label" for="ch23-overview-choice-3">3. 最後核對目前限制與例外</label>
+<div class="walk-view" id="ch23-overview-view">
+<figure class="diagram walk-diagram">
+<svg viewBox="0 0 900 420" role="img" aria-labelledby="ch23-zh-t ch23-zh-d"><title id="ch23-zh-t">本章角色與事件</title><desc id="ch23-zh-d">功率預算、D0內子狀態與緊急降載分開處理。</desc><g data-walk-target="n0" class="walk-node" data-walk-steps="1"><rect x="30" y="40" width="350" height="44" rx="10" fill="var(--surface-alt)" stroke="var(--line)" /><text x="205.0" y="69" text-anchor="middle" font-size="16">平台：確認可供應功率</text></g><g data-walk-target="n1" class="walk-node" data-walk-steps="1"><rect x="515" y="40" width="350" height="44" rx="10" fill="var(--surface-alt)" stroke="var(--line)" /><text x="690.0" y="69" text-anchor="middle" font-size="16">裝置：回報功耗資料</text></g><g data-walk-target="n2" class="walk-node" data-walk-steps="2"><rect x="515" y="285" width="350" height="44" rx="10" fill="var(--surface-alt)" stroke="var(--line)" /><text x="690.0" y="314" text-anchor="middle" font-size="16">管理者：依機制授權與配置</text></g><g data-walk-target="n3" class="walk-node" data-walk-steps="3"><rect x="30" y="285" width="350" height="44" rx="10" fill="var(--surface-alt)" stroke="var(--line)" /><text x="205.0" y="314" text-anchor="middle" font-size="16">裝置：按狀態限制功耗</text></g><g data-walk-target="a" class="walk-node" data-walk-steps="1"><path d="M380 74 L515 74" stroke="var(--accent)" stroke-width="2" fill="none" /><polygon points="515,74 505.0,79.0 505.0,69.0" fill="var(--accent)" /><text x="447.5" y="64.0" text-anchor="middle" font-size="16" /></g><g data-walk-target="b" class="walk-node" data-walk-steps="2"><path d="M690 108 L690 285" stroke="var(--accent)" stroke-width="2" fill="none" /><polygon points="690,285 685.0,275.0 695.0,275.0" fill="var(--accent)" /><text x="690.0" y="186.5" text-anchor="middle" font-size="16" /></g><g data-walk-target="c" class="walk-node" data-walk-steps="3"><path d="M515 319 L380 319" stroke="var(--accent)" stroke-width="2" fill="none" /><polygon points="380,319 390.0,314.0 390.0,324.0" fill="var(--accent)" /><text x="447.5" y="309.0" text-anchor="middle" font-size="16" /></g></svg>
+<figcaption><p>作者依 Base 6.0 繪製的教學示意；省略與本章無關的交換。</p></figcaption></figure>
+<div class="walk-summary"><p>D0 是 Function 的工作電源狀態，並沒有單獨決定整張卡可以消耗多少功率。Power Budgeting（功率預算）處理系統供應與裝置需求；DPA（Dynamic Power Allocation，動態功率配置）處理 D0 內的功率子狀態；緊急降載另有用途與優先關係。</p></div>
+<ol class="walk-steps">
+<li class="walk-step" id="ch23-overview-step-1" data-walk-step="1" data-walk-targets="n0 a n1"><h4>先確認預算資料代表誰</h4><div class="walk-condition"><p>同一張卡的資料不能不分部署方式就全部相加，否則可能重複計算。</p></div><div class="walk-explanation"><p>Table 6-10 依單功能、多功能或多裝置插卡，解釋回報代表整個裝置還是個別 Function。</p></div><div class="walk-source" data-source-claims="PCIE-CH23-001"><p>Base 6.0 §6.8／Table 6-10，pp.742–743。</p></div></li>
+<li class="walk-step" id="ch23-overview-step-2" data-walk-step="2" data-walk-targets="b n2"><h4>再找相應的配置入口</h4><div class="walk-condition"><p>資料還帶有電源軌、狀態與條件；一筆 Data 不是所有工作模式的功耗。</p></div><div class="walk-explanation"><p>Figure 7-136 提供 Power Budgeting（回報與管理裝置功率的能力）布局，Data Select 決定 Data Register 目前代表哪一筆資料。</p></div><div class="walk-source" data-source-claims="PCIE-CH23-002"><p>Base 6.0 §7.8.1，pp.1090–1091。</p></div></li>
+<li class="walk-step" id="ch23-overview-step-3" data-walk-step="3" data-walk-targets="c n3"><h4>最後核對目前限制與例外</h4><div class="walk-condition"><p>緊急降載是避免系統損害的 fail-safe，不是一般效能調節策略。</p></div><div class="walk-explanation"><p>DPA（D0 內的動態功率配置）與 Slot Power Limit、Emergency Power Reduction 各有控制方式。先確認使用哪一種，再判讀目前狀態。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>DPA</dt><dd>Dynamic Power Allocation，動態功率配置</dd></div></dl></div><div class="walk-source" data-source-claims="PCIE-CH23-003 PCIE-CH23-004"><p>Base 6.0 §6.16、§6.24，pp.777–778、812。</p></div></li>
+</ol></div>
+</div>
+<!-- /pcie-walk --></section>
+<section id="budget"><h2>要替新插卡預留功率，先查哪裡？</h2><p>先用 Table 6-10 確認資料的涵蓋範圍，再到 Figure 7-136 找 Data Select 與 Data Register。§7.8.1.2 說明索引從 0 起，寫入索引後，Data Register 顯示對應的功率資料。它的預設索引未定義，因此不能略過選擇步驟就假定讀到第一筆。</p><p>Power Budgeting 的部署還受外形規格影響。裝置／插卡在系統配置並啟用之前，須保持在相應機電規格的 configuration power limit 之內；系統也應先妥善安排預算，再啟用插卡。這不等於只要裝置存在，就能取得完整額定功率。</p></section>
+<section id="dpa"><h2>DPA 子狀態能直接當成 D1、D2 嗎？</h2><p>不能。§6.16 的子狀態在 D0 內運作，從 0 到 Substate_Max 連續編號，後一級的功率配置不得高於前一級。軟體可以直接選擇某級，不必逐級經過。這些子狀態不等同 D1–D3，也不等同 L1.1／L1.2。</p><p><strong>作者案例：</strong>假設三個已宣告子狀態分別配置 20、15、8 W。軟體把控制從 0 改為 2 時，須再讀狀態確認轉換進度。從高功率轉往低功率期間，Status 仍須表示較高功率狀態，完成後才表示較低狀態；從低轉高時則在轉換期間就表示較高狀態。</p><p>若裝置有 SR-IOV（Single Root I/O Virtualization，單根 I/O 虛擬化），VF（Virtual Function，虛擬功能）的 DPA 功率由關聯 PF（Physical Function，實體功能）管理，VF 不得實作 DPA Capability。</p></section>
+<section id="emergency"><h2>緊急降載與一般省電如何接？</h2><p>§6.24 把 Emergency Power Reduction（緊急功率降低）定義為可選的 fail-safe。它會優先於所述的一般功率控制機制。觸發方式要依 Supported、Initialization Required 與 Table 6-16 的條件，不能看到名稱就假設固定由一個標準 Configuration bit 發起。</p><p>SR-IOV 的一般電源狀態另回到 §5.10：PF 必須有電源管理能力，VF 則可選。若 VF 有自己的能力，PF 比 VF 進入更低功耗狀態時，裝置行為未定義；軟體應先降低所有 VF 的電源狀態，再降低其 PF。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SR-IOV</dt><dd>Single Root I/O Virtualization，單根I/O虛擬化</dd></div><div><dt>PF</dt><dd>Physical Function，實體功能</dd></div></dl></section>
+<section id="sources"><h2>版本與來源</h2><p>本章以 PCI Express Base Specification Revision 6.0（6.0-1.0-PUB）為準，文件頁與 PDF 頁相同。案例的配置與讀值均為作者假設，並非實機測量。</p><details class="source-note"><summary>完整來源定位</summary><ul><li>§6.8; §6.8.1; pp.742,743; Tables 6-10</li><li>§7.8.1; §7.8.1.2; pp.1090,1091; Figures 7-136</li><li>§6.16; §6.16.1; pp.777,778</li><li>§6.24; pp.812; Tables 6-16</li><li>§5.10; §5.10.1; pp.655</li></ul></details></section>
+        </article>
+        <nav class="bottom-nav" aria-label="下一步"><a href="index.html">課程總覽</a><a href="chapter-22.html">← Chapter 22</a><a href="chapter-24.html">Chapter 24 →</a><a href="#content">回到本章開頭 ↑</a></nav>
+      </main>
+    </div>
+    <footer class="page-footer"><p>PCIe · 系統與規格閱讀</p><p>本頁可離線閱讀。引用的 Figure 與 Table 編號，請搭配本文標示的規格版本使用。</p></footer>
+  </div>
+</body>
+</html>

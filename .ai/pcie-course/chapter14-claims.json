@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "course": "pcie-course",
+  "chapter": 14,
+  "updated": "2026-10-24",
+  "claims": [
+    {
+      "id": "PCIE-CH14-001",
+      "claim": "兩種模式的基本標頭、格式與Type解碼不同。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.1.1",
+        "2.2.1.2"
+      ],
+      "document_pages": [
+        119,
+        120,
+        121,
+        122,
+        123
+      ],
+      "pdf_pages": [
+        119,
+        120,
+        121,
+        122,
+        123
+      ],
+      "figures": [
+        "2-4",
+        "2-5",
+        "2-6"
+      ],
+      "tables": [
+        "2-2",
+        "2-3",
+        "2-4",
+        "2-5"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH14-002",
+      "claim": "Flit OHC存在編碼、順序與TS尾部定義。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.1.2"
+      ],
+      "document_pages": [
+        130,
+        131,
+        132
+      ],
+      "pdf_pages": [
+        130,
+        131,
+        132
+      ],
+      "figures": [
+        "2-7"
+      ],
+      "tables": [
+        "2-6"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH14-003",
+      "claim": "普通非Flit的Byte Enables位置與一DW及多DW規則。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.5.1"
+      ],
+      "document_pages": [
+        149,
+        150
+      ],
+      "pdf_pages": [
+        149,
+        150
+      ],
+      "figures": [
+        "2-26"
+      ],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH14-004",
+      "claim": "Read、Non-Posted Write、DMWr與AtomicOp需要完成回覆。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.9"
+      ],
+      "document_pages": [
+        195
+      ],
+      "pdf_pages": [
+        195
+      ],
+      "figures": [],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    }
+  ]
+}

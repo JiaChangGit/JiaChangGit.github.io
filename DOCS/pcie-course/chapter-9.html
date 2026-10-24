@@ -223,6 +223,64 @@
 /* Self-contained teaching diagrams use the same theme in standalone pages and posts. */
 .pcie-surface .course-diagram text { fill: var(--ink); font-family: inherit; font-size: 18px; }
 
+/* Applied only to explicitly authorized teaching roots. */
+html .spec-teaching[data-spec-series] .st-terms { margin:.35rem 0 1rem; padding:.5rem .8rem; border-inline-start:3px solid var(--st-accent); background:var(--st-soft); font-size:.88em; color:var(--st-muted); }
+html .spec-teaching[data-spec-series] .st-terms > div { display:flex; flex-wrap:wrap; gap:.2em .7em; }
+html .spec-teaching[data-spec-series] .st-terms dt { font-weight:650; }
+html .spec-teaching[data-spec-series] .st-terms dd { margin:0; flex:1 1 14em; }
+html .spec-teaching[data-spec-series] {
+ --st-diagram-width:900px;
+ --st-paper:#f2f6f8; --st-surface:#fff; --st-ink:#192d40; --st-muted:#4c6479;
+ --st-line:#cbd9e3; --st-accent:#145f9d; --st-soft:#edf5fc;
+ --paper:var(--st-paper); --surface:var(--st-surface); --surface-2:var(--st-soft); --surface-alt:var(--st-soft);
+ --ink:var(--st-ink); --muted:var(--st-muted); --line:var(--st-line);
+ --accent:var(--st-accent); --accent-2:var(--st-accent); --soft:var(--st-soft); --blue-soft:var(--st-soft); --teal-soft:var(--st-soft);
+ --qr-paper:var(--st-paper); --qr-surface:var(--st-surface); --qr-ink:var(--st-ink); --qr-muted:var(--st-muted);
+ --qr-line:var(--st-line); --qr-accent:var(--st-accent); --qr-soft:var(--st-soft);
+ color:var(--st-ink); background:var(--st-paper); font-size:17px; line-height:1.9;
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+}
+html .spec-teaching[data-spec-series="nvme"] { --st-accent:#086b56; --st-soft:#e7f4ee; }
+@media(prefers-color-scheme:dark) {
+ html:not([data-theme="light"]) .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+ html:not([data-theme="light"]) .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+}
+html[data-theme="dark"] .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+html[data-theme="dark"] .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+.spec-teaching * { box-sizing:border-box; }
+.spec-teaching :is(h1,h2,h3,h4,h5,p,li,td,th,summary,strong,figcaption) { color:var(--st-ink); }
+.spec-teaching svg text { font-family:inherit; }
+.spec-teaching h1 { font-size:clamp(1.8rem,3.2vw,2.65rem); line-height:1.4; }
+.spec-teaching h2 { font-size:clamp(1.3rem,2.5vw,1.7rem); line-height:1.55; }
+.spec-teaching h3 { font-size:1.15rem; line-height:1.65; }
+.spec-teaching h4 { font-size:1rem; line-height:1.7; }
+.spec-teaching :is(h1,h2,h3,h4) { overflow-wrap:anywhere; }
+.spec-teaching p { margin:.7rem 0 1.15rem; }
+.spec-teaching :is(a,summary) { text-underline-offset:.2em; }
+.spec-teaching :focus-visible { outline:3px solid var(--st-accent); outline-offset:4px; }
+.spec-teaching :is(.qa-takeaway,.qa-answer-lead,.st-takeaway) { color:var(--st-ink); font-weight:650; font-size:1.06rem; line-height:1.9; }
+.spec-teaching :is(.qa-question,.qr-card,.guided-walk) { border:1px solid var(--st-line); border-radius:12px; background:var(--st-surface); padding:clamp(18px,3vw,30px); margin:1.8rem 0; }
+.spec-teaching :is(.qa-flow,.qr-note,.qr-observations,.st-context,.st-route) { background:var(--st-soft); border-left:4px solid var(--st-accent); padding:1rem 1.2rem; margin:1.4rem 0; }
+.spec-teaching :is(.qr-step,.qa-qid,.st-label) { color:var(--st-accent); font-weight:700; }
+.spec-teaching :is(.qa-citations,.qa-source-links,.qr-case-sources,.walk-source,.st-source) { font-size:.84rem; line-height:1.75; color:var(--st-muted); overflow-wrap:anywhere; }
+.spec-teaching :is(.qr-table,.table-wrap) { overflow-x:auto; margin:1.4rem 0; border-radius:7px; }
+.spec-teaching :is(th,td) { line-height:1.8; vertical-align:top; min-width:120px; }
+.spec-teaching :is(table,td) { background:var(--st-surface); }
+.spec-teaching th { background:var(--st-soft); }
+.spec-teaching .st-step { border-left:3px solid var(--st-line); padding:.6rem 1rem; margin:1.2rem 0; }
+.spec-teaching .st-step:target { border-left-color:var(--st-accent); background:var(--st-soft); }
+.spec-teaching .st-glossary { border:1px solid var(--st-line); padding:.7rem 1rem; margin:1.4rem 0; border-radius:8px; }
+.spec-teaching .st-glossary > summary { min-height:44px; cursor:pointer; }
+.spec-teaching .st-specs { display:flex; flex-wrap:wrap; gap:.4rem 1rem; color:var(--st-muted); font-size:.8rem; line-height:1.8; margin:1rem 0; }
+.spec-teaching .st-specs span { border-bottom:2px solid var(--st-accent); padding:.2rem 0; }
+@media(max-width:620px) { .spec-teaching :is(.qa-question,.qr-card,.guided-walk) { padding:16px; } .spec-teaching .diagram svg { min-width:var(--st-diagram-width); } }
+@media print {
+ .spec-teaching { --st-paper:#fff!important; --st-surface:#fff!important; --st-ink:#000!important; --st-muted:#333!important; --st-line:#999!important; --st-accent:#000!important; --st-soft:#fff!important; }
+ .spec-teaching details > * { display:block!important; }
+ .spec-teaching details::details-content { content-visibility:visible!important; }
+ .spec-teaching .st-step { break-inside:avoid; }
+}
+
 /* Native reading guides: selection highlights; it never hides teaching content.
    build_pcie_course.py changes .pcie-surface to .pcie-article for the posts. */
 .pcie-surface .guided-walk { margin: 1.8rem 0; padding: 1.2rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); min-width: 0; }
@@ -288,7 +346,7 @@
   .pcie-surface .walk-steps { padding-left: 1.15rem; }
   .pcie-surface .walk-step { padding: .5rem .6rem; }
   .pcie-surface .walk-diagram { overflow-x: auto; }
-  .pcie-surface .walk-diagram svg { min-width: 700px; }
+  .pcie-surface .walk-diagram svg { min-width: var(--st-diagram-width, 700px); }
 }
 @media (forced-colors: active) {
   .pcie-surface .walk-choice:checked + .walk-label { border-color: Highlight; }
@@ -311,7 +369,7 @@
 .pcie-surface .walk-summary { margin: 1rem 0 1.5rem; }
   </style>
 </head>
-<body class="pcie-surface">
+<body class="pcie-surface spec-teaching" data-spec-series="pcie">
   <a class="skip-link" href="#content">跳到正文</a>
   <div class="site-shell">
     <nav class="topbar" aria-label="課程導覽">
@@ -360,8 +418,8 @@
 <figcaption>作者依 Base 6.0 §6.6.2 繪製的功能重設時序。時間由上往下；03:00.1 與共用連線持續運作。</figcaption></figure>
 <div class="walk-summary"><p class="lead">只想重建 03:00.0 的工作環境時，先查它是否支援 FLR（Function Level Reset，以單一功能為範圍的重設）。軟體先停止新工作、處理舊交易，再觸發重設；等到設定就緒且舊交易的等待條件已滿足，才恢復設定並重新開放工作。</p><p>必要前情：Chapter 6 已說明 DMA（Direct Memory Access，裝置直接存取記憶體）的生命週期；Chapter 7 建立中斷通知路徑；Chapter 8 則說明 Link（相鄰連接埠間的連線）。本章保留這條連線，只重建其中一個 Function（可獨立設定的功能單位）。</p><aside class="note"><strong>版本與案例</strong><p>採 PCI Express Base 6.0。03:00.0 與 03:00.1 是同一張卡上的普通 Endpoint Functions（階層末端裝置的功能單位），共用通往交換器下游埠 02:01.0 的連線。此案例不使用 SR-IOV（Single Root I/O Virtualization，單一根系統的 I/O 虛擬化）；讀值、時間點及操作安排均為作者假設。圖中採用重設前先處理舊交易的正常流程。</p></aside><p><strong>規格閱讀路線：</strong>Figure 7-24／Table 7-20 查支援能力 → Figure 7-26／Table 7-22 查未完成交易 → Figure 7-25／Table 7-21 找觸發控制 → §6.6.2 讀等待與恢復條件。這是軟體的閱讀與操作順序，圖號不必由小排到大。</p></div>
 <ol class="walk-steps">
-<li class="walk-step" id="reset-walk-step-1" data-walk-step="1" data-walk-targets="software function other locate"><h4>確認範圍與能力</h4><div class="walk-condition"><p>03:00.1 必須繼續工作；這裡處理普通多功能裝置，虛擬化的例外在下一節說明。</p></div><div class="walk-explanation"><p>軟體先從能力清單取得 PCI Express Capability（PCIe 能力結構）起點，再讀 Figure 7-24／Table 7-20 的 bit 28。它指出這個功能是否支援 FLR（單一功能重設）；本例的讀值為 1。</p></div><div class="walk-source" data-source-claims="PCIE-CH9-SCOPE-001 PCIE-CH9-FIELDS-001"><p>Base 6.0 §6.6.2（p.724）、Figure 7-24／Table 7-20（pp.955、958）。</p></div></li>
-<li class="walk-step" id="reset-walk-step-2" data-walk-step="2" data-walk-targets="software function quiesce"><h4>停止工作並處理舊交易</h4><div class="walk-condition"><p>裝置的 DMA（直接記憶體存取）與中斷也要納入停工安排。此狀態位只追蹤該功能送出的 Non-Posted Requests（需要完成回覆的請求）。</p></div><div class="walk-explanation"><p>軟體先協調其他存取者，依裝置介面停止新工作，再查看 Figure 7-26／Table 7-22 的 Transactions Pending（未完成交易指示）。本例最初讀到 1；軟體持續處理，直到原有回覆已到達，或已有合理把握不會再到達。</p></div><div class="walk-source" data-source-claims="PCIE-CH9-QUIESCE-001"><p>Base 6.0 Table 7-22（p.966）、§6.6.2 的 Implementation Note（p.727）。</p></div></li>
+<li class="walk-step" id="reset-walk-step-1" data-walk-step="1" data-walk-targets="software function other locate"><h4>確認範圍與能力</h4><div class="walk-condition"><p>03:00.1 必須繼續工作；這裡處理普通多功能裝置，虛擬化的例外在下一節說明。</p></div><div class="walk-explanation"><p>軟體先從能力清單取得 PCI Express Capability（PCIe 能力結構）起點，再讀 Figure 7-24／Table 7-20 的 bit 28。它指出這個功能是否支援 FLR（單一功能重設）；本例的讀值為 1。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>FLR</dt><dd>Function Level Reset，以功能為範圍的重設</dd></div></dl></div><div class="walk-source" data-source-claims="PCIE-CH9-SCOPE-001 PCIE-CH9-FIELDS-001"><p>Base 6.0 §6.6.2（p.724）、Figure 7-24／Table 7-20（pp.955、958）。</p></div></li>
+<li class="walk-step" id="reset-walk-step-2" data-walk-step="2" data-walk-targets="software function quiesce"><h4>停止工作並處理舊交易</h4><div class="walk-condition"><p>裝置的 DMA（直接記憶體存取）與中斷也要納入停工安排。此狀態位只追蹤該功能送出的 Non-Posted Requests（需要完成回覆的請求）。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>DMA</dt><dd>Direct Memory Access，裝置直接存取記憶體</dd></div></dl></div><div class="walk-explanation"><p>軟體先協調其他存取者，依裝置介面停止新工作，再查看 Figure 7-26／Table 7-22 的 Transactions Pending（未完成交易指示）。本例最初讀到 1；軟體持續處理，直到原有回覆已到達，或已有合理把握不會再到達。</p></div><div class="walk-source" data-source-claims="PCIE-CH9-QUIESCE-001"><p>Base 6.0 Table 7-22（p.966）、§6.6.2 的 Implementation Note（p.727）。</p></div></li>
 <li class="walk-step" id="reset-walk-step-3" data-walk-step="3" data-walk-targets="software function trigger"><h4>寫入觸發控制</h4><div class="walk-condition"><p>先完成本例的停工與舊交易處理；採 16-bit 寫入，保留其他控制欄位。</p></div><div class="walk-explanation"><p>依 Figure 7-25／Table 7-21，軟體對 Device Control（裝置控制暫存器）的 bit 15 寫 1。裝置先回覆這筆 Configuration Write（設定空間寫入），再開始重設。</p></div><div class="walk-source" data-source-claims="PCIE-CH9-FIELDS-001 PCIE-CH9-READINESS-001"><p>Base 6.0 Figure 7-25／Table 7-21（pp.959、962）、§6.6.2（p.726）。</p></div></li>
 <li class="walk-step" id="reset-walk-step-4" data-walk-step="4" data-walk-targets="software function wait"><h4>等到可以恢復設定</h4><div class="walk-condition"><p>本例已在重設前處理舊交易；若觸發時仍有未完成請求，還要滿足下方「等待」一節的額外條件。</p></div><div class="walk-explanation"><p>本例依 p.727 的安排等待 100 ms，再進行設定存取。重設本身必須在 100 ms 內完成；若後續初始化仍需時間，裝置對設定請求必須回覆 RRS（Request Retry Status，要求稍後重試）。軟體依回覆繼續等待，直到可正常設定。</p></div><div class="walk-source" data-source-claims="PCIE-CH9-READINESS-001"><p>Base 6.0 §6.6.2（pp.725–727）。</p></div></li>
 <li class="walk-step" id="reset-walk-step-5" data-walk-step="5" data-walk-targets="software function other restore"><h4>恢復設定並重新開放工作</h4><div class="walk-condition"><p>設定已就緒，舊交易的等待條件也已滿足；保留的連線與另一個功能繼續運作。</p></div><div class="walk-explanation"><p>軟體依欄位屬性恢復資源與控制，重建裝置工作介面和通知路徑，再開放新工作。重設保留哪些欄位，要回到 §6.6.2 的例外清單逐項確認。</p></div><div class="walk-source" data-source-claims="PCIE-CH9-RESTORE-001"><p>Base 6.0 §6.6.2（pp.724–726）、Table 7-2（pp.914–915）。</p></div></li>
@@ -385,7 +443,7 @@
 <tr><td>Hot Reset</td><td>透過 Link 的 in-band 機制傳播 Conventional Reset。</td><td>這條 Link 下游的元件受影響；若往下還有 Switch，範圍可能延伸到整個分支。</td></tr>
 <tr><td>FLR</td><td>對支援 FLR 的 Endpoint Function 寫入 Initiate FLR。</td><td>重設指定普通 Function，不得改變 Link 狀態，也不得影響其他普通 Function。</td></tr>
 </tbody></table></div>
-<p>虛擬化有額外的相依關係：SR-IOV（把一個裝置提供成多個虛擬功能的機制）中，PF（Physical Function，管理虛擬功能的實體功能）收到 FLR 時會清除 VF Enable（虛擬功能啟用位），使其 VFs（Virtual Functions，虛擬功能）不再存在。因此，這類重設還要納入其所管理的虛擬功能。</p>
+<p>虛擬化有額外的相依關係：SR-IOV（把一個裝置提供成多個虛擬功能的機制）中，PF（Physical Function，管理虛擬功能的實體功能）收到 FLR 時會清除 VF Enable（虛擬功能啟用位），使其 VFs（Virtual Functions，虛擬功能）不再存在。因此，這類重設還要納入其所管理的虛擬功能。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SR-IOV</dt><dd>Single Root I/O Virtualization，單根I/O虛擬化</dd></div></dl>
 <p>PERST#（硬體提供的重設訊號）是提供給元件或卡片時使用的 Fundamental Reset 訊號名稱，但 Base 沒有替所有插槽形式規定一套通用的板級時序。不能把某張卡的 PERST# 操作方法當成 PCIe 所有平台都成立的步驟。</p>
 <p>在 Root Port 或 Switch Downstream Port 設定 Bridge Control 的 Secondary Bus Reset，必須送出 Hot Reset。以本例來說，重設 02:01.0 的次級側會波及 03:00.0 與 03:00.1；若改在 Switch 更上游發起，還可能影響另一分支的 04:00.0。應先沿 <a href="chapter-1.html">Chapter 1 的拓樸</a>畫出範圍，再決定能否操作。</p>
 <details class="source-note"><summary>Reset 分類與範圍來源</summary><p>§6.6.1（pp.721–724）；Hot Reset 傳播條件見 p.723、§4.2.5.9（p.441）；FLR 見 §6.6.2（pp.724–727）。PF／VF 例外見 Table 7-21（p.962）。Conventional Reset 後的初始化也有 sticky 欄位例外，不能理解成每個 bit 一律歸零。</p></details></section>
@@ -415,7 +473,7 @@
 <section id="conventional"><h2>5. 如果用的是 Hot Reset，能套同一套等待方式嗎？</h2>
 <p>Conventional Reset（一般重設）要另外選擇等待起點；它取決於連接埠的速率能力與就緒通知。例如在無法確定可用 DRS（Device Readiness Status，裝置就緒狀態通知）、且沒有其他適用的提早就緒機制時：若 Downstream Port 只支援到 5 GT/s，至少從 Conventional Reset 結束等待 100 ms；若它支援高於 5 GT/s，則至少從 Link training 完成後等待 100 ms，才向緊鄰下游裝置發出 Configuration Request。</p>
 <p>作者時間例：Reset 在 t=0 ms 結束，一個支援 16 GT/s 的 Port 到 t=40 ms 才完成 Link training。上述分支的第一個 Configuration Request 最早在 t=140 ms，而不是 t=100 ms。這個時間不是保證裝置已成功完成初始化；它仍可能依法回 RRS。</p>
-<p>Immediate Readiness（立即就緒）、DRS（裝置就緒通知）、Readiness Time Reporting（就緒時間回報），以及系統已知的特定裝置需求，可能改變可存取時間，必須依各自條件判斷。未使用 Readiness Notifications 時，在 Conventional Reset 結束後至少要容許 1.0 s，才能因有效 Configuration Request 尚未取得 Successful Completion 而判定裝置故障；這與前述第一次可送 Request 的等待是不同規則。</p>
+<p>Immediate Readiness（立即就緒）、DRS（裝置就緒通知）、Readiness Time Reporting（就緒時間回報），以及系統已知的特定裝置需求，可能改變可存取時間，必須依各自條件判斷。未使用 Readiness Notifications 時，在 Conventional Reset 結束後至少要容許 1.0 s，才能因有效 Configuration Request 尚未取得 Successful Completion 而判定裝置故障；這與前述第一次可送 Request 的等待是不同規則。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>DRS</dt><dd>Device Readiness Status，裝置就緒狀態</dd></div></dl>
 <details class="source-note"><summary>Conventional Reset 的時間分支</summary><p>§6.6.1（pp.722–723）。本例選用支援高於 5 GT/s、無提早就緒例外的分支。RRS 的 Host 可見性與合法使用時機已在 <a href="chapter-3.html">Chapter 3</a>說明；不要把 RRS 當成一般 MMIO 的重試狀態。</p></details></section>
 <section id="restore"><h2>6. FLR 後，能把整份 Configuration dump 寫回去嗎？</h2>
 <p>軟體要按欄位用途與存取屬性恢復設定。RO（唯讀）欄位不用寫回；RW1C（寫 1 清除）欄位寫回原值會清除狀態；觸發控制與共享欄位則各有使用條件。FLR 的基本要求是把 Function Register 與專屬狀態機回到指定的初始化值，但 §6.6.2 明列了一批保留例外。</p>
@@ -426,7 +484,7 @@
 <p>回到開頭的需求：03:00.1 繼續工作，軟體重新建立 03:00.0 的工作環境。先用 Figure 7-24 確認支援，再以 Figure 7-26 觀察未完成交易；本例先處理舊交易，才依 Figure 7-25 寫入觸發控制。設定就緒後，軟體按欄位屬性恢復配置，最後重建裝置工作與通知路徑。</p>
 <details class="question" open><summary>Link 沒有重新訓練，接下來要觀察哪裡？</summary><p>這正是單一功能重設的預期範圍。接下來觀察 03:00.0 的設定就緒與恢復過程；共用連線持續運作，03:00.1 也繼續工作。（§6.6.2，pp.724–726。）</p></details>
 <details class="question" open><summary>舊回覆還可能到達時，為什麼要延後恢復工作？</summary><p>重設會讓功能失去舊交易的追蹤資訊。若立即重用交易標記，遲到的回覆可能被配給新交易；因此要依觸發時的狀態與重設前的逾時設定，完成必要等待。重設後 Pending 清零是規定的狀態變化，不能代替這段等待。</p></details>
-<details class="question"><summary>電源狀態切換也會影響初始化，該從哪裡接著讀？</summary><p>D3hot→D0 的行為還受到 No_Soft_Reset（不進行軟重設）欄位影響。既有 <a href="chapter-10.html">Chapter 10</a> 會從 PMCSR（電源管理控制與狀態暫存器）說明；電源狀態切換有自己的條件，不保證等同本章的功能重設。</p></details></section>
+<details open class="question"><summary>電源狀態切換也會影響初始化，該從哪裡接著讀？</summary><p>D3hot→D0 的行為還受到 No_Soft_Reset（不進行軟重設）欄位影響。既有 <a href="chapter-10.html">Chapter 10</a> 會從 PMCSR（電源管理控制與狀態暫存器）說明；電源狀態切換有自己的條件，不保證等同本章的功能重設。</p></details></section>
 <section id="sources"><h2>版本與來源</h2><p>採 PCI Express Base Specification Revision 6.0，§6.6.1–§6.6.2 與本章就近標示的欄位表。引用頁碼同時是文件頁與 PDF 頁。正常流程依 p.727 的實作說明安排，數值與情境是作者推演；來源未把這個安排規定為所有裝置唯一的停工程序。</p></section>
         </article>
         <nav class="bottom-nav" aria-label="下一步"><a href="index.html">課程總覽</a><a href="chapter-8.html">← Chapter 8</a><a href="chapter-10.html">Chapter 10 →</a><a href="#content">回到本章開頭 ↑</a></nav>

@@ -2,10 +2,14 @@
 layout: post
 title: "PCIe Chapter 6: DMA, Visibility, and Transaction Ordering"
 date: 2026-10-21 00:00:00 +0800
+last_modified_at: 2026-10-23 00:00:00 +0800
 permalink: /pcie/chapter-6-en/
 categories: [PCIe]
 tags: [PCIe, Specification]
 lang: en
+spec_teaching: true
+spec_series: pcie
+description: "分清 DMA 位址、所有權交接與 PCIe 排序，再以資料和旗標判讀 RO、No Snoop 及其限制。"
 ---
 
 <style>
@@ -220,37 +224,183 @@ lang: en
 /* Self-contained teaching diagrams use the same theme in standalone pages and posts. */
 .pcie-article .course-diagram text { fill: var(--ink); font-family: inherit; font-size: 18px; }
 
+/* Applied only to explicitly authorized teaching roots. */
+html .spec-teaching[data-spec-series] .st-terms { margin:.35rem 0 1rem; padding:.5rem .8rem; border-inline-start:3px solid var(--st-accent); background:var(--st-soft); font-size:.88em; color:var(--st-muted); }
+html .spec-teaching[data-spec-series] .st-terms > div { display:flex; flex-wrap:wrap; gap:.2em .7em; }
+html .spec-teaching[data-spec-series] .st-terms dt { font-weight:650; }
+html .spec-teaching[data-spec-series] .st-terms dd { margin:0; flex:1 1 14em; }
+html .spec-teaching[data-spec-series] {
+ --st-diagram-width:900px;
+ --st-paper:#f2f6f8; --st-surface:#fff; --st-ink:#192d40; --st-muted:#4c6479;
+ --st-line:#cbd9e3; --st-accent:#145f9d; --st-soft:#edf5fc;
+ --paper:var(--st-paper); --surface:var(--st-surface); --surface-2:var(--st-soft); --surface-alt:var(--st-soft);
+ --ink:var(--st-ink); --muted:var(--st-muted); --line:var(--st-line);
+ --accent:var(--st-accent); --accent-2:var(--st-accent); --soft:var(--st-soft); --blue-soft:var(--st-soft); --teal-soft:var(--st-soft);
+ --qr-paper:var(--st-paper); --qr-surface:var(--st-surface); --qr-ink:var(--st-ink); --qr-muted:var(--st-muted);
+ --qr-line:var(--st-line); --qr-accent:var(--st-accent); --qr-soft:var(--st-soft);
+ color:var(--st-ink); background:var(--st-paper); font-size:17px; line-height:1.9;
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+}
+html .spec-teaching[data-spec-series="nvme"] { --st-accent:#086b56; --st-soft:#e7f4ee; }
+@media(prefers-color-scheme:dark) {
+ html:not([data-theme="light"]) .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+ html:not([data-theme="light"]) .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+}
+html[data-theme="dark"] .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+html[data-theme="dark"] .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+.spec-teaching * { box-sizing:border-box; }
+.spec-teaching :is(h1,h2,h3,h4,h5,p,li,td,th,summary,strong,figcaption) { color:var(--st-ink); }
+.spec-teaching svg text { font-family:inherit; }
+.spec-teaching h1 { font-size:clamp(1.8rem,3.2vw,2.65rem); line-height:1.4; }
+.spec-teaching h2 { font-size:clamp(1.3rem,2.5vw,1.7rem); line-height:1.55; }
+.spec-teaching h3 { font-size:1.15rem; line-height:1.65; }
+.spec-teaching h4 { font-size:1rem; line-height:1.7; }
+.spec-teaching :is(h1,h2,h3,h4) { overflow-wrap:anywhere; }
+.spec-teaching p { margin:.7rem 0 1.15rem; }
+.spec-teaching :is(a,summary) { text-underline-offset:.2em; }
+.spec-teaching :focus-visible { outline:3px solid var(--st-accent); outline-offset:4px; }
+.spec-teaching :is(.qa-takeaway,.qa-answer-lead,.st-takeaway) { color:var(--st-ink); font-weight:650; font-size:1.06rem; line-height:1.9; }
+.spec-teaching :is(.qa-question,.qr-card,.guided-walk) { border:1px solid var(--st-line); border-radius:12px; background:var(--st-surface); padding:clamp(18px,3vw,30px); margin:1.8rem 0; }
+.spec-teaching :is(.qa-flow,.qr-note,.qr-observations,.st-context,.st-route) { background:var(--st-soft); border-left:4px solid var(--st-accent); padding:1rem 1.2rem; margin:1.4rem 0; }
+.spec-teaching :is(.qr-step,.qa-qid,.st-label) { color:var(--st-accent); font-weight:700; }
+.spec-teaching :is(.qa-citations,.qa-source-links,.qr-case-sources,.walk-source,.st-source) { font-size:.84rem; line-height:1.75; color:var(--st-muted); overflow-wrap:anywhere; }
+.spec-teaching :is(.qr-table,.table-wrap) { overflow-x:auto; margin:1.4rem 0; border-radius:7px; }
+.spec-teaching :is(th,td) { line-height:1.8; vertical-align:top; min-width:120px; }
+.spec-teaching :is(table,td) { background:var(--st-surface); }
+.spec-teaching th { background:var(--st-soft); }
+.spec-teaching .st-step { border-left:3px solid var(--st-line); padding:.6rem 1rem; margin:1.2rem 0; }
+.spec-teaching .st-step:target { border-left-color:var(--st-accent); background:var(--st-soft); }
+.spec-teaching .st-glossary { border:1px solid var(--st-line); padding:.7rem 1rem; margin:1.4rem 0; border-radius:8px; }
+.spec-teaching .st-glossary > summary { min-height:44px; cursor:pointer; }
+.spec-teaching .st-specs { display:flex; flex-wrap:wrap; gap:.4rem 1rem; color:var(--st-muted); font-size:.8rem; line-height:1.8; margin:1rem 0; }
+.spec-teaching .st-specs span { border-bottom:2px solid var(--st-accent); padding:.2rem 0; }
+@media(max-width:620px) { .spec-teaching :is(.qa-question,.qr-card,.guided-walk) { padding:16px; } .spec-teaching .diagram svg { min-width:var(--st-diagram-width); } }
+@media print {
+ .spec-teaching { --st-paper:#fff!important; --st-surface:#fff!important; --st-ink:#000!important; --st-muted:#333!important; --st-line:#999!important; --st-accent:#000!important; --st-soft:#fff!important; }
+ .spec-teaching details > * { display:block!important; }
+ .spec-teaching details::details-content { content-visibility:visible!important; }
+ .spec-teaching .st-step { break-inside:avoid; }
+}
+
+/* Native reading guides: selection highlights; it never hides teaching content.
+   build_pcie_course.py changes .pcie-article to .pcie-article for the posts. */
+.pcie-article .guided-walk { margin: 1.8rem 0; padding: 1.2rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); min-width: 0; }
+.pcie-article .guided-walk > h3 { margin-top: 0; }
+.pcie-article .walk-help { color: var(--muted); font-size: .85rem; }
+.pcie-article .walk-order { margin-bottom: 1.1rem; }
+/* Keep native radio semantics and keyboard handling; the associated label is
+   the visible control, so a radio cannot wrap away from its own label. */
+.pcie-article .walk-choice { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.pcie-article .walk-label { display: inline-flex; align-items: center; min-height: 44px; padding: .35rem .7rem; margin: .25rem .8rem .25rem 0; border: 2px solid var(--line); border-radius: 8px; cursor: pointer; font-size: .9rem; line-height: 1.5; color: var(--ink); background: var(--surface-alt); }
+.pcie-article .walk-choice:checked + .walk-label { border-color: var(--accent); background: var(--blue-soft); font-weight: 700; }
+.pcie-article .walk-choice:focus-visible + .walk-label { outline: 3px solid var(--focus); outline-offset: 3px; }
+.pcie-article .walk-view { margin-top: 1rem; min-width: 0; }
+.pcie-article .walk-diagram { margin: 0 0 1.2rem; }
+.pcie-article .walk-diagram svg { width: 100%; height: auto; display: block; }
+.pcie-article .walk-diagram svg a { cursor: pointer; }
+.pcie-article .walk-diagram svg a:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
+.pcie-article .walk-diagram figcaption { margin-top: .8rem; }
+.pcie-article .walk-steps { max-width: none; padding-left: 1.6rem; }
+.pcie-article .walk-step { padding: .6rem .9rem; margin: .7rem 0; border: 2px solid transparent; border-left: 5px solid var(--line); border-radius: 5px; background: var(--surface); }
+.pcie-article .walk-step h4 { margin: .2rem 0 .5rem; }
+.pcie-article .walk-condition { font-size: .9rem; color: var(--muted); }
+.pcie-article .walk-source { border-top: 1px solid var(--line); padding-top: .35rem; color: var(--muted); font-size: .85rem; }
+.pcie-article .walk-step p:last-child { margin-bottom: .3rem; }
+.pcie-article .walk-components { border-top: 1px solid var(--line); margin-top: 1.4rem; padding-top: .4rem; }
+.pcie-article .walk-component-links { display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; list-style: none; padding-left: 0; }
+.pcie-article .walk-component-links a { min-height: 44px; min-width: 44px; }
+.pcie-article .walk-component { padding: .7rem 1rem; margin: 1rem 0; border: 1px solid var(--line); border-radius: 8px; }
+.pcie-article .walk-component > h4 { margin-top: .2rem; }
+.pcie-article .walk-component:target { outline: 3px solid var(--accent-2); outline-offset: 3px; }
+.pcie-article .walk-component details { margin-bottom: .3rem; }
+
+.pcie-article .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-step[data-walk-step="1"],
+.pcie-article .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-step[data-walk-step="2"],
+.pcie-article .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-step[data-walk-step="3"],
+.pcie-article .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-step[data-walk-step="4"],
+.pcie-article .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-step[data-walk-step="5"],
+.pcie-article .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-step[data-walk-step="6"],
+.pcie-article .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-step[data-walk-step="7"],
+.pcie-article .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-step[data-walk-step="8"] { border-color: var(--accent); background: var(--blue-soft); }
+
+.pcie-article .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-node[data-walk-steps~="1"],
+.pcie-article .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-node[data-walk-steps~="2"],
+.pcie-article .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-node[data-walk-steps~="3"],
+.pcie-article .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-node[data-walk-steps~="4"],
+.pcie-article .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-node[data-walk-steps~="5"],
+.pcie-article .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-node[data-walk-steps~="6"],
+.pcie-article .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-node[data-walk-steps~="7"],
+.pcie-article .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-node[data-walk-steps~="8"] { --walk-active-weight: 750; }
+.pcie-article .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-node[data-walk-steps~="1"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-node[data-walk-steps~="2"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-node[data-walk-steps~="3"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-node[data-walk-steps~="4"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-node[data-walk-steps~="5"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-node[data-walk-steps~="6"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-node[data-walk-steps~="7"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-node[data-walk-steps~="8"] > :is(rect, circle, ellipse, polygon, path, line, polyline) { stroke: var(--accent); stroke-width: 3.5px; vector-effect: non-scaling-stroke; }
+.pcie-article .walk-node text { font-weight: var(--walk-active-weight, inherit); }
+
+@media (max-width: 620px) {
+  .pcie-article .guided-walk { padding: .8rem; }
+  .pcie-article .walk-label { margin-right: .45rem; padding-left: .45rem; padding-right: .45rem; }
+  .pcie-article .walk-steps { padding-left: 1.15rem; }
+  .pcie-article .walk-step { padding: .5rem .6rem; }
+  .pcie-article .walk-diagram { overflow-x: auto; }
+  .pcie-article .walk-diagram svg { min-width: var(--st-diagram-width, 700px); }
+}
+@media (forced-colors: active) {
+  .pcie-article .walk-choice:checked + .walk-label { border-color: Highlight; }
+  .pcie-article .walk-step { border-color: CanvasText; }
+}
+@media print {
+  .pcie-article .guided-walk { border: 1px solid #999; padding: .7rem; break-inside: auto; }
+  .pcie-article .walk-choice, .pcie-article .walk-label, .pcie-article .walk-help { display: none; }
+  .pcie-article .walk-step { display: list-item !important; border-color: #999 !important; background: transparent !important; }
+  .pcie-article .walk-node { --walk-active-weight: 500 !important; }
+  .pcie-article .walk-node > :is(rect, circle, ellipse, polygon, path, line, polyline) { stroke: #333 !important; stroke-width: 1.5px !important; }
+  .pcie-article .walk-diagram { overflow: visible; }
+  .pcie-article .walk-diagram svg { min-width: 0; }
+  .pcie-article .walk-component details > * { display: block !important; }
+  .pcie-article .walk-component details::details-content { content-visibility: visible !important; }
+}
+
+/* SVG text follows the selected reading theme. */
+.pcie-article svg text { fill: var(--ink); }
+.pcie-article .walk-summary { margin: 1rem 0 1.5rem; }
+
 html:not([data-theme="dark"]) .pcie-article { color-scheme: light; }
 html[data-theme="dark"] .pcie-article { color-scheme: dark; }
 
 .pcie-article { background: transparent; margin: 1.5rem 0; }
 .pcie-article .lesson { padding: 0; border: 0; background: transparent; }
 </style>
-<div class="pcie-article" lang="en">
+<div class="pcie-article spec-teaching" data-spec-series="pcie" lang="en">
 <nav class="bottom-nav" aria-label="Course and editions"><a href="/DOCS/pcie-course/index.html">Course overview</a><a href="/DOCS/pcie-course/chapter-6.html">Full Chinese tutorial</a><a href="/pcie/chapter-6-zh-tw/">繁體中文</a></nav>
 <article class="lesson">
+<section id="chapter-overview"><h2>Connect descriptors, DMA data and completion flags</h2><dl class="st-terms" aria-label="Terms in this passage"><div><dt>DMA</dt><dd>Direct Memory Access, device access to memory</dd></div></dl><figure class="diagram"><svg viewBox="0 0 900 565" role="img" aria-labelledby="ch6-guide-title ch6-guide-desc"><title id="ch6-guide-title">The timeline is an illustrative ownership cycle. Applicable PCIe ordering and CPU/cache synchronization have distinct responsibilities; the diagram does not add platform coherency guarantees.</title><desc id="ch6-guide-desc">The timeline is an illustrative ownership cycle. Applicable PCIe ordering and CPU/cache synchronization have distinct responsibilities; the diagram does not add platform coherency guarantees.</desc><g data-walk-target="software"><rect x="20" y="15" width="250" height="60" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="145.0" y="40" text-anchor="middle" font-size="16">Driver / host</text></g><g data-walk-target="device"><rect x="325" y="15" width="250" height="60" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="450.0" y="40" text-anchor="middle" font-size="16">Device: performs work</text></g><g data-walk-target="memory"><rect x="630" y="15" width="250" height="60" rx="9" fill="var(--surface-alt)" stroke="var(--line)" /><text x="755.0" y="40" text-anchor="middle" font-size="16">Platform-provided DMA memory</text></g><g data-walk-target="s-line"><path d="M145 75 L145 540" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="6 5" /></g><g data-walk-target="d-line"><path d="M450 75 L450 540" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="6 5" /></g><g data-walk-target="m-line"><path d="M755 75 L755 540" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="6 5" /></g><g data-walk-target="descriptor"><path d="M145 145 L755 145" fill="none" stroke="var(--accent)" stroke-width="2" /><polygon points="755.0,145.0 745.0,140.0 745.0,150.0" fill="var(--accent)" /><text x="450.0" y="136.0" text-anchor="middle" font-size="16">Prepare descriptors and data</text></g><g data-walk-target="notify"><path d="M145 235 L450 235" fill="none" stroke="var(--accent)" stroke-width="2" /><polygon points="450.0,235.0 440.0,230.0 440.0,240.0" fill="var(--accent)" /><text x="297.5" y="226.0" text-anchor="middle" font-size="16">Publish, then notify</text></g><g data-walk-target="data"><path d="M450 335 L755 335" fill="none" stroke="var(--accent)" stroke-width="2" /><polygon points="755.0,335.0 745.0,330.0 745.0,340.0" fill="var(--accent)" /><text x="602.5" y="326.0" text-anchor="middle" font-size="16">Device writes result data</text></g><g data-walk-target="flag"><path d="M450 425 L755 425" fill="none" stroke="var(--accent)" stroke-width="2" /><polygon points="755.0,425.0 745.0,420.0 745.0,430.0" fill="var(--accent)" /><text x="602.5" y="416.0" text-anchor="middle" font-size="16">Write flag with applicable ordering</text></g><g data-walk-target="consume"><path d="M755 515 L145 515" fill="none" stroke="var(--accent)" stroke-width="2" /><polygon points="145.0,515.0 155.0,520.0 155.0,510.0" fill="var(--accent)" /><text x="450.0" y="506.0" text-anchor="middle" font-size="16">Host takes ownership under platform synchronization</text></g></svg><figcaption>The timeline is an illustrative ownership cycle. Applicable PCIe ordering and CPU/cache synchronization have distinct responsibilities; the diagram does not add platform coherency guarantees.</figcaption></figure><dl class="st-terms" aria-label="Terms in this passage"><div><dt>DMA</dt><dd>Direct Memory Access, device access to memory</dd></div></dl><p class="lead">DMA (Direct Memory Access) allows a device to initiate memory transactions. A working cycle also needs buffer ownership transfer and platform synchronization. This chapter connects descriptor publication, device writes and host consumption.</p><p><strong>Specification route:</strong> DMA mapping and addresses → descriptor publication → transaction ordering in Table 2-42 → packet attributes and host ownership.</p></section>
 <p class="lead">A valid PCIe write alone does not establish that the CPU can safely use its result. DMA also requires valid addresses, mappings, ownership transfer, and memory synchronization. A data-write followed by a completion flag separates these guarantees.</p>
 <p><a href="/DOCS/pcie-course/chapter-6.html">Full Chinese tutorial</a> · <a href="/DOCS/pcie-course/index.html">Course roadmap</a> · <a href="/pcie/chapter-6-zh-tw/">繁體中文</a></p>
-<aside class="note"><strong>Version and scope</strong><p>PCIe follows Base 6.0 in Non-Flit Mode; platform background uses official Linux 6.12 documentation. Examples use ordinary Endpoint 03:00.0 without ATS, PASID, SR-IOV, peer-to-peer, or IDE. Unless varied, traffic uses the same Function, direction, and TC0, with RO, IDO, and No Snoop clear. Mappings, descriptors, OWN, and completion flags are author-created, not common PCIe interfaces.</p></aside>
+<aside class="note"><strong>Version and scope</strong><p>PCIe follows Base 6.0 in Non-Flit Mode; platform background uses official Linux 6.12 documentation. Examples use ordinary Endpoint 03:00.0 without ATS, PASID, SR-IOV, peer-to-peer, or IDE. Unless varied, traffic uses the same Function, direction, and TC0, with RO, IDO, and No Snoop clear. Mappings, descriptors, OWN, and completion flags are author-created, not common PCIe interfaces.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>ATS</dt><dd>Address Translation Services</dd></div><div><dt>PASID</dt><dd>Process Address Space ID</dd></div><div><dt>SR-IOV</dt><dd>Single Root I/O Virtualization</dd></div><div><dt>IDE</dt><dd>Integrity and Data Encryption</dd></div></dl></aside>
 <section id="addresses"><h2>DMA needs addresses reachable by the device</h2>
 <p>The device reads host memory with MRd and receives CplD, or writes results with ordinary MWr without an ordinary Write Completion. BME permits relevant Request generation/forwarding; it does not create buffers or DMA mappings.</p>
 <p>Linux 6.12 distinguishes CPU virtual, CPU physical, and DMA addresses. The authored example maps CPU pointer p to physical 0x90001000–0x90001FFF and device DMA range 0x40001000–0x40001FFF. Thus DMA 0x40001080 reaches physical 0x90001080. These numbers define no universal conversion. BAR0 at 0x80004000–0x80007FFF is a separate resource.</p>
 <details class="source-note"><summary>Sources</summary><p>Base 6.0 §2.1.1.1 (p.116), §2.2.7.1 (pp.162–164), Table 7-4 (p.919); necessary platform background: <a href="https://docs.kernel.org/6.12/core-api/dma-api-howto.html#cpu-and-dma-addresses">Linux 6.12 DMA addresses</a>. No particular IOMMU page-table format is taught here.</p></details></section>
 <section id="ownership"><h2>Coherence and access ordering need separate treatment</h2>
-<p>Assume a descriptor contains DMA address 0x40001000, length 256 bytes, and OWN. The device interface permits reading the other fields after acquiring OWN. The CPU must publish the fields before ownership, then notify the device through appropriate MMIO access. It must also follow platform rules when reclaiming data after the device releases ownership.</p>
-<p>Base 6.0 §2.4.2 does not make a single MRd an atomic snapshot of changing data. Linux 6.12 coherent memory can still need barriers; dma_* barriers do not order MMIO. Streaming mappings require their DMA API synchronization. PCIe ordering cannot replace these responsibilities.</p>
+<p>Assume a descriptor contains DMA address 0x40001000, length 256 bytes, and OWN. The device interface permits reading the other fields after acquiring OWN. The CPU must publish the fields before ownership, then notify the device through appropriate MMIO access. It must also follow platform rules when reclaiming data after the device releases ownership.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>MMIO</dt><dd>Memory-Mapped I/O, mapped device-register access</dd></div></dl>
+<p>Base 6.0 §2.4.2 does not make a single MRd an atomic snapshot of changing data. Linux 6.12 coherent memory can still need barriers; dma_* barriers do not order MMIO. Streaming mappings require their DMA API synchronization. PCIe ordering cannot replace these responsibilities.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>MMIO</dt><dd>Memory-Mapped I/O, mapped device-register access</dd></div></dl>
 <details class="source-note"><summary>Sources and limits</summary><p>Base 6.0 §2.4.2 (p.228); <a href="https://docs.kernel.org/6.12/core-api/dma-api-howto.html">Linux 6.12 DMA mapping Guide</a>; <a href="https://docs.kernel.org/6.12/core-api/wrappers/memory-barriers.html">Linux 6.12 memory barriers</a>. This is a responsibility map, not a universal driver sequence.</p></details></section>
 <section id="ordering"><h2>Use Table 2-42 to decide whether later traffic can pass earlier traffic</h2>
 <p>Assume the device writes 64-byte data D at 0x40001000, then writes flag F=1 at 0x40001FF0. In Table 2-42, columns represent earlier transactions and rows later ones. Both are Posted Requests, selecting A2.</p>
-<div class="table-wrap"><table><caption>The same work under different ordering conditions</caption><thead><tr><th scope="col">Condition</th><th scope="col">Conclusion</th></tr></thead><tbody><tr><td>Same Function and TC0; F has RO=0/IDO=0</td><td>A2a: F must not pass D.</td></tr><tr><td>Same TC; F has RO=1 and the path permits this relaxation</td><td>A2b: passing may occur, but is not required.</td></tr><tr><td>D uses TC0; F uses TC1</td><td>The table supplies no ordering across TCs.</td></tr><tr><td>Only No Snoop changes</td><td>Ordering stays unchanged; coherence conditions differ.</td></tr></tbody></table></div>
+<div class="table-wrap"><table><caption>The same work under different ordering conditions</caption><thead><tr><th scope="col">Condition</th><th scope="col">Conclusion</th></tr></thead><tbody><tr><td>Same Function and TC0; F has RO=0/IDO=0</td><td>A2a: F must not pass D.</td></tr><tr><td>Same TC; F has RO=1 and the path permits this relaxation</td><td>A2b: passing may occur, but is not required.</td></tr><tr><td>D uses TC0; F uses TC1</td><td>The table supplies no ordering across TCs.</td></tr><tr><td>Only No Snoop changes</td><td>Ordering stays unchanged; coherence conditions differ.</td></tr></tbody></table><dl class="st-terms" aria-label="Terms in this passage"><div><dt>TC</dt><dd>Traffic Class</dd></div></dl></div>
 <p>Yes requires the later transaction to be able to pass to avoid deadlock; No prohibits passing; Y/N permits implementation choice. These labels do not indicate transaction success. Ordered packets do not perform CPU-side ownership transfer and synchronization automatically.</p>
 <details class="source-note"><summary>Ordering sources</summary><p>§2.4.1 Table 2-42 (p.222), A2a/A2b and notes (p.223), No Snoop rules (p.224). The example excludes Flow-Through IDE.</p></details></section>
 <section id="fields"><h2>A control bit grants permission; it does not describe every packet</h2>
-<p>With PCIe Capability at 0x70, Device Control is at 0x78. An assumed value of 0x2810 enables conditional use of RO and No Snoop through bits 4 and 11; bits 14:12=010b set MRRS to 512 bytes. It does not assert RO or No Snoop in every TLP.</p>
-<p>Inspect the actual packet's Attr[1] for RO, Attr[0] for No Snoop, and Attr[2] for IDO; these bits are not all adjacent in a Non-Flit header. No Snoop does not change ordering and is not a cache-flush command. Its use still requires a guarantee that the target address is not cached anywhere in the system. IDO has separate enable and identity conditions and stays clear here. MSI/MSI-X specifically require RO and No Snoop clear.</p>
+<p>With PCIe Capability at 0x70, Device Control is at 0x78. An assumed value of 0x2810 enables conditional use of RO and No Snoop through bits 4 and 11; bits 14:12=010b set MRRS to 512 bytes. It does not assert RO or No Snoop in every TLP.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>TLP</dt><dd>Transaction Layer Packet</dd></div></dl>
+<p>Inspect the actual packet's Attr[1] for RO, Attr[0] for No Snoop, and Attr[2] for IDO; these bits are not all adjacent in a Non-Flit header. No Snoop does not change ordering and is not a cache-flush command. Its use still requires a guarantee that the target address is not cached anywhere in the system. IDO has separate enable and identity conditions and stays clear here. MSI/MSI-X specifically require RO and No Snoop clear.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>MSI</dt><dd>Message Signaled Interrupt</dd></div><div><dt>MSI-X</dt><dd>Message Signaled Interrupts Extension</dd></div></dl>
 <details class="source-note"><summary>Field lookup route</summary><p>Figure 7-25 (p.959) → Table 7-21 (pp.960–962) → Figure 2-29/Tables 2-12, 2-13 (pp.160–161) → Figure 2-5 (p.120). MSI attribute restrictions: p.661.</p></details></section>
 <section id="checks"><h2>Check the scope of the conclusion</h2><details class="question"><summary>Does reading the descriptor in one transaction guarantee a snapshot?</summary><p>No. Changing data requires additional interface and synchronization guarantees; §2.4.2 (p.228) does not supply that atomicity.</p></details><details class="question"><summary>Does one test without RO reordering prove it never happens?</summary><p>No. Permitting reordering does not require every transaction to reorder. An observation does not turn permission into prohibition.</p></details></section>
-<p>The next chapter connects data ordering to MSI-X notification. Verified 2026-10-21.</p>
+<p>The next chapter connects data ordering to MSI-X notification. Verified 2026-10-21.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>MSI-X</dt><dd>Message Signaled Interrupts Extension</dd></div></dl>
 </article>
 <nav class="bottom-nav" aria-label="Course and editions"><a href="/DOCS/pcie-course/index.html">Course overview</a><a href="/DOCS/pcie-course/chapter-6.html">Full Chinese tutorial</a><a href="/pcie/chapter-6-zh-tw/">繁體中文</a></nav>
 </div>

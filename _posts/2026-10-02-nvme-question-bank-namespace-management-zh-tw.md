@@ -7,18 +7,21 @@ permalink: /nvme/question-bank/namespace-management/zh-tw/
 lang: zh-TW
 nvme_quickref: true
 nvme_qa: true
+spec_teaching: true
+last_modified_at: 2026-10-23
 ---
 
-<div class="nvme-quickref nvme-qa">
+<div class="nvme-quickref nvme-qa spec-teaching" data-spec-series="nvme">
 <nav class="qr-top" aria-label="題庫與版本"><a href="#content">跳到內容</a><a href="/nvme/question-bank/zh-tw/">題庫總索引</a><a href="/nvme/question-bank/namespace-management/en/">English</a><a href="/DOCS/nvme-question-bank/namespace-management.html">繁中教學 HTML</a></nav>
-<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–328</p>
-<header><p class="qa-range">Q157–Q173</p><h1>Namespace Management、Attachment 與保護</h1><p class="qr-intro">建立 namespace、讓 controller 能存取它，以及限制寫入，是三組獨立狀態。本冊用同一物件從建立到刪除的流程，把三者接起來。</p><p>先練習，再展開解答。各題依需要使用文字、欄位判讀、比較或流程說明，不要求相同的回答項目。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p></header>
-<aside class="qa-glossary"><h2>先認識本文使用的字詞</h2><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></aside>
+<main id="content"><p class="qr-eyebrow">NVMe · Q1–328</p>
+<div class="st-specs" aria-label="Specification editions"><span>NVM Express Base 2.4</span><span>NVM Command Set 1.3</span><span>NVMe over PCIe Transport 1.4</span></div>
+<header><p class="qa-range">Q157–Q173</p><h1>Namespace Management、Attachment 與保護</h1><aside class="st-context"><p>namespace 是可由命令指定的邏輯儲存空間，NSID（Namespace Identifier）是存取時使用的識別值。Namespace Management 處理建立與刪除，Namespace Attachment 處理和控制器的附接關係。以下沿物件存在、附接與可存取條件來看各份清單。</p></aside><p class="qr-intro">建立 namespace、讓 controller 能存取它，以及限制寫入，是三組獨立狀態。本冊用同一物件從建立到刪除的流程，把三者接起來。</p><p>每個問題都接著完整解說，依內容帶讀欄位、比較機制或追蹤流程。先看本冊總覽，再沿問題閱讀；必要條件與正常路徑直接顯示。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SCT</dt><dd>Status Code Type，完成狀態代碼類型</dd></div></dl></header>
 <section id="overview" class="qa-overview"><h2>存在、可見、可寫分別確認</h2><p class="qa-takeaway">Create 成功不會自動完成 Attachment。</p>
-<div class="qr-table" tabindex="0" role="region" aria-label="可橫向捲動的比較表"><table><thead><tr><th scope="col">問題</th><th scope="col">主要證據</th><th scope="col">下一步</th></tr></thead><tbody><tr><td>是否存在</td><td>Allocated List、Create CQE.NSID</td><td>確認格式與容量</td></tr><tr><td>此路徑能否存取</td><td>Active List、Controller List</td><td>確認 Ready 與路徑狀態</td></tr><tr><td>是否能改資料</td><td>NWPC、WPC、FID84h.WPS</td><td>依狀態檢查命令限制</td></tr></tbody></table></div>
+<div class="qr-table" tabindex="0" role="region" aria-label="可橫向捲動的比較表"><table><thead><tr><th scope="col">問題</th><th scope="col">主要證據</th><th scope="col">下一步</th></tr></thead><tbody><tr><td>是否存在</td><td>Allocated List、Create CQE.NSID</td><td>確認格式與容量</td></tr><tr><td>此路徑能否存取</td><td>Active List、Controller List</td><td>確認 Ready 與路徑狀態</td></tr><tr><td>是否能改資料</td><td>NWPC、WPC、FID84h.WPS</td><td>依狀態檢查命令限制</td></tr></tbody></table><dl class="st-terms" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry，佇列中的完成項目</dd></div><div><dt>NSID</dt><dd>Namespace Identifier，邏輯儲存空間識別碼</dd></div></dl></div>
 <p><strong>舉例看懂：</strong>Allocated={1,2}、ControllerA.Active={1} 只表示 2 尚未在 A 的 active 清單。它可能仍存在，甚至已附加 B；不能直接判定 namespace2 被刪除。</p>
 <p class="qa-citations">來源：<a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-nvmcreate">NVM Command Set 1.3 §4.1.5.8, 4.1.6, 5.8</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nwp">Base 2.4 §5.2.30.1.38, 8.1.18</a></p>
 </section>
+<details class="qa-glossary st-glossary"><summary>需要時回顧本篇名詞</summary><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></details>
 <div class="qa-controls" hidden><label>搜尋本頁 <input type="search" id="qa-search" placeholder="題號、欄位或關鍵字"></label><button type="button" data-expand="true">展開全部解答</button><button type="button" data-expand="false">收合全部解答</button><output id="qa-count" aria-live="polite"></output></div>
 <section id="question-index"><h2>本冊題目</h2><ol class="qa-index">
 <li><a href="#q-157">Q157 · 如何確認 Namespace Management 與 Attachment 支援？</a></li>
@@ -40,8 +43,8 @@ nvme_qa: true
 <li><a href="#q-173">Q173 · Write Protection 如何影響 Format、Sanitize 與 Namespace Management？</a></li>
 </ol></section>
 <article class="qa-question" id="q-157" data-question="157" data-answer-kind="lookup"><h2><a class="qa-qid" href="#q-157">Q157</a> 如何確認 Namespace Management 與 Attachment 支援？</h2>
-<p class="qa-prompt">先選查詢介面與目標，再說明哪個回傳欄位能支持你的結論。</p>
-<details class="qa-answer" id="q-157-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-157-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-157-a-01">Management 建立／刪除 namespace，Attachment 決定哪些 controller 能使用它。這兩項能力相關，但不完全等價。</p><div class="qa-sections">
 <section class="qa-section" id="q-157-s-01" data-answer-section="1"><h3><span>1.</span> 要查哪個對象、哪份資料</h3>
 <span class="qa-anchor" id="q-157-a-02"></span><p>配置存在於 subsystem；active 存取則以各 controller 為準。</p>
@@ -58,13 +61,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-157-a-17"></span><p>先確認是否誤把 NMS=0 解成 Attachment 一定不支援。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-commandseffects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-157-a-08"></span><span class="qa-anchor" id="q-157-a-09"></span><span class="qa-anchor" id="q-157-a-10"></span><span class="qa-anchor" id="q-157-a-11"></span><span class="qa-anchor" id="q-157-a-12"></span><span class="qa-anchor" id="q-157-a-13"></span><span class="qa-anchor" id="q-157-a-14"></span><span class="qa-anchor" id="q-157-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-commandseffects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-158" data-question="158" data-answer-kind="fields"><h2><a class="qa-qid" href="#q-158">Q158</a> 建立 Namespace 時 NSZE、NCAP、Format 與 Thin Provisioning 如何設定？</h2>
-<p class="qa-prompt">先試著說明欄位的單位與編碼，再用一組數值推導結果。</p>
-<details class="qa-answer" id="q-158-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-158-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-158-a-01">NSZE 決定可定址範圍，NCAP 決定可配置的 logical blocks；兩者都使用選定格式的 block 單位，不是 bytes。</p><div class="qa-sections">
 <section class="qa-section" id="q-158-s-01" data-answer-section="1"><h3><span>1.</span> 先確認資料的來源與範圍</h3>
 <span class="qa-anchor" id="q-158-a-02"></span><p>建立新 namespace 會消耗其 NVM Set／Endurance Group 的容量，但尚未附加任何 controller。</p>
@@ -73,20 +77,21 @@ nvme_qa: true
 <section class="qa-section" id="q-158-s-02" data-answer-section="2"><h3><span>2.</span> 欄位、單位與判讀例子</h3>
 <span class="qa-anchor" id="q-158-a-04"></span><p>填 NSZE、NCAP、FLBAS、DPS、NMIC 及需要的資源 IDs。NCAP 不得大於 NSZE；使用小於 NSZE 的 NCAP 需要相應 thin provisioning 支援。</p>
 <span class="qa-anchor" id="q-158-a-05"></span><p>先選格式再換算 blocks。假設 1000 個 4KiB blocks，就是 4000KiB 使用者容量；實際 NVM allocation 可能因配置單位而更大。</p>
-<span class="qa-anchor" id="q-158-a-06"></span><p>Create 成功 CQE.DW0 回 NSID，並以指定屬性格式化；再查 Identify 確認，之後才 Attach。</p>
+<span class="qa-anchor" id="q-158-a-06"></span><p>Create 成功 CQE.DW0 回 NSID，並以指定屬性格式化；再查 Identify 確認，之後才 Attach。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry，佇列中的完成項目</dd></div></dl>
 </section>
 <section class="qa-section" id="q-158-s-03" data-answer-section="3"><h3><span>3.</span> 判讀時要保留的條件</h3>
 <span class="qa-anchor" id="q-158-a-07"></span><p>非法格式回 Invalid Format；不支援 thin provisioning 有專屬狀態；資源不足另分容量與 NSID 上限。</p>
 <span class="qa-anchor" id="q-158-a-16"></span><p>比較要求的 blocks／格式與回報的 NSZE／NCAP／NVMCAP，不要求它們有相同單位或數值。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-nvmcreate">NVM Command Set 1.3 §4.1.5.8, 4.1.6, 5.8</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-158-a-17"></span><span class="qa-anchor" id="q-158-a-08"></span><span class="qa-anchor" id="q-158-a-09"></span><span class="qa-anchor" id="q-158-a-10"></span><span class="qa-anchor" id="q-158-a-11"></span><span class="qa-anchor" id="q-158-a-12"></span><span class="qa-anchor" id="q-158-a-13"></span><span class="qa-anchor" id="q-158-a-14"></span><span class="qa-anchor" id="q-158-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-nvmcreate">NVM Command Set 1.3 §4.1.5.8, 4.1.6, 5.8</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-159" data-question="159" data-answer-kind="error"><h2><a class="qa-qid" href="#q-159">Q159</a> Create Namespace 容量不足或參數不合法如何回應？</h2>
-<p class="qa-prompt">先區分失敗條件，再判斷是否有規範明定的回報結果。</p>
-<details class="qa-answer" id="q-159-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-159-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-159-a-01">失敗原因可以是容量、識別碼數量、格式或資源歸屬。分清它們才知道縮小容量、刪除其他 namespace 或改格式是否有用。</p><div class="qa-sections">
 <section class="qa-section" id="q-159-s-01" data-answer-section="1"><h3><span>1.</span> 先區分是哪一種失敗</h3>
 <span class="qa-anchor" id="q-159-a-02"></span><p>容量依所選資源池判斷，不能把其他 Endurance Group 的剩餘空間直接當成可用。</p>
@@ -100,16 +105,17 @@ nvme_qa: true
 <section class="qa-section" id="q-159-s-03" data-answer-section="3"><h3><span>3.</span> 結果與後續驗證</h3>
 <span class="qa-anchor" id="q-159-a-06"></span><p>拒絕後不能把任意 DW0 當成新 NSID，只有成功 Create 的 DW0 才具有該意義。</p>
 <span class="qa-anchor" id="q-159-a-16"></span><p>比對要求量與真正配置量，區分「格式不允許」與「可用容量不足」。</p>
-<span class="qa-anchor" id="q-159-a-17"></span><p>先查失敗 Status 的完整 SCT／SC，再決定是哪個資源不足。</p>
+<span class="qa-anchor" id="q-159-a-17"></span><p>先查失敗 Status 的完整 SCT／SC，再決定是哪個資源不足。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SCT</dt><dd>Status Code Type，完成狀態代碼類型</dd></div></dl>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-nvmcreate">NVM Command Set 1.3 §4.1.5.8, 4.1.6, 5.8</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-159-a-08"></span><span class="qa-anchor" id="q-159-a-09"></span><span class="qa-anchor" id="q-159-a-10"></span><span class="qa-anchor" id="q-159-a-11"></span><span class="qa-anchor" id="q-159-a-12"></span><span class="qa-anchor" id="q-159-a-13"></span><span class="qa-anchor" id="q-159-a-14"></span><span class="qa-anchor" id="q-159-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-nvmcreate">NVM Command Set 1.3 §4.1.5.8, 4.1.6, 5.8</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-160" data-question="160" data-answer-kind="process"><h2><a class="qa-qid" href="#q-160">Q160</a> Create 後 Allocated Namespace List 如何更新？</h2>
-<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
-<details class="qa-answer" id="q-160-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-160-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-160-a-01">Allocated 表示 namespace 已存在；Active 表示可經某 controller 存取。Create 只先建立前者。</p><div class="qa-sections">
 <section class="qa-section" id="q-160-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
 <span class="qa-anchor" id="q-160-a-02"></span><p>Allocated List 描述適用 inventory；各 controller 的 Active List 可不同。</p>
@@ -125,13 +131,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-160-a-16"></span><p>對回 DW0、Allocated List 與 namespace 屬性，避免只用數量增加判斷是哪個物件。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-nsid">Base 2.4 §3.2.1</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-160-a-17"></span><span class="qa-anchor" id="q-160-a-08"></span><span class="qa-anchor" id="q-160-a-09"></span><span class="qa-anchor" id="q-160-a-10"></span><span class="qa-anchor" id="q-160-a-11"></span><span class="qa-anchor" id="q-160-a-12"></span><span class="qa-anchor" id="q-160-a-13"></span><span class="qa-anchor" id="q-160-a-14"></span><span class="qa-anchor" id="q-160-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-nsid">Base 2.4 §3.2.1</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-161" data-question="161" data-answer-kind="process"><h2><a class="qa-qid" href="#q-161">Q161</a> Attach／Detach 如何指定 Controller？</h2>
-<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
-<details class="qa-answer" id="q-161-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-161-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-161-a-01">Attachment 改變存取關係，不建立或刪除 namespace，也不改它的使用者資料格式。</p><div class="qa-sections">
 <section class="qa-section" id="q-161-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
 <span class="qa-anchor" id="q-161-a-02"></span><p>命令 NSID 指目標 namespace，資料中的 Controller List 指要變更的 controllers。</p>
@@ -147,13 +154,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-161-a-16"></span><p>失敗時 Error Information.CSINFO 指第一個失敗 entry 的 byte offset；遇錯後不再處理後續 entries，不能假設整個清單全部回復。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-161-a-17"></span><span class="qa-anchor" id="q-161-a-08"></span><span class="qa-anchor" id="q-161-a-09"></span><span class="qa-anchor" id="q-161-a-10"></span><span class="qa-anchor" id="q-161-a-11"></span><span class="qa-anchor" id="q-161-a-12"></span><span class="qa-anchor" id="q-161-a-13"></span><span class="qa-anchor" id="q-161-a-14"></span><span class="qa-anchor" id="q-161-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-162" data-question="162" data-answer-kind="process"><h2><a class="qa-qid" href="#q-162">Q162</a> Attach／Detach 後 Active List 與 Controller List 如何互相驗證？</h2>
-<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
-<details class="qa-answer" id="q-162-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-162-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-162-a-01">同一關係可以從 controller 看可用 namespaces，也可以從 namespace 看附加 controllers；雙向核對能找出只更新一邊的錯誤。</p><div class="qa-sections">
 <section class="qa-section" id="q-162-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
 <span class="qa-anchor" id="q-162-a-02"></span><p>每個 controller 的 Active List 只代表自己，不能當成 subsystem 全部 namespace。</p>
@@ -169,13 +177,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-162-a-16"></span><p>Allocated List 在單純 Attach／Detach 前後仍應保留該 namespace，與 active 關係分開比較。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-162-a-17"></span><span class="qa-anchor" id="q-162-a-08"></span><span class="qa-anchor" id="q-162-a-09"></span><span class="qa-anchor" id="q-162-a-10"></span><span class="qa-anchor" id="q-162-a-11"></span><span class="qa-anchor" id="q-162-a-12"></span><span class="qa-anchor" id="q-162-a-13"></span><span class="qa-anchor" id="q-162-a-14"></span><span class="qa-anchor" id="q-162-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-163" data-question="163" data-answer-kind="error"><h2><a class="qa-qid" href="#q-163">Q163</a> 重複 Attach、非法 Controller 或未 Attach 就 Detach 如何回應？</h2>
-<p class="qa-prompt">先區分失敗條件，再判斷是否有規範明定的回報結果。</p>
-<details class="qa-answer" id="q-163-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-163-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-163-a-01">這些錯誤描述關係與清單，不代表 namespace 資料必定損壞。</p><div class="qa-sections">
 <section class="qa-section" id="q-163-s-01" data-answer-section="1"><h3><span>1.</span> 先區分是哪一種失敗</h3>
 <span class="qa-anchor" id="q-163-a-02"></span><p>以每個 Controller List entry 當時的附加狀態判斷，可能在前幾項成功後才遇到錯誤。</p>
@@ -192,20 +201,21 @@ nvme_qa: true
 <span class="qa-anchor" id="q-163-a-17"></span><p>先查 namespace 是否為 private，以及是否早已附加。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-163-a-08"></span><span class="qa-anchor" id="q-163-a-09"></span><span class="qa-anchor" id="q-163-a-10"></span><span class="qa-anchor" id="q-163-a-11"></span><span class="qa-anchor" id="q-163-a-12"></span><span class="qa-anchor" id="q-163-a-13"></span><span class="qa-anchor" id="q-163-a-14"></span><span class="qa-anchor" id="q-163-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-164" data-question="164" data-answer-kind="concept"><h2><a class="qa-qid" href="#q-164">Q164</a> Detach 時還有 Outstanding Command，應如何處理？</h2>
-<p class="qa-prompt">先用自己的話解釋機制，再舉一個常見誤解。</p>
-<details class="qa-answer" id="q-164-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-164-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-164-a-01">Detach 會讓該 controller 對目標 NSID 的存取關係失效。Host 先停止新 I/O 並排空較容易管理，但韌體仍須正確處理未完成命令。</p><div class="qa-sections">
 <section class="qa-section" id="q-164-s-01" data-answer-section="1"><h3><span>1.</span> 機制與適用範圍</h3>
 <span class="qa-anchor" id="q-164-a-02"></span><p>只改變指定 controller 與 namespace 的關係；其他仍附加的 controller 不因此自動 Detach。</p>
 <span class="qa-anchor" id="q-164-a-04"></span><p>Base8.1.17 將已提交但未完成及後續提交的目標命令，按 inactive NSID 規則處理；再套用各命令明文例外。</p>
 </section>
 <section class="qa-section" id="q-164-s-02" data-answer-section="2"><h3><span>2.</span> 用操作與結果理解</h3>
-<span class="qa-anchor" id="q-164-a-03"></span><p>保存 outstanding SQID／CID、目標 NSID 與 Attachment 完成時間。</p>
+<span class="qa-anchor" id="q-164-a-03"></span><p>保存 outstanding SQID／CID、目標 NSID 與 Attachment 完成時間。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SQID</dt><dd>Submission Queue Identifier，提交佇列識別碼</dd></div><div><dt>CID</dt><dd>Command Identifier，同一提交佇列內的命令識別碼</dd></div></dl>
 <span class="qa-anchor" id="q-164-a-05"></span><p>停止新提交，完成需要的資料同步，等待可排空的工作，再 Detach；若刻意測競爭，完整保存命令與狀態轉移順序。</p>
 <span class="qa-anchor" id="q-164-a-06"></span><p>Detach 成功後關係消失；先前已完成的命令不重複完成，未完成者按 inactive 規則處理。</p>
 </section>
@@ -214,13 +224,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-164-a-16"></span><p>確認沒有把已完成的 I/O 誤歸到 Detach 後，也沒有在完成前回收仍可能使用的 buffer。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-sqe">Base 2.4 §4.1.1</a> · <a href="#ref-nsid">Base 2.4 §3.2.1</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-164-a-17"></span><span class="qa-anchor" id="q-164-a-08"></span><span class="qa-anchor" id="q-164-a-09"></span><span class="qa-anchor" id="q-164-a-10"></span><span class="qa-anchor" id="q-164-a-11"></span><span class="qa-anchor" id="q-164-a-12"></span><span class="qa-anchor" id="q-164-a-13"></span><span class="qa-anchor" id="q-164-a-14"></span><span class="qa-anchor" id="q-164-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-sqe">Base 2.4 §4.1.1</a> · <a href="#ref-nsid">Base 2.4 §3.2.1</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-165" data-question="165" data-answer-kind="error"><h2><a class="qa-qid" href="#q-165">Q165</a> Detach 後再送 Namespace Command 應得到什麼？</h2>
-<p class="qa-prompt">先區分失敗條件，再判斷是否有規範明定的回報結果。</p>
-<details class="qa-answer" id="q-165-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-165-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-165-a-01">Detach 使 NSID 在該 controller 成為 inactive，不是從 subsystem 刪除。這個區別決定後續命令與查詢怎麼處理。</p><div class="qa-sections">
 <section class="qa-section" id="q-165-s-01" data-answer-section="1"><h3><span>1.</span> 先區分是哪一種失敗</h3>
 <span class="qa-anchor" id="q-165-a-02"></span><p>同一 NSID 仍可在另一個已附加 controller 上 active，因此路徑是判斷的一部分。</p>
@@ -233,17 +244,18 @@ nvme_qa: true
 </section>
 <section class="qa-section" id="q-165-s-03" data-answer-section="3"><h3><span>3.</span> 結果與後續驗證</h3>
 <span class="qa-anchor" id="q-165-a-06"></span><p>正常資料存取不能因 namespace 仍存在就繼續視為 active；允許查已配置物件的管理命令則仍可合法工作。</p>
-<span class="qa-anchor" id="q-165-a-16"></span><p>用具體 Opcode／CNS 的規則比對，而不是只看 NSID 相同。</p>
+<span class="qa-anchor" id="q-165-a-16"></span><p>用具體 Opcode／CNS 的規則比對，而不是只看 NSID 相同。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CNS</dt><dd>Controller or Namespace Structure，選擇Identify回傳結構</dd></div></dl>
 <span class="qa-anchor" id="q-165-a-17"></span><p>先確認測試送的是 I/O，還是允許查詢 inactive 物件的 Admin 命令。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-sqe">Base 2.4 §4.1.1</a> · <a href="#ref-nsid">Base 2.4 §3.2.1</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-165-a-08"></span><span class="qa-anchor" id="q-165-a-09"></span><span class="qa-anchor" id="q-165-a-10"></span><span class="qa-anchor" id="q-165-a-11"></span><span class="qa-anchor" id="q-165-a-12"></span><span class="qa-anchor" id="q-165-a-13"></span><span class="qa-anchor" id="q-165-a-14"></span><span class="qa-anchor" id="q-165-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-sqe">Base 2.4 §4.1.1</a> · <a href="#ref-nsid">Base 2.4 §3.2.1</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-166" data-question="166" data-answer-kind="error"><h2><a class="qa-qid" href="#q-166">Q166</a> 刪除不存在或仍 Attached 的 Namespace 如何處理？</h2>
-<p class="qa-prompt">先區分失敗條件，再判斷是否有規範明定的回報結果。</p>
-<details class="qa-answer" id="q-166-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-166-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-166-a-01">需要修正「Attached 就一定禁止刪除」的前提：規範建議先 Detach，但 Delete 也會將 namespace 從所有 controllers 移除。</p><div class="qa-sections">
 <section class="qa-section" id="q-166-s-01" data-answer-section="1"><h3><span>1.</span> 先區分是哪一種失敗</h3>
 <span class="qa-anchor" id="q-166-a-02"></span><p>Delete 移除 subsystem 中的物件，不只是某個 controller 的存取關係。</p>
@@ -260,14 +272,15 @@ nvme_qa: true
 <span class="qa-anchor" id="q-166-a-17"></span><p>先查是否用了 FFFFFFFFh，這會改變空集合的完成語意。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-sqe">Base 2.4 §4.1.1</a> · <a href="#ref-nsid">Base 2.4 §3.2.1</a> · <a href="#ref-nwp">Base 2.4 §5.2.30.1.38, 8.1.18</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-166-a-08"></span><span class="qa-anchor" id="q-166-a-09"></span><span class="qa-anchor" id="q-166-a-10"></span><span class="qa-anchor" id="q-166-a-11"></span><span class="qa-anchor" id="q-166-a-12"></span><span class="qa-anchor" id="q-166-a-13"></span><span class="qa-anchor" id="q-166-a-14"></span><span class="qa-anchor" id="q-166-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-sqe">Base 2.4 §4.1.1</a> · <a href="#ref-nsid">Base 2.4 §3.2.1</a> · <a href="#ref-nwp">Base 2.4 §5.2.30.1.38, 8.1.18</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-167" data-question="167" data-answer-kind="events"><h2><a class="qa-qid" href="#q-167">Q167</a> Namespace 變更後哪些事件與 Log 應更新？</h2>
-<p class="qa-prompt">先說明事件成立的條件，再區分通知、事件確認與紀錄。</p>
-<details class="qa-answer" id="q-167-answer"><summary>展開解答與推導</summary>
-<p class="qa-answer-lead" id="q-167-a-01">變更通知讓 Host 更新已快取的配置；事件、變更清單與 Identify 現況各自回答不同問題。</p><div class="qa-sections">
+
+<details open class="qa-answer" id="q-167-answer"><summary>跟著解說理解</summary>
+<p class="qa-answer-lead" id="q-167-a-01">Host 收到變更通知後，先用變更清單找到需要更新的 namespace，再以 Identify 讀回目前配置，更新快取。</p><div class="qa-sections">
 <section class="qa-section" id="q-167-s-01" data-answer-section="1"><h3><span>1.</span> 事件何時成立、由誰觀察</h3>
 <span class="qa-anchor" id="q-167-a-02"></span><p>Create／Delete 改 inventory；Attach／Detach 改特定 controller 的 Active List。</p>
 <span class="qa-anchor" id="q-167-a-03"></span><p>確認 Attached／Allocated notices 的支援與 AEC，以及 AER 是否可用。</p>
@@ -288,13 +301,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-167-a-11"></span><p>支援 PEL 時，Namespace Management 對應的 Change Namespace Event06h 記錄建立／刪除等規定事件。 <a class="qa-rule-link" href="#common-namespace_op-11">完整條件見本冊說明</a></p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-aerfull">Base 2.4 §5.2.2 (PCIe-applicable events)</a> · <a href="#ref-aec">Base 2.4 §5.2.30.1.6</a> · <a href="#ref-changedlog">Base 2.4 §5.2.13.1.5</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-167-a-08"></span><span class="qa-anchor" id="q-167-a-12"></span><span class="qa-anchor" id="q-167-a-13"></span><span class="qa-anchor" id="q-167-a-14"></span><span class="qa-anchor" id="q-167-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-aerfull">Base 2.4 §5.2.2 (PCIe-applicable events)</a> · <a href="#ref-aec">Base 2.4 §5.2.30.1.6</a> · <a href="#ref-changedlog">Base 2.4 §5.2.13.1.5</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-168" data-question="168" data-answer-kind="fields"><h2><a class="qa-qid" href="#q-168">Q168</a> Changed Namespace List 超過容量如何表示？</h2>
-<p class="qa-prompt">先試著說明欄位的單位與編碼，再用一組數值推導結果。</p>
-<details class="qa-answer" id="q-168-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-168-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-168-a-01">變更清單容量有限，溢位標記要求 Host 重新探索全部相關 namespace，而不是只相信不完整清單。</p><div class="qa-sections">
 <section class="qa-section" id="q-168-s-01" data-answer-section="1"><h3><span>1.</span> 先確認資料的來源與範圍</h3>
 <span class="qa-anchor" id="q-168-a-02"></span><p>LID04h 針對該 controller 的 attached namespace 變更，不是整個 subsystem 的通用變更歷史。</p>
@@ -310,13 +324,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-168-a-16"></span><p>比較最終 Identify 現況與重掃後 Host 快取，確認溢位後仍能正確同步。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-changedlog">Base 2.4 §5.2.13.1.5</a> · <a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-168-a-17"></span><span class="qa-anchor" id="q-168-a-08"></span><span class="qa-anchor" id="q-168-a-09"></span><span class="qa-anchor" id="q-168-a-10"></span><span class="qa-anchor" id="q-168-a-11"></span><span class="qa-anchor" id="q-168-a-12"></span><span class="qa-anchor" id="q-168-a-13"></span><span class="qa-anchor" id="q-168-a-14"></span><span class="qa-anchor" id="q-168-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-changedlog">Base 2.4 §5.2.13.1.5</a> · <a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-169" data-question="169" data-answer-kind="lifecycle"><h2><a class="qa-qid" href="#q-169">Q169</a> Reset 或 Power Cycle 後 Namespace 配置與 Attachment 是否保留？</h2>
-<p class="qa-prompt">先指明重設或中斷的方式，再分別判斷設定、進行中的操作與資料。</p>
-<details class="qa-answer" id="q-169-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-169-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-169-a-01">namespace 是持久配置，不隨 queue 重建而重新建立。將這兩層分開，才能避免恢復時誤刪或重複建立物件。</p><div class="qa-sections">
 <section class="qa-section" id="q-169-s-01" data-answer-section="1"><h3><span>1.</span> 先界定觸發方式與影響對象</h3>
 <span class="qa-anchor" id="q-169-a-02"></span><p>已完成的配置與 attachment 保留；未完成命令則需恢復後查實際狀態。</p>
@@ -339,13 +354,14 @@ nvme_qa: true
 <span class="qa-anchor" id="q-169-a-17"></span><p>先確認 Host 恢復程序有沒有自己做 Restore 或 Delete。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-nsid">Base 2.4 §3.2.1</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-169-a-08"></span><span class="qa-anchor" id="q-169-a-09"></span><span class="qa-anchor" id="q-169-a-10"></span><span class="qa-anchor" id="q-169-a-11"></span><span class="qa-anchor" id="q-169-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-nsid">Base 2.4 §3.2.1</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-170" data-question="170" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-170">Q170</a> Private 與 Shared Namespace 有何差別？</h2>
-<p class="qa-prompt">先說出比較對象最重要的差別，並舉一個不能互相代用的例子。</p>
-<details class="qa-answer" id="q-170-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-170-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-170-a-01">Private 限制同時附加一個 controller；Shared 可允許多 controller 附加。這是存取拓樸，不是資料加密或讀寫權限名稱。</p><div class="qa-sections">
 <section class="qa-section" id="q-170-s-01" data-answer-section="1"><h3><span>1.</span> 差別在哪裡</h3>
 <span class="qa-anchor" id="q-170-a-02"></span><p>多條路徑可指向同一份 namespace 資料，不能把每條路徑當成獨立副本。</p>
@@ -356,18 +372,19 @@ nvme_qa: true
 <span class="qa-anchor" id="q-170-a-05"></span><p>先配置共享屬性，再附加需要的 controllers，逐端查 Active List。</p>
 <span class="qa-anchor" id="q-170-a-06"></span><p>Shared 可由多端存取；Private 從 A Detach 後可再 Attach 到 B，但不能同時保有兩端關係。</p>
 </section>
-<section class="qa-section" id="q-170-s-03" data-answer-section="3"><h3><span>3.</span> 哪些結論不能互相套用</h3>
+<section class="qa-section" id="q-170-s-03" data-answer-section="3"><h3><span>3.</span> 比較時要保留的條件</h3>
 <span class="qa-anchor" id="q-170-a-07"></span><p>Private 已附加另一 controller 時，新增附加回 Namespace Is Private。</p>
 <span class="qa-anchor" id="q-170-a-16"></span><p>檢查身分、資料與附加關係，避免把多路徑誤算成多份容量。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-170-a-17"></span><span class="qa-anchor" id="q-170-a-08"></span><span class="qa-anchor" id="q-170-a-09"></span><span class="qa-anchor" id="q-170-a-10"></span><span class="qa-anchor" id="q-170-a-11"></span><span class="qa-anchor" id="q-170-a-12"></span><span class="qa-anchor" id="q-170-a-13"></span><span class="qa-anchor" id="q-170-a-14"></span><span class="qa-anchor" id="q-170-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-171" data-question="171" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-171">Q171</a> 三種 Write Protection 模式與進入條件有何不同？</h2>
-<p class="qa-prompt">先說出比較對象最重要的差別，並舉一個不能互相代用的例子。</p>
-<details class="qa-answer" id="q-171-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-171-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-171-a-01">保護模式決定能否解除以及何時解除；選 Permanent 前必須理解它不是可隨時切回的普通開關。</p><div class="qa-sections">
 <section class="qa-section" id="q-171-s-01" data-answer-section="1"><h3><span>1.</span> 差別在哪裡</h3>
 <span class="qa-anchor" id="q-171-a-02"></span><p>WPS 屬於 namespace，所有附加 controllers 共同執行。</p>
@@ -378,18 +395,19 @@ nvme_qa: true
 <span class="qa-anchor" id="q-171-a-05"></span><p>查能力與進入許可，設定 WPS，等待完成，再 Get 確認。轉入受保護狀態前，controller 須提交該 namespace 的 volatile cache data／metadata 到非揮發媒體。</p>
 <span class="qa-anchor" id="q-171-a-06"></span><p>WPS 與實際禁止改寫的行為一致；Read 仍可依正常條件處理。</p>
 </section>
-<section class="qa-section" id="q-171-s-03" data-answer-section="3"><h3><span>3.</span> 哪些結論不能互相套用</h3>
+<section class="qa-section" id="q-171-s-03" data-answer-section="3"><h3><span>3.</span> 比較時要保留的條件</h3>
 <span class="qa-anchor" id="q-171-a-07"></span><p>進入未允許狀態或改變 Until Power Cycle／Permanent 回 Feature Not Changeable；multi-domain 不得使用 Until Power Cycle。</p>
 <span class="qa-anchor" id="q-171-a-16"></span><p>WPC 只是進入許可，不是 WPS；把控制位清零不會自動解除既有保護。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-nwp">Base 2.4 §5.2.30.1.38, 8.1.18</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-171-a-17"></span><span class="qa-anchor" id="q-171-a-08"></span><span class="qa-anchor" id="q-171-a-09"></span><span class="qa-anchor" id="q-171-a-10"></span><span class="qa-anchor" id="q-171-a-11"></span><span class="qa-anchor" id="q-171-a-12"></span><span class="qa-anchor" id="q-171-a-13"></span><span class="qa-anchor" id="q-171-a-14"></span><span class="qa-anchor" id="q-171-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-nwp">Base 2.4 §5.2.30.1.38, 8.1.18</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-172" data-question="172" data-answer-kind="lifecycle"><h2><a class="qa-qid" href="#q-172">Q172</a> Write Protection 在 Reset 與 Power Cycle 後如何保留？</h2>
-<p class="qa-prompt">先指明重設或中斷的方式，再分別判斷設定、進行中的操作與資料。</p>
-<details class="qa-answer" id="q-172-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-172-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-172-a-01">FID84h 不可保存，不代表保護不持續。其狀態有明確持久性，不能套用一般 Saved Feature 的直覺。</p><div class="qa-sections">
 <section class="qa-section" id="q-172-s-01" data-answer-section="1"><h3><span>1.</span> 先界定觸發方式與影響對象</h3>
 <span class="qa-anchor" id="q-172-a-02"></span><p>保留規則跟隨 namespace，不因 controller 更換而解除。</p>
@@ -406,14 +424,15 @@ nvme_qa: true
 <span class="qa-anchor" id="q-172-a-17"></span><p>先查測試使用的 Reset 是否真的包含電源循環。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-nwp">Base 2.4 §5.2.30.1.38, 8.1.18</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-172-a-08"></span><span class="qa-anchor" id="q-172-a-09"></span><span class="qa-anchor" id="q-172-a-10"></span><span class="qa-anchor" id="q-172-a-11"></span><span class="qa-anchor" id="q-172-a-12"></span><span class="qa-anchor" id="q-172-a-13"></span><span class="qa-anchor" id="q-172-a-14"></span><span class="qa-anchor" id="q-172-a-15"></span>
 <p class="qa-related">相關機制：<a href="/nvme/question-bank/features/zh-tw/#q-065">Q65</a></p>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-nwp">Base 2.4 §5.2.30.1.38, 8.1.18</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-173" data-question="173" data-answer-kind="concept"><h2><a class="qa-qid" href="#q-173">Q173</a> Write Protection 如何影響 Format、Sanitize 與 Namespace Management？</h2>
-<p class="qa-prompt">先用自己的話解釋機制，再舉一個常見誤解。</p>
-<details class="qa-answer" id="q-173-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-173-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-173-a-01">保護不只阻止 Write；任何會修改受保護 namespace 的操作，都要依命令互動規則檢查，包含未直接指定它的廣範圍操作。</p><div class="qa-sections">
 <section class="qa-section" id="q-173-s-01" data-answer-section="1"><h3><span>1.</span> 機制與適用範圍</h3>
 <span class="qa-anchor" id="q-173-a-02"></span><p>共享 namespace 在所有附加 controller 受保護；Format 或 Subsystem Sanitize 的 scope 若涵蓋它，也不能繞過。</p>
@@ -429,12 +448,13 @@ nvme_qa: true
 <span class="qa-anchor" id="q-173-a-16"></span><p>以同一受保護資料測直接 Write 與跨 namespace 範圍操作，確認 scope 判斷一致。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-nwp">Base 2.4 §5.2.30.1.38, 8.1.18</a> · <a href="#ref-format">Base 2.4 §5.1.1, 5.2.11</a> · <a href="#ref-sanitizecmd">Base 2.4 §5.2.26–5.2.27</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-173-a-17"></span><span class="qa-anchor" id="q-173-a-08"></span><span class="qa-anchor" id="q-173-a-09"></span><span class="qa-anchor" id="q-173-a-10"></span><span class="qa-anchor" id="q-173-a-11"></span><span class="qa-anchor" id="q-173-a-12"></span><span class="qa-anchor" id="q-173-a-13"></span><span class="qa-anchor" id="q-173-a-14"></span><span class="qa-anchor" id="q-173-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-nwp">Base 2.4 §5.2.30.1.38, 8.1.18</a> · <a href="#ref-format">Base 2.4 §5.1.1, 5.2.11</a> · <a href="#ref-sanitizecmd">Base 2.4 §5.2.26–5.2.27</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nspelevent">Base 2.4 §5.2.13.1.14.2.6</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <section id="common-rules" class="qa-common"><h2>共用規則：各題連到的完整解釋</h2><p>這些規則在本冊只完整說明一次。返回剛才的題目可用瀏覽器「上一頁」；特定命令或 Feature 的明文例外優先。</p>
-<article id="common-namespace_op-9"><h3>本主題的共用條件 · 是否產生 Asynchronous Event？</h3><p>Create／Delete 影響 Allocated List，Attach／Detach 影響指定 controller 的 Active List。依各 controller 的事件支援與 AEC 回報變更；Admin SQ 收到 Delete 的 controller 不回報該次刪除通知，其他受影響且啟用通知的 controller 仍須依規則回報。</p></article>
+<article id="common-namespace_op-9"><h3>本主題的共用條件 · 是否產生 Asynchronous Event？</h3><p>Create／Delete 影響 Allocated List，Attach／Detach 影響指定 controller 的 Active List。依各 controller 的事件支援與 AEC 回報變更；Admin SQ 收到 Delete 的 controller 不回報該次刪除通知，其他受影響且啟用通知的 controller 仍須依規則回報。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SQ</dt><dd>Submission Queue，提交佇列</dd></div></dl></article>
 <article id="common-namespace_op-10"><h3>本主題的共用條件 · 是否更新 Error Information Log 或其他 Log？</h3><p>使用 Identify 的 Allocated、Active 與 Controller List 確認目前配置；Changed Attached Namespace List04h 與 Changed Allocated Namespace List1Ch 指出曾變更的 NSID，不能代替完整現況。失敗則依 More 與 Error Information 補充欄位處理。</p></article>
 <article id="common-namespace_op-11"><h3>本主題的共用條件 · 是否記錄於 Persistent Event Log？</h3><p>支援 PEL 時，Namespace Management 對應的 Change Namespace Event06h 記錄建立／刪除等規定事件。Attach／Detach 不應直接當成 Create／Delete；Write Protection 則依該 Feature 是否支援 Set Feature Event 記錄。</p></article>
 </section>

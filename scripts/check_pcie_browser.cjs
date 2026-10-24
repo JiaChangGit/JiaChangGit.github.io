@@ -14,7 +14,8 @@ if (!args.root || !args.output) throw new Error('--root and --output are require
 const root = path.resolve(args.root), output = path.resolve(args.output);
 fs.mkdirSync(output, { recursive: true });
 const chapters = args.chapters ? args.chapters.split(',').map(Number) : [7, 8, 9];
-if (chapters.some(n => !Number.isInteger(n) || n < 0 || n > 13)) throw new Error('Expected completed chapter numbers 0–13');
+const completed = fs.readdirSync(path.join(root,'DOCS','pcie-course')).map(name => /^chapter-(\d+)\.html$/.exec(name)).filter(Boolean).map(match => Number(match[1]));
+if (chapters.some(n => !Number.isInteger(n) || !completed.includes(n))) throw new Error('Expected completed chapter numbers from the supplied build');
 const server = http.createServer((req, res) => {
   let requested = decodeURIComponent(req.url.split('?')[0]);
   let file = path.resolve(root, '.' + requested);

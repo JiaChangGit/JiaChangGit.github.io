@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "course": "pcie-course",
+  "chapter": 17,
+  "updated": "2026-10-24",
+  "claims": [
+    {
+      "id": "PCIE-CH17-001",
+      "claim": "credit逐Link、資料單位及六種資源與重送不重複計數。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.6",
+        "2.6.1"
+      ],
+      "document_pages": [
+        235,
+        236,
+        237
+      ],
+      "pdf_pages": [
+        235,
+        236,
+        237
+      ],
+      "figures": [
+        "2-89"
+      ],
+      "tables": [
+        "2-44",
+        "2-45"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH17-002",
+      "claim": "非Flit與Flit完整性、序號及重送確認不同。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "3.6.2",
+        "3.6.3"
+      ],
+      "document_pages": [
+        264,
+        288,
+        300
+      ],
+      "pdf_pages": [
+        264,
+        288,
+        300
+      ],
+      "figures": [
+        "3-17"
+      ],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH17-003",
+      "claim": "端到端ECRC與資料poison目的。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.7"
+      ],
+      "document_pages": [
+        252
+      ],
+      "pdf_pages": [
+        252
+      ],
+      "figures": [],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH17-004",
+      "claim": "更新延遲附錄僅資訊性及計算參數。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "H",
+        "H.1"
+      ],
+      "document_pages": [
+        1581
+      ],
+      "pdf_pages": [
+        1581
+      ],
+      "figures": [],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-24"
+    }
+  ]
+}

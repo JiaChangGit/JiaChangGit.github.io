@@ -119,13 +119,71 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 .nvme-qa :focus-visible {outline:3px solid var(--qr-accent);outline-offset:3px;}
 @media(max-width:600px){.nvme-qa .qa-question{padding:1rem}.nvme-qa .qa-glossary{padding:1rem}.nvme-qa .qa-state{flex-direction:column}.nvme-qa .qa-flow{padding:.8rem}.nvme-qa .qa-flow-steps>li.qa-flow-branch{margin-left:.3rem}}
 @media print{.nvme-qa .qa-controls,.nvme-qa .qa-theme,.nvme-qa .qa-back{display:none}.nvme-qa details::details-content{display:block}.nvme-qa details>*{display:block!important}.nvme-qa .qa-question{break-inside:auto}.nvme-qa .qa-flow-steps>li{break-inside:avoid}}
+
+/* Applied only to explicitly authorized teaching roots. */
+html .spec-teaching[data-spec-series] .st-terms { margin:.35rem 0 1rem; padding:.5rem .8rem; border-inline-start:3px solid var(--st-accent); background:var(--st-soft); font-size:.88em; color:var(--st-muted); }
+html .spec-teaching[data-spec-series] .st-terms > div { display:flex; flex-wrap:wrap; gap:.2em .7em; }
+html .spec-teaching[data-spec-series] .st-terms dt { font-weight:650; }
+html .spec-teaching[data-spec-series] .st-terms dd { margin:0; flex:1 1 14em; }
+html .spec-teaching[data-spec-series] {
+ --st-diagram-width:900px;
+ --st-paper:#f2f6f8; --st-surface:#fff; --st-ink:#192d40; --st-muted:#4c6479;
+ --st-line:#cbd9e3; --st-accent:#145f9d; --st-soft:#edf5fc;
+ --paper:var(--st-paper); --surface:var(--st-surface); --surface-2:var(--st-soft); --surface-alt:var(--st-soft);
+ --ink:var(--st-ink); --muted:var(--st-muted); --line:var(--st-line);
+ --accent:var(--st-accent); --accent-2:var(--st-accent); --soft:var(--st-soft); --blue-soft:var(--st-soft); --teal-soft:var(--st-soft);
+ --qr-paper:var(--st-paper); --qr-surface:var(--st-surface); --qr-ink:var(--st-ink); --qr-muted:var(--st-muted);
+ --qr-line:var(--st-line); --qr-accent:var(--st-accent); --qr-soft:var(--st-soft);
+ color:var(--st-ink); background:var(--st-paper); font-size:17px; line-height:1.9;
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+}
+html .spec-teaching[data-spec-series="nvme"] { --st-accent:#086b56; --st-soft:#e7f4ee; }
+@media(prefers-color-scheme:dark) {
+ html:not([data-theme="light"]) .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+ html:not([data-theme="light"]) .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+}
+html[data-theme="dark"] .spec-teaching { --st-paper:#101b26; --st-surface:#172635; --st-ink:#e5eef5; --st-muted:#b7c8d6; --st-line:#40566a; --st-accent:#81bdf0; --st-soft:#1b354b; }
+html[data-theme="dark"] .spec-teaching[data-spec-series="nvme"] { --st-accent:#79d8b4; --st-soft:#173d32; }
+.spec-teaching * { box-sizing:border-box; }
+.spec-teaching :is(h1,h2,h3,h4,h5,p,li,td,th,summary,strong,figcaption) { color:var(--st-ink); }
+.spec-teaching svg text { font-family:inherit; }
+.spec-teaching h1 { font-size:clamp(1.8rem,3.2vw,2.65rem); line-height:1.4; }
+.spec-teaching h2 { font-size:clamp(1.3rem,2.5vw,1.7rem); line-height:1.55; }
+.spec-teaching h3 { font-size:1.15rem; line-height:1.65; }
+.spec-teaching h4 { font-size:1rem; line-height:1.7; }
+.spec-teaching :is(h1,h2,h3,h4) { overflow-wrap:anywhere; }
+.spec-teaching p { margin:.7rem 0 1.15rem; }
+.spec-teaching :is(a,summary) { text-underline-offset:.2em; }
+.spec-teaching :focus-visible { outline:3px solid var(--st-accent); outline-offset:4px; }
+.spec-teaching :is(.qa-takeaway,.qa-answer-lead,.st-takeaway) { color:var(--st-ink); font-weight:650; font-size:1.06rem; line-height:1.9; }
+.spec-teaching :is(.qa-question,.qr-card,.guided-walk) { border:1px solid var(--st-line); border-radius:12px; background:var(--st-surface); padding:clamp(18px,3vw,30px); margin:1.8rem 0; }
+.spec-teaching :is(.qa-flow,.qr-note,.qr-observations,.st-context,.st-route) { background:var(--st-soft); border-left:4px solid var(--st-accent); padding:1rem 1.2rem; margin:1.4rem 0; }
+.spec-teaching :is(.qr-step,.qa-qid,.st-label) { color:var(--st-accent); font-weight:700; }
+.spec-teaching :is(.qa-citations,.qa-source-links,.qr-case-sources,.walk-source,.st-source) { font-size:.84rem; line-height:1.75; color:var(--st-muted); overflow-wrap:anywhere; }
+.spec-teaching :is(.qr-table,.table-wrap) { overflow-x:auto; margin:1.4rem 0; border-radius:7px; }
+.spec-teaching :is(th,td) { line-height:1.8; vertical-align:top; min-width:120px; }
+.spec-teaching :is(table,td) { background:var(--st-surface); }
+.spec-teaching th { background:var(--st-soft); }
+.spec-teaching .st-step { border-left:3px solid var(--st-line); padding:.6rem 1rem; margin:1.2rem 0; }
+.spec-teaching .st-step:target { border-left-color:var(--st-accent); background:var(--st-soft); }
+.spec-teaching .st-glossary { border:1px solid var(--st-line); padding:.7rem 1rem; margin:1.4rem 0; border-radius:8px; }
+.spec-teaching .st-glossary > summary { min-height:44px; cursor:pointer; }
+.spec-teaching .st-specs { display:flex; flex-wrap:wrap; gap:.4rem 1rem; color:var(--st-muted); font-size:.8rem; line-height:1.8; margin:1rem 0; }
+.spec-teaching .st-specs span { border-bottom:2px solid var(--st-accent); padding:.2rem 0; }
+@media(max-width:620px) { .spec-teaching :is(.qa-question,.qr-card,.guided-walk) { padding:16px; } .spec-teaching .diagram svg { min-width:var(--st-diagram-width); } }
+@media print {
+ .spec-teaching { --st-paper:#fff!important; --st-surface:#fff!important; --st-ink:#000!important; --st-muted:#333!important; --st-line:#999!important; --st-accent:#000!important; --st-soft:#fff!important; }
+ .spec-teaching details > * { display:block!important; }
+ .spec-teaching details::details-content { content-visibility:visible!important; }
+ .spec-teaching .st-step { break-inside:avoid; }
+}
 </style></head><body class="qr-standalone">
-<div class="nvme-quickref nvme-qa">
+<div class="nvme-quickref nvme-qa spec-teaching" data-spec-series="nvme">
 <nav class="qr-top" aria-label="題庫與版本"><a href="#content">跳到內容</a><a href="index.html">題庫總索引</a><a href="/nvme/question-bank/virtualization/zh-tw/">Pages 中文</a><a href="/nvme/question-bank/virtualization/en/">English</a></nav>
 <button class="qa-theme" type="button" data-theme-toggle>切換明／暗色</button>
-<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–328</p>
-<header><p class="qa-range">Q246–Q255</p><h1>Multi-Controller 與 Virtualization</h1><p class="qr-intro">多路徑、shared namespace 與虛擬化是不同關係。本冊先畫 controller 拓樸，再加入 attachment、ANA 及可分配 queue／interrupt 資源。</p><p>先練習，再展開解答。各題依需要使用文字、欄位判讀、比較或流程說明，不要求相同的回答項目。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p></header>
-<aside class="qa-glossary"><h2>先認識本文使用的字詞</h2><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></aside>
+<main id="content"><p class="qr-eyebrow">NVMe · Q1–328</p>
+<div class="st-specs" aria-label="Specification editions"><span>NVM Express Base 2.4</span><span>NVM Command Set 1.3</span><span>NVMe over PCIe Transport 1.4</span></div>
+<header><p class="qa-range">Q246–Q255</p><h1>Multi-Controller 與 Virtualization</h1><aside class="st-context"><p>本冊區分 NVM subsystem、controller 與 namespace，再觀察多控制器及資源配置。CNTLID（Controller Identifier）識別控制器，NSID（Namespace Identifier）識別邏輯儲存空間；同一查詢需要連同目標控制器與當時配置保存。</p></aside><p class="qr-intro">多路徑、shared namespace 與虛擬化是不同關係。本冊先畫 controller 拓樸，再加入 attachment、ANA 及可分配 queue／interrupt 資源。</p><p>每個問題都接著完整解說，依內容帶讀欄位、比較機制或追蹤流程。先看本冊總覽，再沿問題閱讀；必要條件與正常路徑直接顯示。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SCT</dt><dd>Status Code Type，完成狀態代碼類型</dd></div></dl></header>
 <section id="overview" class="qa-overview"><h2>同一張拓樸上有三種狀態</h2><p class="qa-takeaway">Online、Enabled 與 namespace 可存取不是同一件事。</p>
 <div class="qr-table" tabindex="0" role="region" aria-label="可橫向捲動的比較表"><table><thead><tr><th scope="col">狀態</th><th scope="col">查詢</th><th scope="col">用途</th></tr></thead><tbody><tr><td>管理角色</td><td>Primary Capabilities、Secondary List</td><td>誰可管理誰的資源</td></tr><tr><td>可啟用性</td><td>Secondary state、VQ／VI</td><td>是否具備 Online 前提</td></tr><tr><td>命令介面</td><td>CC、CSTS</td><td>controller 是否已啟用</td></tr><tr><td>namespace 路徑</td><td>Active List、ANA</td><td>目前可否經此路徑存取</td></tr></tbody></table></div>
 <p><strong>舉例看懂：</strong>Secondary Online 之後仍需 Host 初始化並 Enable；把 Online 直接當 RDY=1，會跳過必要步驟。</p>
@@ -134,11 +192,12 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <section class="qa-lesson"><h2>先把觀念接起來</h2>
 <article><h3>教學 1 · Shared資料不是每台各有一份</h3><p>兩台 controller 附加同一 shared namespace，是兩個入口通往同一份資料。某台 reset 不必然讓另一台失去存取，但 Host 仍需協調同時寫入。判斷路徑差異時，先看 attachment 與 ANA，不要把另一台讀到不同時間的資料直接解釋為有兩份獨立副本。</p>
 </article>
-<article><h3>教學 2 · Flexible資源有明確的配置階段</h3><p>VQ 描述一組 SQ／CQ 資源，VI 描述 interrupt vector。資源不能同時屬於兩台 controller；secondary 在 Offline 時才能進行相關配置。常見順序是 Offline、分配資源、適當 CLR、Online，再由 Host 啟用。每一步完成後讀回狀態，才能定位是資源不足還是順序不合法。</p>
+<article><h3>教學 2 · Flexible資源有明確的配置階段</h3><p>VQ 描述一組 SQ／CQ 資源，VI 描述 interrupt vector。資源不能同時屬於兩台 controller；secondary 在 Offline 時才能進行相關配置。常見順序是 Offline、分配資源、適當 CLR、Online，再由 Host 啟用。每一步完成後讀回狀態，才能定位是資源不足還是順序不合法。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SQ</dt><dd>Submission Queue，提交佇列</dd></div><div><dt>CQ</dt><dd>Completion Queue，完成佇列</dd></div></dl>
 </article>
 <article><h3>教學 3 · CFS不一定是媒體壞掉</h3><p>Secondary 進入 Offline 也會設定 CFS，所以先查角色與管理狀態。若 primary 被 disable、reset 或 shutdown，相關 secondary 也會受影響。只看 CFS 就立即判硬體故障，會忽略這種由合法管理流程造成的狀態。</p>
 </article>
 </section>
+<details class="qa-glossary st-glossary"><summary>需要時回顧本篇名詞</summary><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></details>
 <div class="qa-controls" hidden><label>搜尋本頁 <input type="search" id="qa-search" placeholder="題號、欄位或關鍵字"></label><button type="button" data-expand="true">展開全部解答</button><button type="button" data-expand="false">收合全部解答</button><output id="qa-count" aria-live="polite"></output></div>
 <section id="question-index"><h2>本冊題目</h2><ol class="qa-index">
 <li><a href="#q-246">Q246 · Subsystem、Primary 與 Secondary Controller 是什麼關係？</a></li>
@@ -153,35 +212,36 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <li><a href="#q-255">Q255 · Reset 與 Power Cycle 後 Virtualization 資源如何恢復？</a></li>
 </ol></section>
 <article class="qa-question" id="q-246" data-question="246" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-246">Q246</a> Subsystem、Primary 與 Secondary Controller 是什麼關係？</h2>
-<p class="qa-prompt">先說出比較對象最重要的差別，並舉一個不能互相代用的例子。</p>
-<details class="qa-answer" id="q-246-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-246-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-246-a-01">Controller 是命令入口，namespace 是儲存物件；虛擬化把部分 queue 與 interrupt 資源交由 primary 管理分配。</p><div class="qa-sections">
 <section class="qa-section" id="q-246-s-01" data-answer-section="1"><h3><span>1.</span> 差別在哪裡</h3>
 <span class="qa-anchor" id="q-246-a-02"></span><p>一個 subsystem 可有多個 primary，各有 secondary 群組；secondary 與其 primary 必須在同一 domain。</p>
-<span class="qa-anchor" id="q-246-a-04"></span><p>VQ 管一組 SQ／CQ，VI 管一個 interrupt vector；Private Resources 固定歸屬，Flexible Resources 可受管理重新分配。</p>
+<span class="qa-anchor" id="q-246-a-04"></span><p>VQ 管一組 SQ／CQ，VI 管一個 interrupt vector；Private Resources 固定歸屬，Flexible Resources 可受管理重新分配。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>SQ</dt><dd>Submission Queue，提交佇列</dd></div><div><dt>CQ</dt><dd>Completion Queue，完成佇列</dd></div></dl>
 </section>
 <section class="qa-section" id="q-246-s-02" data-answer-section="2"><h3><span>2.</span> 如何選擇與確認</h3>
 <span class="qa-anchor" id="q-246-a-03"></span><p>查 OACS.VMS、Primary Controller Capabilities 與 Secondary Controller List，不憑 PCI function 編號猜 parent。</p>
 <span class="qa-anchor" id="q-246-a-05"></span><p>先畫出 primary→secondary 關係，再標每個 controller 的可用資源與 attached namespaces，最後才規劃 queues。</p>
 <span class="qa-anchor" id="q-246-a-06"></span><p>每個 Online 且啟用的 secondary 仍是完整 NVMe controller，Host 可用正常 NVMe 命令操作。</p>
 </section>
-<section class="qa-section" id="q-246-s-03" data-answer-section="3"><h3><span>3.</span> 哪些結論不能互相套用</h3>
+<section class="qa-section" id="q-246-s-03" data-answer-section="3"><h3><span>3.</span> 比較時要保留的條件</h3>
 <span class="qa-anchor" id="q-246-a-07"></span><p>不支援 Virtualization Management 的 controller 不能被要求接受資源管理命令；管理命令需送到對應 primary。</p>
-<span class="qa-anchor" id="q-246-a-16"></span><p>PCIe PF／VF 與 NVMe primary／secondary 在支援兩者時相對應，但不能把所有多 controller 裝置都假定有 SR-IOV。</p>
+<span class="qa-anchor" id="q-246-a-16"></span><p>PCIe PF／VF 與 NVMe primary／secondary 在支援兩者時相對應，但不能把所有多 controller 裝置都假定有 SR-IOV。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>PF</dt><dd>Physical Function，實體功能</dd></div><div><dt>VF</dt><dd>Virtual Function，虛擬功能</dd></div><div><dt>SR-IOV</dt><dd>Single Root I/O Virtualization，單根I/O虛擬化</dd></div></dl>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-multipath">Base 2.4 §2.4.1–2.4.2 (PCIe topology)</a> · <a href="#ref-virtual">Base 2.4 §8.2.7</a> · <a href="#ref-virtualcmd">Base 2.4 §5.3.6</a> · <a href="#ref-virtualid">Base 2.4 §5.2.14.3.1–5.2.14.3.2 (Primary Capabilities, Secondary List)</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-246-a-17"></span><span class="qa-anchor" id="q-246-a-08"></span><span class="qa-anchor" id="q-246-a-09"></span><span class="qa-anchor" id="q-246-a-10"></span><span class="qa-anchor" id="q-246-a-11"></span><span class="qa-anchor" id="q-246-a-12"></span><span class="qa-anchor" id="q-246-a-13"></span><span class="qa-anchor" id="q-246-a-14"></span><span class="qa-anchor" id="q-246-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-multipath">Base 2.4 §2.4.1–2.4.2 (PCIe topology)</a> · <a href="#ref-virtual">Base 2.4 §8.2.7</a> · <a href="#ref-virtualcmd">Base 2.4 §5.3.6</a> · <a href="#ref-virtualid">Base 2.4 §5.2.14.3.1–5.2.14.3.2 (Primary Capabilities, Secondary List)</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-247" data-question="247" data-answer-kind="process"><h2><a class="qa-qid" href="#q-247">Q247</a> Private 與 Shared Namespace 如何 Attach 到 Controller？</h2>
-<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
-<details class="qa-answer" id="q-247-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-247-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-247-a-01">Attach 建立存取路徑，不是複製 namespace 資料。Private／Shared 決定能否同時附加到多個 controller。</p><div class="qa-sections">
 <section class="qa-section" id="q-247-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
 <span class="qa-anchor" id="q-247-a-02"></span><p>Private 同時只附加一台，Shared 可附加多台，但仍受命令集、資源與數量限制。</p>
 <span class="qa-anchor" id="q-247-a-03"></span><p>查 namespace.NMIC、相關 controller 能力與已附加 Controller List。</p>
-<span class="qa-anchor" id="q-247-a-04"></span><p>Namespace Attachment 以 NSID 指目標，SEL 指 Attach／Detach，資料 buffer 列出 CNTLID。</p>
+<span class="qa-anchor" id="q-247-a-04"></span><p>Namespace Attachment 以 NSID 指目標，SEL 指 Attach／Detach，資料 buffer 列出 CNTLID。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>NSID</dt><dd>Namespace Identifier，邏輯儲存空間識別碼</dd></div></dl>
 </section>
 <section class="qa-section" id="q-247-s-02" data-answer-section="2"><h3><span>2.</span> 先後順序與完成條件</h3>
 <span class="qa-anchor" id="q-247-a-05"></span><p>先確認目標已配置與分享能力，再 Attach 所選 controller，讀各台 Active List 驗證。</p>
@@ -192,17 +252,18 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-247-a-16"></span><p>用每台 Active List 與 namespace Controller List 雙向核對，避免只看一條路徑。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-multipath">Base 2.4 §2.4.1–2.4.2 (PCIe topology)</a> · <a href="#ref-virtual">Base 2.4 §8.2.7</a> · <a href="#ref-virtualcmd">Base 2.4 §5.3.6</a> · <a href="#ref-virtualid">Base 2.4 §5.2.14.3.1–5.2.14.3.2 (Primary Capabilities, Secondary List)</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-247-a-17"></span><span class="qa-anchor" id="q-247-a-08"></span><span class="qa-anchor" id="q-247-a-09"></span><span class="qa-anchor" id="q-247-a-10"></span><span class="qa-anchor" id="q-247-a-11"></span><span class="qa-anchor" id="q-247-a-12"></span><span class="qa-anchor" id="q-247-a-13"></span><span class="qa-anchor" id="q-247-a-14"></span><span class="qa-anchor" id="q-247-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-multipath">Base 2.4 §2.4.1–2.4.2 (PCIe topology)</a> · <a href="#ref-virtual">Base 2.4 §8.2.7</a> · <a href="#ref-virtualcmd">Base 2.4 §5.3.6</a> · <a href="#ref-virtualid">Base 2.4 §5.2.14.3.1–5.2.14.3.2 (Primary Capabilities, Secondary List)</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-248" data-question="248" data-answer-kind="lookup"><h2><a class="qa-qid" href="#q-248">Q248</a> 如何取得 Namespace 對應的 Controller List？</h2>
-<p class="qa-prompt">先選查詢介面與目標，再說明哪個回傳欄位能支持你的結論。</p>
-<details class="qa-answer" id="q-248-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-248-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-248-a-01">這份清單回答 namespace 已附加在哪些 controller，與列出 subsystem 全部 controller 的清單不同。</p><div class="qa-sections">
 <section class="qa-section" id="q-248-s-01" data-answer-section="1"><h3><span>1.</span> 要查哪個對象、哪份資料</h3>
 <span class="qa-anchor" id="q-248-a-02"></span><p>查詢以指定 namespace 為範圍；同一 subsystem 中未附加的 controller 不應被誤算為可用路徑。</p>
-<span class="qa-anchor" id="q-248-a-03"></span><p>使用 Identify 的 Attached Controller List 選擇，核對 CNS、NSID 與起始 Controller Identifier。</p>
+<span class="qa-anchor" id="q-248-a-03"></span><p>使用 Identify 的 Attached Controller List 選擇，核對 CNS、NSID 與起始 Controller Identifier。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CNS</dt><dd>Controller or Namespace Structure，選擇Identify回傳結構</dd></div></dl>
 <span class="qa-anchor" id="q-248-a-04"></span><p>回覆有數量及 Controller Identifier entries；分段時遵守起始 ID 的包含規則，不套用 Active Namespace List 的不同條件。</p>
 </section>
 <section class="qa-section" id="q-248-s-02" data-answer-section="2"><h3><span>2.</span> 查詢順序與回覆判讀</h3>
@@ -210,18 +271,19 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-248-a-06"></span><p>取得當時 attached controllers，再逐台確認 Online、Ready 與 ANA，才知道哪條路徑現在能用。</p>
 </section>
 <section class="qa-section" id="q-248-s-03" data-answer-section="3"><h3><span>3.</span> 證據不足或不一致時怎麼判斷</h3>
-<span class="qa-anchor" id="q-248-a-07"></span><p>NSID 或 CNS 不合法依 Identify 規則回應；一份空清單不代表 namespace 一定已刪除。</p>
+<span class="qa-anchor" id="q-248-a-07"></span><p>NSID 或 CNS 不合法依 Identify 規則回應；一份空清單不代表 namespace 一定已刪除。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>CNS</dt><dd>Controller or Namespace Structure，選擇Identify回傳結構</dd></div></dl>
 <span class="qa-anchor" id="q-248-a-16"></span><p>與各台 Active Namespace List 交叉確認，必要時在管理操作完成後重讀，避免比較不同時點。</p>
 <span class="qa-anchor" id="q-248-a-17"></span><p>先確認使用的是 attached list，還是 subsystem controller inventory。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-multipath">Base 2.4 §2.4.1–2.4.2 (PCIe topology)</a> · <a href="#ref-virtual">Base 2.4 §8.2.7</a> · <a href="#ref-virtualcmd">Base 2.4 §5.3.6</a> · <a href="#ref-virtualid">Base 2.4 §5.2.14.3.1–5.2.14.3.2 (Primary Capabilities, Secondary List)</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-248-a-08"></span><span class="qa-anchor" id="q-248-a-09"></span><span class="qa-anchor" id="q-248-a-10"></span><span class="qa-anchor" id="q-248-a-11"></span><span class="qa-anchor" id="q-248-a-12"></span><span class="qa-anchor" id="q-248-a-13"></span><span class="qa-anchor" id="q-248-a-14"></span><span class="qa-anchor" id="q-248-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-multipath">Base 2.4 §2.4.1–2.4.2 (PCIe topology)</a> · <a href="#ref-virtual">Base 2.4 §8.2.7</a> · <a href="#ref-virtualcmd">Base 2.4 §5.3.6</a> · <a href="#ref-virtualid">Base 2.4 §5.2.14.3.1–5.2.14.3.2 (Primary Capabilities, Secondary List)</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-249" data-question="249" data-answer-kind="concept"><h2><a class="qa-qid" href="#q-249">Q249</a> 一台 Controller Reset 時，其他路徑能否繼續存取 Shared Namespace？</h2>
-<p class="qa-prompt">先用自己的話解釋機制，再舉一個常見誤解。</p>
-<details class="qa-answer" id="q-249-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-249-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-249-a-01">Shared namespace 提供多條路徑，但不能保證任何故障都完全不影響其他路徑。</p><div class="qa-sections">
 <section class="qa-section" id="q-249-s-01" data-answer-section="1"><h3><span>1.</span> 機制與適用範圍</h3>
 <span class="qa-anchor" id="q-249-a-02"></span><p>一般 CLR 針對一台；primary 重設可使其 secondary Offline，共用媒體或 domain 問題也可能擴大影響。</p>
@@ -237,17 +299,18 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-249-a-16"></span><p>以控制關係與命令結果判斷影響，避免「一台 Reset 一定不影響其他台」的過度概括。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-ana">Base 2.4 §2.4.2, 8.1.1 (PCIe namespace access)</a> · <a href="#ref-multipath">Base 2.4 §2.4.1–2.4.2 (PCIe topology)</a> · <a href="#ref-virtual">Base 2.4 §8.2.7</a> · <a href="#ref-virtualcmd">Base 2.4 §5.3.6</a> · <a href="#ref-virtualid">Base 2.4 §5.2.14.3.1–5.2.14.3.2 (Primary Capabilities, Secondary List)</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-249-a-17"></span><span class="qa-anchor" id="q-249-a-08"></span><span class="qa-anchor" id="q-249-a-09"></span><span class="qa-anchor" id="q-249-a-10"></span><span class="qa-anchor" id="q-249-a-11"></span><span class="qa-anchor" id="q-249-a-12"></span><span class="qa-anchor" id="q-249-a-13"></span><span class="qa-anchor" id="q-249-a-14"></span><span class="qa-anchor" id="q-249-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-ana">Base 2.4 §2.4.2, 8.1.1 (PCIe namespace access)</a> · <a href="#ref-multipath">Base 2.4 §2.4.1–2.4.2 (PCIe topology)</a> · <a href="#ref-virtual">Base 2.4 §8.2.7</a> · <a href="#ref-virtualcmd">Base 2.4 §5.3.6</a> · <a href="#ref-virtualid">Base 2.4 §5.2.14.3.1–5.2.14.3.2 (Primary Capabilities, Secondary List)</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-250" data-question="250" data-answer-kind="concept"><h2><a class="qa-qid" href="#q-250">Q250</a> NVM Subsystem Reset 會影響哪些 Controller？</h2>
-<p class="qa-prompt">先用自己的話解釋機制，再舉一個常見誤解。</p>
-<details class="qa-answer" id="q-250-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-250-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-250-a-01">Reset 名稱包含 subsystem，但多 domain 裝置仍可能只重設一個 domain，必須確認實作範圍。</p><div class="qa-sections">
 <section class="qa-section" id="q-250-s-01" data-answer-section="1"><h3><span>1.</span> 機制與適用範圍</h3>
 <span class="qa-anchor" id="q-250-a-02"></span><p>單 domain 涵蓋全部；multi-domain 依實作涵蓋發起所在 domain，或全部 domains。</p>
-<span class="qa-anchor" id="q-250-a-04"></span><p>NSSR.NSSRC=4E564D65h 是受支援時的觸發方式；受影響範圍會 CLR 各 controller，並停用其 PMR。</p>
+<span class="qa-anchor" id="q-250-a-04"></span><p>NSSR.NSSRC=4E564D65h 是受支援時的觸發方式；受影響範圍會 CLR 各 controller，並停用其 PMR。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>PMR</dt><dd>Persistent Memory Region，持久性記憶體區域</dd></div></dl>
 </section>
 <section class="qa-section" id="q-250-s-02" data-answer-section="2"><h3><span>2.</span> 用操作與結果理解</h3>
 <span class="qa-anchor" id="q-250-a-03"></span><p>查 domain 拓樸、CAP.NSSRS 與重設後 CSTS.NSSRO。</p>
@@ -255,20 +318,21 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-250-a-06"></span><p>受影響 queues 必須重建；範圍外 controller 是否可用仍由其自身與共享媒體狀態決定。</p>
 </section>
 <section class="qa-section" id="q-250-s-03" data-answer-section="3"><h3><span>3.</span> 容易誤判的地方</h3>
-<span class="qa-anchor" id="q-250-a-07"></span><p>Register Reset 沒有一筆可指定 DNR／More 的 CQE；不能等待虛構的 Reset Command Completion。</p>
+<span class="qa-anchor" id="q-250-a-07"></span><p>Register Reset 沒有一筆可指定 DNR／More 的 CQE；不能等待虛構的 Reset Command Completion。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>DNR</dt><dd>Do Not Retry，命令重試的狀態提示</dd></div><div><dt>CQE</dt><dd>Completion Queue Entry，佇列中的完成項目</dd></div></dl>
 <span class="qa-anchor" id="q-250-a-16"></span><p>把實際受影響 controller 清單與 domain 配置比較，而不只觀察發起端。</p>
 </section>
-<section class="qa-section" id="q-250-s-04" data-answer-section="4"><h3><span>4.</span> CQE、DNR 與 More 在這裡是否適用</h3>
+<section class="qa-section" id="q-250-s-04" data-answer-section="4"><h3><span>4.</span> CQE、DNR 與 More 在這裡是否適用</h3><dl class="st-terms" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry，佇列中的完成項目</dd></div><div><dt>DNR</dt><dd>Do Not Retry，命令重試的狀態提示</dd></div></dl>
 <span class="qa-anchor" id="q-250-a-08"></span><p>NSSR Register 寫入沒有 CQE，因此 DNR 與 More 不適用；恢復後查詢命令的 CQE 是另一筆命令的結果。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-multipath">Base 2.4 §2.4.1–2.4.2 (PCIe topology)</a> · <a href="#ref-virtual">Base 2.4 §8.2.7</a> · <a href="#ref-virtualcmd">Base 2.4 §5.3.6</a> · <a href="#ref-virtualid">Base 2.4 §5.2.14.3.1–5.2.14.3.2 (Primary Capabilities, Secondary List)</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-250-a-17"></span><span class="qa-anchor" id="q-250-a-09"></span><span class="qa-anchor" id="q-250-a-10"></span><span class="qa-anchor" id="q-250-a-11"></span><span class="qa-anchor" id="q-250-a-12"></span><span class="qa-anchor" id="q-250-a-13"></span><span class="qa-anchor" id="q-250-a-14"></span><span class="qa-anchor" id="q-250-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-multipath">Base 2.4 §2.4.1–2.4.2 (PCIe topology)</a> · <a href="#ref-virtual">Base 2.4 §8.2.7</a> · <a href="#ref-virtualcmd">Base 2.4 §5.3.6</a> · <a href="#ref-virtualid">Base 2.4 §5.2.14.3.1–5.2.14.3.2 (Primary Capabilities, Secondary List)</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-251" data-question="251" data-answer-kind="process"><h2><a class="qa-qid" href="#q-251">Q251</a> Namespace 變更如何通知其他 Controller？</h2>
-<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
-<details class="qa-answer" id="q-251-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-251-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-251-a-01">管理操作可能由一條路徑發起，其他 Host 仍需要更新自己的 namespace 視圖。</p><div class="qa-sections">
 <section class="qa-section" id="q-251-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
 <span class="qa-anchor" id="q-251-a-02"></span><p>通知依受影響的 attached namespace 與 controller 觀察範圍，不是每台都無條件收到同一個通知。</p>
@@ -284,13 +348,14 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-251-a-16"></span><p>Namespace attribute notice 與 ANA change notice 描述不同變化，不能拿其中一份 Log 取代另一份。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-changedlog">Base 2.4 §5.2.13.1.5</a> · <a href="#ref-aerfull">Base 2.4 §5.2.2 (PCIe-applicable events)</a> · <a href="#ref-analog">Base 2.4 §5.2.13.1.13</a> · <a href="#ref-multipath">Base 2.4 §2.4.1–2.4.2 (PCIe topology)</a> · <a href="#ref-virtual">Base 2.4 §8.2.7</a> · <a href="#ref-virtualcmd">Base 2.4 §5.3.6</a> · <a href="#ref-virtualid">Base 2.4 §5.2.14.3.1–5.2.14.3.2 (Primary Capabilities, Secondary List)</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-251-a-17"></span><span class="qa-anchor" id="q-251-a-08"></span><span class="qa-anchor" id="q-251-a-09"></span><span class="qa-anchor" id="q-251-a-10"></span><span class="qa-anchor" id="q-251-a-11"></span><span class="qa-anchor" id="q-251-a-12"></span><span class="qa-anchor" id="q-251-a-13"></span><span class="qa-anchor" id="q-251-a-14"></span><span class="qa-anchor" id="q-251-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-changedlog">Base 2.4 §5.2.13.1.5</a> · <a href="#ref-aerfull">Base 2.4 §5.2.2 (PCIe-applicable events)</a> · <a href="#ref-analog">Base 2.4 §5.2.13.1.13</a> · <a href="#ref-multipath">Base 2.4 §2.4.1–2.4.2 (PCIe topology)</a> · <a href="#ref-virtual">Base 2.4 §8.2.7</a> · <a href="#ref-virtualcmd">Base 2.4 §5.3.6</a> · <a href="#ref-virtualid">Base 2.4 §5.2.14.3.1–5.2.14.3.2 (Primary Capabilities, Secondary List)</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-252" data-question="252" data-answer-kind="lookup"><h2><a class="qa-qid" href="#q-252">Q252</a> Asymmetric Controller Behavior 與 ANA 如何協助選路徑？</h2>
-<p class="qa-prompt">先選查詢介面與目標，再說明哪個回傳欄位能支持你的結論。</p>
-<details class="qa-answer" id="q-252-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-252-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-252-a-01">相同 namespace 經不同 controller 存取，可能有不同效能或可用性；非對稱行為不只出現在網路傳輸。</p><div class="qa-sections">
 <section class="qa-section" id="q-252-s-01" data-answer-section="1"><h3><span>1.</span> 要查哪個對象、哪份資料</h3>
 <span class="qa-anchor" id="q-252-a-02"></span><p>ANA 狀態描述 controller 與 ANA Group 的關係；不是 namespace 永久只有一個全域狀態。</p>
@@ -307,13 +372,14 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-252-a-17"></span><p>先確認 ANAGRPID 對應的 controller 視圖，而不是讀錯路徑的 Log。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-ana">Base 2.4 §2.4.2, 8.1.1 (PCIe namespace access)</a> · <a href="#ref-analog">Base 2.4 §5.2.13.1.13</a> · <a href="#ref-multipath">Base 2.4 §2.4.1–2.4.2 (PCIe topology)</a> · <a href="#ref-virtual">Base 2.4 §8.2.7</a> · <a href="#ref-virtualcmd">Base 2.4 §5.3.6</a> · <a href="#ref-virtualid">Base 2.4 §5.2.14.3.1–5.2.14.3.2 (Primary Capabilities, Secondary List)</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-252-a-08"></span><span class="qa-anchor" id="q-252-a-09"></span><span class="qa-anchor" id="q-252-a-10"></span><span class="qa-anchor" id="q-252-a-11"></span><span class="qa-anchor" id="q-252-a-12"></span><span class="qa-anchor" id="q-252-a-13"></span><span class="qa-anchor" id="q-252-a-14"></span><span class="qa-anchor" id="q-252-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-ana">Base 2.4 §2.4.2, 8.1.1 (PCIe namespace access)</a> · <a href="#ref-analog">Base 2.4 §5.2.13.1.13</a> · <a href="#ref-multipath">Base 2.4 §2.4.1–2.4.2 (PCIe topology)</a> · <a href="#ref-virtual">Base 2.4 §8.2.7</a> · <a href="#ref-virtualcmd">Base 2.4 §5.3.6</a> · <a href="#ref-virtualid">Base 2.4 §5.2.14.3.1–5.2.14.3.2 (Primary Capabilities, Secondary List)</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-253" data-question="253" data-answer-kind="process"><h2><a class="qa-qid" href="#q-253">Q253</a> Secondary Controller 如何 Online 或 Offline？</h2>
-<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
-<details class="qa-answer" id="q-253-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-253-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-253-a-01">Online 代表資源與狀態允許 Host 使用，還不等於 CC.EN／RDY 已經完成啟用。</p><div class="qa-sections">
 <section class="qa-section" id="q-253-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
 <span class="qa-anchor" id="q-253-a-02"></span><p>由 associated primary 管理該 secondary；Offline 時 CSTS.CFS=1，其他 controller properties undefined。</p>
@@ -321,7 +387,7 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-253-a-04"></span><p>Virtualization Management ACT=7 Offline、8 Assign、9 Online；Offline 會移除 Flexible Resources。</p>
 </section>
 <section class="qa-section" id="q-253-s-02" data-answer-section="2"><h3><span>2.</span> 先後順序與完成條件</h3>
-<span class="qa-anchor" id="q-253-a-05"></span><p>建議先 Offline，再配置 VQ／VI，做 CLR；若為 VF 建議 VF FLR，再 Online，最後執行 NVMe enable 與 queue 初始化。</p>
+<span class="qa-anchor" id="q-253-a-05"></span><p>建議先 Offline，再配置 VQ／VI，做 CLR；若為 VF 建議 VF FLR，再 Online，最後執行 NVMe enable 與 queue 初始化。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>VF</dt><dd>Virtual Function，虛擬功能</dd></div><div><dt>FLR</dt><dd>Function Level Reset，以功能為範圍的重設</dd></div></dl>
 <span class="qa-anchor" id="q-253-a-06"></span><p>支援 VQ 時至少 2 組，包含 Admin 與至少 1 組 I/O；支援 VI 時至少 vector0 的資源，才可 Online。</p>
 </section>
 <section class="qa-section" id="q-253-s-03" data-answer-section="3"><h3><span>3.</span> 未符合條件時如何處理</h3>
@@ -329,13 +395,14 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-253-a-16"></span><p>把 SCS 與 CC.EN／CSTS.RDY 分開驗證，避免把 Offline 的 CFS 當成一定發生未知硬體故障。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-multipath">Base 2.4 §2.4.1–2.4.2 (PCIe topology)</a> · <a href="#ref-virtual">Base 2.4 §8.2.7</a> · <a href="#ref-virtualcmd">Base 2.4 §5.3.6</a> · <a href="#ref-virtualid">Base 2.4 §5.2.14.3.1–5.2.14.3.2 (Primary Capabilities, Secondary List)</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-253-a-17"></span><span class="qa-anchor" id="q-253-a-08"></span><span class="qa-anchor" id="q-253-a-09"></span><span class="qa-anchor" id="q-253-a-10"></span><span class="qa-anchor" id="q-253-a-11"></span><span class="qa-anchor" id="q-253-a-12"></span><span class="qa-anchor" id="q-253-a-13"></span><span class="qa-anchor" id="q-253-a-14"></span><span class="qa-anchor" id="q-253-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-multipath">Base 2.4 §2.4.1–2.4.2 (PCIe topology)</a> · <a href="#ref-virtual">Base 2.4 §8.2.7</a> · <a href="#ref-virtualcmd">Base 2.4 §5.3.6</a> · <a href="#ref-virtualid">Base 2.4 §5.2.14.3.1–5.2.14.3.2 (Primary Capabilities, Secondary List)</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-254" data-question="254" data-answer-kind="process"><h2><a class="qa-qid" href="#q-254">Q254</a> Virtualization Management 如何分配與釋放資源？</h2>
-<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
-<details class="qa-answer" id="q-254-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-254-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-254-a-01">Flexible Resource pool 可在 primary 與它的 secondary 間分配，但不是動態擴充實體總資源。</p><div class="qa-sections">
 <section class="qa-section" id="q-254-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
 <span class="qa-anchor" id="q-254-a-02"></span><p>VQ 與 VI 分開計數；Private Resources 不可用此命令重新指派。</p>
@@ -351,13 +418,14 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-254-a-16"></span><p>將所有配置加總與 pool 比較；相同 resource 不能同時屬兩台，preferred granularity 也不能直接當成任意硬性拒絕規則。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-multipath">Base 2.4 §2.4.1–2.4.2 (PCIe topology)</a> · <a href="#ref-virtual">Base 2.4 §8.2.7</a> · <a href="#ref-virtualcmd">Base 2.4 §5.3.6</a> · <a href="#ref-virtualid">Base 2.4 §5.2.14.3.1–5.2.14.3.2 (Primary Capabilities, Secondary List)</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-254-a-17"></span><span class="qa-anchor" id="q-254-a-08"></span><span class="qa-anchor" id="q-254-a-09"></span><span class="qa-anchor" id="q-254-a-10"></span><span class="qa-anchor" id="q-254-a-11"></span><span class="qa-anchor" id="q-254-a-12"></span><span class="qa-anchor" id="q-254-a-13"></span><span class="qa-anchor" id="q-254-a-14"></span><span class="qa-anchor" id="q-254-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-multipath">Base 2.4 §2.4.1–2.4.2 (PCIe topology)</a> · <a href="#ref-virtual">Base 2.4 §8.2.7</a> · <a href="#ref-virtualcmd">Base 2.4 §5.3.6</a> · <a href="#ref-virtualid">Base 2.4 §5.2.14.3.1–5.2.14.3.2 (Primary Capabilities, Secondary List)</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-255" data-question="255" data-answer-kind="lifecycle"><h2><a class="qa-qid" href="#q-255">Q255</a> Reset 與 Power Cycle 後 Virtualization 資源如何恢復？</h2>
-<p class="qa-prompt">先指明重設或中斷的方式，再分別判斷設定、進行中的操作與資料。</p>
-<details class="qa-answer" id="q-255-answer"><summary>展開解答與推導</summary>
+
+<details open class="qa-answer" id="q-255-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-255-a-01">Primary 的持久配置與 secondary 的即時資源指派有不同生命週期，必須分開保存與驗證。</p><div class="qa-sections">
 <section class="qa-section" id="q-255-s-01" data-answer-section="1"><h3><span>1.</span> 先界定觸發方式與影響對象</h3>
 <span class="qa-anchor" id="q-255-a-02"></span><p>除了被重設的 controller，也要檢查依賴該 primary 的 secondary 群組。</p>
@@ -380,6 +448,7 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <span class="qa-anchor" id="q-255-a-17"></span><p>先檢查 Reset 是否使 primary Disable，連帶造成 secondary Offline 與資源移除。</p>
 </section>
 </div>
+<p class="qa-citations">來源：<a href="#ref-multipath">Base 2.4 §2.4.1–2.4.2 (PCIe topology)</a> · <a href="#ref-virtual">Base 2.4 §8.2.7</a> · <a href="#ref-virtualcmd">Base 2.4 §5.3.6</a> · <a href="#ref-virtualid">Base 2.4 §5.2.14.3.1–5.2.14.3.2 (Primary Capabilities, Secondary List)</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-255-a-08"></span><span class="qa-anchor" id="q-255-a-09"></span><span class="qa-anchor" id="q-255-a-10"></span><span class="qa-anchor" id="q-255-a-11"></span><span class="qa-anchor" id="q-255-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-multipath">Base 2.4 §2.4.1–2.4.2 (PCIe topology)</a> · <a href="#ref-virtual">Base 2.4 §8.2.7</a> · <a href="#ref-virtualcmd">Base 2.4 §5.3.6</a> · <a href="#ref-virtualid">Base 2.4 §5.2.14.3.1–5.2.14.3.2 (Primary Capabilities, Secondary List)</a> · <a href="#ref-nsattach">Base 2.4 §5.2.24–5.2.25, 8.1.17–8.1.17.2</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
