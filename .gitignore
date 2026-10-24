@@ -24,3 +24,9 @@ __pycache__/
 PCI-Express-Base-Specification-*.pdf
 PCI-Firmware-Specification.pdf
 /output/
+
+# Local/CI runtimes and generated site output are not authoring sources.
+/vendor/bundle/
+/.bundle/
+/_site/
+/.jekyll-cache/

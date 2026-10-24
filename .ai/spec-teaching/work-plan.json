@@ -8,7 +8,7 @@
     "existing_approved_article_revision",
     "PCIe Chapter 14–37 topic lessons in three editions",
     "eight new arithmetic models reconciled in three editions",
-    "160 local unit tests",
+    "162 local unit tests, including dependency and built-output boundary regressions",
     "local Jekyll output and publication boundaries",
     "608 PCIe and 237 NVMe browser cases",
     "manual representative diagram and phone screenshots",

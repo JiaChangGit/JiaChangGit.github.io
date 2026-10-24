@@ -1,8 +1,12 @@
 """Shared source routing, escaping and public-output security invariants."""
 import unittest
+import json
+from pathlib import Path
+import subprocess
+import tempfile
 from html.parser import HTMLParser
 from scripts.spec_teaching import reading_route
-from scripts.validate_public_teaching import OfflineSafety,PRIVATE_PATH,SOURCE_PDFS
+from scripts.validate_public_teaching import OfflineSafety,PRIVATE_PATH,SOURCE_PDFS,validate,ROOT
 from scripts.nvme_scenario_lessons import LEAD_CASES,ROUTES,lesson_route
 from scripts.nvme_scenario_render import CASES
 from scripts.build_nvme_quickref import REG,body
@@ -46,5 +50,34 @@ class SharedTeachingTests(unittest.TestCase):
         self.assertIsNone(PRIVATE_PATH.search('NVMe over PCIe Transport 1.4 · PDF 19'))
         self.assertTrue(SOURCE_PDFS.fullmatch('PCI-Express-Base-Specification-Revision-6.0.pdf'))
         self.assertIsNone(SOURCE_PDFS.fullmatch('my-public-article.pdf'))
+
+    def temporary_repository(self,root):
+        subprocess.run(['git','init','-q',str(root)],check=True)
+        (root/'.gitignore').write_bytes((ROOT/'.gitignore').read_bytes())
+        scope=root/'.ai/spec-teaching/scope.json'
+        scope.parent.mkdir(parents=True)
+        scope.write_text(json.dumps({'phase':'test','series':{}}))
+
+    def test_dependency_fixture_is_ignored_but_force_tracked_key_is_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory)
+            self.temporary_repository(root)
+            fixture=root/'vendor/bundle/test/client.key'
+            fixture.parent.mkdir(parents=True)
+            fixture.write_bytes(b'-----BEGIN '+b'PRIVATE KEY-----\nNot a real key\n')
+            self.assertEqual(validate(root)[1],[])
+            subprocess.run(['git','-C',str(root),'add','-f',str(fixture.relative_to(root))],check=True)
+            self.assertTrue(any('possible credential signature' in issue for issue in validate(root)[1]))
+
+    def test_built_site_must_not_contain_bundle_runtime(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory)/'repo'
+            self.temporary_repository(root)
+            site=Path(directory)/'site'
+            (site/'vendor/bundle').mkdir(parents=True)
+            self.assertIn('Built site exposes vendor/bundle',validate(root,site)[1])
+            public_key=site/'unexpected.key'
+            public_key.write_bytes(b'-----BEGIN '+b'PRIVATE KEY-----\nFixture only\n')
+            self.assertTrue(any('unexpected.key: possible credential signature' in issue for issue in validate(root,site)[1]))
 
 if __name__=='__main__':unittest.main()

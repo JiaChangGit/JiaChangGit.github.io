@@ -58,11 +58,13 @@ def validate(repo,site=None):
             errors.extend(relative+': '+issue for issue in OfflineSafety(text).errors)
         count+=1
     if site:
-        for private in ['.ai','scripts','tests','docs','output','private-sources','AGENTS.md']:
+        for private in ['.ai','scripts','tests','docs','output','private-sources','AGENTS.md','vendor/bundle','.bundle']:
             if (site/private).exists():errors.append('Built site exposes '+private)
         for path in site.rglob('*'):
             if path.is_file() and SOURCE_PDFS.fullmatch(path.name):
                 errors.append('Built site includes a source specification PDF')
+            if path.is_file() and path.stat().st_size < 8_000_000 and KEY_SIGNATURE.search(path.read_bytes()):
+                errors.append('Built site '+path.relative_to(site).as_posix()+': possible credential signature; value withheld')
     return count,sorted(set(errors))
 
 def main():

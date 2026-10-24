@@ -60,7 +60,9 @@ def package(repo, destination, output):
         paths.extend(p.relative_to(repo).as_posix() for p in (repo/folder).rglob('*') if p.is_file() and p.suffix in {'.json','.html','.css','.md','.yaml'})
     paths.extend(p.relative_to(repo).as_posix() for p in (repo/'tests').glob('test_*.py'))
     paths.extend(['assets/css/spec-teaching.css','assets/css/nvme-reader.css','assets/css/nvme-quickref.css','assets/css/nvme-question-bank.css',
-                  'AGENTS.md','docs/spec-teaching-revision.md','docs/pcie-course-plan.md','requirements-nvme-report.txt'])
+                  'AGENTS.md','docs/spec-teaching-revision.md','docs/pcie-course-plan.md','requirements-nvme-report.txt',
+                  '.gitignore','_config.yml','_includes/head.html','_layouts/post.html',
+                  '.github/workflows/pages.yml','.github/workflows/pcie-course-check.yml','.github/workflows/nvme-report-check.yml'])
     paths=sorted(set(paths))
     for relative in paths:
         source=repo/relative

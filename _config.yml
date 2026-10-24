@@ -89,4 +89,4 @@ plugins:
   - jekyll-sitemap
 
 include: [_pages]
-exclude: [".ai/", "output/", "private-sources/", "node_modules", "gulpfile.js", "package.json", "yarn.lock", "package-lock.json", "assets/css/sass/", "AGENTS.md", "docs/", "scripts/", "tests/", "tmp/", "requirements-nvme-report.txt"]
+exclude: [".ai/", "output/", "private-sources/", "vendor/bundle/", ".bundle/", "node_modules", "gulpfile.js", "package.json", "yarn.lock", "package-lock.json", "assets/css/sass/", "AGENTS.md", "docs/", "scripts/", "tests/", "tmp/", "requirements-nvme-report.txt"]
