@@ -475,8 +475,9 @@
         "PCIE-BASE-6.0"
       ],
       "publication_date": "2026-10-24",
-      "revision_date": "2026-10-24",
-      "teaching_revision": 2
+      "revision_date": "2026-10-28",
+      "teaching_revision": 3,
+      "description": "從逐Link映射走到雙端VC啟用，以欄位快照帶讀Count、Map、VC ID、Enable與Pending，再區分Port／VC仲裁、優先群組與等時性契約。"
     },
     {
       "number": 17,

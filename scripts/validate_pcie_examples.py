@@ -41,6 +41,23 @@ def result_tokens(model, x):
         fm+=bytes([rid>>8,rid&0xff,0,0])+address.to_bytes(4,'big')
         fm+=bytes([0,0,0,(last<<4)|first])+payload
         return [' '.join(f'{value:02X}' for value in packet) for packet in (nfm,fm)]+[f'{len(nfm)} bytes',f'{len(fm)} bytes']
+    if model=='vc_setup':
+        # Limited to the chapter's non-default VC, Non-Flit example. This
+        # checks register geometry and field encoding, not live negotiation.
+        resource=x['resource']; count=x['extended_count']
+        vc_id=x['vc_id']; tc_map=x['tc_map']
+        if (not 1<=resource<=count<=7 or not 1<=vc_id<=7
+                or not 0<tc_map<=0xff or tc_map&1):
+            raise ValueError('Invalid non-default VC assignment')
+        control=0x14+resource*0x0c
+        status=0x1a+resource*0x0c  # Status is the upper halfword of its row.
+        tokens=[]
+        for capability in [x['left_capability'],x['right_capability']]:
+            if capability<0x100 or capability%4 or capability+status+2>0x1000:
+                raise ValueError('VC registers outside Configuration Space')
+            tokens.extend([f'{capability+control:X}h',f'{capability+status:X}h'])
+        disabled=(vc_id<<24)|tc_map
+        return tokens+[f'{disabled:08X}h',f'{disabled|(1<<31):08X}h',f'{0xff^tc_map:02X}h']
     if model=='lane':
         if x['lane']<0:raise ValueError('Negative Lane number')
         control=x['control_base']+x['lane']*x['stride']

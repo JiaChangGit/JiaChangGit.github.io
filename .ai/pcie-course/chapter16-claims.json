@@ -2,25 +2,40 @@
   "schema_version": 1,
   "course": "pcie-course",
   "chapter": 16,
-  "updated": "2026-10-24",
+  "updated": "2026-10-28",
   "claims": [
     {
       "id": "PCIE-CH16-001",
-      "claim": "通道資源、TC0固定映射與單一Link兩端一致規則。",
+      "claim": "TC標籤與逐Link VC資源不同；TLP不帶VC ID，同一Link雙端須配對VC ID及TC/VC Map，Switch各Port可不同。",
       "kind": "specification",
       "source_id": "PCIE-BASE-6.0",
       "revision": "6.0",
       "sections": [
         "2.5",
-        "2.5.2"
+        "2.5.1",
+        "2.5.2",
+        "2.5.3",
+        "6.3.2"
       ],
       "document_pages": [
         229,
-        233
+        230,
+        232,
+        233,
+        234,
+        235,
+        703,
+        704
       ],
       "pdf_pages": [
         229,
-        233
+        230,
+        232,
+        233,
+        234,
+        235,
+        703,
+        704
       ],
       "figures": [
         "2-88"
@@ -29,7 +44,7 @@
         "2-43"
       ],
       "status": "verified",
-      "verified_on": "2026-10-24"
+      "verified_on": "2026-10-28"
     },
     {
       "id": "PCIE-CH16-002",
@@ -51,30 +66,24 @@
       ],
       "tables": [],
       "status": "verified",
-      "verified_on": "2026-10-24"
+      "verified_on": "2026-10-28"
     },
     {
       "id": "PCIE-CH16-003",
-      "claim": "映射與仲裁須配合全路徑等時性資源保留與流量調節。",
+      "claim": "等時性保證需Requester/Completer與fabric的資源保留及流量調節；僅Map或VC Enable不構成完整契約。",
       "kind": "specification",
       "source_id": "PCIE-BASE-6.0",
       "revision": "6.0",
       "sections": [
-        "6.3.2",
-        "6.3.3",
         "A.1",
         "A.2"
       ],
       "document_pages": [
-        703,
-        705,
         1521,
         1522,
         1523
       ],
       "pdf_pages": [
-        703,
-        705,
         1521,
         1522,
         1523
@@ -85,7 +94,97 @@
       ],
       "tables": [],
       "status": "verified",
-      "verified_on": "2026-10-24"
+      "verified_on": "2026-10-28"
+    },
+    {
+      "id": "PCIE-CH16-ENABLE-001",
+      "claim": "Extended VC Count不含VC0；資源Control/Status位移與寬度不同。配置前須停止相關TC流量，VC ID不可在啟用時修改；額外VC雙端Enable後須在DL_Active有效條件下確認雙端Pending清零，Pending為RO且完成FC_INIT2後硬體清除。All VCs Enabled可選，設定後Link Up時變更VC Enable行為未定義。",
+      "sections": [
+        "7.9.1",
+        "7.9.1.1",
+        "7.9.1.2",
+        "7.9.1.4",
+        "7.9.1.7",
+        "7.9.1.8"
+      ],
+      "figures": [
+        "7-221",
+        "7-228",
+        "7-229"
+      ],
+      "tables": [
+        "7-201",
+        "7-202",
+        "7-204",
+        "7-207",
+        "7-208"
+      ],
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "document_pages": [
+        1181,
+        1182,
+        1183,
+        1184,
+        1185,
+        1186,
+        1187,
+        1189,
+        1190,
+        1191,
+        1192
+      ],
+      "pdf_pages": [
+        1181,
+        1182,
+        1183,
+        1184,
+        1185,
+        1186,
+        1187,
+        1189,
+        1190,
+        1191,
+        1192
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-28"
+    },
+    {
+      "id": "PCIE-CH16-ARBITRATION-001",
+      "claim": "Switch同出口同VC的不同入口流量先做Port Arbitration，再做不同VC間的VC Arbitration。VC ID有預設相對優先次序；Low Priority Extended VC Count為0時所有VC採Strict Priority，高優先流量須調節以避免低優先流量飢餓及交易逾時。",
+      "sections": [
+        "6.3.3.1",
+        "6.3.3.2",
+        "6.3.3.2.1",
+        "6.3.3.2.2",
+        "7.9.1.2"
+      ],
+      "figures": [
+        "6-8",
+        "6-9"
+      ],
+      "tables": [
+        "7-202"
+      ],
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "document_pages": [
+        708,
+        709,
+        710,
+        1185
+      ],
+      "pdf_pages": [
+        708,
+        709,
+        710,
+        1185
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-28"
     }
   ]
 }

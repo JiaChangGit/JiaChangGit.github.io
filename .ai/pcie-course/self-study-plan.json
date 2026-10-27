@@ -759,5 +759,18 @@
       "TLP-004"
     ],
     "remaining": "全部AtomicOp編碼、錯誤優先序、Flit格式與DMWr能力及所有適用條件仍待深入；不因此標示AtomicOp或Base6全規格完成。"
+  },
+  "chapter_16_revision": {
+    "status": "locally_verified",
+    "location": "DOCS/pcie-course/chapter-16.html#vc-enable",
+    "covered": "以Root Port和Endpoint雙端案例定位VC資源Control/Status、配置TC7映射、啟用VC1並在有效條件下核對雙端Pending；接續credit資格、Switch兩層仲裁與VC ID預設優先次序，短接等時性契約。",
+    "references": [
+      "ORDER-006",
+      "ORDER-007",
+      "ORDER-008",
+      "CAP-006",
+      "FC-006"
+    ],
+    "remaining": "MFVC、多Function仲裁、完整WRR／Time-based WRR表格、Shared FC與等時性完整預算及設定仍須深入；不因此標示VC或Base6全規格完成。"
   }
 }

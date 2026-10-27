@@ -1,8 +1,8 @@
 {
   "walk_id": "ch16-overview",
   "title": "不同流量共用一條 Link，如何避免一起被堵住？",
-  "summary_html": "<p>TC（Traffic Class，流量類別）是封包上的分類；VC（Virtual Channel，虛擬通道）則把這些流量接到佇列、緩衝與流量控制資源。先分清分類與資源，才能看懂為什麼提高 TC（用來標示流量的類別）數字，不會自動增加頻寬。</p>",
-  "svg": "<svg viewBox=\"0 0 900 420\" role=\"img\" aria-labelledby=\"ch16-zh-t ch16-zh-d\"><title id=\"ch16-zh-t\">本章角色與事件</title><desc id=\"ch16-zh-d\">每一條Link兩端使用一致的TC到VC映射；各Link可採不同配置。</desc><g data-walk-target=\"tc\"><rect x=\"20\" y=\"30\" width=\"320\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"180.0\" y=\"59\" text-anchor=\"middle\" font-size=\"16\">TC：封包的流量分類</text></g><g data-walk-target=\"map\"><rect x=\"485\" y=\"30\" width=\"390\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"680.0\" y=\"59\" text-anchor=\"middle\" font-size=\"16\">軟體配置兩端相同的映射</text></g><g data-walk-target=\"vc0\"><rect x=\"40\" y=\"190\" width=\"340\" height=\"68\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"210.0\" y=\"219\" text-anchor=\"middle\" font-size=\"16\">VC0：保留給 TC0</text><text x=\"210.0\" y=\"243\" text-anchor=\"middle\" font-size=\"16\">也可承載其他 TC</text></g><g data-walk-target=\"vc1\"><rect x=\"500\" y=\"190\" width=\"350\" height=\"68\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"675.0\" y=\"219\" text-anchor=\"middle\" font-size=\"16\">VC1：本例承載 TC7</text><text x=\"675.0\" y=\"243\" text-anchor=\"middle\" font-size=\"16\">獨立資源與流量控制</text></g><g data-walk-target=\"arb\"><rect x=\"255\" y=\"335\" width=\"390\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"450.0\" y=\"364\" text-anchor=\"middle\" font-size=\"16\">仲裁選擇下一筆傳送流量</text></g><g data-walk-target=\"a\"><path d=\"M340 52 L485 52\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"485,52 475.0,57.0 475.0,47.0\" fill=\"var(--accent)\"/><text x=\"412.5\" y=\"42.0\" text-anchor=\"middle\" font-size=\"16\">讀取分類</text></g><g data-walk-target=\"b\"><path d=\"M600 98 L210 190\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"210,190 218.58488245528918,182.83761260270933 220.88083939100602,192.57047352585693\" fill=\"var(--accent)\"/><text x=\"405.0\" y=\"134.0\" text-anchor=\"middle\" font-size=\"16\">TC0</text></g><g data-walk-target=\"c\"><path d=\"M720 98 L670 190\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"670,190 670.3820106563359,178.82618830217524 679.1682557520613,183.60132150637384\" fill=\"var(--accent)\"/><text x=\"695.0\" y=\"134.0\" text-anchor=\"middle\" font-size=\"16\">TC7</text></g><g data-walk-target=\"d\"><path d=\"M210 258 L350 335\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"350,335 338.8282471643727,334.5618920456617 343.6474346620943,325.7997329588952\" fill=\"var(--accent)\"/><text x=\"280.0\" y=\"286.5\" text-anchor=\"middle\" font-size=\"16\">可傳送</text></g><g data-walk-target=\"f\"><path d=\"M670 258 L550 335\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"550,335 555.7160971423175,325.39134590800614 561.1165815589857,333.8076852586577\" fill=\"var(--accent)\"/><text x=\"610.0\" y=\"286.5\" text-anchor=\"middle\" font-size=\"16\">可傳送</text></g></svg>",
+  "summary_html": "<p>TC（Traffic Class，流量類別）是封包上的分類；VC（Virtual Channel，虛擬通道）將流量對應到佇列、緩衝與流量控制資源。本章先看映射，再用雙端配置案例走完啟用與初始化，最後接到傳送仲裁。</p>",
+  "svg": "<svg viewBox=\"0 0 900 420\" role=\"img\" aria-labelledby=\"ch16-zh-t ch16-zh-d\"><title id=\"ch16-zh-t\">分類、映射與共同傳送資源</title><desc id=\"ch16-zh-d\">每一條Link兩端使用一致的TC到VC映射；各Link可採不同配置。</desc><g data-walk-target=\"tc\"><rect x=\"20\" y=\"30\" width=\"320\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"180.0\" y=\"59\" text-anchor=\"middle\" font-size=\"16\">TC：封包的流量分類</text></g><g data-walk-target=\"map\"><rect x=\"485\" y=\"30\" width=\"390\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"680.0\" y=\"59\" text-anchor=\"middle\" font-size=\"16\">軟體配置兩端相同的映射</text></g><g data-walk-target=\"vc0\"><rect x=\"40\" y=\"190\" width=\"340\" height=\"68\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"210.0\" y=\"219\" text-anchor=\"middle\" font-size=\"16\">VC0：TC0 固定映射</text><text x=\"210.0\" y=\"243\" text-anchor=\"middle\" font-size=\"16\">也可承載其他 TC</text></g><g data-walk-target=\"vc1\"><rect x=\"500\" y=\"190\" width=\"350\" height=\"68\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"675.0\" y=\"219\" text-anchor=\"middle\" font-size=\"16\">VC1：本例承載 TC7</text><text x=\"675.0\" y=\"243\" text-anchor=\"middle\" font-size=\"16\">獨立資源與流量控制</text></g><g data-walk-target=\"arb\"><rect x=\"255\" y=\"335\" width=\"390\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"450.0\" y=\"364\" text-anchor=\"middle\" font-size=\"16\">仲裁選擇下一筆傳送流量</text></g><g data-walk-target=\"a\"><path d=\"M340 52 L485 52\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"485,52 475.0,57.0 475.0,47.0\" fill=\"var(--accent)\"/><text x=\"412.5\" y=\"42.0\" text-anchor=\"middle\" font-size=\"16\">讀取分類</text></g><g data-walk-target=\"b\"><path d=\"M600 98 L210 190\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"210,190 218.58488245528918,182.83761260270933 220.88083939100602,192.57047352585693\" fill=\"var(--accent)\"/><text x=\"405.0\" y=\"134.0\" text-anchor=\"middle\" font-size=\"16\">TC0</text></g><g data-walk-target=\"c\"><path d=\"M720 98 L670 190\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"670,190 670.3820106563359,178.82618830217524 679.1682557520613,183.60132150637384\" fill=\"var(--accent)\"/><text x=\"695.0\" y=\"134.0\" text-anchor=\"middle\" font-size=\"16\">TC7</text></g><g data-walk-target=\"d\"><path d=\"M210 258 L350 335\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"350,335 338.8282471643727,334.5618920456617 343.6474346620943,325.7997329588952\" fill=\"var(--accent)\"/><text x=\"280.0\" y=\"286.5\" text-anchor=\"middle\" font-size=\"16\">可傳送</text></g><g data-walk-target=\"f\"><path d=\"M670 258 L550 335\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"550,335 555.7160971423175,325.39134590800614 561.1165815589857,333.8076852586577\" fill=\"var(--accent)\"/><text x=\"610.0\" y=\"286.5\" text-anchor=\"middle\" font-size=\"16\">可傳送</text></g></svg>",
   "order_html": "<p>先看分類如何對到資源，再看多個可傳送通道如何共用實體線路。兩條 VC 分支可以並存。</p>",
   "caption_html": "<p>作者依 Base 6.0 繪製的教學示意；省略與本章無關的交換。</p>",
   "steps": [
@@ -15,7 +15,7 @@
       ],
       "html": "<p>§2.5 說明資源模型；§2.5.2 的 Table 2-43 列出可行的分類到通道映射。TC0 固定對應 VC0。</p>",
       "condition_html": "<p>一個類別不能在同一 Port 或 Function 被映射到多個通道；同一 Link 兩端須一致。</p>",
-      "source_html": "<p>Base 6.0 §2.5、§2.5.2，pp.229、233。</p>",
+      "source_html": "<p>Base 6.0 §2.5、§2.5.1、§2.5.2，pp.229–234；Table 2-43，p.233；Figure 2-88，p.234。</p>",
       "claim_ids": [
         "PCIE-CH16-001"
       ]
@@ -28,11 +28,11 @@
         "vc0",
         "vc1"
       ],
-      "html": "<p>本例把一般流量留在基本通道，將一組週期流量配置到額外通道。分開的是緩衝與流量控制資源，仍共用同一條實體 Link。</p>",
-      "condition_html": "<p>額外通道必須受支援並完成有效配置；表內的配置只是合法範例，不是所有裝置的預設。</p>",
-      "source_html": "<p>Base 6.0 §2.5.2／Table 2-43，p.233。</p>",
+      "html": "<p>兩端先設定對應的 VC ID 與 TC/VC Map，再分別啟用。使用之前，還要在有效條件下讀到雙端的 VC Negotiation Pending 都為零。</p>",
+      "condition_html": "<p>Pending 只有在 Link 處於 DL_Active、且該 VC 已啟用時才有定義；不能用停用時的零值判定完成。</p>",
+      "source_html": "<p>Base 6.0 §7.9.1.7、§7.9.1.8，Tables 7-207／7-208，pp.1189–1192。</p>",
       "claim_ids": [
-        "PCIE-CH16-001"
+        "PCIE-CH16-ENABLE-001"
       ]
     },
     {
@@ -42,11 +42,11 @@
         "f",
         "arb"
       ],
-      "html": "<p>獨立通道能減少因流量控制造成的相互阻擋，服務時機仍取決於仲裁、可用頻寬與接收端。</p>",
+      "html": "<p>符合 credit 與排序條件的封包才能參與仲裁。VC ID 有預設相對優先次序，實際服務要搭配優先群組與仲裁方式判斷。</p>",
       "condition_html": "<p>Flit 模式的共享流量控制另有共享與專用資源，不能直接照搬非 Flit 的獨立池模型。</p>",
-      "source_html": "<p>Base 6.0 §2.5，p.229；§2.6，p.235。</p>",
+      "source_html": "<p>Base 6.0 §6.3.3.1、§6.3.3.2，pp.708–710；§2.6，p.235。</p>",
       "claim_ids": [
-        "PCIE-CH16-001",
+        "PCIE-CH16-ARBITRATION-001",
         "PCIE-CH16-002"
       ]
     }

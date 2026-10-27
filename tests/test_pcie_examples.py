@@ -35,4 +35,21 @@ class PacketLayoutTest(unittest.TestCase):
         self.inputs['address']=0x80001FFC
         with self.assertRaises(ValueError):result_tokens('partial_write_layout',self.inputs)
 
+class VirtualChannelSetupTest(unittest.TestCase):
+    def setUp(self):
+        self.inputs=dict(resource=1,extended_count=1,vc_id=1,tc_map=0x80,
+                         left_capability=0x180,right_capability=0x200)
+    def test_status_misread_as_lower_halfword_is_detected(self):
+        case=dict(section='vc-enable',model='vc_setup',inputs=self.inputs)
+        text=('<section id="vc-enable"><p>1A0h 1A6h 220h 226h '
+              '01000080h 81000080h 7Fh</p></section>')
+        self.assertEqual(validate_case(case,text),[])
+        self.assertEqual(validate_case(case,text.replace('1A6h','1A4h')),['1A6h'])
+    def test_tc0_cannot_be_assigned_to_extended_vc(self):
+        self.inputs['tc_map']=0x81
+        with self.assertRaises(ValueError):result_tokens('vc_setup',self.inputs)
+    def test_absent_resource_cannot_be_addressed(self):
+        self.inputs['extended_count']=0
+        with self.assertRaises(ValueError):result_tokens('vc_setup',self.inputs)
+
 if __name__=='__main__':unittest.main()
