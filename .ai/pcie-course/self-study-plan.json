@@ -733,5 +733,18 @@
       "INTEGRATION-009"
     ],
     "remaining": "本輪為 Firmware3.3 補充教學，不計入 Base6 全文完成；完整 EDR/_DSM/_OST 失敗流程與未取得全文的 UEFI/ACPI 補充仍須另行核對。"
+  },
+  "chapter_14_revision": {
+    "status": "locally_verified",
+    "location": "DOCS/pcie-course/chapter-14.html#packet-layout",
+    "covered": "以兩種模式的完整 Memory Write byte stream 與布局圖帶讀 Fmt/Type、Header Base、OHC-A1、TS、BE 與payload位置；比較8byte資料負載與4byte有效寫入，排除錯誤模式造成的假象。",
+    "references": [
+      "TLP-002",
+      "TLP-003",
+      "TLP-004",
+      "TLP-009",
+      "ENC-009"
+    ],
+    "remaining": "完整Prefix／OHC類型、全部TLP格式、Reserved編碼與Flit重組仍須逐項深入；本輪不因此標示Transaction Layer或Base6全規格完成。"
   }
 }

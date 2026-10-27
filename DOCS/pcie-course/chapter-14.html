@@ -7,7 +7,7 @@
   <link rel="icon" href="data:,">
   <meta name="theme-color" content="#f2f6f8" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101b26" media="(prefers-color-scheme: dark)">
-  <meta name="description" content="收到一段封包資料，要從哪個欄位開始讀？">
+  <meta name="description" content="用同一筆部分寫入需求比較 Non-Flit／Flit 完整 TLP，串連格式、OHC、資料起點與有效 bytes。">
   <title>從 TLP 標頭到 Flit 封包布局 · PCIe 系統與規格閱讀</title>
   <style>
 /* Every selector is scoped so the same reading styles can be embedded in Jekyll. */
@@ -379,13 +379,13 @@ html[data-theme="dark"] .spec-teaching[data-spec-series="nvme"] { --st-accent:#7
     <header class="page-header">
       <p class="eyebrow">PCIe · 系統與規格閱讀 / CHAPTER 14</p>
       <h1>從 TLP 標頭到 Flit 封包布局</h1>
-      <p class="header-description">收到一段封包資料，要從哪個欄位開始讀？</p>
-      <div class="edition"><span>繁體中文 · 規格與情境推演</span><span>2026-10-24</span></div>
+      <p class="header-description">用同一筆部分寫入需求比較 Non-Flit／Flit 完整 TLP，串連格式、OHC、資料起點與有效 bytes。</p>
+      <div class="edition"><span>繁體中文 · 規格與情境推演</span><span>2026-10-28</span></div>
     </header>
     <div class="reading-layout">
       <aside class="toc-panel" aria-label="本頁目錄">
         <p class="toc-label">本章閱讀路徑</p>
-        <nav aria-label="章節段落"><ol><li><a href="#overview">收到一段封包資料，要從哪個欄位開始讀？</a></li><li><a href="#format">為什麼不能只背一張標頭圖？</a></li><li><a href="#extensions">找到基本標頭後，怎麼走到資料？</a></li><li><a href="#bytes">Length 和有效 byte 要怎麼一起讀？</a></li><li><a href="#next">封包有回覆時，從哪裡接著讀？</a></li><li><a href="#sources">版本與來源</a></li></ol></nav>
+        <nav aria-label="章節段落"><ol><li><a href="#overview">收到一段封包資料，要從哪個欄位開始讀？</a></li><li><a href="#format">為什麼不能只背一張標頭圖？</a></li><li><a href="#extensions">找到基本標頭後，怎麼走到資料？</a></li><li><a href="#packet-layout">用同一個寫入需求，走完兩種格式</a></li><li><a href="#bytes">八個 payload bytes，為什麼只寫入四個？</a></li><li><a href="#next">封包有回覆時，從哪裡接著讀？</a></li><li><a href="#sources">版本與來源</a></li></ol></nav>
       </aside>
       <main id="content" tabindex="-1">
         <article class="lesson">
@@ -408,13 +408,45 @@ html[data-theme="dark"] .spec-teaching[data-spec-series="nvme"] { --st-accent:#7
 <ol class="walk-steps">
 <li class="walk-step" id="ch14-overview-step-1" data-walk-step="1" data-walk-targets="mode a b"><h4>先確認目前格式</h4><div class="walk-condition"><p>先從觀察位置確認 Link 模式；不要只憑封包第一個 byte 猜測。</p></div><div class="walk-explanation"><p>Non-Flit Mode 先讀 Fmt 與 Type；Flit Mode 先讀 8-bit Type。相同的 byte 值，在兩種格式可能有不同意義。</p></div><div class="walk-source" data-source-claims="PCIE-CH14-001"><p>Base 6.0 §2.2.1，Figures 2-4–2-6、Tables 2-2–2-5，pp.119–123。</p></div></li>
 <li class="walk-step" id="ch14-overview-step-2" data-walk-step="2" data-walk-targets="nfm fm c d"><h4>找出後續欄位的位置</h4><div class="walk-condition"><p>OHC（Orthogonal Header Content，正交標頭內容）須按 A、B、C、E 的順序出現；需要哪些內容另由封包種類決定。</p></div><div class="walk-explanation"><p>非 Flit 格式由 Fmt 說明 3 或 4 DW 標頭及資料是否存在；Flit 格式用 Type 的表列資訊，再加 OHC 與 TS。DW 是 Double Word，等於 4 bytes。</p></div><div class="walk-source" data-source-claims="PCIE-CH14-001 PCIE-CH14-002"><p>Base 6.0 §2.2.1.1–§2.2.1.2，pp.119–123、130–132。</p></div></li>
-<li class="walk-step" id="ch14-overview-step-3" data-walk-step="3" data-walk-targets="body"><h4>再讀交易內容與 byte 選擇</h4><div class="walk-condition"><p>Byte Enables 的細節依模式、種類及條件而異；後面的算例限定普通非 Flit Memory Write。</p></div><div class="walk-explanation"><p>依已辨識的封包種類，定位位址或目的識別碼，再讀 Length 與 Byte Enables（有效 byte 選擇）。不能把讀取要求的長度解釋成要求本身帶有同樣大小的資料。</p></div><div class="walk-source" data-source-claims="PCIE-CH14-003 PCIE-CH14-004"><p>Base 6.0 §2.2.5.1／Figure 2-26，pp.149–150；§2.2.9，p.195。</p></div></li>
+<li class="walk-step" id="ch14-overview-step-3" data-walk-step="3" data-walk-targets="body"><h4>再讀交易內容與 byte 選擇</h4><div class="walk-condition"><p>Byte Enables 的細節依模式、種類及條件而異；後面的案例會比較普通 Memory Write 在兩種模式下的布局。</p></div><div class="walk-explanation"><p>依已辨識的封包種類，定位位址或目的識別碼，再讀 Length 與 Byte Enables（有效 byte 選擇）。不能把讀取要求的長度解釋成要求本身帶有同樣大小的資料。</p></div><div class="walk-source" data-source-claims="PCIE-CH14-003 PCIE-CH14-004 PCIE-CH14-PARTIAL-WRITE-001"><p>Base 6.0 §2.2.5.1–§2.2.5.2／Figure 2-26、Table 2-10，pp.149–152；§2.2.9，p.195。完整封包案例見下方兩種模式的帶讀。</p></div></li>
 </ol></div>
 </div>
 <!-- /pcie-walk --></section>
-<section id="format"><h2>為什麼不能只背一張標頭圖？</h2><p>在非 Flit 格式，先用 Figure 2-4 找 byte 0 的 Fmt／Type，再對 Table 2-2、Table 2-3。以 Memory Read 為例，Fmt 可表示 32-bit 或 64-bit 位址布局，要求不帶資料；Memory Write 則帶寫入資料。Type 也會影響路由，因此只看 Length 還不足以找到下一個封包。</p><p>換成 Flit 格式時，從 Figure 2-6 與 Table 2-5 重新開始。Type 不再只是舊格式的五個 bits；例如 Table 2-5 的 NOP 是 00h，而 32-bit 位址 Memory Read 是 03h。若沿用非 Flit 的解碼表，第一步就會讀錯。</p></section>
-<section id="extensions"><h2>找到基本標頭後，怎麼走到資料？</h2><p>OHC（用來補充標頭資訊的擴充內容）由 Figure 2-6 的 OHC 欄位指出。接著讀 p.131 的出現順序，再用 Table 2-6 選擇適用的 A 類布局。例如有明確 Byte Enables 的 Memory Request，要沿 Table 2-6 找到 Figure 2-7 的 OHC-A1。不要固定假設所有 Flit 標頭都是相同長度。</p><p>TS 是 Trailer Size，用來指出尾部大小與用途；它與 Length 的資料長度分開計算。非 Flit 格式另有 Prefix（標頭前的擴充內容）與 TD（TLP Digest 存在標記）。判讀工具應先完成整個格式的大小計算，再移到後一包。</p></section>
-<section id="bytes"><h2>Length 和有效 byte 要怎麼一起讀？</h2><p><strong>作者案例：</strong>一個普通非 Flit Memory Write，位址以 4-byte 對齊，Length=2 DW（每 DW 為 4 bytes），First DW BE=1100b，Last DW BE=0011b。先在 Figure 2-26 定位兩個 BE（Byte Enable，有效 byte 選擇）欄位，再按 §2.2.5.1 的規則讀每個 bit。</p><div class="table-wrap"><table><thead><tr><th scope="col">範圍</th><th scope="col">承載的 byte 位置</th><th scope="col">真正寫入</th></tr></thead><tbody><tr><td>第一個 DW</td><td>位址 +0 至 +3</td><td>+2、+3</td></tr><tr><td>最後一個 DW</td><td>位址 +4 至 +7</td><td>+4、+5</td></tr></tbody></table></div><p>封包承載兩個 DW 的資料範圍，其中四個 bytes 被選為寫入。Length 沒有改成 1 DW，因為它描述的是封包資料長度。若 Length=1 DW，Last DW BE 必須為 0000b；這個條件在 Figure 2-26 下方，讀圖時要一起看。</p></section>
+<section id="format"><h2>為什麼不能只背一張標頭圖？</h2><p>在非 Flit 格式，先用 Figure 2-4 找 byte 0 的 Fmt／Type，再對 Table 2-2、Table 2-3。以 Memory Read 為例，Fmt 可表示 32-bit 或 64-bit 位址布局，要求不帶資料；Memory Write 則帶寫入資料。Type 也會影響路由，因此只看 Length 還不足以找到下一個封包。例如，另一筆 Non-Flit、32-bit 位址的 Memory Read 即使 Length=2，在沒有 Prefix 與 Digest 時，Request 本身仍只有 12 bytes Header，讀取資料由後續 Completion 返回。先確認這個 Type 是否帶資料，再使用 Length 計算封包大小。</p><p>換成 Flit 格式時，從 Figure 2-6 與 Table 2-5 重新開始。Type 不再只是舊格式的五個 bits；例如 Table 2-5 的 NOP 是 00h，而 32-bit 位址 Memory Read 是 03h。若沿用非 Flit 的解碼表，第一步就會讀錯。</p></section>
+<section id="extensions"><h2>找到基本標頭後，怎麼走到資料？</h2><p>OHC（用來補充標頭資訊的擴充內容）由 Figure 2-6 的 OHC 欄位指出。接著讀 p.131 的出現順序，再用 Table 2-6 選擇適用的 A 類布局。例如有明確 Byte Enables 的 Memory Request，要沿 Table 2-6 找到 Figure 2-7 的 OHC-A1。後面的完整案例會把它接到實際的資料起點。不要固定假設所有 Flit 標頭都是相同長度。</p><p>TS 是 Trailer Size，用來指出尾部大小與用途；它與 Length 的資料長度分開計算。非 Flit 格式另有 Prefix（標頭前的擴充內容）與 TD（TLP Digest 存在標記）。判讀工具應先完成整個格式的大小計算，再移到後一包。</p></section>
+<section id="packet-layout"><h2>用同一個寫入需求，走完兩種格式</h2>
+<div class="example"><p><strong>【模擬資料】以下資料為教學用途建立，不代表特定硬體或平台。</strong>兩段獨立 Trace 都由已配置的 Endpoint 03:00.0 發出 Memory Write，目標位址為 <code>0x80001000</code>。本例假設位址與路徑可用、允許裝置發起存取，且沒有 Prefix、IDE 或 TPH；保留欄位及其他未使用欄位填 0。兩段 Trace 的 Link 模式已由外部資訊確認，並已取得完整的邏輯 TLP。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>IDE</dt><dd>Integrity and Data Encryption，完整性與資料加密</dd></div><div><dt>TPH</dt><dd>TLP Processing Hints，封包處理提示</dd></div></dl>
+<p>兩筆資料負載相同，都是 <code>A0 A1 A2 A3 B0 B1 B2 B3</code>，Length=2 DW（每個 DW 是 4 bytes）；但只要寫入中間四個 bytes。First DW BE=<code>1100b</code>，Last DW BE=<code>0011b</code>。Flit 案例從已重組的 TLP 開始，沒有把完整 FLIT 當作一筆 TLP。下列十六進位依圖中的 byte 0、byte 1 順序排列，每四個 bytes 換行；它不是 CPU 端的 DWORD 讀值表。</p>
+<h3>先讀 Non-Flit 的 20 bytes</h3>
+<pre><code style="font-size: 1rem">40 00 00 02
+03 00 00 3C
+80 00 10 00
+A0 A1 A2 A3
+B0 B1 B2 B3</code></pre>
+<p>先用 Figure 2-4 讀第一個 byte：<code>0x40</code> 的 Fmt=<code>010b</code>、Type=<code>00000b</code>。查 Tables 2-2／2-3 的組合，得到帶資料、使用 3 DW Header 的 Memory Write。再用 Figure 2-5 讀 Length=2、TD=0；因此本例有 12 bytes Header、8 bytes Data Payload，沒有 Digest，合計 <strong>20 bytes</strong>。</p>
+<p>接著換到 Figure 2-31。byte 4–5 的 <code>03 00</code> 是 Requester ID=<code>0x0300</code>，本例對應 03:00.0；byte 8–11 提供地址，得到 <code>0x80001000</code>。最後到 Figure 2-26／Table 2-10，讀 Header byte 7=<code>0x3C</code>：高四位是 Last DW BE=<code>0011b</code>，低四位是 First DW BE=<code>1100b</code>。Header 在 byte 11 結束，資料從 <strong>byte 12</strong> 開始。</p>
+<h3>再讀 Flit 格式的 24 bytes</h3>
+<pre><code style="font-size: 1rem">40 01 00 02
+03 00 00 00
+80 00 10 00
+00 00 00 3C
+A0 A1 A2 A3
+B0 B1 B2 B3</code></pre>
+<p>這次先讀 Figure 2-6，第一個 byte 的整個 <code>0x40</code> 都是 Type。查 Table 2-5 編號 64 的項目，得到 32-bit address Memory Write、Header Base=3 DW，Data Payload 由 Length 決定。這筆 Type 恰好與前例的第一個 byte 相同，不能用它單獨辨識 Link 模式。</p>
+<p>byte 1 的 OHC=<code>00001b</code> 表示有 OHC-A；byte 2 的 TS=<code>000b</code> 表示沒有 Trailer，Length 仍為 2。先用 Figure 2-40 讀完 12 bytes Header Base，再依 Table 2-6 的 Memory Request 選到 OHC-A1。Figure 2-7 顯示這個擴充占 1 DW；其內部 byte 3 才是兩組 BE。換成整筆 TLP 的位置，就是 byte 12+3=<strong>byte 15</strong>，讀到 <code>0x3C</code>。</p>
+<p>所以這筆的 Data Payload 從 <strong>byte 16</strong> 開始，總長度為 12+4+8=<strong>24 bytes</strong>。本例 OHC-A1 的 PV=0，沒有有效的 PASID；其餘不使用欄位為 0。OHC-A1 在這裡用來提供部分寫入所需的 BE，沒有增加資料負載的長度。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>PASID</dt><dd>Process Address Space ID，程序位址空間識別碼</dd></div></dl>
+<figure class="diagram"><svg viewBox="0 0 820 370" style="min-width: 640px" role="img" aria-labelledby="packet-layout-title packet-layout-desc"><title id="packet-layout-title">相同的部分寫入需求，在兩種格式中的資料起點不同</title><desc id="packet-layout-desc">兩個案例的基本部分都是三個DW，並承載八個資料bytes。Non-Flit 的有效byte選擇放在Header內，資料從byte12開始；Flit多加一個DW的OHC-A1，因此資料從byte16開始。兩個邏輯TLP分別為20及24bytes。</desc><text x="20" y="63" font-size="18">Non-Flit</text><text x="20" y="238" font-size="18">Flit</text><rect x="130" y="35" width="330" height="72" rx="8" fill="var(--surface-alt)" stroke="var(--line)" stroke-width="1"/><text x="295.0" y="64" text-anchor="middle" font-size="18">Header</text><text x="295.0" y="90" text-anchor="middle" font-size="18">3 DW = 12 bytes</text><rect x="460" y="35" width="220" height="72" rx="8" fill="var(--blue-soft)" stroke="var(--accent)" stroke-width="2"/><text x="570.0" y="64" text-anchor="middle" font-size="18">Data Payload</text><text x="570.0" y="90" text-anchor="middle" font-size="18">2 DW = 8 bytes</text><rect x="130" y="210" width="330" height="72" rx="8" fill="var(--surface-alt)" stroke="var(--line)" stroke-width="1"/><text x="295.0" y="239" text-anchor="middle" font-size="18">Header Base</text><text x="295.0" y="265" text-anchor="middle" font-size="18">3 DW = 12 bytes</text><rect x="460" y="210" width="110" height="72" rx="8" fill="var(--blue-soft)" stroke="var(--accent)" stroke-width="2"/><text x="515.0" y="239" text-anchor="middle" font-size="18">OHC-A1</text><text x="515.0" y="265" text-anchor="middle" font-size="18">1 DW</text><rect x="570" y="210" width="220" height="72" rx="8" fill="var(--blue-soft)" stroke="var(--accent)" stroke-width="2"/><text x="680.0" y="239" text-anchor="middle" font-size="18">Data Payload</text><text x="680.0" y="265" text-anchor="middle" font-size="18">2 DW = 8 bytes</text><text x="130" y="133" text-anchor="middle" font-size="17">0</text><text x="460" y="133" text-anchor="middle" font-size="17">12</text><text x="680" y="133" text-anchor="middle" font-size="17">20</text><text x="130" y="308" text-anchor="middle" font-size="17">0</text><text x="460" y="308" text-anchor="middle" font-size="17">12</text><text x="570" y="308" text-anchor="middle" font-size="17">16</text><text x="790" y="308" text-anchor="middle" font-size="17">24</text><path d="M130 114 H680 M130 289 H790" stroke="var(--line)"/><text x="295" y="163" text-anchor="middle" font-size="17">BE 位於 Header byte 7</text><text x="460" y="344" text-anchor="middle" font-size="17">BE 位於 OHC-A1 byte 3，也就是 TLP byte 15</text></svg><figcaption>作者依兩筆模擬 TLP 繪製。數字是各自從起點算起的 byte offset，最右側數字是總長度；兩列都未計入 Data Link 與 Physical Layer 的封裝。</figcaption></figure>
+</div>
+<p>現在回到 §2.2.5.2 看這個擴充為何不能省：對這筆 2 DW Memory Request，若沒有 OHC-A1，接收端會把 First 與 Last DW BE 都視為 <code>1111b</code>。這會變成八個 bytes 全部啟用，已經改變原本只寫中間四個 bytes 的需求。OHC 是否存在，會直接影響接收端如何執行存取。</p>
+<p>如果工具把第二段 Trace 當成 Non-Flit，就可能把 byte 7 的 <code>0x00</code> 誤讀成兩組 BE，並把 OHC 的 <code>00 00 00 3C</code> 當成資料起點，讓整段 payload 錯位四個 bytes。本例應先修正工具的解碼模式；這些假象不能直接當作線路上真的出現了錯誤封包。</p>
+<details class="source-note"><summary>每一步查哪張圖表？</summary><p>PCI Express Base Specification Revision 6.0：Figure 2-4 <em>Fields Present in All TLPs</em>（PDF／印刷 p.119）→ Figure 2-5 <em>Fields Present in All Non-Flit Mode TLP Headers</em>、Table 2-2 <em>Fmt[2:0] Field Values</em>／Table 2-3 <em>Fmt[2:0] and Type[4:0] Field Encodings</em>（pp.120–121）→ Figure 2-31 <em>Request Header Format for 32-bit Addressing of Memory</em>（p.163）→ Figure 2-26／Table 2-10 <em>Byte Enables Location and Correspondence</em>（pp.150–151），完成 Non-Flit 判讀。Flit 改由 Figure 2-6 <em>First DW of Header Base</em>（p.122）→ Table 2-5 <em>Flit Mode TLP Header Type Encodings</em> 的編號 64（Type=40h）項目（p.125）→ §2.2.1.2 的 TS／OHC 規則、Table 2-6 <em>OHC-A Included Fields for OHC-A1 through OHC-A5</em>（pp.130–132）→ Figure 2-40 <em>Flit Mode Mem32 Request</em>（p.169）與 Figure 2-7 <em>OHC-A1</em>（p.132）。§2.2.5.2 <em>Byte Enable Rules for Flit Mode</em>（p.152）定義未帶 OHC-A1 時的預設 BE。上述 PDF 與印刷頁碼相同；閱讀順序是查詢路線，不代表硬體執行圖表的先後。</p></details>
+</section>
+<section id="bytes"><h2>八個 payload bytes，為什麼只寫入四個？</h2>
+<p>沿用上面的兩筆模擬資料。§2.2.5.1 與 Table 2-10 把每個 BE bit 對應到資料 byte：First DW BE 的 bit 0 對應第一個 DW 的最低位址 byte；Last DW BE 的 bit 0 則對應最後一個 DW 的最低位址 byte。<code>1100b</code> 選到第一個 DW 的 +2、+3；<code>0011b</code> 選到最後一個 DW 的 +4、+5。</p>
+<div class="table-wrap"><table><caption>兩種格式送出相同資料，也選到相同的記憶體 bytes</caption><thead><tr><th scope="col">資料內的 offset</th><th scope="col">對應位址</th><th scope="col">Payload 內容</th><th scope="col">依本例 BE 執行的寫入</th></tr></thead><tbody><tr><td>+0、+1</td><td>0x80001000–0x80001001</td><td>A0、A1</td><td>不寫入這兩個 bytes。</td></tr><tr><td>+2、+3</td><td>0x80001002–0x80001003</td><td>A2、A3</td><td>寫入 A2、A3。</td></tr><tr><td>+4、+5</td><td>0x80001004–0x80001005</td><td>B0、B1</td><td>寫入 B0、B1。</td></tr><tr><td>+6、+7</td><td>0x80001006–0x80001007</td><td>B2、B3</td><td>不寫入這兩個 bytes。</td></tr></tbody></table></div>
+<p>因此被選取的位址範圍是 <code>0x80001002–0x80001005</code>，共四個 bytes，但兩筆 TLP 的 Data Payload 都仍有八個 bytes。Length 維持 2 DW，接收端不會因為部分 bytes 沒被選中，就把它們從封包裡刪掉。本例也未跨越 4-KB 邊界，BE 選取的資料連續；其他長度、對齊或非連續組合，須再依 §2.2.5.1 檢查。</p>
+<p>在本例的 Non-Flit 格式中，若改成 1 DW Request，Last DW BE 必須為 <code>0000b</code>；不能把本例的 <code>0011b</code> 直接沿用。這項規則接在 Figure 2-26 後，圖中的位置與周圍文字要一起讀。</p>
+</section>
 <section id="next"><h2>封包有回覆時，從哪裡接著讀？</h2><p>先按 §2.2.9 確認這類要求需要 Completion（完成回覆）。Memory Read 的資料隨完成回覆返回；一般 Posted Memory Write 沒有對應的成功完成回覆。接下來到 <a href="chapter-15.html">Chapter 15</a>，沿接收端的處理流程，確認合法性、能力與回覆結果。</p></section>
 <section id="sources"><h2>版本與來源</h2><p>本章以 PCI Express Base Specification Revision 6.0（6.0-1.0-PUB）為準，文件頁與 PDF 頁相同。案例的配置與讀值均為作者假設，並非實機測量。</p><details class="source-note"><summary>完整來源定位</summary><ul><li>§2.2.1.1; §2.2.1.2; pp.119,120,121,122,123; Figures 2-4, 2-5, 2-6; Tables 2-2, 2-3, 2-4, 2-5</li><li>§2.2.1.2; pp.130,131,132; Figures 2-7; Tables 2-6</li><li>§2.2.5.1; pp.149,150; Figures 2-26</li><li>§2.2.9; pp.195</li></ul></details></section>
         </article>

@@ -15,4 +15,24 @@ class TeachingArithmeticTest(unittest.TestCase):
         self.assertEqual(validate_case(case,'<section id="lane"><p>C+10h, C+12h</p></section>'),[])
         self.assertEqual(validate_case(case,'<section id="lane"><p>C+10h, C+14h</p></section>'),['12h'])
 
+class PacketLayoutTest(unittest.TestCase):
+    def setUp(self):
+        self.inputs=dict(length_dw=2,address=0x80001000,requester_id=0x0300,
+                         first_be=12,last_be=3,payload=[0xA0,0xA1,0xA2,0xA3,0xB0,0xB1,0xB2,0xB3])
+    def test_wrong_fm_ohc_advertisement_is_detected(self):
+        case=dict(section='packet-layout',model='partial_write_layout',inputs=self.inputs)
+        text=('<section id="packet-layout"><pre>'
+              '40 00 00 02 03 00 00 3C 80 00 10 00 A0 A1 A2 A3 B0 B1 B2 B3'
+              '</pre><pre>'
+              '40 01 00 02 03 00 00 00 80 00 10 00 00 00 00 3C A0 A1 A2 A3 B0 B1 B2 B3'
+              '</pre><p>20 bytes; 24 bytes</p></section>')
+        self.assertEqual(validate_case(case,text),[])
+        self.assertTrue(validate_case(case,text.replace('40 01 00 02','40 00 00 02')))
+    def test_truncated_payload_is_rejected(self):
+        self.inputs['payload'].pop()
+        with self.assertRaises(ValueError):result_tokens('partial_write_layout',self.inputs)
+    def test_request_crossing_4kb_is_rejected(self):
+        self.inputs['address']=0x80001FFC
+        with self.assertRaises(ValueError):result_tokens('partial_write_layout',self.inputs)
+
 if __name__=='__main__':unittest.main()

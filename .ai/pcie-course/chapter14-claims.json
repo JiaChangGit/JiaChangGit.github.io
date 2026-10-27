@@ -2,7 +2,7 @@
   "schema_version": 1,
   "course": "pcie-course",
   "chapter": 14,
-  "updated": "2026-10-24",
+  "updated": "2026-10-28",
   "claims": [
     {
       "id": "PCIE-CH14-001",
@@ -113,6 +113,84 @@
       "tables": [],
       "status": "verified",
       "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH14-PARTIAL-WRITE-001",
+      "claim": "作者以相同部分寫入需求比較完整 Non-Flit20bytes 與 Flit24bytes 邏輯TLP。Non-Flit BE在Headerbyte7；Flit OHC-A1提供BE、使payload從byte16開始。兩者Length2、8bytepayload選到+2到+5四bytes。",
+      "kind": "teaching_example",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.1.1",
+        "2.2.1.2",
+        "2.2.5.1",
+        "2.2.5.2",
+        "2.2.7.1",
+        "2.2.7.2"
+      ],
+      "figures": [
+        "2-4",
+        "2-5",
+        "2-6",
+        "2-7",
+        "2-26",
+        "2-31",
+        "2-40"
+      ],
+      "tables": [
+        "2-2",
+        "2-3",
+        "2-4",
+        "2-5",
+        "2-6",
+        "2-10"
+      ],
+      "document_pages": [
+        119,
+        120,
+        121,
+        122,
+        125,
+        130,
+        131,
+        132,
+        149,
+        150,
+        151,
+        152,
+        162,
+        163,
+        168,
+        169
+      ],
+      "pdf_pages": [
+        119,
+        120,
+        121,
+        122,
+        125,
+        130,
+        131,
+        132,
+        149,
+        150,
+        151,
+        152,
+        162,
+        163,
+        168,
+        169
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-28",
+      "assumptions": [
+        "Two independent mode-identified traces, logical TLP boundary and Flit reassembly known",
+        "Configured Requester03:00.0, usable permitted host-memory target0x80001000",
+        "No Prefix/Trailer/Digest/IDE/TPH; TC/Attr/AT/EP and other unused fields0",
+        "PV0 in OHC-A1, no valid PASID; only OHC-A1 included",
+        "Length2DW, FirstBE12, LastBE3, eight payload bytes; no4KB crossing",
+        "Header bytes shown in specification byte order, not CPU DWORD readback"
+      ]
     }
   ]
 }

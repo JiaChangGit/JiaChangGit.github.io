@@ -424,8 +424,9 @@
         "PCIE-BASE-6.0"
       ],
       "publication_date": "2026-10-24",
-      "revision_date": "2026-10-24",
-      "teaching_revision": 2
+      "revision_date": "2026-10-28",
+      "teaching_revision": 3,
+      "description": "用同一筆部分寫入需求比較 Non-Flit／Flit 完整 TLP，串連格式、OHC、資料起點與有效 bytes。"
     },
     {
       "number": 15,

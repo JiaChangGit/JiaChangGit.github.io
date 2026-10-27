@@ -24,6 +24,23 @@ def result_tokens(model, x):
             raise ValueError('One-DW requests require zero Last DW BE')
         offsets=[i for i in range(length*4) if ((x['first_be'] if i<4 else x['last_be'] if i>=(length-1)*4 else 15)>>(i%4))&1]
         return ['+'+str(i) for i in offsets]
+    if model=='partial_write_layout':
+        # A deliberately limited teaching model: Mem32 write, no prefixes or
+        # trailers, OHC-A1 only in FM. It does not validate a live PCIe path.
+        length=x['length_dw']; address=x['address']; rid=x['requester_id']
+        first=x['first_be']; last=x['last_be']; payload=bytes(x['payload'])
+        if (not 2<=length<=1024 or len(payload)!=length*4
+                or not 0<first<16 or not 0<last<16
+                or not 0<=rid<=0xffff or not 0<=address<=0xffffffff
+                or address%4 or (address&0xfff)+len(payload)>4096):
+            raise ValueError('Invalid partial-write layout input')
+        encoded_length=length&0x3ff
+        nfm_words=[(2<<29)|encoded_length,(rid<<16)|(last<<4)|first,address]
+        nfm=b''.join(word.to_bytes(4,'big') for word in nfm_words)+payload
+        fm=bytes([0x40,1,encoded_length>>8,encoded_length&0xff])
+        fm+=bytes([rid>>8,rid&0xff,0,0])+address.to_bytes(4,'big')
+        fm+=bytes([0,0,0,(last<<4)|first])+payload
+        return [' '.join(f'{value:02X}' for value in packet) for packet in (nfm,fm)]+[f'{len(nfm)} bytes',f'{len(fm)} bytes']
     if model=='lane':
         if x['lane']<0:raise ValueError('Negative Lane number')
         control=x['control_base']+x['lane']*x['stride']

@@ -4,6 +4,7 @@
   "note": "These values are teaching assumptions. Validation recomputes the models and reconciles results with the visible text in all three editions; it does not verify device behavior.",
   "cases": [
     {"chapter":14,"section":"bytes","model":"byte_enable","inputs":{"length_dw":2,"first_be":12,"last_be":3}},
+    {"chapter":14,"section":"packet-layout","model":"partial_write_layout","inputs":{"length_dw":2,"address":2147487744,"requester_id":768,"first_be":12,"last_be":3,"payload":[160,161,162,163,176,177,178,179]}},
     {"chapter":22,"section":"walk","model":"lane","inputs":{"lane":3,"control_base":8,"stride":4,"status_delta":2}},
     {"chapter":24,"section":"ltr","model":"ltr","inputs":{"value":10,"scale":2,"requirement":1}},
     {"chapter":26,"section":"rid","model":"vf_rid","inputs":{"pf":768,"first":16,"stride":2,"count":3}},

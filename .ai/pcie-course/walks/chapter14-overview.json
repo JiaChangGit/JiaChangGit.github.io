@@ -42,11 +42,12 @@
         "body"
       ],
       "html": "<p>依已辨識的封包種類，定位位址或目的識別碼，再讀 Length 與 Byte Enables（有效 byte 選擇）。不能把讀取要求的長度解釋成要求本身帶有同樣大小的資料。</p>",
-      "condition_html": "<p>Byte Enables 的細節依模式、種類及條件而異；後面的算例限定普通非 Flit Memory Write。</p>",
-      "source_html": "<p>Base 6.0 §2.2.5.1／Figure 2-26，pp.149–150；§2.2.9，p.195。</p>",
+      "condition_html": "<p>Byte Enables 的細節依模式、種類及條件而異；後面的案例會比較普通 Memory Write 在兩種模式下的布局。</p>",
+      "source_html": "<p>Base 6.0 §2.2.5.1–§2.2.5.2／Figure 2-26、Table 2-10，pp.149–152；§2.2.9，p.195。完整封包案例見下方兩種模式的帶讀。</p>",
       "claim_ids": [
         "PCIE-CH14-003",
-        "PCIE-CH14-004"
+        "PCIE-CH14-004",
+        "PCIE-CH14-PARTIAL-WRITE-001"
       ]
     }
   ]
