@@ -2,58 +2,88 @@
   "schema_version": 1,
   "course": "pcie-course",
   "chapter": 15,
-  "updated": "2026-10-24",
+  "updated": "2026-10-28",
   "claims": [
     {
       "id": "PCIE-CH15-001",
-      "claim": "接收交易層的入口在鏈結完整性檢查後，Malformed須丟棄並依種類處理。",
+      "claim": "收到TLP後依格式與種類處理；接收端忽略Reserved欄位值，已判定Malformed則丟棄；Figure2-81在p.206，Request分支接Figure2-83在p.213。",
       "kind": "specification",
       "source_id": "PCIE-BASE-6.0",
       "revision": "6.0",
       "sections": [
-        "2.3"
+        "2.3",
+        "2.3.1"
       ],
       "document_pages": [
         204,
-        205
+        205,
+        206,
+        208,
+        209,
+        210,
+        211,
+        212,
+        213
       ],
       "pdf_pages": [
         204,
-        205
+        205,
+        206,
+        208,
+        209,
+        210,
+        211,
+        212,
+        213
       ],
-      "figures": [],
+      "figures": [
+        "2-81",
+        "2-83"
+      ],
       "tables": [],
       "status": "verified",
-      "verified_on": "2026-10-24"
+      "verified_on": "2026-10-28"
     },
     {
       "id": "PCIE-CH15-002",
-      "claim": "AtomicOp種類、大小、端到端能力及後續等待規則。",
+      "claim": "AtomicOp的發起、路由、完成端支援分開查詢；Requester Enable和BME均須為1，Enable可寫不代表發起能力；Root Port主記憶體原子性有對CPU及裝置存取的明確要求。",
       "kind": "specification",
       "source_id": "PCIE-BASE-6.0",
       "revision": "6.0",
       "sections": [
         "6.15",
-        "6.15.2"
+        "6.15.2",
+        "6.15.3.1",
+        "7.5.3.15",
+        "7.5.3.16"
       ],
       "document_pages": [
         772,
         773,
-        774
+        774,
+        775,
+        990,
+        996
       ],
       "pdf_pages": [
         772,
         773,
-        774
+        774,
+        775,
+        990,
+        996
       ],
       "figures": [],
-      "tables": [],
+      "tables": [
+        "7-33",
+        "7-34"
+      ],
       "status": "verified",
-      "verified_on": "2026-10-24"
+      "verified_on": "2026-10-28"
     },
     {
       "id": "PCIE-CH15-003",
-      "claim": "DMWr原子操作、重試狀態與目標保持規則。",
+      "claim": "DMWr暫時條件可回RRS並保持目標不變，不視為錯誤；Requester可但不必重送，新的要求可相同或修改；須先啟用DMWr Requester Enable。",
       "kind": "specification",
       "source_id": "PCIE-BASE-6.0",
       "revision": "6.0",
@@ -62,16 +92,20 @@
       ],
       "document_pages": [
         857,
-        858
+        858,
+        859,
+        860
       ],
       "pdf_pages": [
         857,
-        858
+        858,
+        859,
+        860
       ],
       "figures": [],
       "tables": [],
       "status": "verified",
-      "verified_on": "2026-10-24"
+      "verified_on": "2026-10-28"
     },
     {
       "id": "PCIE-CH15-004",
@@ -83,15 +117,17 @@
         "2.8"
       ],
       "document_pages": [
-        259
+        259,
+        260
       ],
       "pdf_pages": [
-        259
+        259,
+        260
       ],
       "figures": [],
       "tables": [],
       "status": "verified",
-      "verified_on": "2026-10-24"
+      "verified_on": "2026-10-28"
     },
     {
       "id": "PCIE-CH15-005",
@@ -111,7 +147,46 @@
       "figures": [],
       "tables": [],
       "status": "verified",
-      "verified_on": "2026-10-24"
+      "verified_on": "2026-10-28"
+    },
+    {
+      "id": "PCIE-CH15-CAS-001",
+      "claim": "32-bit CAS Request帶compare和swap兩個32bit值，Length2DW，但存取與回傳各為4bytes；比較不相等仍正常回傳原值。Non-Flit AtomicOp Completion ByteCount為運算值bytes，LowerAddress Reserved；Request TH0時BE Reserved。自然對齊及4KB界限按單一目標運算值大小，非兩個值的負載總長。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.7.1",
+        "2.2.9.1",
+        "6.15"
+      ],
+      "document_pages": [
+        162,
+        163,
+        196,
+        197,
+        198,
+        772,
+        773
+      ],
+      "pdf_pages": [
+        162,
+        163,
+        196,
+        197,
+        198,
+        772,
+        773
+      ],
+      "figures": [
+        "2-73"
+      ],
+      "tables": [
+        "2-15",
+        "2-37"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-28"
     }
   ]
 }

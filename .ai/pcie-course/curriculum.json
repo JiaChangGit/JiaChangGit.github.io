@@ -450,8 +450,9 @@
         "PCIE-BASE-6.0"
       ],
       "publication_date": "2026-10-24",
-      "revision_date": "2026-10-24",
-      "teaching_revision": 2
+      "revision_date": "2026-10-28",
+      "teaching_revision": 3,
+      "description": "沿接收處理圖定位格式與支援檢查，以32-bit CAS帶讀能力、兩個運算值、目標範圍和成功回覆，再比較DMWr重試與逾時後的未確認結果。"
     },
     {
       "number": 16,

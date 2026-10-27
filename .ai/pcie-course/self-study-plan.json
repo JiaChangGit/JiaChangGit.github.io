@@ -746,5 +746,18 @@
       "ENC-009"
     ],
     "remaining": "完整Prefix／OHC類型、全部TLP格式、Reserved編碼與Flit重組仍須逐項深入；本輪不因此標示Transaction Layer或Base6全規格完成。"
+  },
+  "chapter_15_revision": {
+    "status": "locally_verified",
+    "location": "DOCS/pcie-course/chapter-15.html#cas-outcome",
+    "covered": "以兩個獨立CAS情境帶讀比較相等／不相等均回傳原值、SC解讀、Request與Completion長度、自然對齊及4KB邊界；串接來源、Switch出口與目標能力，再比較DMWr暫時RRS、軟體重試與Completion Timeout。",
+    "references": [
+      "REQ-006",
+      "ATOMIC-001",
+      "ATOMIC-003",
+      "ATOMIC-006",
+      "TLP-004"
+    ],
+    "remaining": "全部AtomicOp編碼、錯誤優先序、Flit格式與DMWr能力及所有適用條件仍待深入；不因此標示AtomicOp或Base6全規格完成。"
   }
 }
