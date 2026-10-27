@@ -2,14 +2,14 @@
 layout: post
 title: "PCIe Chapter 4：BAR、位址空間與資源配置"
 date: 2026-10-20 00:00:00 +0800
-last_modified_at: 2026-10-23 00:00:00 +0800
+last_modified_at: 2026-10-28 00:00:00 +0800
 permalink: /pcie/chapter-4-zh-tw/
 categories: [PCIe]
 tags: [PCIe, Specification]
 lang: zh-TW
 spec_teaching: true
 spec_series: pcie
-description: "由 32-bit 與 64-bit BAR 讀回值計算大小和對齊，配置三層 Bridge Window，並分清 MSE 與 BME。"
+description: "從 BAR 格式、大小與對齊配置資源，串連 Bridge Window 和解碼控制，追查設定空間可讀但 Memory Read 失敗的情境。"
 ---
 
 <style>
@@ -378,6 +378,7 @@ html[data-theme="dark"] .pcie-article { color-scheme: dark; }
 <div class="pcie-article spec-teaching" data-spec-series="pcie" lang="zh-Hant-TW">
 <nav class="bottom-nav" aria-label="課程與語言版本"><a href="/DOCS/pcie-course/index.html">課程總覽</a><a href="/DOCS/pcie-course/chapter-4.html">繁中完整教學</a><a href="/pcie/chapter-4-en/">English</a></nav>
 <article class="lesson">
+<p><strong>【模擬資料】</strong>本章位址、設定與裝置 Register 為教學用途建立，不代表特定硬體或平台。</p>
 <section id="chapter-overview"><h2>先看本章的角色與路徑</h2><figure class="diagram"><svg viewBox="0 0 900 450" role="img" aria-labelledby="ch4-guide-title ch4-guide-desc"><title id="ch4-guide-title">巢狀範圍表示沿途視窗涵蓋同一裝置資源，不代表各層另配置一份裝置記憶體。</title><desc id="ch4-guide-desc">巢狀範圍表示沿途視窗涵蓋同一裝置資源，不代表各層另配置一份裝置記憶體。</desc><g data-walk-target="cpu"><rect x="300" y="10" width="300" height="60" rx="9" fill="var(--surface-alt)" stroke="var(--line)"/><text x="450.0" y="35" text-anchor="middle" font-size="15">CPU 存取裝置資源</text></g><g data-walk-target="request"><path d="M450 70 L450 115" fill="none" stroke="var(--accent)" stroke-width="2"/><polygon points="450.0,115.0 455.0,105.0 445.0,105.0" fill="var(--accent)"/><text x="450.0" y="83.5" text-anchor="middle" font-size="13">依平台位址轉譯</text></g><g data-walk-target="root-window"><rect x="40" y="115" width="820" height="305" rx="9" fill="var(--surface-alt)" stroke="var(--line)"/><text x="450.0" y="140" text-anchor="middle" font-size="15">Root Port Window：涵蓋下游配置</text></g><g data-walk-target="switch-window"><rect x="135" y="190" width="630" height="205" rx="9" fill="var(--surface-alt)" stroke="var(--line)"/><text x="450.0" y="215" text-anchor="middle" font-size="15">Switch 路徑各層 Window：涵蓋同一目標</text></g><g data-walk-target="bar"><rect x="250" y="270" width="400" height="95" rx="9" fill="var(--surface-alt)" stroke="var(--line)"/><text x="450.0" y="295" text-anchor="middle" font-size="15">Endpoint Memory BAR</text><text x="450.0" y="318" text-anchor="middle" font-size="15">已配置的基底、大小與對齊</text></g></svg><figcaption><p>作者的位址涵蓋示意。CPU 位址與 BAR 中的位址是否相同，需依平台的位址轉譯判定。</p></figcaption></figure><dl class="st-terms" aria-label="本段名詞"><div><dt>BAR</dt><dd>Base Address Register，基底位址暫存器</dd></div></dl><p class="lead">BAR（Base Address Register，基底位址暫存器）提供裝置資源的型別與配置入口。軟體先取得需求，再分配對齊的位址，讓沿途 Bridge Window 涵蓋它，最後開啟適用的解碼。</p><p>前情提要：Chapter 3 已找到這個 Function。現在處理它的資源，尚未開始驅動程式的工作流程。</p><p><strong>規格路線：</strong>Figures 7-10–7-12／Table 7-9 → Figure 7-14 與 Bridge Window 條文 → Figure 7-5／Table 7-4 的 Command 控制。</p></section>
 <p class="lead">找到 Function 後，還要建立資源位址與沿途轉送範圍。BAR 描述 Endpoint 自己需要的空間；Bridge Window 決定要求能否走到下游；Command 的控制位則決定目前允許哪些存取。這三件事必須一起成立。</p>
 <p><a href="/DOCS/pcie-course/chapter-4.html">完整中文教學</a> · <a href="/DOCS/pcie-course/index.html">課程路線</a> · <a href="/pcie/chapter-4-en/">English</a></p>
@@ -408,6 +409,15 @@ size = ((~mask) &amp; 0xFFFFFFFFFFFFFFFF) + 1 = 0x200000</code></pre>
 <p>在資源、窗口、平台映射與裝置介面均已就緒的前提下，本例 Endpoint 與三個 Bridge 的 Command=0x0002，允許 CPU 讀取已配置的 MMIO，但 Endpoint 尚不能發起 DMA Memory Request；讀取回覆的 Completion 不被 BME 阻擋。BME=0 也禁止 MSI／MSI-X，因為它們是帶內 Memory Write。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>MMIO</dt><dd>Memory-Mapped I/O，記憶體映射輸入輸出</dd></div><div><dt>DMA</dt><dd>Direct Memory Access，裝置直接存取記憶體</dd></div><div><dt>MSI</dt><dd>Message Signaled Interrupt，訊息中斷</dd></div><div><dt>MSI-X</dt><dd>Message Signaled Interrupts Extension，表格式訊息中斷</dd></div></dl>
 <p>把 Endpoint 改為 0x0006，只增加發起相關要求的許可，仍要準備緩衝區、裝置工作、平台轉譯與上游 Port 的 BME。修改 Command 時也不能任意連同 0x06 的 Status 一起原樣回寫，因為 Status 含 RW1C 位元。</p>
 <details class="source-note"><summary>控制位來源</summary><p>Base 6.0 §7.5.1.1.3，Figure 7-5／Table 7-4，pp.917–920；BME、Completion 與 MSI 說明在 p.919。Command／Status 布局：Figure 7-4，p.916；Status RW1C：Table 7-5，pp.922–923。</p></details></section>
+<section id="read-path"><h2>設定空間可讀，為什麼 Memory Read 還會失敗？</h2>
+<p>設定存取用 BDF 與 Register offset 選擇 Function 和欄位；Memory Read 則使用記憶體位址選擇目標。沿用本章案例，先把 <code>0x80004120</code> 放回 BAR0 與每一層 Window，再檢查接收方向上的 Memory Space Enable（MSE，記憶體空間解碼控制）。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>BDF</dt><dd>Bus／Device／Function，匯流排、裝置與功能識別</dd></div></dl>
+<aside class="example"><strong>【模擬資料】中間 Port 的解碼尚未啟用</strong><p>假設 03:00.0 的設定空間可讀，BAR0 及三個 Bridge Window 都如前節配置；Root Port、Switch Upstream Port 與 Endpoint 的 MSE 均為 1，Downstream A 的 MSE 為 0。CPU 使用本章假設的相同映射，對有效的 BAR0 + 0x120 發出 4-byte Memory Read；假設該 Request 合法，並已到達 Downstream A 的 Primary Side（橋接器面向上游的一側）。</p>
+<p>螢幕較窄時，可左右滑動表格查看完整內容。</p><div class="table-wrap"><table style="min-width: 640px"><caption>同一個目標，兩種存取的判讀</caption><thead><tr><th scope="col">觀察</th><th scope="col">這一步的意義</th><th scope="col">下一步</th></tr></thead><tbody><tr><td>Configuration Read 可讀 03:00.0</td><td>已取得該 Function 的設定資料；這次讀取使用設定路徑。</td><td>從 Type 0 Header 找 BAR0，再沿 Type 1 Header 找各層 Window 與 Command。</td></tr><tr><td>Memory Read 的 PCI 位址是 0x80004120</td><td>位址落在 BAR0 的 0x80004000–0x80007FFF，也落在假設配置的各個 Memory Window 中。</td><td>範圍符合後，還要看接收端和各 Bridge 的 MSE。</td></tr><tr><td>Downstream A 的 MSE=0</td><td>本例的 Memory Read 已到達其 Primary Side。依 Table 7-4，該存取按 Unsupported Request（UR，不支援的要求）處理。</td><td>此 Port 以 UR 處理該讀取，不再將它轉送至 Endpoint。Memory Read 需要 Completion，依規則產生 UR Completion；還要確認回程是否成功送達。</td></tr></tbody></table></div>
+<p>假設其他條件不變，再將 Downstream A 的 MSE 設為 1，只是讓它得以進行位址解碼與後續處理。還要觀察 Request 是否到達 Endpoint、Completion 是否返回，以及裝置介面是否已準備好，才能判斷整筆讀取的結果。CPU 最終如何看到錯誤，取決於平台的呈現方式；PCIe Completion Status 與 CPU 讀值不能直接畫上等號。</p></aside>
+<p>查閱時先由 Figure 7-10／Figure 7-14 定位 BAR 與 Bridge 欄位，使用 §7.5.1.3.8 解碼 Memory Base／Limit，接著讀 Figure 7-5／Table 7-4 的 MSE，注意 Type 1 Header 的 Primary Side 條件。最後用 §2.3.1 的 Request Handling 規則確認需要 Completion 的 UR 如何回覆。（Base 6.0，文件頁／PDF 頁 208、916–918、928、936、940。）</p>
+<h3>只要位址落在 BAR 內，每個 byte 都可以讀嗎？</h3>
+<p>BAR 的大小定義資源位址範圍；實際有哪些可用的裝置 Register，要查裝置介面文件。本例只假設 <code>+0x120</code> 是可讀 Register，並未定義 <code>+0x3000</code> 的用途，雖然它也在 BAR0 範圍內。Base 6.0 §7.5.1.2.1（p.930）允許 Function 對程式模型從不存取的未使用位置回 UR。要判定某次存取的結果，還需要該裝置介面及實際交易證據。</p></section>
+
 <section id="checks"><h2>配置與交接的結論要分清</h2>
 <p>Firmware 3.3 §3.5（pp.34–35）以 I/O／Memory Enable 及 ROM Enable 判斷相應資源配置，不使用 BME 判定 BAR 是否有效。已啟用的資源必須由韌體正確配置，但驅動仍須依裝置介面準備工作。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>ROM</dt><dd>Read-Only Memory，唯讀記憶體</dd></div></dl>
 <details class="question"><summary>16 KiB BAR 改放 0x80005000，可以嗎？</summary><p>不行。低 14 bits 不是全 0，未達自然對齊；本例正確的基底 0x80004000 才符合。（§7.5.1.2.1，p.930。）</p></details>

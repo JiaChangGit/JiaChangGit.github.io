@@ -128,10 +128,10 @@
         "PCI-FW-3.3"
       ],
       "title_en": "BARs, Address Spaces, and Resource Allocation",
-      "description": "由 32-bit 與 64-bit BAR 讀回值計算大小和對齊，配置三層 Bridge Window，並分清 MSE 與 BME。",
+      "description": "從 BAR 格式、大小與對齊配置資源，串連 Bridge Window 和解碼控制，追查設定空間可讀但 Memory Read 失敗的情境。",
       "publication_date": "2026-10-20",
-      "teaching_revision": 2,
-      "revision_date": "2026-10-23"
+      "teaching_revision": 3,
+      "revision_date": "2026-10-28"
     },
     {
       "number": 5,

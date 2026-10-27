@@ -7,7 +7,7 @@
   <link rel="icon" href="data:,">
   <meta name="theme-color" content="#f2f6f8" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101b26" media="(prefers-color-scheme: dark)">
-  <meta name="description" content="由 32-bit 與 64-bit BAR 讀回值計算大小和對齊，配置三層 Bridge Window，並分清 MSE 與 BME。">
+  <meta name="description" content="從 BAR 格式、大小與對齊配置資源，串連 Bridge Window 和解碼控制，追查設定空間可讀但 Memory Read 失敗的情境。">
   <title>BAR、位址空間與資源配置 · PCIe 系統與規格閱讀</title>
   <style>
 /* Every selector is scoped so the same reading styles can be embedded in Jekyll. */
@@ -379,16 +379,17 @@ html[data-theme="dark"] .spec-teaching[data-spec-series="nvme"] { --st-accent:#7
     <header class="page-header">
       <p class="eyebrow">PCIe · 系統與規格閱讀 / CHAPTER 4</p>
       <h1>BAR、位址空間與資源配置</h1>
-      <p class="header-description">由 32-bit 與 64-bit BAR 讀回值計算大小和對齊，配置三層 Bridge Window，並分清 MSE 與 BME。</p>
-      <div class="edition"><span>繁體中文 · 規格與情境推演</span><span>2026-10-23</span></div>
+      <p class="header-description">從 BAR 格式、大小與對齊配置資源，串連 Bridge Window 和解碼控制，追查設定空間可讀但 Memory Read 失敗的情境。</p>
+      <div class="edition"><span>繁體中文 · 規格與情境推演</span><span>2026-10-28</span></div>
     </header>
     <div class="reading-layout">
       <aside class="toc-panel" aria-label="本頁目錄">
         <p class="toc-label">本章閱讀路徑</p>
-        <nav aria-label="章節段落"><ol><li><a href="#roles">1. BAR 是一個資料緩衝區，還是一份資源描述？</a></li><li><a href="#format">2. 先讀哪幾個 bits，才知道後面怎麼算？</a></li><li><a href="#sizing">3. 寫全 1 再讀回，為什麼能知道大小？</a></li><li><a href="#allocate">4. 知道大小後，可以挑任意空位填進去嗎？</a></li><li><a href="#windows">5. Endpoint 的 BAR 已經填好，為什麼還可能收不到？</a></li><li><a href="#enable">6. MSE 與 BME，哪一個才是「啟用裝置」？</a></li><li><a href="#handoff">7. OS 怎麼知道韌體交給它的 BAR 有效？</a></li><li><a href="#practice">8. 把型別、對齊與視窗接起來</a></li><li><a href="#next">9. 接下來追蹤一筆真正的交易</a></li><li><a href="#sources">版本與來源</a></li></ol></nav>
+        <nav aria-label="章節段落"><ol><li><a href="#roles">1. BAR 是一個資料緩衝區，還是一份資源描述？</a></li><li><a href="#format">2. 先讀哪幾個 bits，才知道後面怎麼算？</a></li><li><a href="#sizing">3. 寫全 1 再讀回，為什麼能知道大小？</a></li><li><a href="#allocate">4. 知道大小後，可以挑任意空位填進去嗎？</a></li><li><a href="#windows">5. Endpoint 的 BAR 已經填好，為什麼還可能收不到？</a></li><li><a href="#enable">6. MSE 與 BME，哪一個才是「啟用裝置」？</a></li><li><a href="#read-path">設定空間可讀，為什麼 Memory Read 還會失敗？</a></li><li><a href="#handoff">7. OS 怎麼知道韌體交給它的 BAR 有效？</a></li><li><a href="#practice">8. 把型別、對齊與視窗接起來</a></li><li><a href="#next">9. 接下來追蹤一筆真正的交易</a></li><li><a href="#sources">版本與來源</a></li></ol></nav>
       </aside>
       <main id="content" tabindex="-1">
         <article class="lesson">
+<aside class="note"><strong>【模擬資料】</strong><p>本章位址、設定與裝置 Register 為教學用途建立，不代表特定硬體或平台。</p></aside>
 <!-- pcie-walk: walks/chapter4-overview.json -->
 <div class="guided-walk" id="ch4-overview" role="group" aria-labelledby="ch4-overview-title" data-walk-version="1">
 <h3 id="ch4-overview-title">把一段裝置資源接到 CPU 的存取路徑</h3>
@@ -495,6 +496,15 @@ Prefetchable Limit = (1 &lt;&lt; 32) | ((0x2011 &amp; 0xFFF0) &lt;&lt; 16) | 0xF
 <p>修改 Command 時應使用對應欄位寬度並保存其他控制；相鄰的 Status 在 0x06，含有 RW1C 位元。不要把 Command 與 Status 一起讀成 32 bits，再原樣回寫整個 DWORD，以免意外清除狀態。RW1C 的語義見 <a href="chapter-2.html#attributes">Chapter 2</a>。</p>
 <details class="source-note"><summary>啟用條件的依據</summary><p>Base 6.0 §7.5.1.1.3，Figure 7-5／Table 7-4，pp.917–920，尤其 MSE p.918、BME 與 MSI／MSI-X／Completion p.919。Command 與 Status 的相鄰布局見 Figure 7-4，p.916；Status 的 RW1C 範例見 Table 7-5，pp.922–923。配置 BAR 前後的解碼處理見 p.930。</p></details></section>
 
+<section id="read-path"><h2>設定空間可讀，為什麼 Memory Read 還會失敗？</h2>
+<p>設定存取用 BDF 與 Register offset 選擇 Function 和欄位；Memory Read 則使用記憶體位址選擇目標。沿用本章案例，先把 <code>0x80004120</code> 放回 BAR0 與每一層 Window，再檢查接收方向上的 Memory Space Enable（MSE，記憶體空間解碼控制）。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>BDF</dt><dd>Bus／Device／Function，匯流排、裝置與功能識別</dd></div></dl>
+<aside class="example"><strong>【模擬資料】中間 Port 的解碼尚未啟用</strong><p>假設 03:00.0 的設定空間可讀，BAR0 及三個 Bridge Window 都如前節配置；Root Port、Switch Upstream Port 與 Endpoint 的 MSE 均為 1，Downstream A 的 MSE 為 0。CPU 使用本章假設的相同映射，對有效的 BAR0 + 0x120 發出 4-byte Memory Read；假設該 Request 合法，並已到達 Downstream A 的 Primary Side（橋接器面向上游的一側）。</p>
+<p>螢幕較窄時，可左右滑動表格查看完整內容。</p><div class="table-wrap"><table style="min-width: 640px"><caption>同一個目標，兩種存取的判讀</caption><thead><tr><th scope="col">觀察</th><th scope="col">這一步的意義</th><th scope="col">下一步</th></tr></thead><tbody><tr><td>Configuration Read 可讀 03:00.0</td><td>已取得該 Function 的設定資料；這次讀取使用設定路徑。</td><td>從 Type 0 Header 找 BAR0，再沿 Type 1 Header 找各層 Window 與 Command。</td></tr><tr><td>Memory Read 的 PCI 位址是 0x80004120</td><td>位址落在 BAR0 的 0x80004000–0x80007FFF，也落在假設配置的各個 Memory Window 中。</td><td>範圍符合後，還要看接收端和各 Bridge 的 MSE。</td></tr><tr><td>Downstream A 的 MSE=0</td><td>本例的 Memory Read 已到達其 Primary Side。依 Table 7-4，該存取按 Unsupported Request（UR，不支援的要求）處理。</td><td>此 Port 以 UR 處理該讀取，不再將它轉送至 Endpoint。Memory Read 需要 Completion，依規則產生 UR Completion；還要確認回程是否成功送達。</td></tr></tbody></table></div>
+<p>假設其他條件不變，再將 Downstream A 的 MSE 設為 1，只是讓它得以進行位址解碼與後續處理。還要觀察 Request 是否到達 Endpoint、Completion 是否返回，以及裝置介面是否已準備好，才能判斷整筆讀取的結果。CPU 最終如何看到錯誤，取決於平台的呈現方式；PCIe Completion Status 與 CPU 讀值不能直接畫上等號。</p></aside>
+<p>查閱時先由 Figure 7-10／Figure 7-14 定位 BAR 與 Bridge 欄位，使用 §7.5.1.3.8 解碼 Memory Base／Limit，接著讀 Figure 7-5／Table 7-4 的 MSE，注意 Type 1 Header 的 Primary Side 條件。最後用 §2.3.1 的 Request Handling 規則確認需要 Completion 的 UR 如何回覆。（Base 6.0，文件頁／PDF 頁 208、916–918、928、936、940。）</p>
+<h3>只要位址落在 BAR 內，每個 byte 都可以讀嗎？</h3>
+<p>BAR 的大小定義資源位址範圍；實際有哪些可用的裝置 Register，要查裝置介面文件。本例只假設 <code>+0x120</code> 是可讀 Register，並未定義 <code>+0x3000</code> 的用途，雖然它也在 BAR0 範圍內。Base 6.0 §7.5.1.2.1（p.930）允許 Function 對程式模型從不存取的未使用位置回 UR。要判定某次存取的結果，還需要該裝置介面及實際交易證據。</p></section>
+
 <section id="handoff"><h2>7. OS 怎麼知道韌體交給它的 BAR 有效？</h2>
 <p>Firmware 3.3 §3.5 說明，OS 以 Command 的 I/O／Memory Enable，以及 Expansion ROM 的 Enable，判斷相應資源是否已由韌體配置；<strong>不使用 BME 判定 BAR 是否有效</strong>。所以交接時看到 MSE=1、BME=0，不代表 BAR 無效；資源既然已啟用，韌體就必須正確配置。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>ROM</dt><dd>Read-Only Memory，唯讀記憶體</dd></div></dl>
 <p>這項交接契約也不表示只要讀到 MSE=1，就能忽略平台映射或任意操作裝置。本章的配置表解決了位址與轉送問題；驅動程式仍要依裝置介面規格初始化工作流程。</p>
@@ -506,8 +516,8 @@ Prefetchable Limit = (1 &lt;&lt; 32) | ((0x2011 &amp; 0xFFF0) &lt;&lt; 16) | 0xF
 <details open class="question"><summary>三個 Bridge 的 Memory Window 都正確，Endpoint 的 MSE 卻為 0，CPU 讀 BAR0 還會成功嗎？</summary><p>不能據此期待成功。Endpoint 的 MSE=0 時，收到的 Memory Space 存取依 UR 處理；沿途可轉送不等於終點已啟用。（Table 7-4，p.918。）</p></details>
 <details open class="question"><summary>Command 從 0x0002 改成 0x0006，就證明 DMA 緩衝區位址正確了嗎？</summary><p>沒有。兩者差在 BME；它不驗證裝置工作描述項、緩衝區生命週期或平台轉譯。還要建立並核對那些資料，才能讓裝置開始工作。</p></details></section>
 
-<section id="next"><h2>9. 接下來追蹤一筆真正的交易</h2><p>到這裡，系統已能選定 Function、找到能力、建立 Bus 路徑並配置資源。<a href="chapter-5.html">Chapter 5</a> 接著追蹤 CPU 的一次讀取如何形成 Request，以及 Completion 如何回到要求者。Chapter 14–19 目前仍在規劃中；完整安排見 <a href="index.html">課程閱讀路線</a>。</p></section>
-<section id="sources"><h2>版本與來源</h2><p>PCI Express Base Specification Revision 6.0 與 PCI Firmware Specification Revision 3.3。所有來源位置就近標示；大小、位址、裝置內 Register 與平台映射均為教學假設。Firmware 3.3 並非 Base 6.0 的同版配套，兩者分別用於欄位規則與交接背景。查核日期：2026-10-20。</p></section>
+<section id="next"><h2>9. 接下來追蹤一筆真正的交易</h2><p>到這裡，系統已能選定 Function、找到能力、建立 Bus 路徑並配置資源。<a href="chapter-5.html">Chapter 5</a> 接著追蹤 CPU 的一次讀取如何形成 Request，以及 Completion 如何回到要求者。完整安排見 <a href="index.html">課程閱讀路線</a>。</p></section>
+<section id="sources"><h2>版本與來源</h2><p>PCI Express Base Specification Revision 6.0 與 PCI Firmware Specification Revision 3.3。所有來源位置就近標示；大小、位址、裝置內 Register 與平台映射均為教學假設。Firmware 3.3 並非 Base 6.0 的同版配套，兩者分別用於欄位規則與交接背景。查核日期：2026-10-28。</p></section>
         </article>
         <nav class="bottom-nav" aria-label="下一步"><a href="index.html">課程總覽</a><a href="chapter-3.html">← Chapter 3</a><a href="chapter-5.html">Chapter 5 →</a><a href="#content">回到本章開頭 ↑</a></nav>
       </main>

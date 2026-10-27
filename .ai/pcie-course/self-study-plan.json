@@ -609,5 +609,17 @@
       "ROUTE-010"
     ],
     "remaining": "其他 Routing、Reset 與資源配置細節留在對應章節，不因局部帶讀標示整個分類完成。"
+  },
+  "chapter_4_revision": {
+    "status": "locally_verified",
+    "location": "DOCS/pcie-course/chapter-4.html",
+    "covered": "沿已配置 BAR 與各層 Memory Window，示範中間 Bridge MSE 對 Memory Read 的影響與裝置介面範圍。",
+    "references": [
+      "CFG-003",
+      "CFG-008",
+      "ROUTE-002",
+      "ROUTE-008"
+    ],
+    "remaining": "跨 Switch 的一般路由、Peer-to-Peer 與 Completion 細節留在相應主題，尚未完成完整分類。"
   }
 }

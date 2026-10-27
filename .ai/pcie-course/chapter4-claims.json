@@ -2,7 +2,7 @@
   "schema_version": 1,
   "course": "pcie-course",
   "chapter": 4,
-  "updated": "2026-10-20",
+  "updated": "2026-10-28",
   "page_index_base": 1,
   "claims": [
     {
@@ -410,6 +410,27 @@
           "result": "0x1000"
         }
       ]
+    },
+    {
+      "id": "PCIE-CH4-UNUSED-RANGE-001",
+      "claim": "BAR 位址範圍可能大於實際使用範圍；Function 對程式模型從不存取的未使用位置可回 Unsupported Request。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.1.2.1"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        930
+      ],
+      "pdf_pages": [
+        930
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-28",
+      "notes": "不能將所有 BAR 內位址等同有效裝置 Register。"
     }
   ]
 }
