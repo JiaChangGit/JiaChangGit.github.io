@@ -2,7 +2,7 @@
   "schema_version": 1,
   "course": "pcie-course",
   "chapter": 11,
-  "updated": "2026-10-21",
+  "updated": "2026-10-28",
   "page_index_base": 1,
   "claims": [
     {
@@ -310,6 +310,74 @@
         "0x800FFFFF"
       ],
       "bar_size": "0x100000"
+    },
+    {
+      "id": "PCIE-CH11-BUTTON-REMOVAL-001",
+      "claim": "Attention Button 接受後由指示燈開始閃爍起算五秒取消窗口；先保存清除按鈕事件以接收同類後續事件。正常移除案例串連裝置停止、關電後至少一秒等待、命令完成與指示燈 Off；獨立 Presence 可在關主電源後仍為 1。",
+      "kind": "teaching_example",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.7.1.1.2",
+        "6.7.1.5",
+        "6.7.1.8",
+        "6.7.3.1",
+        "6.7.3.2",
+        "7.5.3.10",
+        "7.5.3.11"
+      ],
+      "figures": [
+        "7-31",
+        "7-32"
+      ],
+      "tables": [
+        "6-9",
+        "7-28",
+        "7-29"
+      ],
+      "document_pages": [
+        729,
+        730,
+        731,
+        732,
+        735,
+        736,
+        982,
+        983,
+        984,
+        985,
+        986
+      ],
+      "pdf_pages": [
+        729,
+        730,
+        731,
+        732,
+        735,
+        736,
+        982,
+        983,
+        984,
+        985,
+        986
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-28",
+      "assumptions": [
+        "Continuation after successful insertion; card operating; native software ownership; no fault",
+        "Attention Button, Power Controller, Power Indicator and Command Completed supported",
+        "Attention Button Pressed Enable and master Hot-Plug Interrupt Enable configured; interrupt delivery enabled",
+        "Latch stays closed until physical removal permitted; out-of-band presence available",
+        "No concurrent event during illustrative RW1C write; all preceding commands handled",
+        "Author chooses to quiesce only after abort interval; device-specific completion and data preservation are external"
+      ],
+      "button_acknowledgment": {
+        "offset": "0x8A",
+        "width_bits": 16,
+        "write_value": "0x0001",
+        "read_value": "0x0041",
+        "after_clear": "0x0040"
+      }
     }
   ]
 }

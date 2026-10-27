@@ -696,5 +696,17 @@
       "PM-010"
     ],
     "remaining": "完整 L0s、多 Function ASPM 政策、各種 PM 中斷與喚醒條件仍須逐項深入；本輪不因此標示 Power Management 全分類完成。"
+  },
+  "chapter_11_revision": {
+    "status": "locally_verified",
+    "location": "DOCS/pcie-course/chapter-11.html#button-removal",
+    "covered": "續用插槽案例，以取消分支流程圖帶讀按鈕事件清除、從指示燈閃爍起算的五秒取消窗口、裝置停止與關電至少一秒等待；比較取卡前後 Presence、主電源與 Link。",
+    "references": [
+      "HOTPLUG-001",
+      "HOTPLUG-004",
+      "HOTPLUG-005",
+      "HOTPLUG-008"
+    ],
+    "remaining": "完整 Slot 通知併發、Surprise Removal、跨拓樸定位與裝置資料保存仍須逐項深入；本輪不因此標示 Hot-Plug 全分類完成。"
   }
 }

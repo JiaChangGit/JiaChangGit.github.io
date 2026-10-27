@@ -332,10 +332,10 @@
         "PCI-FW-3.3"
       ],
       "title_en": "Hot-Plug and Topology Changes",
-      "description": "從插槽能力、事件通知與插入時序，判讀熱插拔的資源與移除條件。",
+      "description": "串連插入與正常移除，帶讀按鈕事件、五秒取消窗口、裝置停止、關電等待及指示燈。",
       "publication_date": "2026-10-21",
-      "teaching_revision": 2,
-      "revision_date": "2026-10-23"
+      "teaching_revision": 3,
+      "revision_date": "2026-10-28"
     },
     {
       "number": 12,
