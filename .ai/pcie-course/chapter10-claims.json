@@ -444,6 +444,78 @@
       ],
       "status": "verified",
       "verified_on": "2026-10-21"
+    },
+    {
+      "id": "PCIE-CH10-L1-NEGOTIATION-001",
+      "claim": "Non-Flit ASPM L1 先累積所需 credit、停止排送新 TLP 並等 Link 層確認，再用 PM_Active_State_Request_L1／PM_Request_Ack 協商；接受後有新待送 TLP 時須先完成 L1 再退出，無 credit 也需退出。Completion Timeout 續計，FC Update timers 在 L1 凍結。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "3.2.1",
+        "4.2.7.7",
+        "5.4.1.3",
+        "5.4.1.3.1",
+        "5.4.1.3.2",
+        "7.5.3.6",
+        "7.5.3.7"
+      ],
+      "figures": [
+        "3-2",
+        "4-54",
+        "5-6",
+        "5-7",
+        "7-27",
+        "7-28"
+      ],
+      "tables": [
+        "4-48",
+        "7-23",
+        "7-24"
+      ],
+      "document_pages": [
+        265,
+        266,
+        267,
+        268,
+        453,
+        519,
+        520,
+        626,
+        627,
+        628,
+        629,
+        630,
+        631,
+        632,
+        633,
+        967,
+        968,
+        971
+      ],
+      "pdf_pages": [
+        265,
+        266,
+        267,
+        268,
+        453,
+        519,
+        520,
+        626,
+        627,
+        628,
+        629,
+        630,
+        631,
+        632,
+        633,
+        967,
+        968,
+        971
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-28",
+      "notes": "獨立作者情境：8.0 GT/s、Non-Flit Mode、基本 ASPM L1，不啟用 L1 Substates；兩端與各 D0 Function 的設定及延遲政策已符合條件。自製時序圖簡化重複 DLLP，不取代完整間距、Electrical Idle 與中斷規則。"
     }
   ]
 }

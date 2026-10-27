@@ -300,10 +300,10 @@
         "ACPI-6.6-PM"
       ],
       "title_en": "Device and Link Power Management",
-      "description": "用 PMCSR 讀改寫與 L1.2 雙端設定案例，串起 D-state、ASPM、LTR、恢復與平台喚醒。",
+      "description": "沿 PMCSR、基本 L1 協商時序與 L1.2 雙端設定，串起 Function／Link 省電、待送交易與恢復條件。",
       "publication_date": "2026-10-21",
-      "teaching_revision": 2,
-      "revision_date": "2026-10-23"
+      "teaching_revision": 3,
+      "revision_date": "2026-10-28"
     },
     {
       "number": 11,

@@ -684,5 +684,17 @@
       "ERR-010"
     ],
     "remaining": "完整 Reset 傳播、初始化與裝置恢復仍須在各主題進一步核對；AER 通知與完整快照流程連回 Chapter 12，不因此標示 Reset 或 AER 全分類完成。"
+  },
+  "chapter_10_revision": {
+    "status": "locally_verified",
+    "location": "DOCS/pcie-course/chapter-10.html",
+    "covered": "以自製雙端時序圖帶讀基本 ASPM L1 正常協商，連接 Support／Control、最後 TLP 確認、Electrical Idle 與 L1 退出；分析接受後才出現待送 Memory Write 的處理。",
+    "references": [
+      "PM-002",
+      "PM-004",
+      "PM-009",
+      "PM-010"
+    ],
+    "remaining": "完整 L0s、多 Function ASPM 政策、各種 PM 中斷與喚醒條件仍須逐項深入；本輪不因此標示 Power Management 全分類完成。"
   }
 }
