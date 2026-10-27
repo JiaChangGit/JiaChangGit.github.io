@@ -242,10 +242,10 @@
         "PCIE-BASE-6.0"
       ],
       "title_en": "Link Training and Reliable Delivery",
-      "description": "從雙端速率證據、有限 credit 帳本與 replay，釐清連線訓練、流量控制及 Flit 模式的責任。",
+      "description": "沿雙端速率、Recovery 狀態對照、有限 credit 帳本與 replay，串起實體 Link、資料連結與交易結果。",
       "publication_date": "2026-10-21",
-      "revision_date": "2026-10-23",
-      "teaching_revision": 2
+      "revision_date": "2026-10-28",
+      "teaching_revision": 3
     },
     {
       "number": 9,

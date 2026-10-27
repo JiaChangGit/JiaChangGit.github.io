@@ -386,6 +386,63 @@
         "0x4400",
         "0x3400"
       ]
+    },
+    {
+      "id": "PCIE-CH8-RECOVERY-STATE-001",
+      "claim": "Recovery 的 Physical LinkUp 維持 1，已在 DL_Active 的連線不因單純經過 Recovery 就重設資料連結與 FC；Physical LinkUp=0 導致 DL_Inactive、狀態重設與 Retry Buffer 丟棄，恢復後再初始化 VC0。DL_Up 與 Link Active bit 定義不同。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "3.2",
+        "3.2.1",
+        "3.4",
+        "3.4.1",
+        "4.2.6.4",
+        "4.2.7",
+        "7.5.3.8"
+      ],
+      "figures": [
+        "3-2",
+        "4-48"
+      ],
+      "tables": [
+        "4-48",
+        "7-26"
+      ],
+      "document_pages": [
+        265,
+        266,
+        267,
+        268,
+        270,
+        271,
+        272,
+        273,
+        445,
+        452,
+        453,
+        454,
+        979
+      ],
+      "pdf_pages": [
+        265,
+        266,
+        267,
+        268,
+        270,
+        271,
+        272,
+        273,
+        445,
+        452,
+        453,
+        454,
+        979
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-28",
+      "notes": "兩段狀態紀錄由作者建立；先前已在 DL_Active、完整狀態歷史且沒有額外 Reset／Link Disable。紀錄不是標準可讀 Register。已實看 Figure 3-2、Table 4-48 與相鄰文字及註腳。"
     }
   ]
 }

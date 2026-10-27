@@ -1,3 +1,4 @@
+<aside class="note"><strong>【模擬資料】</strong><p>本章的拓撲、讀值、額度與事件紀錄為教學用途建立，不代表特定硬體或平台。</p></aside>
 <!-- pcie-walk: walks/chapter8-link.json -->
 <div class="guided-walk" id="link-walk" role="group" aria-labelledby="link-walk-title" data-walk-version="1">
 <h3 id="link-walk-title">先看一個封包如何通過相鄰兩端</h3>
@@ -51,7 +52,7 @@
 <p>LTSSM（連線訓練狀態機）先找出可用通道，再建立同步與通道編號。下面保留初次建立連線的主要路徑；Configuration 在此負責組成連線。完整狀態機還包含逾時、重試、測試及省電分支。</p>
 <figure class="diagram"><svg viewBox="0 0 820 315" role="img" aria-labelledby="training-title training-desc" class="course-diagram"><title id="training-title">初次訓練與後續 Recovery 的不同目的</title><desc id="training-desc">初次連線依序經過 Detect、Polling、Configuration 到 L0。L0 可進入 Recovery 調整速率或恢復同步，再回 L0；這不是完整 LTSSM。</desc><g fill="var(--blue-soft)" stroke="var(--line)"><rect x="20" y="30" width="160" height="100" rx="12"/><rect x="220" y="30" width="160" height="100" rx="12"/><rect x="420" y="30" width="180" height="100" rx="12"/><rect x="640" y="30" width="160" height="100" rx="12"/><rect x="460" y="205" width="270" height="80" rx="12"/></g><g stroke="var(--accent)" stroke-width="2.5" fill="none"><path d="M180 80 H215"/><path d="M380 80 H415"/><path d="M600 80 H635"/><path d="M750 130 V245 H735"/><path d="M500 205 V165 H680 V135"/></g><g fill="var(--accent)"><path d="M208 75 L218 80 L208 85 Z M408 75 L418 80 L408 85 Z M628 75 L638 80 L628 85 Z M738 240 L728 245 L738 250 Z M675 140 L680 130 L685 140 Z"/></g><g text-anchor="middle"><text x="100" y="65">Detect</text><text x="100" y="100">偵測遠端終端</text><text x="300" y="65">Polling</text><text x="300" y="100">取得同步</text><text x="510" y="65">Configuration</text><text x="510" y="100">組成 Link</text><text x="720" y="65">L0</text><text x="720" y="100">正常傳輸</text><text x="595" y="235">Recovery</text><text x="595" y="265">變更速率／重新取得同步</text></g></svg><figcaption>作者依 §4.2.6 繪製的閱讀導圖，只保留本節需要的路徑；完整分支與條件請對照 Figure 4-48。</figcaption></figure>
 <p>Detect 先檢查遠端終端是否存在；Polling 交換訓練 Ordered Sets（有固定用途的符號序列），建立位元／符號同步並處理通道極性；Configuration 把 Lane 組成 Link，處理寬度與 Lane 間對齊。L0 是正常傳輸狀態。Recovery 用來重新取得同步，也支援速率變更。閱讀這段路徑時，要連同進入原因與後續狀態一起觀察。</p>
-<p>讀 Figure 4-48 時，先找「從哪個狀態出發、要完成什麼」，再進入 §4.2.7 查對應子狀態，不必第一次就背下所有箭頭。接著看 Figure 3-2：Physical Layer 可運作後，Data Link Layer 還要完成適用的 DL_Feature／DL_Init 工作，才到 DL_Active。</p>
+<p>讀 Figure 4-48 時，先找「從哪個狀態出發、要完成什麼」，再進入 §4.2.7 查對應子狀態，不必第一次就背下所有箭頭。初次建立連線時，接著看 Figure 3-2：Physical Layer 可運作後，Data Link Layer 完成適用的 DL_Feature／DL_Init 工作，才到 DL_Active。已建立連線後的 Recovery，稍後會以兩段紀錄另外帶讀。</p>
 <details class="source-note"><summary>訓練狀態的閱讀位置</summary><p>§4.2.6.1–§4.2.6.5（pp.444–445）；完整 Figure 4-48（p.454）；Table 4-48（p.453）對照 LTSSM 與 Link 狀態輸出。Figure 3-2（p.265）是另一個層次的狀態機，不能把 DL_Active 當成 LTSSM 狀態名稱。</p></details></section>
 <section id="speed"><h2>3. 兩端支援 16 GT/s，為什麼現在只有 8 GT/s ×4？</h2>
 <p>查詢對象是同一條連線兩端的 Downstream Port（下游連接埠）與 Endpoint（階層末端裝置）。以下假設兩端 PCI Express Capability（PCIe 能力與控制結構）都已定位於 0x70、版本為 2。表中先只列相關欄位；Maximum Link Width 的值是解碼後的 Lane 數，其餘標成十六進位者是完整 Register 讀值。</p>
@@ -67,7 +68,22 @@
 <p>因此，本例的 8 GT/s 符合設定的上限，×4 也符合 Endpoint 的能力。Downstream Port 宣告 ×8，並不保證實際連線布了八條 Lane。依這組讀值，實際結果與設定和能力相符。</p>
 <details class="question"><summary>調整目標速率後，接著查看哪些狀態？</summary><p>先確認速率支援、控制對象與正常操作前提，再依 Link Control 的 Retrain Link（重新訓練控制）觸發訓練；此 bit 寫 1 觸發，讀取永遠為零。應觀察適用的 Link Training／Link Active，再讀 Current Link Speed 與寬度。Link Training 只涵蓋 Configuration／Recovery 及等待 Retrain 開始的情況，且在 Endpoint 為 Reserved，不能當成通用 LTSSM 編碼。（Tables 7-24、7-26，pp.972–973、978–979。）</p></details>
 <details class="source-note"><summary>從 Figure 到結論</summary><p>Maximum Link Width：Figure 7-27／Table 7-23（p.967）；Current 與狀態適用性：Figure 7-29／Table 7-26（pp.978–979）；Supported：Figure 7-38／Table 7-35（pp.998–1000）；Target：Figure 7-39／Table 7-36（pp.1001–1002）。這是一組作者假設的有效讀值，不是規格指定的預設設定。</p></details></section>
-<section id="credits"><h2>4. 依封包種類檢查接收空間</h2>
+<section id="recovery-state"><h2>4. 經過 Recovery，哪些狀態需要重新建立？</h2>
+<p>已在 DL_Active 的連線進入 Recovery 後，可以保留資料連結狀態，再回到 L0。若後續路徑使 Physical LinkUp 降為零，資料連結層才會轉到 DL_Inactive，清除舊狀態並在連線恢復後重新初始化。判讀時要把實體層與資料連結層的紀錄放在同一條時間線上。</p>
+<p>先回到 Figure 4-48，確認本次經過的 LTSSM 路徑，再用 Table 4-48 對照每個狀態的 <strong>LinkUp</strong>。這是 Physical Layer 提供給 Data Link Layer 的連線指示，不是 Configuration Space 裡另一個同名 bit。Recovery 與 L0 的 LinkUp 都是 1；Detect 則是 0。接著讀 Figure 3-2 及 §3.2.1：DL_Active 在 Physical LinkUp=0 時轉到 DL_Inactive。這個條件把兩張狀態圖接了起來。</p>
+<div class="example"><p><strong>【模擬資料】以下兩段紀錄為教學用途建立，不代表特定硬體或平台。</strong>兩例都觀察 02:01.0 與 03:00.0 之間的同一條 Non-Flit Mode 連線，開始時已在 DL_Active，並假設紀錄完整涵蓋本次轉換、沒有另外執行 Reset 或 Link Disable。下表是狀態紀錄摘要，不是標準軟體可讀 Register dump。</p>
+<p>螢幕較窄時，可左右滑動表格查看完整內容。</p>
+<div class="table-wrap"><table style="min-width: 640px"><caption>相同的 Recovery 起點，後續路徑決定是否重新初始化</caption><thead><tr><th scope="col">觀察項目</th><th scope="col">案例 A：直接回到 L0</th><th scope="col">案例 B：落回 Detect 後重建</th></tr></thead><tbody>
+<tr><th scope="row">完整主狀態路徑</th><td>L0 → Recovery → L0</td><td>L0 → Recovery → Detect → Polling → Configuration → L0</td></tr>
+<tr><th scope="row">依 Table 4-48 讀 LinkUp</th><td>沿途保持 1。</td><td>進入 Detect 時為 0；之後從 Polling 進入 Configuration 時仍為 0，至建立 Link 才變為 1。</td></tr>
+<tr><th scope="row">依 Figure 3-2 查資料連結狀態</th><td>維持 DL_Active。Physical Layer 暫時不能接受封包時，資料連結層仍需配合暫停傳送。</td><td>轉到 DL_Inactive，重設資料連結狀態並丟棄 Retry Buffer（保存重送副本的緩衝區）內容。恢復後完成適用的 DL_Feature 與 DL_Init，再到 DL_Active。</td></tr>
+<tr><th scope="row">VC0 的額度與重送副本</th><td>這條路徑沒有觸發 DL_Inactive，不會因為進入 Recovery 就全部清除，再做一次 InitFC。</td><td>舊的重送副本已丟棄；進入 DL_Init 後，VC0 要重新執行 Flow Control 初始化。</td></tr>
+</tbody></table></div></div>
+<p>回到兩端讀值時，仍須先確認欄位適用性。Table 7-26 的 <strong>Data Link Layer Link Active</strong> 在 DL_Active 才回傳 1；本例只有支援回報的 Downstream Port 可用這個 bit 觀察。案例 A 的狀態維持可用，實際封包仍可能暫停；案例 B 則有退出及重新進入 DL_Active 的過程。若只在前後各讀一次得到 1，中間的差異就會遺失，因此需要狀態歷史或同步的協定紀錄。</p>
+<p>另外，Figure 3-2 的 <strong>DL_Up</strong> 是資料連結層對其他邏輯輸出的狀態，和 Register 的 Link Active bit 有不同的定義。例如 DL_Init 進行到 FC_INIT2 時已輸出 DL_Up，但該 VC 的 TLP 發送仍須等初始化完成。閱讀時應沿用各欄位與狀態的完整名稱。</p>
+<aside class="note"><strong>照這個順序查，就能回答「要不要重新初始化」</strong><p>Figure 4-48 找本次路徑 → Table 4-48 讀沿途的 LinkUp → Figure 3-2 與 §3.2.1 找資料連結層的轉換條件 → 若進入 DL_Init，再到 §3.4／§3.4.1 查 VC0 的初始化。最後用 Table 7-26 核對軟體看到的 Link Active。至於為何進入 Recovery，以及個別 Transaction 最後是否完成，還需要控制寫入、錯誤與封包紀錄。</p></aside>
+<details class="source-note"><summary>Recovery、LinkUp 與重新初始化的來源</summary><p>PCI Express Base Specification Revision 6.0：§4.2.6.4 <em>Recovery Overview</em>（PDF／印刷 p.445）；Table 4-48 <em>Link Status Mapped to the LTSSM</em>（PDF／印刷 p.453，含 Configuration 的註腳 72）；Figure 4-48 <em>Main State Diagram for Link Training and Status State Machine</em>（PDF／印刷 p.454）。Figure 3-2 <em>Data Link Control and Management State Machine</em> 與 §3.2.1 <em>Data Link Control and Management State Machine Rules</em>（PDF／印刷 pp.265–268）定義轉換、狀態重設與 Physical Layer 暫停傳送時的配合。§3.4 <em>Flow Control Initialization Protocol</em>／§3.4.1 <em>Flow Control Initialization State Machine Rules</em>（PDF／印刷 pp.270–273）定義 VC0 初始化；Table 7-26 <em>Link Status Register</em>（PDF／印刷 p.979）定義 Link Active。兩段紀錄及對照方式由作者依這些規則建立。</p></details></section>
+<section id="credits"><h2>5. 依封包種類檢查接收空間</h2>
 <p>接收端透過 FC（流量控制）資訊告知可用額度，發送端依交易種類檢查 credit（接收緩衝額度）。Non-Flit Mode 下，每個 VC 分開記錄 Posted、Non-Posted、Completion 的 Header 與 Data，合計六類：PH／PD 是 Posted 的標頭／資料額度，NPH／NPD 是 Non-Posted 的標頭／資料額度，CplH／CplD 是完成回覆的標頭／資料額度。Data credit 的單位是 4 DW（每個 Doubleword 為 4 bytes），也就是 16 bytes；Header（標頭）額度則依封包標頭另計。</p>
 <p>以下是<strong>作者建立的概念帳本</strong>：VC0（預設虛擬通道）、Non-Flit Mode、有限且未縮放的可用 credits，沒有其他封包競爭。數字不是軟體可直接讀到的標準 Register，也不是 InitFC 的最低宣告值。假設現在只剩 PH（Posted 標頭額度）=2、PD（Posted 資料額度）=5。先由 Table 2-44 辨認類別，再依 Table 2-45 讀每種封包的需求。表中 MWr 是 Memory Write（記憶體寫入），MRd 是 Memory Read（記憶體讀取）；NPH／NPD 是 Non-Posted 的標頭／資料額度。</p>
 <div class="table-wrap"><table><caption>有限 credit 的發送判斷</caption><thead><tr><th scope="col">候選封包</th><th scope="col">所需 credits</th><th scope="col">判斷</th></tr></thead><tbody>
@@ -79,18 +95,18 @@
 <p>PD 用量以 Payload bytes 除以 16 後向上取整。MRd（記憶體讀取）的 Length 指定要求回傳的資料量，Request（請求）本身沒有這段資料；Completion（完成回覆）在反方向消耗 CplH／CplD（回覆標頭／資料額度）。通過 credit 檢查也只代表 FC 條件成立，仍受排序、仲裁等規則約束。</p>
 <p>資料連結層重送同一個封包時，交易層保留原本的額度記帳，不再扣一輪新封包的額度。流量控制管理接收緩衝資源；replay（重送）負責把同一封包可靠地交到相鄰接收端。</p>
 <details class="source-note"><summary>credit 單位與用量</summary><p>§2.6.1（pp.236–237）；Table 2-44 的六類 credit、Table 2-45 的各種 TLP 用量（p.237）。DLLP 的交換格式可從 Figures 3-9–3-11（pp.283–284）查 InitFC1、InitFC2 與 UpdateFC。本例只計算已知可用額度，不把累積計數協定簡化成每次更新都是增量。</p></details></section>
-<section id="replay"><h2>5. 確認接收與必要時的重送</h2>
+<section id="replay"><h2>6. 確認接收與必要時的重送</h2>
 <p>在本例模式中，資料連結層為封包加入 sequence number（序號）與 LCRC（Link Cyclic Redundancy Check，連線錯誤檢查碼）。接收端檢查後，以 ACK（正向確認）／NAK（要求重送的負向確認）等機制回覆發送端。發送端保留 replay（重送）所需的副本；收到適當的正向確認後才釋放。NAK（負向確認）或確認逾時可以引發 replay。先看 Figure 3-17 的序號與 LCRC（連線檢查碼），再看 Figure 3-22 的接收流程與 Figure 3-21 的確認處理。</p>
 <p>假設 Endpoint 的 MWr（記憶體寫入）要穿越 Switch。第一條連線收到 ACK（正向確認），發送端便可按規則處理這一跳的副本。CPU 存取資料與裝置工作的完成，仍由後續的記憶體及裝置介面處理。Switch 再往上游傳送時，使用的是另一條 Link 的確認與重送機制。ACK 也不是 Chapter 5 的 Completion：Posted MWr 沒有一般 Completion，仍然有 Link 層的可靠傳遞。</p>
 <p>接收端的 sequence 檢查也處理 replay 可能帶來的重複封包，避免把已接受的副本再次交給 Transaction Layer。這些動作由相鄰兩端的硬體執行；驅動程式仍在處理原先提交的工作。</p>
 <details class="source-note"><summary>可靠傳遞的圖表路徑</summary><p>先看 Figure 3-17（p.288），辨識 TLP 外的 sequence／LCRC；再讀 §3.6.2 的傳送端規則與 §3.6.3（pp.300–303）的接收規則。Figure 3-21（p.299）處理 ACK／NAK，Figure 3-22（p.303）處理接收 TLP。分層與副本保存概述見 §3.1（p.264）。</p></details></section>
-<section id="flit"><h2>6. PCIe 6.0 的 Flit 改變了什麼？</h2>
+<section id="flit"><h2>7. PCIe 6.0 的 Flit 改變了什麼？</h2>
 <p>在 64 GT/s 運作時使用 Flit Mode（固定區塊傳遞模式），較低速率也可使用。當前模式需由本節稍後的模式欄位確認。Flit 是固定 256 bytes 的傳輸單位，TLP 可以跨越多個 Flit，一個 Flit 也不必只容納一個 TLP。</p>
 <div class="table-wrap"><table><caption>一個 Flit 的 256 bytes 分配</caption><thead><tr><th scope="col">Byte 範圍</th><th scope="col">大小</th><th scope="col">用途</th></tr></thead><tbody><tr><td>0–235</td><td>236 bytes</td><td>TLP 區，包含 TLP Header 等內容，不能全算成應用資料。</td></tr><tr><td>236–241</td><td>6 bytes</td><td>DLP（Data Link Layer Payload，資料連結層承載內容）。</td></tr><tr><td>242–249</td><td>8 bytes</td><td>CRC（Cyclic Redundancy Check，循環冗餘檢查碼），供錯誤檢查。</td></tr><tr><td>250–255</td><td>6 bytes</td><td>ECC（Error Correction Code，錯誤修正碼），支援 Forward Error Correction（FEC，前向錯誤更正）。</td></tr></tbody></table></div>
 <p>Flit Mode 的可靠傳遞以 Flit 為 replay 單位，配合 CRC（錯誤檢查碼）、FEC（前向錯誤更正）與序號機制。可更正的錯誤由更正機制處理，其餘情況仍可能需要重送；格式與前面的個別封包模式不同。</p>
 <p>要查目前模式，先確認 PCI Express Capabilities 的 Flit Mode Supported（Figure 7-23／Table 7-19 bit 15），再查 Downstream Port 的 Link Status 2。Flit Mode Status 在 bit 10，但只有 Downstream Component Presence 為 011b、100b 或 101b 時才有意義。若只擷取這兩個欄位得到 <code>0x4400</code>，則 Presence=100b、Flit=1：Link 已 up、尚未收到 DRS（Device Readiness Status，裝置就緒通知），模式為 Flit。若是 <code>0x3400</code>，Presence=011b，雖已協商 Flit，Data Link Layer 尚未 active。這兩個數字是<strong>欄位投影</strong>，不是完整 Register dump。</p>
 <details class="source-note"><summary>Flit 的版本邊界</summary><p>§4.2.3（p.340）；§4.2.3.3、Tables 4-10–4-14（pp.351–355）；§4.2.3.4.1（p.357）；重送見 §4.2.3.4.2.1／Figure 4-33（p.383），CRC／ECC 見 §4.2.3.4.3–§4.2.3.4.4（pp.384–390）。模式欄位見 Table 7-19（p.955）與 Figure 7-40／Table 7-37（pp.1004–1007）。本章採 Base 6.0 原版；後續 ECN（規格變更通知）不在本次引用範圍。</p></details></section>
-<section id="practice"><h2>7. 從一個待送封包串起整條路線</h2>
+<section id="practice"><h2>8. 從一個待送封包串起整條路線</h2>
 <details open class="question"><summary>裝置準備送出寫入時，依序看哪些機制？</summary><p>先沿 Figure 4-48 與 Figure 3-2 確認連線及資料連結初始化，再依 Tables 2-44／2-45 檢查 Posted 的標頭與資料額度。封包送出後，Figure 3-17 顯示序號與檢查碼，Figures 3-21／3-22 則串起兩端的接收與確認。本文的數字帳本只示範額度；實際排程仍受排序與仲裁規則約束。</p></details>
 <details open class="question"><summary>接著換成讀取請求，沿哪一部分重新檢查？</summary><p>從 Table 2-45 更換交易種類即可：沒有資料 Payload 的讀取請求檢查 NPH。回覆則在反方向使用 Completion credits，接收端與發送端的角色也隨方向對調。</p></details>
 <details open class="question"><summary>如果改用 Flit，哪部分要換讀另一組圖表？</summary><p>先依 Table 7-37 的 Presence 條件解讀模式，再讀 Tables 4-10–4-14 的區塊格式與 Figure 4-33 的重送。236 bytes 的交易區包含標頭，也可能有 NOP（空操作內容）；有效資料量要依實際封包配置計算。（§4.2.3.4.1，p.357。）</p></details>

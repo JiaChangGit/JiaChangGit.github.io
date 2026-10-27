@@ -658,5 +658,18 @@
       "MSG-010"
     ],
     "remaining": "Message Routing、INTx、Hot-Plug、Error Message 和 Root 接收等其他通知主題仍在各章處理。"
+  },
+  "chapter_8_revision": {
+    "status": "locally_verified",
+    "location": "DOCS/pcie-course/chapter-8.html",
+    "covered": "串接 Figure 4-48、Table 4-48 與 Figure 3-2，對照 Recovery 保留 DL_Active 和落回 Detect 後重新初始化的兩段紀錄；區分 LinkUp、DL_Up 與 Link Active。",
+    "references": [
+      "LTSSM-006",
+      "LTSSM-009",
+      "DLL-002",
+      "DLL-006",
+      "FC-002"
+    ],
+    "remaining": "本章為建立與可靠傳遞的入門帶讀；完整 LTSSM 子狀態、FC 計數、Replay 與 FLIT 等仍須於各主題深入，不因此標示全分類完成。"
   }
 }
