@@ -721,5 +721,17 @@
       "INTEGRATION-004"
     ],
     "remaining": "完整 AER 多筆記錄、FLIT Mode 錯誤對應、RP Extensions 與跨拓樸根因分析仍須逐項深入；本輪不因此標示錯誤與 AER 全分類完成。"
+  },
+  "chapter_13_revision": {
+    "status": "locally_verified",
+    "location": "DOCS/pcie-course/chapter-13.html#edr-window",
+    "covered": "續用 _OSC 保留 AER/DPC 的結果，以雙對象時序圖與案例說明 EDR Notify、_OST 呼叫與返回的窗口；分清有限 Status 寫入、持續設定控制權與 Base DPC 釋放條件。",
+    "references": [
+      "AER-006",
+      "AER-009",
+      "HOTPLUG-010",
+      "INTEGRATION-009"
+    ],
+    "remaining": "本輪為 Firmware3.3 補充教學，不計入 Base6 全文完成；完整 EDR/_DSM/_OST 失敗流程與未取得全文的 UEFI/ACPI 補充仍須另行核對。"
   }
 }

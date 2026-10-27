@@ -2,7 +2,7 @@
   "schema_version": 1,
   "course": "pcie-course",
   "chapter": 13,
-  "updated": "2026-10-21",
+  "updated": "2026-10-28",
   "page_index_base": 1,
   "claims": [
     {
@@ -359,6 +359,90 @@
       "status": "verified",
       "verified_on": "2026-10-21",
       "verification": "Official indexed excerpt only; full PDF/HTML retrieval 403, no complete chapter review claimed."
+    },
+    {
+      "id": "PCIE-CH13-EDR-WINDOW-001",
+      "claim": "Firmware 保留 AER/DPC 的作者案例，EDR 觸發 Port 的指定 Status 寫入窗口於 OS 呼叫 _OST 時結束，下游 Function 窗口於 _OST 返回後開始，至該 Function 重初始化或停用結束。有限例外不授予 DPC Interrupt Status 或配置權；須先識別觸發 Port。",
+      "kind": "teaching_example",
+      "source_id": "PCI-FW-3.3",
+      "revision": "3.3",
+      "sections": [
+        "4.5.1",
+        "4.6.12",
+        "4.6.13"
+      ],
+      "figures": [],
+      "tables": [
+        "4-6"
+      ],
+      "document_pages": [
+        56,
+        57,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88
+      ],
+      "pdf_pages": [
+        56,
+        57,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-28",
+      "assumptions": [
+        "Successful non-query _OSC result Control=0x15 and Support=0x9F; firmware retains AER/DPC",
+        "Independent topology in Segment 0: Switch Downstream Port 02:01.0 and Endpoint Function 03:00.0",
+        "Required EDR/DPC _DSM coordination completed before containment; no SFI",
+        "Firmware and OS attempt recovery; card present; drivers safely quiesced under applicable recovery policy",
+        "Actual triggering Port identified under section4.6.13; upstream management path available",
+        "No claim that Function access is valid before Link/reset-readiness conditions are satisfied",
+        "Timeline shows selected recovery windows, not full EDR implementation or failure policy"
+      ]
+    },
+    {
+      "id": "PCIE-CH13-DPC-RELEASE-001",
+      "claim": "EDR 的軟體例外不免除 Base 6.0 的 DPC 釋放條件；須先讀到 Link Active=0，適用 Root Port 還需 RP Busy=0。作者 Port base0x300 的 Trigger Status 以16-bit 0x0001 寫0x308清除。",
+      "kind": "teaching_example",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.2.11",
+        "7.9.14.4"
+      ],
+      "figures": [
+        "7-300"
+      ],
+      "tables": [
+        "7-264"
+      ],
+      "document_pages": [
+        694,
+        1252,
+        1253
+      ],
+      "pdf_pages": [
+        694,
+        1252,
+        1253
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-28",
+      "assumptions": [
+        "Write authorized only by the separate Firmware3.3 EDR window",
+        "Switch Downstream Port with DPC base0x300, Trigger Status set, recovery policy permits release",
+        "Write clears Trigger Status bit0 only; other status bits written0",
+        "Link Active has read0; RP Busy reserved for this Switch Port"
+      ]
     }
   ]
 }

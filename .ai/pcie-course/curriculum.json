@@ -398,10 +398,10 @@
         "UEFI-2.11-PCI"
       ],
       "title_en": "Firmware, ACPI, and OS Ownership",
-      "description": "區分 UEFI、ACPI 與 PCI Firmware 的角色，以 MCFG、_CRS 和 _OSC 串起資源與控制權。",
+      "description": "從 _OSC 結果確認管理者，再以 EDR 時序圖區分觸發 Port、下游 Function 的狀態處理窗口。",
       "publication_date": "2026-10-21",
-      "teaching_revision": 2,
-      "revision_date": "2026-10-23"
+      "teaching_revision": 3,
+      "revision_date": "2026-10-28"
     },
     {
       "number": 14,
