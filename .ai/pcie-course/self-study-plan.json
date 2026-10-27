@@ -621,5 +621,18 @@
       "ROUTE-008"
     ],
     "remaining": "跨 Switch 的一般路由、Peer-to-Peer 與 Completion 細節留在相應主題，尚未完成完整分類。"
+  },
+  "chapter_5_revision": {
+    "status": "locally_verified",
+    "location": "DOCS/pcie-course/chapter-5.html",
+    "covered": "以兩個 Requester 相同 Tag 的 Trace 配對並重建成功 Completion 資料範圍。",
+    "references": [
+      "TLP-005",
+      "REQ-003",
+      "REQ-007",
+      "PAYLOAD-005",
+      "PAYLOAD-010"
+    ],
+    "remaining": "Completion Timeout、Replay 與深入 TLP 合法性留待各技術主題；不因此標示整個分類完成。"
   }
 }

@@ -2,14 +2,14 @@
 layout: post
 title: "PCIe Chapter 5：一次讀寫如何變成 PCIe 交易"
 date: 2026-10-21 00:00:00 +0800
-last_modified_at: 2026-10-23 00:00:00 +0800
+last_modified_at: 2026-10-28 00:00:00 +0800
 permalink: /pcie/chapter-5-zh-tw/
 categories: [PCIe]
 tags: [PCIe, Specification]
 lang: zh-TW
 spec_teaching: true
 spec_series: pcie
-description: "從一次 MMIO 讀取推演 Request、Completion、Byte Enable、分段回覆與 4 KiB 邊界。"
+description: "從 Memory Read 與 Completion 欄位出發，帶讀位元組範圍與切分回覆，再以兩個 Requester 的 Trace 示範交易配對。"
 ---
 
 <style>
@@ -378,6 +378,7 @@ html[data-theme="dark"] .pcie-article { color-scheme: dark; }
 <div class="pcie-article spec-teaching" data-spec-series="pcie" lang="zh-Hant-TW">
 <nav class="bottom-nav" aria-label="課程與語言版本"><a href="/DOCS/pcie-course/index.html">課程總覽</a><a href="/DOCS/pcie-course/chapter-5.html">繁中完整教學</a><a href="/pcie/chapter-5-en/">English</a></nav>
 <article class="lesson">
+<p><strong>【模擬資料】</strong>本章封包欄位與讀值為教學用途建立，不代表特定硬體或平台。</p>
 <section id="chapter-overview"><h2>先看本章的角色與路徑</h2><figure class="diagram"><svg viewBox="0 0 900 480" role="img" aria-labelledby="ch5-guide-title ch5-guide-desc"><title id="ch5-guide-title">主機端提出讀取，裝置端回覆資料，主機端再依交易識別與完成資訊配對。</title><desc id="ch5-guide-desc">主機端提出讀取，裝置端回覆資料，主機端再依交易識別與完成資訊配對。</desc><g data-walk-target="requester"><rect x="60" y="20" width="310" height="60" rx="9" fill="var(--surface-alt)" stroke="var(--line)"/><text x="215.0" y="45" text-anchor="middle" font-size="15">主機端 Requester：提出讀取</text></g><g data-walk-target="completer"><rect x="530" y="20" width="310" height="60" rx="9" fill="var(--surface-alt)" stroke="var(--line)"/><text x="685.0" y="45" text-anchor="middle" font-size="15">裝置端 Completer：提供資料</text></g><g data-walk-target="host-line"><path d="M215 80 L215 460" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="6 5"/></g><g data-walk-target="device-line"><path d="M685 80 L685 460" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="6 5"/></g><g data-walk-target="request"><path d="M215 170 L685 170" fill="none" stroke="var(--accent)" stroke-width="2"/><polygon points="685.0,170.0 675.0,165.0 675.0,175.0" fill="var(--accent)"/><text x="450.0" y="161.0" text-anchor="middle" font-size="13">Memory Read Request →</text></g><g data-walk-target="completion"><path d="M685 300 L215 300" fill="none" stroke="var(--accent)" stroke-width="2"/><polygon points="215.0,300.0 225.0,305.0 225.0,295.0" fill="var(--accent)"/><text x="450.0" y="291.0" text-anchor="middle" font-size="13">← Completion with Data</text></g><g data-walk-target="match"><rect x="55" y="380" width="320" height="65" rx="9" fill="var(--surface-alt)" stroke="var(--line)"/><text x="215.0" y="405" text-anchor="middle" font-size="15">依 Requester ID／Tag 配對</text><text x="215.0" y="428" text-anchor="middle" font-size="15">檢查狀態、資料量及位址範圍</text></g></svg><figcaption><p>作者依 Base 6.0 的 Request／Completion 規則繪製的交換示意；分段回覆在正文另行放大。</p></figcaption></figure><p class="lead">一次 MMIO（Memory-Mapped I/O，記憶體映射輸入輸出）讀取，會由主機端提出要求，再由目標端回覆資料。PCIe 用 TLP（Transaction Layer Packet，交易層封包）承載這些交換。</p><p>前情提要：Chapter 4 已完成本例的 BAR、Bridge Window 與解碼配置。現在沿同一路徑觀察一筆 4-byte 讀取。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>BAR</dt><dd>Base Address Register，基底位址暫存器</dd></div></dl><p><strong>規格路線：</strong>交易類別 Table 2-1 → Request 的 ID／Tag 與 Memory Request 格式 → Completion 格式 → 分段與邊界條件。</p></section>
 <p class="lead">位址配置完成後，還要理解一次存取如何形成 Request，以及 Completion 如何回到要求者。本章以一筆 MMIO 讀取串起路由、交易配對、長度與位元組範圍，接著用分段回覆說明「一筆要求」為何不一定只有一個回覆。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>MMIO</dt><dd>Memory-Mapped I/O，記憶體映射輸入輸出</dd></div></dl>
 <p><a href="/DOCS/pcie-course/chapter-5.html">完整中文教學</a> · <a href="/DOCS/pcie-course/index.html">課程路線</a> · <a href="/pcie/chapter-5-en/">English</a></p>
@@ -398,8 +399,18 @@ html[data-theme="dark"] .pcie-article { color-scheme: dark; }
 <p>兩個回覆皆為 SC、BCM=0，並保留相同的 Requester ID／Tag。Byte Count 包含目前片段及後續尚待回傳的資料。同一要求的回覆按位址遞增；不同 Transaction ID 的回覆可交換順序，也不得合併成一個 Completion。</p>
 <p>另一項獨立限制是 Request 不得跨 4 KiB：從 0x40001FF0 讀 32 bytes 會到 0x4000200F，必須拆成兩筆各 16 bytes 的要求。若讀取回覆失敗，Cpl 不帶有效讀取資料並終止該要求；UR／CA 不能當成讀到零，RRS 也不是 MMIO 的通用重試結果。</p>
 <details class="source-note"><summary>切分與邊界來源</summary><p>§2.2.7.1（pp.162–163）；§2.3.1.1（pp.214–218）；§2.4.1 D5a／D5b（p.224）與 §2.4.2（p.228）。RCB 限制回覆切分位置，4 KiB 規則限制 Request，兩者不同。</p></details></section>
+<section id="matching-trace"><h2>兩個裝置用了相同 Tag，回覆要怎麼分？</h2>
+<p>先把每個 Completion 的 Requester ID（原要求者識別號）和 Tag（要求者分配的交易標籤）一起對回原始 Request，再用 Status、Length、Byte Count 和 Lower Address 檢查資料範圍。完成分組後，才知道哪筆讀取還缺哪些資料。</p>
+<aside class="example"><strong>【模擬資料】同一段 Trace 中有兩筆讀取</strong><p>沿用前節的 256-byte DMA 讀取，另假設 Endpoint <code>04:00.0</code> 同時提出一筆讀取。兩者都使用 Tag <code>0x13</code>，但 Requester ID 不同。本例為 Non-Flit Mode，TC0、BCM=0；所有 bytes 都啟用，Payload 與 Length 相符，兩筆 Completion 都是 SC 且 EP=0。B 的最大讀取要求至少為 128 bytes，回覆路徑的有效 Payload 上限至少為 128 bytes；其他路徑與位址映射條件均已滿足。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>DMA</dt><dd>Direct Memory Access，裝置直接存取記憶體</dd></div></dl>
+<p>觀察點在 Root Port 與 Switch 之間；下表是工具已辨識的邏輯交易紀錄，假設擷取範圍涵蓋這兩筆 Request 和表內 Completion，且已排除 Replay 的重複顯示。擷取結束後是否還有封包，並不在資料中。螢幕較窄時，可左右滑動表格。</p>
+<div class="table-wrap"><table style="min-width: 700px"><caption>依 Requester ID 與 Tag 分組</caption><thead><tr><th scope="col">紀錄</th><th scope="col">Requester ID／Tag</th><th scope="col">要求範圍或 Completion 欄位</th></tr></thead><tbody><tr><td>Request A</td><td>0x0300／0x13</td><td>讀取 0x40001000–0x400010FF，共 256 bytes。</td></tr><tr><td>Request B</td><td>0x0400／0x13</td><td>讀取 0x40002000–0x4000207F，共 128 bytes。</td></tr><tr><td>Completion A1</td><td>0x0300／0x13</td><td>Length=32 DW、Byte Count=256、Lower Address=0x00。</td></tr><tr><td>Completion B1</td><td>0x0400／0x13</td><td>Length=32 DW、Byte Count=128、Lower Address=0x00。</td></tr></tbody></table></div>
+<p><strong>先配對：</strong>A1 的識別組合是 <code>0x0300／0x13</code>，所以對應 A；B1 對應 <code>0x0400／0x13</code> 的 B。Tag 雖然相同，兩筆 Transaction ID 仍不同。每個 Requester 必須在自己的未完成要求中維持 Tag 唯一，並不需要替整個系統預留同一個 Tag。</p>
+<p><strong>再核對範圍：</strong>在本例全 byte 啟用的條件下，A1 的 32 DW 是 128 bytes，對應 <code>0x40001000–0x4000107F</code>；Byte Count=256 包含這 128 bytes 和後面還要返回的 128 bytes。這段 Trace 尚未看到 A 的 <code>0x40001080–0x400010FF</code>。B1 的 128 bytes 則覆蓋 B 要求的完整範圍，不能拿來填補 A。</p>
+<p>兩個 Completion 的 Lower Address 都是 0x00，因為各自起始位址的低 7 bits 都為 0；這個欄位不足以單獨還原完整位址。表中沒有提供 Completer ID 或各端的完整紀錄，因此 B 的資料範圍雖已覆蓋，仍需核對 Completion 的其他欄位及 Requester 接收結果。A 的後半段可能在擷取結束後返回、未被擷取，或尚未返回；現有資料不足以判定 Timeout 或指定故障位置。</p></aside>
+<p>規格閱讀順序：Figure 2-28 先建立 Transaction ID；Figure 2-73 找到 Completion 的 Requester ID、Tag、Status、Byte Count 和 Lower Address，再讀 §2.3.1.1 的 Byte Count 與遞增位址規則。不同 Transaction ID 的 Completion 允許互相超越，不表示一定會重新排序。核對完整封包時還要確認 Completer ID、TC、Attributes、資料長度與適用條件。（Base 6.0，文件頁／PDF 頁 153、196–198、215、218、224。）</p><dl class="st-terms" aria-label="本段名詞"><div><dt>TC</dt><dd>Traffic Class，流量類別</dd></div></dl></section>
+
 <section id="checks"><h2>用兩個問題確認理解</h2><details class="question"><summary>第一個回覆帶 128 bytes，Byte Count=256，是錯誤嗎？</summary><p>不是。它還包含這筆要求後續的 128 bytes；本片段大小另由 Length 表示。</p></details><details class="question"><summary>只看到 Base 6.0，就能套 Figure 2-31 解所有封包嗎？</summary><p>不能。本章選用 Non-Flit Mode；Flit Mode 的 Header 定義在 §2.2.1.2，布局不同。</p></details></section>
-<p>下一章將從合法交易進一步檢查 DMA 位址與資料可見性。所有來源頁碼均為 Base 6.0 的文件／PDF 頁碼，查核日期為 2026-10-21。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>DMA</dt><dd>Direct Memory Access，裝置直接存取記憶體</dd></div></dl>
+<p>下一章將從合法交易進一步檢查 DMA 位址與資料可見性。所有來源頁碼均為 Base 6.0 的文件／PDF 頁碼，查核日期為 2026-10-28。</p>
 </article>
 <nav class="bottom-nav" aria-label="課程與語言版本"><a href="/DOCS/pcie-course/index.html">課程總覽</a><a href="/DOCS/pcie-course/chapter-5.html">繁中完整教學</a><a href="/pcie/chapter-5-en/">English</a></nav>
 </div>

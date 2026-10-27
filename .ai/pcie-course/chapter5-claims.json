@@ -2,7 +2,7 @@
   "schema_version": 1,
   "course": "pcie-course",
   "chapter": 5,
-  "updated": "2026-10-21",
+  "updated": "2026-10-28",
   "page_index_base": 1,
   "claims": [
     {
@@ -362,6 +362,43 @@
           }
         ]
       }
+    },
+    {
+      "id": "PCIE-CH5-MATCH-GROUP-001",
+      "claim": "Transaction ID 包含 Requester ID 與 Tag；Tag 在同 Requester ID 的未完成且需 Completion 的要求間須唯一。不同 Transaction ID 的 Completion 可互相超越，同一讀取的多筆 Completion 依位址遞增。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.6.2",
+        "2.2.9.1",
+        "2.3.1.1",
+        "2.4.1"
+      ],
+      "figures": [
+        "2-28",
+        "2-73"
+      ],
+      "tables": [
+        "2-42"
+      ],
+      "document_pages": [
+        153,
+        196,
+        198,
+        215,
+        224
+      ],
+      "pdf_pages": [
+        153,
+        196,
+        198,
+        215,
+        224
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-28",
+      "notes": "新案例限定 Non-Flit、TC0、BCM=0、全 byte 啟用，並明確標記擷取與觀察範圍。"
     }
   ]
 }

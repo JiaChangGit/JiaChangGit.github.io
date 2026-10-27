@@ -156,10 +156,10 @@
         "PCIE-BASE-6.0"
       ],
       "title_en": "From a Read or Write to a PCIe Transaction",
-      "description": "從一次 MMIO 讀取推演 Request、Completion、Byte Enable、分段回覆與 4 KiB 邊界。",
+      "description": "從 Memory Read 與 Completion 欄位出發，帶讀位元組範圍與切分回覆，再以兩個 Requester 的 Trace 示範交易配對。",
       "publication_date": "2026-10-21",
-      "teaching_revision": 2,
-      "revision_date": "2026-10-23"
+      "teaching_revision": 3,
+      "revision_date": "2026-10-28"
     },
     {
       "number": 6,

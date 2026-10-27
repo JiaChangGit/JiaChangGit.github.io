@@ -7,7 +7,7 @@
   <link rel="icon" href="data:,">
   <meta name="theme-color" content="#f2f6f8" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101b26" media="(prefers-color-scheme: dark)">
-  <meta name="description" content="從一次 MMIO 讀取推演 Request、Completion、Byte Enable、分段回覆與 4 KiB 邊界。">
+  <meta name="description" content="從 Memory Read 與 Completion 欄位出發，帶讀位元組範圍與切分回覆，再以兩個 Requester 的 Trace 示範交易配對。">
   <title>一次讀寫如何變成 PCIe 交易 · PCIe 系統與規格閱讀</title>
   <style>
 /* Every selector is scoped so the same reading styles can be embedded in Jekyll. */
@@ -379,16 +379,17 @@ html[data-theme="dark"] .spec-teaching[data-spec-series="nvme"] { --st-accent:#7
     <header class="page-header">
       <p class="eyebrow">PCIe · 系統與規格閱讀 / CHAPTER 5</p>
       <h1>一次讀寫如何變成 PCIe 交易</h1>
-      <p class="header-description">從一次 MMIO 讀取推演 Request、Completion、Byte Enable、分段回覆與 4 KiB 邊界。</p>
-      <div class="edition"><span>繁體中文 · 規格與情境推演</span><span>2026-10-23</span></div>
+      <p class="header-description">從 Memory Read 與 Completion 欄位出發，帶讀位元組範圍與切分回覆，再以兩個 Requester 的 Trace 示範交易配對。</p>
+      <div class="edition"><span>繁體中文 · 規格與情境推演</span><span>2026-10-28</span></div>
     </header>
     <div class="reading-layout">
       <aside class="toc-panel" aria-label="本頁目錄">
         <p class="toc-label">本章閱讀路徑</p>
-        <nav aria-label="章節段落"><ol><li><a href="#journey">1. 讀取時，誰提出要求，誰負責回覆？</a></li><li><a href="#types">2. 有寫入，就一定會有 Completion 嗎？</a></li><li><a href="#fields">3. 如何把「讀 4 bytes」對到 Request 與 Completion？</a></li><li><a href="#bytes">4. 如果只讀中間 6 bytes，Length 要填 6 嗎？</a></li><li><a href="#split">5. 為什麼一次讀取可能收到兩個 Completion？</a></li><li><a href="#bounds">6. 長度沒超過上限，就一定是合法要求嗎？</a></li><li><a href="#practice">7. 沿回覆欄位重新配對交易</a></li><li><a href="#next">8. 從封包走到資料可見性</a></li><li><a href="#sources">版本與來源</a></li></ol></nav>
+        <nav aria-label="章節段落"><ol><li><a href="#journey">1. 讀取時，誰提出要求，誰負責回覆？</a></li><li><a href="#types">2. 有寫入，就一定會有 Completion 嗎？</a></li><li><a href="#fields">3. 如何把「讀 4 bytes」對到 Request 與 Completion？</a></li><li><a href="#bytes">4. 如果只讀中間 6 bytes，Length 要填 6 嗎？</a></li><li><a href="#split">5. 為什麼一次讀取可能收到兩個 Completion？</a></li><li><a href="#matching-trace">兩個裝置用了相同 Tag，回覆要怎麼分？</a></li><li><a href="#bounds">6. 長度沒超過上限，就一定是合法要求嗎？</a></li><li><a href="#practice">7. 沿回覆欄位重新配對交易</a></li><li><a href="#next">8. 從封包走到資料可見性</a></li><li><a href="#sources">版本與來源</a></li></ol></nav>
       </aside>
       <main id="content" tabindex="-1">
         <article class="lesson">
+<aside class="note"><strong>【模擬資料】</strong><p>本章封包欄位與讀值為教學用途建立，不代表特定硬體或平台。</p></aside>
 <!-- pcie-walk: walks/chapter5-overview.json -->
 <div class="guided-walk" id="ch5-overview" role="group" aria-labelledby="ch5-overview-title" data-walk-version="1">
 <h3 id="ch5-overview-title">沿一次讀取追蹤 Request 與 Completion</h3>
@@ -479,6 +480,16 @@ html[data-theme="dark"] .spec-teaching[data-spec-series="nvme"] { --st-accent:#7
 <p>同一筆讀取的成功回覆必須依位址遞增；不同 Tag 所屬的兩筆讀取，回覆卻不必按發出順序到達。也不能把兩筆要求的資料合成一個 Completion。這就是配對不能只靠「第幾個收到」的原因。</p>
 <details class="source-note"><summary>長度、切分與順序來源</summary><p>MRRS：§2.2.7.1（p.162）；有效 Payload 上限：§2.2.2 與 §2.3.1.1（p.214）；RCB、Byte Count、遞增位址：pp.215–218；不同交易的回覆順序：§2.4.1 D5a／D5b（p.224）與 §2.4.2 的例子（p.228）。本例直接給定有效上限，沒有把 Base 6.0 的所有傳送／接收上限簡化成單一 MPS 暫存器值。</p></details></section>
 
+<section id="matching-trace"><h2>兩個裝置用了相同 Tag，回覆要怎麼分？</h2>
+<p>先把每個 Completion 的 Requester ID（原要求者識別號）和 Tag（要求者分配的交易標籤）一起對回原始 Request，再用 Status、Length、Byte Count 和 Lower Address 檢查資料範圍。完成分組後，才知道哪筆讀取還缺哪些資料。</p>
+<aside class="example"><strong>【模擬資料】同一段 Trace 中有兩筆讀取</strong><p>沿用前節的 256-byte DMA 讀取，另假設 Endpoint <code>04:00.0</code> 同時提出一筆讀取。兩者都使用 Tag <code>0x13</code>，但 Requester ID 不同。本例為 Non-Flit Mode，TC0、BCM=0；所有 bytes 都啟用，Payload 與 Length 相符，兩筆 Completion 都是 SC 且 EP=0。B 的最大讀取要求至少為 128 bytes，回覆路徑的有效 Payload 上限至少為 128 bytes；其他路徑與位址映射條件均已滿足。</p>
+<p>觀察點在 Root Port 與 Switch 之間；下表是工具已辨識的邏輯交易紀錄，假設擷取範圍涵蓋這兩筆 Request 和表內 Completion，且已排除 Replay 的重複顯示。擷取結束後是否還有封包，並不在資料中。螢幕較窄時，可左右滑動表格。</p>
+<div class="table-wrap"><table style="min-width: 700px"><caption>依 Requester ID 與 Tag 分組</caption><thead><tr><th scope="col">紀錄</th><th scope="col">Requester ID／Tag</th><th scope="col">要求範圍或 Completion 欄位</th></tr></thead><tbody><tr><td>Request A</td><td>0x0300／0x13</td><td>讀取 0x40001000–0x400010FF，共 256 bytes。</td></tr><tr><td>Request B</td><td>0x0400／0x13</td><td>讀取 0x40002000–0x4000207F，共 128 bytes。</td></tr><tr><td>Completion A1</td><td>0x0300／0x13</td><td>Length=32 DW、Byte Count=256、Lower Address=0x00。</td></tr><tr><td>Completion B1</td><td>0x0400／0x13</td><td>Length=32 DW、Byte Count=128、Lower Address=0x00。</td></tr></tbody></table></div>
+<p><strong>先配對：</strong>A1 的識別組合是 <code>0x0300／0x13</code>，所以對應 A；B1 對應 <code>0x0400／0x13</code> 的 B。Tag 雖然相同，兩筆 Transaction ID 仍不同。每個 Requester 必須在自己的未完成要求中維持 Tag 唯一，並不需要替整個系統預留同一個 Tag。</p>
+<p><strong>再核對範圍：</strong>在本例全 byte 啟用的條件下，A1 的 32 DW 是 128 bytes，對應 <code>0x40001000–0x4000107F</code>；Byte Count=256 包含這 128 bytes 和後面還要返回的 128 bytes。這段 Trace 尚未看到 A 的 <code>0x40001080–0x400010FF</code>。B1 的 128 bytes 則覆蓋 B 要求的完整範圍，不能拿來填補 A。</p>
+<p>兩個 Completion 的 Lower Address 都是 0x00，因為各自起始位址的低 7 bits 都為 0；這個欄位不足以單獨還原完整位址。表中沒有提供 Completer ID 或各端的完整紀錄，因此 B 的資料範圍雖已覆蓋，仍需核對 Completion 的其他欄位及 Requester 接收結果。A 的後半段可能在擷取結束後返回、未被擷取，或尚未返回；現有資料不足以判定 Timeout 或指定故障位置。</p></aside>
+<p>規格閱讀順序：Figure 2-28 先建立 Transaction ID；Figure 2-73 找到 Completion 的 Requester ID、Tag、Status、Byte Count 和 Lower Address，再讀 §2.3.1.1 的 Byte Count 與遞增位址規則。不同 Transaction ID 的 Completion 允許互相超越，不表示一定會重新排序。核對完整封包時還要確認 Completer ID、TC、Attributes、資料長度與適用條件。（Base 6.0，文件頁／PDF 頁 153、196–198、215、218、224。）</p><dl class="st-terms" aria-label="本段名詞"><div><dt>TC</dt><dd>Traffic Class，流量類別</dd></div></dl></section>
+
 <section id="bounds"><h2>6. 長度沒超過上限，就一定是合法要求嗎？</h2>
 <p>還要檢查 4 KiB 邊界。假設要從 <code>0x40001FF0</code> 讀 32 bytes，結尾會落在 <code>0x4000200F</code>。即使 MRRS 容許 32 bytes，這個 Address／Length 組合跨過了 4 KiB 邊界，仍不得作為單一 Memory Request 發出。可改成兩筆 16-byte 要求：<code>0x40001FF0–0x40001FFF</code> 與 <code>0x40002000–0x4000200F</code>，各自追蹤 Tag。</p>
 <p>這裡談的是 Request 的邊界限制；上一節談的是同一 Request 的 Completion 切分，兩者發生在不同階段。</p>
@@ -491,7 +502,7 @@ html[data-theme="dark"] .spec-teaching[data-spec-series="nvme"] { --st-accent:#7
 <details open class="question"><summary>4-byte MWr 沒收到 Completion，應該重送嗎？</summary><p>不能以此作為重送依據。普通 MWr 是 Posted Request，本來就沒有對應的一般 Completion；重送反而可能重複觸發 Register 的副作用。應依裝置介面定義的狀態或通知判斷進度。（Table 2-42，p.222。）</p></details>
 <details open class="question"><summary>在 Base 6.0 查到 Figure 2-31，就能解所有 PCIe 6.0 封包嗎？</summary><p>不能。這張圖屬於 Non-Flit Mode 的 Request 格式。先確認模式，再選 §2.2.1.1 或 §2.2.1.2 的 Header 定義；不能把版本號與模式當成同一件事。</p></details></section>
 <section id="next"><h2>8. 從封包走到資料可見性</h2><p>本章已能配對一筆交易並核對資料範圍。<a href="chapter-6.html">Chapter 6</a> 接著追問：裝置用哪種位址進行 DMA？資料先寫、通知後寫，就能讓 CPU 安全使用資料嗎？</p></section>
-<section id="sources"><h2>版本與來源</h2><p>主來源為 PCI Express Base Specification Revision 6.0，6.0-1.0-PUB。文件頁碼與 PDF 頁碼相同；查核日期為 2026-10-21。封包值、裝置 Register 與平台條件均為作者設計的教學案例，來源位置已隨各節標示。</p></section>
+<section id="sources"><h2>版本與來源</h2><p>主來源為 PCI Express Base Specification Revision 6.0，6.0-1.0-PUB。文件頁碼與 PDF 頁碼相同；查核日期為 2026-10-28。封包值、裝置 Register 與平台條件均為作者設計的教學案例，來源位置已隨各節標示。</p></section>
         </article>
         <nav class="bottom-nav" aria-label="下一步"><a href="index.html">課程總覽</a><a href="chapter-4.html">← Chapter 4</a><a href="chapter-6.html">Chapter 6 →</a><a href="#content">回到本章開頭 ↑</a></nav>
       </main>
