@@ -2,14 +2,14 @@
 layout: post
 title: "PCIe Chapter 2：讀取設定空間與尋找 Capability"
 date: 2026-10-20 00:00:00 +0800
-last_modified_at: 2026-10-23 00:00:00 +0800
+last_modified_at: 2026-10-28 00:00:00 +0800
 permalink: /pcie/chapter-2-zh-tw/
 categories: [PCIe]
 tags: [PCIe, Specification]
 lang: zh-TW
 spec_teaching: true
 spec_series: pcie
-description: "從傳統與 Extended 清單找到 Device Serial Number，練習指標、欄位版本、位元組順序與存取屬性的判讀。"
+description: "從 Header Layout 選對欄位圖，沿 Capability 清單查詢裝置序號，再用混合屬性案例學習組成寫值。"
 ---
 
 <style>
@@ -379,6 +379,7 @@ html[data-theme="dark"] .pcie-article { color-scheme: dark; }
 <nav class="bottom-nav" aria-label="課程與語言版本"><a href="/DOCS/pcie-course/index.html">課程總覽</a><a href="/DOCS/pcie-course/chapter-2.html">繁中完整教學</a><a href="/pcie/chapter-2-en/">English</a></nav>
 <article class="lesson">
 <p class="lead">本章從已找到的裝置功能出發，查詢 Device Serial Number（DSN，裝置序號）。先依功能種類選擇清單，再沿指標找到結構，最後讀取資料並按規格重組序號。</p>
+<p><strong>【模擬資料】</strong>以下位置與讀值為教學用途建立，不代表特定硬體或平台。</p>
 <figure class="diagram"><svg viewBox="0 0 840 580" class="course-diagram" role="img" aria-labelledby="ch2-dsn-svg-title ch2-dsn-svg-desc"><title id="ch2-dsn-svg-title">兩個入口，沿正確清單找到序號</title><desc id="ch2-dsn-svg-desc">傳統與延伸清單分別從自己的入口開始；找到DSN後才從目前結構起點加資料位移。</desc><g><rect x="270" y="20" width="300" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2"/><text x="420" y="47" text-anchor="middle" fill="var(--ink)" font-size="18">Function 03:00.0</text><text x="420" y="72" text-anchor="middle" fill="var(--ink)" font-size="16">同一份設定空間</text></g><g><rect x="20" y="180" width="350" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2"/><text x="195" y="207" text-anchor="middle" fill="var(--ink)" font-size="18">傳統清單</text><text x="195" y="232" text-anchor="middle" fill="var(--ink)" font-size="16">0x34 → 0x40</text></g><g><rect x="470" y="180" width="350" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2"/><text x="645" y="207" text-anchor="middle" fill="var(--ink)" font-size="18">延伸清單</text><text x="645" y="232" text-anchor="middle" fill="var(--ink)" font-size="16">從 0x100 開始</text></g><g><rect x="20" y="325" width="350" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2"/><text x="195" y="352" text-anchor="middle" fill="var(--ink)" font-size="18">Null → PCIe → MSI-X</text><text x="195" y="377" text-anchor="middle" fill="var(--ink)" font-size="16">0x50 → 0x70 → 0xD0</text></g><g><rect x="470" y="325" width="350" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2"/><text x="645" y="352" text-anchor="middle" fill="var(--ink)" font-size="18">AER → DSN</text><text x="645" y="377" text-anchor="middle" fill="var(--ink)" font-size="16">0x100 → 0x180</text></g><g><rect x="470" y="470" width="350" height="80" rx="10" fill="var(--blue-soft)" stroke="var(--line)" stroke-width="2"/><text x="645" y="497" text-anchor="middle" fill="var(--ink)" font-size="18">讀取序號資料</text><text x="645" y="522" text-anchor="middle" fill="var(--ink)" font-size="16">起點+0x04／起點+0x08</text></g><g><path d="M420 100 V140 H195 V180 M420 140 H645 V180" fill="none" stroke="var(--accent)" stroke-width="2.5"/><text x="420" y="130" text-anchor="middle" fill="var(--ink)" font-size="15">按目標功能選清單</text></g><g><path d="M195 260 V325" fill="none" stroke="var(--accent)" stroke-width="2.5"/><text x="195" y="302" text-anchor="middle" fill="var(--ink)" font-size="15">Next：從 Function 起點算</text></g><g><path d="M645 260 V325" fill="none" stroke="var(--accent)" stroke-width="2.5"/><text x="645" y="302" text-anchor="middle" fill="var(--ink)" font-size="15">Next=0x180</text></g><g><path d="M645 405 V470" fill="none" stroke="var(--accent)" stroke-width="2.5"/><text x="645" y="448" text-anchor="middle" fill="var(--ink)" font-size="15">ID=0003h; Version=1</text></g></svg><figcaption>作者的清單查詢圖。兩個入口各自獨立；Next 從 Function 起點計算，資料位移從已找到的 DSN 結構起點計算。Base 6.0 Figures 7-42／7-43／7-241，文件頁／PDF 頁 1009–1010、1205。</figcaption></figure><dl class="st-terms" aria-label="本段名詞"><div><dt>MSI-X</dt><dd>Message Signaled Interrupts Extension，表格式訊息中斷</dd></div><div><dt>AER</dt><dd>Advanced Error Reporting，進階錯誤回報</dd></div></dl>
 
 <p><a href="/DOCS/pcie-course/chapter-2.html">完整中文教學</a> · <a href="/DOCS/pcie-course/index.html">課程路線</a> · <a href="/pcie/chapter-2-en/">English</a></p>
@@ -387,6 +388,13 @@ html[data-theme="dark"] .pcie-article { color-scheme: dark; }
 <p>先用 Segment（匯流排的邏輯分組） 與 BDF（Bus、Device、Function 識別號） 選定 Function（可個別辨識與設定的功能），再用 byte offset 選它的設定暫存器。這份空間共 4096 bytes，前 256 bytes 是 PCI 相容區，0x100–0xFFF 是延伸區。ECAM（Enhanced Configuration Access Mechanism）提供 CPU 的記憶體映射設定存取；平台提供實際映射，offset 本身只表示 Function（可個別辨識與設定的功能） 內的位置。它與裝置 Memory BAR 的工作區分開。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>BDF</dt><dd>Bus／Device／Function，匯流排、裝置與功能識別</dd></div><div><dt>BAR</dt><dd>Base Address Register，基底位址暫存器</dd></div></dl>
 <p>傳統 Capability（描述或控制能力的結構） 清單由 Header 的 Capabilities Pointer 進入，本章 Type 0／1 的指標在 0x34。Extended 清單則直接從 0x100 開始。PCI Express Capability（描述或控制能力的結構） 本身在傳統清單，DSN（Device Serial Number，裝置序號） 才在 Extended 清單；不能靠名稱是否含 PCIe 來分類。</p>
 <details class="source-note"><summary>閱讀位置</summary><p>Base 6.0 §7.2–§7.2.2.2，Figure 7-3／Table 7-1，pp.905–909；Figure 7-4，p.916；Capabilities Pointer：§7.5.1.1.11，p.926；Extended 清單：§7.6–§7.6.3，Figures 7-42／7-43、Table 7-39，pp.1008–1010。</p></details></section>
+<section id="header-layout"><h2>同一個 offset，為什麼兩個 Function 的欄位不同？</h2>
+<p>先讀所選 Function 在 <code>0x0E</code> 的 Header Type Register（標頭類型暫存器），以 bits 6:0 的 Header Layout 選圖。Type 0 的配置看 Figure 7-10；代表 Root Port 或 Switch Port 的 Type 1 配置看 Figure 7-14。兩張圖的橫向位置是 bit，最右側是從 Configuration Space 起點算的 byte offset。</p>
+<div class="table-wrap"><table><caption>同一個 byte offset 在兩種 Header 中的用途</caption><thead><tr><th scope="col">offset</th><th scope="col">Type 0</th><th scope="col">Type 1（Root／Switch Port）</th></tr></thead><tbody><tr><td>0x10–0x14</td><td>Base Address Registers（BAR，資源基底暫存器）的一部分</td><td>此 Port 的 BAR 0、BAR 1</td></tr><tr><td>0x18</td><td>BAR 區域的一部分</td><td>Primary、Secondary、Subordinate Bus Number 等欄位</td></tr><tr><td>0x20</td><td>BAR 區域的一部分</td><td>Memory Base 與 Memory Limit</td></tr></tbody></table></div>
+<p>例如，看到 <code>0x18</code> 的 32-bit 讀值後，先取得同一 Function 的 Header Layout；選到 Type 1 才把其中對應的 bytes 解作 Bus Number。Type 0 的同一位置則屬於 BAR 區域。再查具體 BAR 的型態與欄位定義，才能解讀其用途。Type 1 的 Bus Number 用於安排下游搜尋範圍，Memory Base／Limit 描述資源視窗；完整配置與路由分別接到 <a href="/DOCS/pcie-course/chapter-3.html">Chapter 3</a> 和 <a href="/DOCS/pcie-course/chapter-4.html">Chapter 4</a>。</p>
+<p>Header Type 的 bit 7 與 bits 6:0 要分開讀。以本章假設值 <code>0x80</code> 為例，Layout 為 Type 0，bit 7 表示 Device <em>可能</em>有多個 Function，還需進一步查詢。VF 有不同適用規則，本例不納入。Header Layout 與 Configuration Request 的 Type 0／Type 1 封包分類也各有定義。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>VF</dt><dd>Virtual Function，虛擬功能</dd></div></dl>
+<p class="term-note">閱讀位置：Base 6.0 §7.5.1.1.9、Figure 7-8／Table 7-7（文件頁／PDF 頁 924–925）；Figure 7-10（p.928）；Figure 7-14 及其適用說明（p.936）。先從 Header Type 選圖，再讀該圖的 offset 與對應欄位說明。</p></section>
+
 <section id="lists"><h2>ID 為 0 與 Next 為 0，不能混為一談</h2>
 <p>傳統清單一般以 16-bit 開頭的低 byte 表示 ID、高 byte 表示 Next。教學資料中的路徑是 <code>0x40 → 0x50 → 0x70 → 0xD0 → 0</code>，依序為 PM、Null、PCIe、MSI-X。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>MSI-X</dt><dd>Message Signaled Interrupts Extension，表格式訊息中斷</dd></div></dl>
 <div class="table-wrap"><table><caption>代表性讀值：位置均為 Function 內的 byte offset</caption><thead><tr><th scope="col">位置與寬度</th><th scope="col">讀值</th><th scope="col">判讀</th></tr></thead><tbody><tr><td>0x50，16 bits</td><td>0x7000</td><td>傳統 ID=00h 是 Null；Next=0x70，繼續走訪。</td></tr><tr><td>0x100，32 bits</td><td>0x18020001</td><td>Extended ID=0001h，AER Version 2；Next=0x180。</td></tr><tr><td>0x180，32 bits</td><td>0x00010003</td><td>Extended ID=0003h，DSN Version 1；Next=0，清單結束。</td></tr></tbody></table></div>
@@ -403,7 +411,11 @@ Next        = (header &gt;&gt; 20) &amp; 0xFFC</code></pre>
 <p>DSN 是可選能力。一般多功能 Device 若實作 DSN，Function 0 必須實作；其他有實作的 Function 必須回報相同值。因此 DSN 不能代替 BDF（Bus、Device、Function 識別號） 中的 Function Number。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>BDF</dt><dd>Bus／Device／Function，匯流排、裝置與功能識別</dd></div></dl>
 <details class="source-note"><summary>DSN 的精確位置</summary><p>Base 6.0 §7.9.3–§7.9.3.2，Figures 7-241–7-243、Tables 7-221／7-222，pp.1205–1207。RCiEP 與 PF／VF 有不同條件，本例不適用。</p></details></section>
 <section id="meaning"><h2>讀到資料，不代表可以原樣回寫</h2>
-<p>Attributes 欄必須與位元定義一起讀。RO 不表示硬體狀態永遠不變；RW1C（寫入一才清除對應狀態） 則在寫 1 時清除狀態，寫 0 不作用。若假設一個 4-bit 欄位全部為 RW1C（寫入一才清除對應狀態），讀到 1001b，只想清 bit 0，應寫 0001b；沒有新事件時剩下 1000b。這是語義示例，不是某個真實 Register。</p>
+<p>Attributes（存取屬性）要與位元定義一起讀。RO 限制軟體改寫；RW1C（寫入一才清除狀態）寫 0 時保留狀態。</p>
+<aside class="example"><strong>【模擬資料】混合屬性的寫入</strong><p>以下是假想的 8-bit 欄位配置，用來說明組值；它不是實際 Register，也不指定實際存取寬度。假設讀寫之間沒有其他軟體或硬體更新，讀值為 <code>0000 1101b</code>（0x0D）。我們要把 RW 的 bit 1 設為 1，保留 bit 0 與兩個事件狀態。</p><p>螢幕較窄時，可左右滑動表格查看完整內容。</p>
+<div class="table-wrap"><table><caption>依屬性逐段組成寫值</caption><thead><tr><th scope="col">位元</th><th scope="col">假設屬性</th><th scope="col">讀值 → 寫入值</th><th scope="col">原因</th></tr></thead><tbody><tr><td>7:6</td><td>RsvdZ</td><td>00 → 00</td><td>寫零</td></tr><tr><td>5:4</td><td>RsvdP</td><td>00 → 00</td><td>保存讀值</td></tr><tr><td>3:2</td><td>RW1C</td><td>11 → 00</td><td>不清除事件，寫零</td></tr><tr><td>1:0</td><td>RW</td><td>01 → 11</td><td>設定 bit 1，保留 bit 0</td></tr></tbody></table></div>
+<p>組合後寫入 <code>0000 0011b</code>（0x03）。在假設條件下，RW 變成 11，兩個 RW1C 狀態維持 11，讀回為 <code>0000 1111b</code>（0x0F）。若直接把讀值 OR 進 bit 1，寫入 0x0F，兩個 RW1C 位元也會收到 1，因而被清除。</p>
+<p>實際操作前要查完整 Register 的欄位與允許的存取方式。硬體可能在讀寫之間更新狀態，其他軟體也可能修改控制位；需要依該欄位定義及平台的同步機制處理。這個例子的算式不能保證避開所有競爭。</p></aside>
 <p>RsvdP 要保存讀值，RsvdZ 要寫 0，不能把所有 Reserved 都當成同一種欄位。存取失敗不能當成「不支援」的有效回覆；成功讀到 0 也不保證該處實作了有意義的 Register。只有在正確入口與有效結果成立後，才依格式解讀。</p>
 <details class="source-note"><summary>屬性與結果邊界</summary><p>Base 6.0 §7.4、Table 7-2，pp.913–915。未實作 Register 在無其他錯誤時，設定讀取成功回 0：§7.3.3，p.913。0x100 的全零 Extended Header 表示沒有 Extended Capabilities：§7.6.1，p.1009。此規則不等同傳統 Null Capability 的 ID=0。</p></details></section>
 <section id="questions"><h2>沿完整查詢處理不同讀值</h2>

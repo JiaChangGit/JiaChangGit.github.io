@@ -72,10 +72,10 @@
         "PCIE-BASE-6.0"
       ],
       "title_en": "Reading Configuration Space and Finding Capabilities",
-      "description": "從傳統與 Extended 清單找到 Device Serial Number，練習指標、欄位版本、位元組順序與存取屬性的判讀。",
+      "description": "從 Header Layout 選對欄位圖，沿 Capability 清單查詢裝置序號，再用混合屬性案例學習組成寫值。",
       "publication_date": "2026-10-20",
-      "teaching_revision": 2,
-      "revision_date": "2026-10-23"
+      "teaching_revision": 3,
+      "revision_date": "2026-10-28"
     },
     {
       "number": 3,

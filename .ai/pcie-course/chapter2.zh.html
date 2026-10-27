@@ -1,3 +1,4 @@
+<aside class="note"><strong>【模擬資料】</strong><p>以下拓撲位置與讀值為教學用途建立，不代表特定硬體或平台。各案例的其他假設會在使用處說明。</p></aside>
 <!-- pcie-walk: walks/chapter2-dsn.json -->
 <div class="guided-walk" id="ch2-dsn" role="group" aria-labelledby="ch2-dsn-title" data-walk-version="1">
 <h3 id="ch2-dsn-title">先選清單，再把序號讀出來</h3>
@@ -44,6 +45,13 @@
 <p>查詢介面還必須能存取所需範圍。PCI 相容存取機制只涵蓋前 256 bytes；不能用它沒有提供的能力，推論 <code>0x100</code> 之後的功能不存在。ECAM（將 CPU 記憶體存取轉成設定要求的機制） 的平台基址與可用 Bus 範圍要由平台提供，本章不自行猜一個實體位址。</p>
 <details class="source-note"><summary>規格依據與存取限制</summary><p>Base 6.0 §7.2–§7.2.2.2，pp.905–909；Table 7-1（pp.907–908）列出 ECAM 位址中的 Bus、Device、Function 與 Register 部分。跨 DWORD 邊界或使用鎖定語意的 CPU 存取，不保證能由 Root Complex 轉成 Configuration Request（pp.907、909）。本章使用自然對齊、大小明確的設定讀取。</p></details></section>
 
+<section id="header-layout"><h2>同一個 offset，為什麼兩個 Function 的欄位不同？</h2>
+<p>先讀所選 Function 在 <code>0x0E</code> 的 Header Type Register（標頭類型暫存器），以 bits 6:0 的 Header Layout 選圖。Type 0 的配置看 Figure 7-10；代表 Root Port 或 Switch Port 的 Type 1 配置看 Figure 7-14。兩張圖的橫向位置是 bit，最右側是從 Configuration Space 起點算的 byte offset。</p>
+<div class="table-wrap"><table><caption>同一個 byte offset 在兩種 Header 中的用途</caption><thead><tr><th scope="col">offset</th><th scope="col">Type 0</th><th scope="col">Type 1（Root／Switch Port）</th></tr></thead><tbody><tr><td>0x10–0x14</td><td>Base Address Registers（BAR，資源基底暫存器）的一部分</td><td>此 Port 的 BAR 0、BAR 1</td></tr><tr><td>0x18</td><td>BAR 區域的一部分</td><td>Primary、Secondary、Subordinate Bus Number 等欄位</td></tr><tr><td>0x20</td><td>BAR 區域的一部分</td><td>Memory Base 與 Memory Limit</td></tr></tbody></table></div>
+<p>例如，看到 <code>0x18</code> 的 32-bit 讀值後，先取得同一 Function 的 Header Layout；選到 Type 1 才把其中對應的 bytes 解作 Bus Number。Type 0 的同一位置則屬於 BAR 區域。再查具體 BAR 的型態與欄位定義，才能解讀其用途。Type 1 的 Bus Number 用於安排下游搜尋範圍，Memory Base／Limit 描述資源視窗；完整配置與路由分別接到 <a href="chapter-3.html">Chapter 3</a> 和 <a href="chapter-4.html">Chapter 4</a>。</p>
+<p>Header Type 的 bit 7 與 bits 6:0 要分開讀。以本章假設值 <code>0x80</code> 為例，Layout 為 Type 0，bit 7 表示 Device <em>可能</em>有多個 Function，還需進一步查詢。VF 有不同適用規則，本例不納入。Header Layout 與 Configuration Request 的 Type 0／Type 1 封包分類也各有定義。</p>
+<p class="term-note">閱讀位置：Base 6.0 §7.5.1.1.9、Figure 7-8／Table 7-7（文件頁／PDF 頁 924–925）；Figure 7-10（p.928）；Figure 7-14 及其適用說明（p.936）。先從 Header Type 選圖，再讀該圖的 offset 與對應欄位說明。</p></section>
+
 <section id="choose"><h2>2. 想查某項功能，要先走哪一份清單？</h2>
 <p>先在指定版本的規格中找到目標功能的正式結構。本章要找 Device Serial Number，它屬於 Extended Capability；先前用過的 PCI Express Capability 則屬於前 256 bytes 的傳統清單。確認分類後，才使用相應入口與 Header 格式。</p>
 <div class="table-wrap"><table><caption>兩份清單的差異</caption><thead><tr><th scope="col">比較項目</th><th scope="col">傳統 Capability</th><th scope="col">Extended Capability</th></tr></thead><tbody>
@@ -52,13 +60,12 @@
 <tr><td>下一項的基準</td><td>Function 設定空間起點；不是目前結構起點。</td><td>同樣從 Function 設定空間起點計算。取出後要遮掉低 2 bits。</td></tr>
 <tr><td>清單結束</td><td>Next Pointer 為 0。ID 為 0 的 Null Capability 仍可能有下一項。</td><td>Next Offset 為 0。若完全沒有 Extended Capability，0x100 的 Header 依規格回報 ID、Version、Next 全為 0。</td></tr>
 </tbody></table></div>
-<p>Header Type 決定標頭布局，與 Configuration Request 封包的 Type 0／Type 1 不是同一個分類；封包類型會在下一章處理。本章已知目標 Header 是 Type 0，實際布局可對照 Figure 7-10（p.928）；Type 1 則看 Figure 7-14（p.936）。</p>
 <details class="source-note"><summary>這張表的來源與例外</summary><p>Base 6.0 §7.5.1.1.4，Figure 7-6／Table 7-5（pp.921–922）；§7.5.1.1.11（p.926）；傳統 Header 例見 Figure 7-22／Table 7-18（p.953）。Extended 格式見 §7.6–§7.6.3、Figures 7-42／7-43、Table 7-39（pp.1008–1010）。Null Capability 見 §7.9.27、Figure 7-384／Table 7-336（p.1315）。RCRB 的起點與空清單規則不同，本章沒有把它納入。</p></details></section>
 
 <section id="conventional"><h2>3. 清單中出現 ID = 0，就可以停止了嗎？</h2>
 <aside class="example"><strong>教學假設</strong><p>目標為已發現的 <code>0000:03:00.0</code>。設定讀取均成功，資料來自同一份穩定快照，平台可以存取完整設定空間。下列位置與讀值由作者設計，未列出的欄位不視為 0。此 Function 不支援 Flit Mode；後面的 AER（Advanced Error Reporting，進階錯誤回報） Header 因而採可用的 Version 2。這個前提是為了讓範例結構彼此一致，不由清單位置推得。</p></aside>
 <div class="table-wrap"><table><caption>傳統清單的假設讀值</caption><thead><tr><th scope="col">Function 內 byte offset</th><th scope="col">讀取寬度</th><th scope="col">讀值</th><th scope="col">這次查詢的用途</th></tr></thead><tbody>
-<tr><td>0x0E</td><td>8 bits</td><td>0x80</td><td>Header Layout 為 Type 0；bit 7 表示多功能 Device。</td></tr><tr><td>0x06</td><td>16 bits</td><td>0x0010</td><td>Status bit 4 為 1，有 Capability 清單。</td></tr><tr><td>0x34</td><td>8 bits</td><td>0x40</td><td>第一項位於 0x40。</td></tr><tr><td>0x40</td><td>16 bits</td><td>0x5001</td><td>ID 01h：Power Management；下一項 0x50。</td></tr><tr><td>0x50</td><td>16 bits</td><td>0x7000</td><td>ID 00h：Null Capability；下一項 0x70。</td></tr><tr><td>0x70</td><td>16 bits</td><td>0xD010</td><td>ID 10h：PCI Express Capability；下一項 0xD0。</td></tr><tr><td>0xD0</td><td>16 bits</td><td>0x0011</td><td>ID 11h：MSI-X；Next 為 0，清單結束。</td></tr>
+<tr><td>0x0E</td><td>8 bits</td><td>0x80</td><td>Header Layout 為 Type 0；bit 7 表示 Device 可能有多個 Function。</td></tr><tr><td>0x06</td><td>16 bits</td><td>0x0010</td><td>Status bit 4 為 1，有 Capability 清單。</td></tr><tr><td>0x34</td><td>8 bits</td><td>0x40</td><td>第一項位於 0x40。</td></tr><tr><td>0x40</td><td>16 bits</td><td>0x5001</td><td>ID 01h：Power Management；下一項 0x50。</td></tr><tr><td>0x50</td><td>16 bits</td><td>0x7000</td><td>ID 00h：Null Capability；下一項 0x70。</td></tr><tr><td>0x70</td><td>16 bits</td><td>0xD010</td><td>ID 10h：PCI Express Capability；下一項 0xD0。</td></tr><tr><td>0xD0</td><td>16 bits</td><td>0x0011</td><td>ID 11h：MSI-X；Next 為 0，清單結束。</td></tr>
 </tbody></table></div>
 <p><strong>案例推演：</strong>入口為 <code>0x40 &amp; 0xFC = 0x40</code>。每次讀取 16 bits 後，以 <code>value &amp; 0xFF</code> 取 ID，以高 8 bits 對應的 <code>(value &gt;&gt; 8) &amp; 0xFC</code> 取得下一項的位置。</p>
 <pre><code>0x40 → PM → 0x50 → Null → 0x70 → PCIe → 0xD0 → MSI-X → 結束
@@ -90,7 +97,10 @@ Next    = (header &gt;&gt; 20) &amp; 0xFFC   = 0x180</code></pre>
 <div class="table-wrap"><table><caption>先認識會直接影響判讀的存取屬性</caption><thead><tr><th scope="col">屬性</th><th scope="col">讀值與寫入的意義</th><th scope="col">常見誤判</th></tr></thead><tbody>
 <tr><td>RO</td><td>軟體不能改寫；若欄位明確反映硬體狀態，值仍可能隨執行狀態改變。</td><td>唯讀不等於永遠不變。</td></tr><tr><td>RW</td><td>軟體可設定或清除，仍須遵守該欄位的額外條件。</td><td>可寫不代表任何時刻、任何值都合法。</td></tr><tr><td>RW1C</td><td>讀取狀態；寫 1 清除對應狀態，寫 0 沒有效果。</td><td>把讀值原樣寫回，可能清掉原本想保留的事件。</td></tr><tr><td>RsvdP</td><td>保留且保存。此版本讀為 0，寫入時軟體必須保存讀到的值。</td><td>不能自行借來存資料。</td></tr><tr><td>RsvdZ</td><td>保留且寫零。此版本讀為 0，寫入時軟體必須使用 0。</td><td>不能對所有 Reserved 都套相同的讀改寫方式。</td></tr>
 </tbody></table></div>
-<aside class="example"><strong>語義練習，不是實際 Register 配置</strong><p>假設一個 4-bit 狀態欄全為 RW1C（寫入一才清除對應狀態），讀到 <code>1001b</code>，只想清除 bit 0。應寫 <code>0001b</code>；若期間沒有新事件，剩下 <code>1000b</code>。若把讀到的 <code>1001b</code> 原樣寫回，bit 3 也會一起被清掉。真實 Register 可能混合不同屬性，必須按整張欄位表組成寫值。</p></aside>
+<aside class="example"><strong>【模擬資料】混合屬性的寫入</strong><p>以下是假想的 8-bit 欄位配置，用來說明組值；它不是實際 Register，也不指定實際存取寬度。假設讀寫之間沒有其他軟體或硬體更新，讀值為 <code>0000 1101b</code>（0x0D）。我們要把 RW 的 bit 1 設為 1，保留 bit 0 與兩個事件狀態。</p><p>螢幕較窄時，可左右滑動表格查看完整內容。</p>
+<div class="table-wrap"><table><caption>依屬性逐段組成寫值</caption><thead><tr><th scope="col">位元</th><th scope="col">假設屬性</th><th scope="col">讀值 → 寫入值</th><th scope="col">原因</th></tr></thead><tbody><tr><td>7:6</td><td>RsvdZ</td><td>00 → 00</td><td>寫零</td></tr><tr><td>5:4</td><td>RsvdP</td><td>00 → 00</td><td>保存讀值</td></tr><tr><td>3:2</td><td>RW1C</td><td>11 → 00</td><td>不清除事件，寫零</td></tr><tr><td>1:0</td><td>RW</td><td>01 → 11</td><td>設定 bit 1，保留 bit 0</td></tr></tbody></table></div>
+<p>組合後寫入 <code>0000 0011b</code>（0x03）。在假設條件下，RW 變成 11，兩個 RW1C 狀態維持 11，讀回為 <code>0000 1111b</code>（0x0F）。若直接把讀值 OR 進 bit 1，寫入 0x0F，兩個 RW1C 位元也會收到 1，因而被清除。</p>
+<p>實際操作前要查完整 Register 的欄位與允許的存取方式。硬體可能在讀寫之間更新狀態，其他軟體也可能修改控制位；需要依該欄位定義及平台的同步機制處理。這個例子的算式不能保證避開所有競爭。</p></aside>
 <details class="source-note"><summary>規格依據</summary><p>Base 6.0 §7.4，Table 7-2，pp.913–915；本表取 RO、RW、RW1C（寫入一才清除對應狀態）、RsvdP（寫入時須保存讀值的保留欄位）、RsvdZ（寫入時須為零的保留欄位） 的語義。HwInit 與 Sticky 類型另有初始化和 Reset 條件，留到相關章節使用，不把未列在此表的類型視為等同 RW。</p></details></section>
 
 <section id="limits"><h2>6. 找不到時，怎麼分清「不存在」與「還不知道」？</h2>
@@ -108,4 +118,4 @@ Next    = (header &gt;&gt; 20) &amp; 0xFFC   = 0x180</code></pre>
 <details open class="question"><summary>某個狀態是 RO，兩次讀值不同，就代表裝置壞了嗎？</summary><p>不能這樣判定。先查欄位是否明確反映會變動的硬體狀態。RO 限制的是軟體改寫，並不禁止硬體依定義更新狀態。（Table 7-2，p.914。）</p></details></section>
 
 <section id="next"><h2>8. 查詢入口本身是怎麼找到的？</h2><p>本章從一個已知存在的 Function 開始。接著的 <a href="chapter-3.html">Chapter 3</a> 會往前追問：系統還不知道有哪些 Bus 和 Function 時，如何安排搜尋路徑？原本尚未配置的 Bridge，又如何逐步成為可查詢的下游入口？</p></section>
-<section id="sources"><h2>版本與來源</h2><p>本章以使用者提供的 PCI Express Base Specification Revision 6.0（6.0-1.0-PUB）為依據。各節附精確圖表與頁碼；所有讀值、拓樸位置與解析檢查均已區分為教學假設或作者的檢查方法。查核日期：2026-10-20。原始 PDF 不隨教材散布。</p></section>
+<section id="sources"><h2>版本與來源</h2><p>本章以使用者提供的 PCI Express Base Specification Revision 6.0（6.0-1.0-PUB）為依據。各節附精確圖表與頁碼；所有讀值、拓樸位置與解析檢查均已區分為教學假設或作者的檢查方法。查核日期：2026-10-28。原始 PDF 不隨教材散布。</p></section>

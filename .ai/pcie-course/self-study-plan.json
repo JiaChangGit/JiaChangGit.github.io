@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated": "2026-10-24",
+  "updated": "2026-10-28",
   "source_id": "PCIE-BASE-6.0",
   "source_revision": "6.0 (6.0-1.0-PUB)",
   "editorial_policy": "使用者提供的題目、代碼、分類與輸出格式均為參考；本清單是可修改的編輯提案，不是固定題數或強制答案模板。",
@@ -581,5 +581,21 @@
     "本提案不等於 Base 6.0 全文覆蓋完成；依 base6-coverage.json 持續核對。",
     "DMWr、ATS Invalidation 與 L0p 等項目的選題與既有文章銜接需逐項處理。"
   ],
-  "validation_note": "選題結構審查不代表每個候選題的全部技術前提與來源已查證；正式寫作前仍須閱讀 PDF。"
+  "validation_note": "選題結構審查不代表每個候選題的全部技術前提與來源已查證；正式寫作前仍須閱讀 PDF。",
+  "chapter_2_revision": {
+    "status": "locally_verified",
+    "location": "DOCS/pcie-course/chapter-2.html",
+    "covered": "選擇 Header Layout、同一 offset 的欄位差異、清單走訪與混合屬性組值。",
+    "references": [
+      "CFG-001",
+      "CFG-002",
+      "CFG-004",
+      "CFG-005",
+      "CAP-001",
+      "CAP-002",
+      "CAP-003",
+      "CAP-008"
+    ],
+    "remaining": "Bridge Bus／資源視窗、Reset 與完整適用性分別連到其他章節；尚未據此標示 CFG 或 CAP 全分類完成。"
+  }
 }
