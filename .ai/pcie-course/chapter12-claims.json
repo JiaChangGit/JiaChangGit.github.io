@@ -2,7 +2,7 @@
   "schema_version": 1,
   "course": "pcie-course",
   "chapter": 12,
-  "updated": "2026-10-21",
+  "updated": "2026-10-28",
   "page_index_base": 1,
   "claims": [
     {
@@ -395,6 +395,82 @@
       ],
       "request_bytes": 256,
       "request_end": "0x400010FF"
+    },
+    {
+      "id": "PCIE-CH12-DPC-RELEASE-001",
+      "claim": "DPC 範例分別清 Interrupt Status 與 Trigger Status，等待 Link Active=0 後才釋放；Reason 於 Trigger 清除後無效。DPC 中新進下游 Memory Read 依 Completion Control=0 由 Port 產生 CA，Completer ID 為該 Port；不與舊在途 Request 的 Completion Timeout 混同。",
+      "kind": "teaching_example",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.9.3",
+        "6.2.11",
+        "6.2.11.1",
+        "6.6.1",
+        "7.9.14.3",
+        "7.9.14.4",
+        "7.9.14.5"
+      ],
+      "figures": [
+        "7-299",
+        "7-300",
+        "7-301"
+      ],
+      "tables": [
+        "7-263",
+        "7-264",
+        "7-265"
+      ],
+      "document_pages": [
+        262,
+        694,
+        697,
+        721,
+        722,
+        723,
+        1250,
+        1251,
+        1252,
+        1253,
+        1254
+      ],
+      "pdf_pages": [
+        262,
+        694,
+        697,
+        721,
+        722,
+        723,
+        1250,
+        1251,
+        1252,
+        1253,
+        1254
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-28",
+      "assumptions": [
+        "Continue independent DPC event on Switch Downstream Port 02:01.0, source Endpoint 03:00.0",
+        "DPC base 0x300, Control 0x000A, Status 0x000B; no RP Extensions",
+        "No concurrent event or software write; snapshot saved before clearing",
+        "Author chooses separate interrupt acknowledgment and containment release; split writes not required",
+        "New valid Memory Read submitted for downstream transmission after DPC triggered; target BAR in 03:00.0",
+        "Readiness and device/driver recovery use their applicable conditions, not assumed complete at release",
+        "Upstream management path to Switch remains available; only its 02:01.0 downstream Link is contained"
+      ],
+      "interrupt_acknowledgment": {
+        "offset": "0x308",
+        "width_bits": 16,
+        "before": "0x000B",
+        "write": "0x0008",
+        "after": "0x0003"
+      },
+      "release_write": "0x0001",
+      "new_memory_read_completion": {
+        "dpc_completion_control": 0,
+        "status": "CA",
+        "completer": "02:01.0"
+      }
     }
   ]
 }

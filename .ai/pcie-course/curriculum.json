@@ -364,10 +364,10 @@
         "PCI-FW-3.3"
       ],
       "title_en": "Error Evidence, Reporting, and Containment",
-      "description": "以 AER、Header Log、Root 記錄與 DPC 分清錯誤證據、回報路徑與隔離結果。",
+      "description": "沿 AER 紀錄連到 DPC，帶讀清中斷、等待 Link 停止、隔離中的讀取回覆與解除後恢復。",
       "publication_date": "2026-10-21",
-      "teaching_revision": 2,
-      "revision_date": "2026-10-23"
+      "teaching_revision": 3,
+      "revision_date": "2026-10-28"
     },
     {
       "number": 13,

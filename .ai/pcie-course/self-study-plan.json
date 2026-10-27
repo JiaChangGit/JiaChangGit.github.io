@@ -708,5 +708,18 @@
       "HOTPLUG-008"
     ],
     "remaining": "完整 Slot 通知併發、Surprise Removal、跨拓樸定位與裝置資料保存仍須逐項深入；本輪不因此標示 Hot-Plug 全分類完成。"
+  },
+  "chapter_12_revision": {
+    "status": "locally_verified",
+    "location": "DOCS/pcie-course/chapter-12.html#dpc-release",
+    "covered": "續用獨立 DPC 案例，以寫入前後讀值及含等待分支的流程圖分開處理中斷與隔離；串連 DPC 中新進 Memory Read 的 CA、Port Completer ID、舊在途 Request 的 Timeout 與解除後重建。",
+    "references": [
+      "AER-006",
+      "AER-007",
+      "AER-009",
+      "ERR-006",
+      "INTEGRATION-004"
+    ],
+    "remaining": "完整 AER 多筆記錄、FLIT Mode 錯誤對應、RP Extensions 與跨拓樸根因分析仍須逐項深入；本輪不因此標示錯誤與 AER 全分類完成。"
   }
 }
