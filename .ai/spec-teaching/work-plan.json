@@ -21,5 +21,24 @@
     "publish and verify same commit CI",
     "Base 6.0 detailed subsection coverage audit: 1166 unreviewed locators remain"
   ],
-  "coverage_note": "38 ready topic lessons do not establish complete teaching of every Base 6.0 subsection; 158 guided locators and 1166 unreviewed locators are retained separately."
+  "coverage_note": "38 ready topic lessons do not establish complete teaching of every Base 6.0 subsection; 158 guided locators and 1166 unreviewed locators are retained separately.",
+  "self_study_revision": {
+    "date": "2026-10-24",
+    "policy": "Reference questions, classification and answer layouts are editorial inputs, not fixed requirements.",
+    "batch": "Chapter 1 topology, transaction roles and per-Link observations in three editions",
+    "status": "locally_verified_release_prepared",
+    "verified": [
+      "Base 6.0 original figure and field review",
+      "162 existing tests",
+      "16 Chapter 1 browser cases",
+      "source PDF hashes",
+      "Jekyll build and public artifact boundaries",
+      "manual desktop, phone, dark-mode and bilingual diagram review",
+      "toolkit manifest integrity and public bundle exclusions"
+    ],
+    "pending": [
+      "publication and same-commit CI"
+    ],
+    "coverage_note": "Other candidate questions and unreviewed Base 6.0 locators remain pending; first-batch completion does not imply full specification coverage."
+  }
 }

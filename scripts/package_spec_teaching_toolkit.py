@@ -77,6 +77,8 @@ def package(repo, destination, output):
 
 本版保存已確認的教學規則與本輪實作：PCIe 藍、NVMe 綠；用問題帶讀角色、欄位、條件及 Figure／Table 的查閱路線。必要解說直接顯示，逐步操作只高亮圖文，不設作答或評分門檻。
 
+2026-10-24 補充：題目、分類、題數與回答格式都只是參考。共同 skill 的 `references/authoring.md` 保存最新選題與表達方法；`.ai/pcie-course/self-study-plan.json` 記錄可修改的選題提案。Chapter 1 已依這個方法重編架構、交易角色與逐 Link 判讀；這不代表其餘候選題已完成或全部來源已核對。
+
 ## 內容與使用
 
 - `skills/spec-teaching/` 是共同規則；`skills/pcie-spec-teaching/` 是 PCIe 相容入口。可閱讀後手動複製到自己的 Codex skills 目錄；本 ZIP 不會執行安裝。

@@ -7,6 +7,8 @@ description: Create and revise the PCIe Base 6.0 course and the selected NVMe se
 
 本 skill 保存本次已對齊的教學方式。適用範圍與工作狀態見 [scope.md](references/scope.md)；寫作與視覺決策見 [teaching.md](references/teaching.md)；編輯入口及檢查見 [workflow.md](references/workflow.md)。執行任務時先讀使用者當次要求與 repository 的 `AGENTS.md`，再讀相關參考文件。使用者的新指示優先於舊版 skill 與歷史專案限制。
 
+2026-10-24 使用者明確說明：提供的題目、分類、題數與回答格式都只是參考。撰寫 PCIe 自學教材時另讀 [authoring.md](references/authoring.md)：按學習目的選題與組織內容，不要求逐題沿用原代碼或填滿固定小節。來源準確、模式與適用條件、自然中文及必要推理仍須保留。
+
 ## 核心決策
 
 - 讀者具備基本程式、CPU／記憶體與位元運算概念，尚未熟悉 PCIe 或 NVMe。先建立系統觀，再深入規格、欄位與流程。

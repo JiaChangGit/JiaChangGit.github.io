@@ -1,0 +1,72 @@
+{
+  "walk_id": "ch1-roles",
+  "title": "同一筆 Read，逐段看誰在傳、誰在收",
+  "svg": "<svg viewBox=\"0 0 760 470\" role=\"img\" aria-labelledby=\"ch1-roles-svg-title ch1-roles-svg-desc\"><title id=\"ch1-roles-svg-title\">同一筆 Memory Read 的角色與傳輸方向</title><desc id=\"ch1-roles-svg-desc\">由上往下追蹤 Endpoint A Function 1 的 Request，再追蹤 Root Complex 返回的 Completion。Link LA 連接 Endpoint Port 與 Switch Downstream Port A；Link LR 連接 Switch Upstream Port 與 Root Port。Switch 內部轉送以虛線表示。</desc><g fill=\"none\" stroke=\"var(--line)\" stroke-width=\"2\" stroke-dasharray=\"5 5\"><path d=\"M90 88 V440\"/><path d=\"M285 88 V440\"/><path d=\"M475 88 V440\"/><path d=\"M670 88 V440\"/></g><g data-walk-target=\"ep\"><rect x=\"12\" y=\"14\" width=\"156\" height=\"72\" rx=\"8\" fill=\"var(--blue-soft)\" stroke=\"var(--line)\"/><text x=\"90\" y=\"42\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"18\">Endpoint A Port</text><text x=\"90\" y=\"68\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"17\">Function 1</text></g><g data-walk-target=\"dp\"><rect x=\"205\" y=\"14\" width=\"160\" height=\"72\" rx=\"8\" fill=\"var(--blue-soft)\" stroke=\"var(--line)\"/><text x=\"285\" y=\"42\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"18\">Switch DP A</text><text x=\"285\" y=\"68\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"16\">Downstream Port</text></g><g data-walk-target=\"up\"><rect x=\"395\" y=\"14\" width=\"160\" height=\"72\" rx=\"8\" fill=\"var(--blue-soft)\" stroke=\"var(--line)\"/><text x=\"475\" y=\"42\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"18\">Switch UP</text><text x=\"475\" y=\"68\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"16\">Upstream Port</text></g><g data-walk-target=\"rp\"><rect x=\"592\" y=\"14\" width=\"156\" height=\"72\" rx=\"8\" fill=\"var(--blue-soft)\" stroke=\"var(--line)\"/><text x=\"670\" y=\"42\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"18\">Root Port</text><text x=\"670\" y=\"68\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"17\">Root Complex</text></g><g data-walk-target=\"req-a\"><path d=\"M90 140 H277\" stroke=\"var(--accent)\" stroke-width=\"3\"/><path d=\"M277 135 L285 140 L277 145 Z\" fill=\"var(--accent)\"/><text x=\"187\" y=\"126\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"18\">LA: Memory Read</text></g><g data-walk-target=\"inside-up\"><path d=\"M285 185 H467\" stroke=\"var(--accent)\" stroke-width=\"2.5\" stroke-dasharray=\"6 5\"/><path d=\"M467 180 L475 185 L467 190 Z\" fill=\"var(--accent)\"/><text x=\"380\" y=\"172\" text-anchor=\"middle\" fill=\"var(--muted)\" font-size=\"16\">Switch forwarding</text></g><g data-walk-target=\"req-root\"><path d=\"M475 230 H662\" stroke=\"var(--accent)\" stroke-width=\"3\"/><path d=\"M662 225 L670 230 L662 235 Z\" fill=\"var(--accent)\"/><text x=\"572\" y=\"216\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"18\">LR: Memory Read</text></g><g data-walk-target=\"cpl-root\"><path d=\"M670 320 H483\" stroke=\"var(--accent)\" stroke-width=\"3\"/><path d=\"M483 315 L475 320 L483 325 Z\" fill=\"var(--accent)\"/><text x=\"572\" y=\"306\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"18\">LR: Completion</text></g><g data-walk-target=\"inside-down\"><path d=\"M475 365 H293\" stroke=\"var(--accent)\" stroke-width=\"2.5\" stroke-dasharray=\"6 5\"/><path d=\"M293 360 L285 365 L293 370 Z\" fill=\"var(--accent)\"/><text x=\"380\" y=\"352\" text-anchor=\"middle\" fill=\"var(--muted)\" font-size=\"16\">Switch forwarding</text></g><g data-walk-target=\"cpl-a\"><path d=\"M285 410 H98\" stroke=\"var(--accent)\" stroke-width=\"3\"/><path d=\"M98 405 L90 410 L98 415 Z\" fill=\"var(--accent)\"/><text x=\"187\" y=\"396\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"18\">LA: Completion</text></g><text x=\"380\" y=\"460\" text-anchor=\"middle\" fill=\"var(--muted)\" font-size=\"16\">Request: Upstream → Root Complex · Completion: Downstream → Endpoint</text></svg>",
+  "steps": [
+    {
+      "title": "A 發出 Request：先通過 LA",
+      "html": "<p>Endpoint A 的 Function 1 是 Requester（發起這筆交易的功能）。在 LA 上，A 的 Port 是 Transmitter（傳送端），Switch Downstream Port A 是 Receiver（接收端）。Request 朝 Root Complex 前進，所以方向是 Upstream。</p>",
+      "targets": [
+        "ep",
+        "dp",
+        "req-a"
+      ],
+      "condition_html": "<p>本例由 Function 1 讀取主機記憶體；只追蹤一筆可用一個 Completion 回覆的 Read，省略仲裁、重送與其他流量。</p>",
+      "source_html": "<p>Base 6.0 Terms and Acronyms：Requester、Receiver、Transmitter、Upstream，文件頁／PDF 頁 90、93–94；Figure 1-3，p.107。</p>",
+      "claim_ids": [
+        "PCIE-CH1-ROLES-001",
+        "PCIE-CH1-EXAMPLE-001"
+      ]
+    },
+    {
+      "title": "Switch 轉送 Request：再通過 LR",
+      "html": "<p>Switch 將 Request 轉到自己的 Upstream Port，再送給 Root Port。這一段由 Switch 的 Upstream Port 傳送、Root Port 接收。原始 Requester 仍是 A 的 Function 1；Switch 內部的虛線只表示轉送，不是另一條外部 Link。</p>",
+      "targets": [
+        "up",
+        "rp",
+        "req-root",
+        "inside-up"
+      ],
+      "condition_html": "<p>觀察點已從 LA 改到 LR；Switch 轉送同一筆 Request，不在此例另行發起交易。</p>",
+      "source_html": "<p>Base 6.0 §1.3.3／Figure 1-3，p.107；§2.2.6.2，p.157：Switch 轉送時保留 Transaction ID。</p>",
+      "claim_ids": [
+        "PCIE-CH1-ROLES-001",
+        "PCIE-CH1-BDF-001"
+      ]
+    },
+    {
+      "title": "主機一端回傳 Completion：通過 LR",
+      "html": "<p>Root Complex 一端的 Completer（處理原 Request 並產生回覆的功能）返回 Completion。LR 上改成 Root Port 傳送、Switch Upstream Port 接收。資料方向變成 Downstream；Upstream Port 的名稱保持不變。</p>",
+      "targets": [
+        "rp",
+        "up",
+        "cpl-root"
+      ],
+      "condition_html": "<p>假設 Read 已被正確處理，Completer 正在回覆資料。本圖不由單一 Link 的傳送推定所有交易成功。</p>",
+      "source_html": "<p>Base 6.0 Terms and Acronyms：Completer、Completion、Downstream、Receiving/Transmitting Port，文件頁／PDF 頁 82–84、90、93。</p>",
+      "claim_ids": [
+        "PCIE-CH1-ROLES-001"
+      ]
+    },
+    {
+      "title": "Switch 轉送 Completion：經 LA 回到 A",
+      "html": "<p>Switch 從 Downstream Port A 將 Completion 送回 A。LA 上改成 Downstream Port A 傳送、A 的 Port 接收。A 的 Function 1 仍是原始 Requester，現在是在接收回覆；Requester 不是「此刻正在傳送的那一端」。</p>",
+      "targets": [
+        "dp",
+        "ep",
+        "cpl-a",
+        "inside-down"
+      ],
+      "condition_html": "<p>這是同一筆 Read 的返回路徑；Completion 欄位與完整性檢查會在交易章繼續帶讀。</p>",
+      "source_html": "<p>Base 6.0 Terms and Acronyms：Requester、Completer、Completion；§1.3.3／Figure 1-3，文件頁／PDF 頁 82–83、90、107。</p>",
+      "claim_ids": [
+        "PCIE-CH1-ROLES-001"
+      ]
+    }
+  ],
+  "caption_html": "作者依規格建立的角色時序圖。由上往下讀事件，不表示實際延遲；實線是 LA／LR 上的傳送，虛線是 Switch 內部轉送。圖中 DP／UP 分別表示 Downstream Port／Upstream Port。",
+  "order_html": "<p>先沿 Request 從 A 走到主機，再沿 Completion 返回；每條實線都重新指定傳送端與接收端。LA、LR 是本章用來追蹤連線的代號。</p>",
+  "summary_html": "<p class=\"lead\">Upstream／Downstream Port 的名稱由拓撲決定。Transmitter／Receiver 隨當次傳送改變；同一筆 Read 的 Requester 不會因開始接收 Completion 而改名。</p>",
+  "components": [],
+  "language": "zh"
+}

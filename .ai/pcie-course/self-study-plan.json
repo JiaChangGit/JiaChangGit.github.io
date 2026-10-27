@@ -1,0 +1,585 @@
+{
+  "schema_version": 1,
+  "updated": "2026-10-24",
+  "source_id": "PCIE-BASE-6.0",
+  "source_revision": "6.0 (6.0-1.0-PUB)",
+  "editorial_policy": "使用者提供的題目、代碼、分類與輸出格式均為參考；本清單是可修改的編輯提案，不是固定題數或強制答案模板。",
+  "first_batch": {
+    "chapter": 1,
+    "status": "written_and_locally_verified",
+    "location": "DOCS/pcie-course/chapter-1.html",
+    "learning_goals": [
+      {
+        "goal": "元件、設定對象與連接單位",
+        "anchors": [
+          "objects"
+        ],
+        "reference_questions": [
+          "ARCH-001",
+          "ARCH-009"
+        ]
+      },
+      {
+        "goal": "固定拓撲方向與當次傳輸角色",
+        "anchors": [
+          "roles"
+        ],
+        "reference_questions": [
+          "ARCH-002"
+        ]
+      },
+      {
+        "goal": "配對每條 Link 的相鄰 Port",
+        "anchors": [
+          "snapshot",
+          "links"
+        ],
+        "reference_questions": [
+          "ARCH-003",
+          "ARCH-006",
+          "ARCH-010"
+        ]
+      },
+      {
+        "goal": "Function 類型與欄位適用性",
+        "anchors": [
+          "identify"
+        ],
+        "reference_questions": [
+          "ARCH-004"
+        ]
+      },
+      {
+        "goal": "Port 能力、Link 共同能力與目前結果",
+        "anchors": [
+          "path-capabilities"
+        ],
+        "reference_questions": [
+          "ARCH-005"
+        ]
+      }
+    ],
+    "related_material": "既有 BDF、Bridge Bus 與 Requester ID 錨點保留；分層與逐 Link 可靠傳輸留在相應主題，不在本章重寫。"
+  },
+  "candidate_groups": [
+    {
+      "category": "ARCH",
+      "status": "first_batch_written_and_locally_verified",
+      "independent_reference_ids": [
+        "ARCH-001",
+        "ARCH-002",
+        "ARCH-003",
+        "ARCH-004",
+        "ARCH-005"
+      ],
+      "folded_reference_ids": [
+        "ARCH-006",
+        "ARCH-007",
+        "ARCH-008",
+        "ARCH-009",
+        "ARCH-010"
+      ]
+    },
+    {
+      "category": "CFG",
+      "status": "editorial_review_only",
+      "independent_reference_ids": [
+        "CFG-001",
+        "CFG-002",
+        "CFG-003",
+        "CFG-004",
+        "CFG-005",
+        "CFG-007",
+        "CFG-008",
+        "CFG-009"
+      ],
+      "folded_reference_ids": [
+        "CFG-006",
+        "CFG-010"
+      ]
+    },
+    {
+      "category": "CAP",
+      "status": "editorial_review_only",
+      "independent_reference_ids": [
+        "CAP-001",
+        "CAP-002",
+        "CAP-003",
+        "CAP-004",
+        "CAP-005"
+      ],
+      "folded_reference_ids": [
+        "CAP-006",
+        "CAP-007",
+        "CAP-008",
+        "CAP-009",
+        "CAP-010"
+      ]
+    },
+    {
+      "category": "LINK",
+      "status": "editorial_review_only",
+      "independent_reference_ids": [
+        "LINK-001",
+        "LINK-002",
+        "LINK-003",
+        "LINK-004"
+      ],
+      "folded_reference_ids": [
+        "LINK-005",
+        "LINK-006",
+        "LINK-007",
+        "LINK-008",
+        "LINK-009",
+        "LINK-010"
+      ]
+    },
+    {
+      "category": "LANE",
+      "status": "editorial_review_only",
+      "independent_reference_ids": [
+        "LANE-002",
+        "LANE-003",
+        "LANE-004",
+        "LANE-006",
+        "LANE-008",
+        "LANE-009"
+      ],
+      "folded_reference_ids": [
+        "LANE-001",
+        "LANE-005",
+        "LANE-007",
+        "LANE-010"
+      ]
+    },
+    {
+      "category": "LTSSM",
+      "status": "editorial_review_only",
+      "independent_reference_ids": [
+        "LTSSM-001",
+        "LTSSM-002",
+        "LTSSM-003",
+        "LTSSM-004",
+        "LTSSM-006",
+        "LTSSM-007",
+        "LTSSM-010"
+      ],
+      "folded_reference_ids": [
+        "LTSSM-005",
+        "LTSSM-008",
+        "LTSSM-009"
+      ]
+    },
+    {
+      "category": "SPEED",
+      "status": "editorial_review_only",
+      "independent_reference_ids": [
+        "SPEED-002",
+        "SPEED-005",
+        "SPEED-007",
+        "SPEED-009"
+      ],
+      "folded_reference_ids": [
+        "SPEED-001",
+        "SPEED-003",
+        "SPEED-004",
+        "SPEED-006",
+        "SPEED-008",
+        "SPEED-010"
+      ]
+    },
+    {
+      "category": "EQ",
+      "status": "editorial_review_only",
+      "independent_reference_ids": [
+        "EQ-001",
+        "EQ-002",
+        "EQ-003",
+        "EQ-004",
+        "EQ-005",
+        "EQ-006",
+        "EQ-008",
+        "EQ-009"
+      ],
+      "folded_reference_ids": [
+        "EQ-007",
+        "EQ-010"
+      ]
+    },
+    {
+      "category": "TLP",
+      "status": "editorial_review_only",
+      "independent_reference_ids": [
+        "TLP-002",
+        "TLP-004",
+        "TLP-006",
+        "TLP-007",
+        "TLP-009"
+      ],
+      "folded_reference_ids": [
+        "TLP-001",
+        "TLP-003",
+        "TLP-005",
+        "TLP-008",
+        "TLP-010"
+      ]
+    },
+    {
+      "category": "REQ",
+      "status": "editorial_review_only",
+      "independent_reference_ids": [
+        "REQ-001",
+        "REQ-002",
+        "REQ-004",
+        "REQ-005",
+        "REQ-007",
+        "REQ-009"
+      ],
+      "folded_reference_ids": [
+        "REQ-003",
+        "REQ-006",
+        "REQ-008",
+        "REQ-010"
+      ]
+    },
+    {
+      "category": "ORDER",
+      "status": "editorial_review_only",
+      "independent_reference_ids": [
+        "ORDER-001",
+        "ORDER-002",
+        "ORDER-003",
+        "ORDER-004",
+        "ORDER-005",
+        "ORDER-006",
+        "ORDER-008"
+      ],
+      "folded_reference_ids": [
+        "ORDER-007",
+        "ORDER-009",
+        "ORDER-010"
+      ]
+    },
+    {
+      "category": "PAYLOAD",
+      "status": "editorial_review_only",
+      "independent_reference_ids": [
+        "PAYLOAD-001",
+        "PAYLOAD-002",
+        "PAYLOAD-003",
+        "PAYLOAD-004",
+        "PAYLOAD-005",
+        "PAYLOAD-007"
+      ],
+      "folded_reference_ids": [
+        "PAYLOAD-006",
+        "PAYLOAD-008",
+        "PAYLOAD-009",
+        "PAYLOAD-010"
+      ]
+    },
+    {
+      "category": "ROUTE",
+      "status": "editorial_review_only",
+      "independent_reference_ids": [
+        "ROUTE-001",
+        "ROUTE-002",
+        "ROUTE-003",
+        "ROUTE-007"
+      ],
+      "folded_reference_ids": [
+        "ROUTE-004",
+        "ROUTE-005",
+        "ROUTE-006",
+        "ROUTE-008",
+        "ROUTE-009",
+        "ROUTE-010"
+      ]
+    },
+    {
+      "category": "DLL",
+      "status": "editorial_review_only",
+      "independent_reference_ids": [
+        "DLL-001",
+        "DLL-002",
+        "DLL-003",
+        "DLL-004",
+        "DLL-006"
+      ],
+      "folded_reference_ids": [
+        "DLL-005",
+        "DLL-007",
+        "DLL-008",
+        "DLL-009",
+        "DLL-010"
+      ]
+    },
+    {
+      "category": "REPLAY",
+      "status": "editorial_review_only",
+      "independent_reference_ids": [
+        "REPLAY-001",
+        "REPLAY-003",
+        "REPLAY-004",
+        "REPLAY-006",
+        "REPLAY-007"
+      ],
+      "folded_reference_ids": [
+        "REPLAY-002",
+        "REPLAY-005",
+        "REPLAY-008",
+        "REPLAY-009",
+        "REPLAY-010"
+      ]
+    },
+    {
+      "category": "FC",
+      "status": "editorial_review_only",
+      "independent_reference_ids": [
+        "FC-001",
+        "FC-003",
+        "FC-004",
+        "FC-006",
+        "FC-007",
+        "FC-009"
+      ],
+      "folded_reference_ids": [
+        "FC-002",
+        "FC-005",
+        "FC-008",
+        "FC-010"
+      ]
+    },
+    {
+      "category": "PHY",
+      "status": "editorial_review_only",
+      "independent_reference_ids": [
+        "PHY-001",
+        "PHY-002",
+        "PHY-004",
+        "PHY-005",
+        "PHY-009"
+      ],
+      "folded_reference_ids": [
+        "PHY-003",
+        "PHY-006",
+        "PHY-007",
+        "PHY-008",
+        "PHY-010"
+      ]
+    },
+    {
+      "category": "ENC",
+      "status": "editorial_review_only",
+      "independent_reference_ids": [
+        "ENC-001",
+        "ENC-002",
+        "ENC-003",
+        "ENC-005",
+        "ENC-006"
+      ],
+      "folded_reference_ids": [
+        "ENC-004",
+        "ENC-007",
+        "ENC-008",
+        "ENC-009",
+        "ENC-010"
+      ]
+    },
+    {
+      "category": "PM",
+      "status": "editorial_review_only",
+      "independent_reference_ids": [
+        "PM-001",
+        "PM-002",
+        "PM-003",
+        "PM-004",
+        "PM-005",
+        "PM-006",
+        "PM-007",
+        "PM-008"
+      ],
+      "folded_reference_ids": [
+        "PM-009",
+        "PM-010"
+      ]
+    },
+    {
+      "category": "RESET",
+      "status": "editorial_review_only",
+      "independent_reference_ids": [
+        "RESET-001",
+        "RESET-002",
+        "RESET-003",
+        "RESET-005",
+        "RESET-006",
+        "RESET-007"
+      ],
+      "folded_reference_ids": [
+        "RESET-004",
+        "RESET-008",
+        "RESET-009",
+        "RESET-010"
+      ]
+    },
+    {
+      "category": "ERR",
+      "status": "editorial_review_only",
+      "independent_reference_ids": [
+        "ERR-001",
+        "ERR-005",
+        "ERR-006"
+      ],
+      "folded_reference_ids": [
+        "ERR-002",
+        "ERR-003",
+        "ERR-004",
+        "ERR-007",
+        "ERR-008",
+        "ERR-009",
+        "ERR-010",
+        "ERR-011"
+      ]
+    },
+    {
+      "category": "AER",
+      "status": "editorial_review_only",
+      "independent_reference_ids": [
+        "AER-001",
+        "AER-002",
+        "AER-003",
+        "AER-004",
+        "AER-005",
+        "AER-006",
+        "AER-010",
+        "AER-011"
+      ],
+      "folded_reference_ids": [
+        "AER-007",
+        "AER-008",
+        "AER-009"
+      ]
+    },
+    {
+      "category": "MSG",
+      "status": "editorial_review_only",
+      "independent_reference_ids": [
+        "MSG-001",
+        "MSG-002",
+        "MSG-005",
+        "MSG-006",
+        "MSG-008"
+      ],
+      "folded_reference_ids": [
+        "MSG-003",
+        "MSG-004",
+        "MSG-007",
+        "MSG-009",
+        "MSG-010"
+      ]
+    },
+    {
+      "category": "HOTPLUG",
+      "status": "editorial_review_only",
+      "independent_reference_ids": [
+        "HOTPLUG-001",
+        "HOTPLUG-002",
+        "HOTPLUG-003",
+        "HOTPLUG-004",
+        "HOTPLUG-007",
+        "HOTPLUG-009"
+      ],
+      "folded_reference_ids": [
+        "HOTPLUG-005",
+        "HOTPLUG-006",
+        "HOTPLUG-008",
+        "HOTPLUG-010"
+      ]
+    },
+    {
+      "category": "ATOMIC",
+      "status": "editorial_review_only",
+      "independent_reference_ids": [
+        "ATOMIC-001",
+        "ATOMIC-002",
+        "ATOMIC-003",
+        "ATOMIC-004",
+        "ATOMIC-005",
+        "ATOMIC-006"
+      ],
+      "folded_reference_ids": [
+        "ATOMIC-007",
+        "ATOMIC-008",
+        "ATOMIC-009",
+        "ATOMIC-010"
+      ]
+    },
+    {
+      "category": "ADV",
+      "status": "editorial_review_only",
+      "independent_reference_ids": [
+        "ADV-003",
+        "ADV-004",
+        "ADV-005",
+        "ADV-006",
+        "ADV-007"
+      ],
+      "folded_reference_ids": [
+        "ADV-001",
+        "ADV-002",
+        "ADV-008",
+        "ADV-009",
+        "ADV-010"
+      ]
+    },
+    {
+      "category": "FLIT",
+      "status": "editorial_review_only",
+      "independent_reference_ids": [
+        "FLIT-001",
+        "FLIT-002",
+        "FLIT-004",
+        "FLIT-005",
+        "FLIT-006",
+        "FLIT-008",
+        "FLIT-009"
+      ],
+      "folded_reference_ids": [
+        "FLIT-003",
+        "FLIT-007",
+        "FLIT-010"
+      ]
+    },
+    {
+      "category": "INTEGRATION",
+      "status": "editorial_review_only",
+      "independent_reference_ids": [
+        "INTEGRATION-001",
+        "INTEGRATION-002",
+        "INTEGRATION-004",
+        "INTEGRATION-006",
+        "INTEGRATION-007"
+      ],
+      "folded_reference_ids": [
+        "INTEGRATION-003",
+        "INTEGRATION-005",
+        "INTEGRATION-008",
+        "INTEGRATION-009",
+        "INTEGRATION-010"
+      ]
+    }
+  ],
+  "scope_corrections": [
+    "先核對 Non-Flit Mode / Flit Mode 的不同 TLP 格式，再解碼 Header。",
+    "Lower Address 相同本身不足以證明 Completion 重疊。",
+    "Recovery 不等於 Data Link/Flow Control 必然重新初始化。",
+    "有限 Completion Credit 案例先確認接收元件與方向。",
+    "Base 6.0 已收錄 L1 PM Substates、SR-IOV、ATS/PRI/PASID、MSI/MSI-X 及電氣要求。",
+    "完整分析參考題若未增加學習目的，併入主要帶讀案例。"
+  ],
+  "deferred_gaps": [
+    "本提案不等於 Base 6.0 全文覆蓋完成；依 base6-coverage.json 持續核對。",
+    "DMWr、ATS Invalidation 與 L0p 等項目的選題與既有文章銜接需逐項處理。"
+  ],
+  "validation_note": "選題結構審查不代表每個候選題的全部技術前提與來源已查證；正式寫作前仍須閱讀 PDF。"
+}

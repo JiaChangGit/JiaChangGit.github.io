@@ -26,15 +26,15 @@
     },
     {
       "number": 1,
-      "title": "拓樸、Function 與識別方式",
-      "question": "一張卡、一個裝置與一個 Function 是同一件事嗎？系統究竟在辨識誰？",
+      "title": "拓撲、交易角色與逐 Link 判讀",
+      "question": "如何從同一張系統圖辨認 Function、Port 與 Link，再把交易角色與欄位讀值放回正確的位置？",
       "topics": [
-        "實體封裝、Device 與 Function 的區別",
-        "Root Complex 邊界與多條 PCIe 階層",
-        "Switch 上下游 Port、Bridge 與匯流排關係",
-        "Bus、Device、Function 與 Segment 的識別範圍",
-        "Requester ID 與拓樸識別的關係",
-        "以拓樸圖追蹤同一 Function，不把 BDF 當成永久身分"
+        "Component、Device、Function、Port、Link 與 Lane 的關係",
+        "沿 Memory Read 與 Completion 追蹤固定方向與當次傳輸角色",
+        "為 Switch 各條外部 Link 配對相鄰 Port",
+        "從 Device/Port Type 核對 Function 類型與欄位適用性",
+        "分別比較 Port 能力、Link 共同能力與目前結果",
+        "以 BDF、Bridge Bus 範圍與 Requester ID 補上軟體識別"
       ],
       "prerequisites": [
         0
@@ -44,11 +44,11 @@
         "PCIE-BASE-6.0",
         "PCI-FW-3.3"
       ],
-      "title_en": "Topology, Functions, and PCIe Identity",
-      "description": "沿著含 Switch 的拓樸，釐清實體卡、Function 與 Port 的關係，再從欄位判讀 BDF、下游 Bus 範圍與 Requester ID。",
+      "title_en": "Topology, Transaction Roles, and Per-Link Observations",
+      "description": "以同一個 Switch 拓撲帶讀元件、Function、Port 與 Link，追蹤 Read 往返角色，再比較連線能力、目前結果與欄位適用性。",
       "publication_date": "2026-10-20",
-      "teaching_revision": 2,
-      "revision_date": "2026-10-23"
+      "teaching_revision": 3,
+      "revision_date": "2026-10-24"
     },
     {
       "number": 2,

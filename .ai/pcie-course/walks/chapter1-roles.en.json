@@ -1,0 +1,72 @@
+{
+  "walk_id": "ch1-roles-en",
+  "title": "Follow one Read across two Links",
+  "svg": "<svg viewBox=\"0 0 760 470\" role=\"img\" aria-labelledby=\"ch1-roles-en-svg-title ch1-roles-en-svg-desc\"><title id=\"ch1-roles-en-svg-title\">Transaction roles and directions for one Memory Read</title><desc id=\"ch1-roles-en-svg-desc\">An Endpoint Request traverses LA to the Switch Downstream Port, then LR from the Switch Upstream Port to the Root Port. The Completion returns over the same two Links. Dashed horizontal arrows denote internal Switch forwarding.</desc><g fill=\"none\" stroke=\"var(--line)\" stroke-width=\"2\" stroke-dasharray=\"5 5\"><path d=\"M90 88 V440\"/><path d=\"M285 88 V440\"/><path d=\"M475 88 V440\"/><path d=\"M670 88 V440\"/></g><g data-walk-target=\"ep\"><rect x=\"12\" y=\"14\" width=\"156\" height=\"72\" rx=\"8\" fill=\"var(--blue-soft)\" stroke=\"var(--line)\"/><text x=\"90\" y=\"42\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"18\">Endpoint A Port</text><text x=\"90\" y=\"68\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"17\">Function 1</text></g><g data-walk-target=\"dp\"><rect x=\"205\" y=\"14\" width=\"160\" height=\"72\" rx=\"8\" fill=\"var(--blue-soft)\" stroke=\"var(--line)\"/><text x=\"285\" y=\"42\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"18\">Switch DP A</text><text x=\"285\" y=\"68\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"16\">Downstream Port</text></g><g data-walk-target=\"up\"><rect x=\"395\" y=\"14\" width=\"160\" height=\"72\" rx=\"8\" fill=\"var(--blue-soft)\" stroke=\"var(--line)\"/><text x=\"475\" y=\"42\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"18\">Switch UP</text><text x=\"475\" y=\"68\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"16\">Upstream Port</text></g><g data-walk-target=\"rp\"><rect x=\"592\" y=\"14\" width=\"156\" height=\"72\" rx=\"8\" fill=\"var(--blue-soft)\" stroke=\"var(--line)\"/><text x=\"670\" y=\"42\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"18\">Root Port</text><text x=\"670\" y=\"68\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"17\">Root Complex</text></g><g data-walk-target=\"req-a\"><path d=\"M90 140 H277\" stroke=\"var(--accent)\" stroke-width=\"3\"/><path d=\"M277 135 L285 140 L277 145 Z\" fill=\"var(--accent)\"/><text x=\"187\" y=\"126\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"18\">LA: Memory Read</text></g><g data-walk-target=\"inside-up\"><path d=\"M285 185 H467\" stroke=\"var(--accent)\" stroke-width=\"2.5\" stroke-dasharray=\"6 5\"/><path d=\"M467 180 L475 185 L467 190 Z\" fill=\"var(--accent)\"/><text x=\"380\" y=\"172\" text-anchor=\"middle\" fill=\"var(--muted)\" font-size=\"16\">Switch forwarding</text></g><g data-walk-target=\"req-root\"><path d=\"M475 230 H662\" stroke=\"var(--accent)\" stroke-width=\"3\"/><path d=\"M662 225 L670 230 L662 235 Z\" fill=\"var(--accent)\"/><text x=\"572\" y=\"216\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"18\">LR: Memory Read</text></g><g data-walk-target=\"cpl-root\"><path d=\"M670 320 H483\" stroke=\"var(--accent)\" stroke-width=\"3\"/><path d=\"M483 315 L475 320 L483 325 Z\" fill=\"var(--accent)\"/><text x=\"572\" y=\"306\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"18\">LR: Completion</text></g><g data-walk-target=\"inside-down\"><path d=\"M475 365 H293\" stroke=\"var(--accent)\" stroke-width=\"2.5\" stroke-dasharray=\"6 5\"/><path d=\"M293 360 L285 365 L293 370 Z\" fill=\"var(--accent)\"/><text x=\"380\" y=\"352\" text-anchor=\"middle\" fill=\"var(--muted)\" font-size=\"16\">Switch forwarding</text></g><g data-walk-target=\"cpl-a\"><path d=\"M285 410 H98\" stroke=\"var(--accent)\" stroke-width=\"3\"/><path d=\"M98 405 L90 410 L98 415 Z\" fill=\"var(--accent)\"/><text x=\"187\" y=\"396\" text-anchor=\"middle\" fill=\"var(--ink)\" font-size=\"18\">LA: Completion</text></g><text x=\"380\" y=\"460\" text-anchor=\"middle\" fill=\"var(--muted)\" font-size=\"16\">Request: Upstream → Root Complex · Completion: Downstream → Endpoint</text></svg>",
+  "steps": [
+    {
+      "title": "A sends the Request over LA",
+      "html": "<p>Function 1 in Endpoint A is the Requester, the Function that initiates the transaction. On LA, A's Port is the Transmitter and Switch Downstream Port A is the Receiver. The Request moves upstream, toward the Root Complex.</p>",
+      "targets": [
+        "ep",
+        "dp",
+        "req-a"
+      ],
+      "condition_html": "<p>The teaching example reads host memory and receives one Completion. Arbitration, replay, and unrelated traffic are omitted.</p>",
+      "source_html": "<p>Base 6.0 Terms and Acronyms — Requester、Receiver、Transmitter、Upstream，document/PDF pages 90、93–94；Figure 1-3，p.107。</p>",
+      "claim_ids": [
+        "PCIE-CH1-ROLES-001",
+        "PCIE-CH1-EXAMPLE-001"
+      ]
+    },
+    {
+      "title": "The Switch forwards the Request over LR",
+      "html": "<p>The Switch sends the Request from its Upstream Port to the Root Port. The transmitting and receiving Ports have changed, but Function 1 in A remains the original Requester. Internal forwarding does not add an external Link.</p>",
+      "targets": [
+        "up",
+        "rp",
+        "req-root",
+        "inside-up"
+      ],
+      "condition_html": "<p>The observation point moves from LA to LR. The Switch forwards this Request rather than originating another transaction.</p>",
+      "source_html": "<p>Base 6.0 §1.3.3／Figure 1-3，p.107；§2.2.6.2，p.157 — the Switch preserves the Transaction ID。</p>",
+      "claim_ids": [
+        "PCIE-CH1-ROLES-001",
+        "PCIE-CH1-BDF-001"
+      ]
+    },
+    {
+      "title": "The host-side Completer returns a Completion over LR",
+      "html": "<p>The Completer, the Function that handles the Request and produces its response, is on the Root Complex side. The Root Port now transmits and the Switch Upstream Port receives. Traffic moves downstream; the Upstream Port keeps its topological name.</p>",
+      "targets": [
+        "rp",
+        "up",
+        "cpl-root"
+      ],
+      "condition_html": "<p>The example assumes the Read was handled and a data response is being returned. A transfer on one Link alone is not evidence that every transaction succeeded.</p>",
+      "source_html": "<p>Base 6.0 Terms and Acronyms — Completer、Completion、Downstream、Receiving/Transmitting Port，document/PDF pages 82–84、90、93。</p>",
+      "claim_ids": [
+        "PCIE-CH1-ROLES-001"
+      ]
+    },
+    {
+      "title": "The Completion returns to A over LA",
+      "html": "<p>Switch Downstream Port A transmits the Completion and A's Port receives it. Function 1 in A is still the original Requester, now receiving its response. Requester does not mean the end currently transmitting a packet.</p>",
+      "targets": [
+        "dp",
+        "ep",
+        "cpl-a",
+        "inside-down"
+      ],
+      "condition_html": "<p>This is the return path of the same Read. Completion-field and integrity checks are developed in the transaction chapters.</p>",
+      "source_html": "<p>Base 6.0 Terms and Acronyms — Requester、Completer、Completion；§1.3.3／Figure 1-3，document/PDF pages 82–83、90、107。</p>",
+      "claim_ids": [
+        "PCIE-CH1-ROLES-001"
+      ]
+    }
+  ],
+  "caption_html": "Author-created sequence diagram based on the cited rules. Read from top to bottom; spacing does not represent measured latency. Solid arrows cross LA or LR; dashed arrows show internal Switch forwarding. DP and UP mean Downstream Port and Upstream Port.",
+  "order_html": "<p>Follow the Request from A to the host, then the Completion back. Reassign the transmitting and receiving ends for each Link transfer. LA and LR are the Link labels used in this chapter.</p>",
+  "summary_html": "<p class=\"lead\">Port names follow topology. Transmitter and Receiver follow a particular transfer. The Requester for the same Read does not change when it starts receiving its Completion.</p>",
+  "components": [],
+  "language": "en"
+}
