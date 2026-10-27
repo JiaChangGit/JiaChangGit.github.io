@@ -1,3 +1,4 @@
+<aside class="note"><strong>【模擬資料】</strong><p>本章拓撲、Bus Number 與讀值為教學用途建立，不代表特定硬體或平台。</p></aside>
 <!-- pcie-walk: walks/chapter3-overview.json -->
 <div class="guided-walk" id="ch3-overview" role="group" aria-labelledby="ch3-overview-title" data-walk-version="1">
 <h3 id="ch3-overview-title">沿同一棵樹找到各個 Function</h3>
@@ -80,6 +81,16 @@
 <p>Switch 內部是邏輯設定拓樸；本例沒有假設內部真的有另一條實體 PCIe Link，或每個 virtual Bridge 都要在實體線路上產生一份封包。這裡只描述規格要求的對外路由結果。</p>
 <details class="source-note"><summary>路由規則的來源</summary><p>Base 6.0 §7.3.2–§7.3.3，pp.912–913。Endpoint 對 Type 1 Configuration Request 依 UR 處理；Root Port／Switch 對有效的本地 Type 0 Request 則處理自身設定空間。本節沒有將 Type 0／Type 1 的角色延伸到所有其他 TLP。</p></details></section>
 
+<section id="path-diagnosis"><h2>已知目標 BDF，讀取卻失敗時，先檢查哪一段？</h2>
+<p>沿用本章的拓撲，目標是 Endpoint 的 <code>03:00.1</code>。先找到連向它的分支，再由根部向下檢查每個 Bridge 的 Secondary／Subordinate Bus Number，確認目標 Bus 是否落在該分支的設定範圍。這裡的檢查順序是查閱方法，不代表硬體一定以這個時間順序處理。</p>
+<aside class="example"><strong>【模擬資料】從部分快照追查路徑</strong><p>假設平台允許使用 Bus 00–3F，正在管理此階層的軟體讀取相同時期的設定：Root Port 為 Secondary=01、Subordinate=02；通往目標的 Switch 與 Downstream A 的 Bus 設定尚未知。對 <code>03:00.1</code> 的 Configuration Read 沒取得可用資料。</p>
+<div class="table-wrap"><table style="min-width: 720px"><caption>把已知資料放回拓撲；表格可左右滑動</caption><thead><tr><th scope="col">觀察對象</th><th scope="col">目前資料</th><th scope="col">接下來要做什麼</th></tr></thead><tbody><tr><td>平台與 Root Port</td><td>可用上限為 3F；Root Port 設為 01–02。</td><td>Bus 03 超出這個 Port 目前記錄的範圍。先核對此 Port 是否確實連向目標，以及設定是否正值枚舉過渡期。</td></tr><tr><td>Switch Upstream Port 與 Downstream A</td><td>尚未取得 Bus Number。</td><td>沿已建立的路徑讀取其 Secondary／Subordinate，確認目標分支的範圍如何配置；若仍在配置中，依平台擁有權與寫入完成條件處理。</td></tr><tr><td>Endpoint Function 1</td><td>這次讀取未取得可用資料。</td><td>先恢復或確認路徑，再根據有效的設定結果判斷存在性與就緒狀態。此快照無法指出卡片是否存在或哪個元件故障。</td></tr></tbody></table></div>
+<p>若系統原本已完成設定，Root Port 的 01–02 與預期通往 Bus 03 的路徑不一致，值得追查設定來源與時間；若軟體仍在配置，它也可能只是暫時狀態。不要在缺少管理權或完整配置資訊時，直接照本例的數字修改真實系統。</p></aside>
+<p>讀規格時，先用 Figure 7-14 找 Secondary／Subordinate 的位置，再讀 §7.5.1.3.3–7.5.1.3.4 了解各欄位所記錄的範圍；接著到 §7.3.3 判讀 Type 1 Request 的轉送與轉換。若寫入採 ECAM，§7.2.2 要求平台提供軟體可確認寫入已由 Completer 完成的方法；本例不指定平台必須採用哪一種方法。（Base 6.0，文件頁／PDF 頁 908、912–913、936–937。）</p>
+<h3>Function 不存在，和其中一個 Register 未實作，有什麼不同？</h3>
+<p>以可觀察到 PCIe Completion 的資料為例：指定未實作的 Bus、Device 或 Function 時，§7.3.1 規定回 Unsupported Request（UR）；對已實作 Function 內未實作的 Register 讀取，在沒有其他需回報的錯誤時，§7.3.3 規定回 Successful Completion，讀取資料為 0。兩者的目標與結果不同。</p>
+<p>如果只看到軟體的讀值，仍要先確認存取是否成功、讀的是哪個 BDF 與 offset，以及平台如何呈現交易結果。Root Complex 在 §2.3.2 所述的條件下，會為依賴全 1 讀值的軟體合成 UR 讀取結果；那不是 UR Completion 自帶的 payload。RRS 的特殊值則依<a href="#readiness">前面的就緒情境</a>判讀。（Base 6.0，文件頁／PDF 頁 220–221、911、913。）</p></section>
+
 <section id="handoff"><h2>6. 能列出 BDF，就表示裝置已經可以工作嗎？</h2>
 <p>這次搜尋完成後，系統有了 Function 清單與下游路徑，但還沒有因此完成 BAR 資源配置、開啟 Memory Space，或準備驅動程式的工作資料。Vendor／Device ID 和 Class Code 能提供識別與驅動選擇線索，也不等於初始化已成功。</p>
 <p>枚舉也不保證全由韌體一次做完。Firmware 3.3 §3.5 要求韌體配置開機與主控台裝置的完整路徑，以及所有 Host Bridge；其他裝置可以留給 OS 處理。因此，OS 看到某個 Endpoint 尚未配置，不能僅憑這件事宣告韌體違反規格。若要檢查交接，應先確認它是不是被要求完成的那條路徑。</p>
@@ -92,4 +103,4 @@
 <details open class="question"><summary>最終 Subordinate 比本例的 04 大，就一定錯了嗎？</summary><p>不一定。本例採完成後緊縮到實際使用範圍的策略；平台可能依法配置並保留額外 Bus Number。要檢查的是平台授予的範圍、各分支是否一致，以及保留政策，不能把本例的數字當成唯一合法答案。</p></details></section>
 
 <section id="next"><h2>8. 找到裝置之後，還欠哪一步？</h2><p>接著讀 <a href="chapter-4.html">Chapter 4：BAR、位址空間與資源配置</a>。那一章會從裝置需要多少空間開始，算出大小與對齊，檢查沿途 Bridge Window，再分清 Memory Space Enable 與 Bus Master Enable。</p></section>
-<section id="sources"><h2>版本與來源</h2><p>PCI Express Base Specification Revision 6.0 與 PCI Firmware Specification Revision 3.3；精確位置附於各節。Firmware 3.3 的 Base 參考版為 5.0，本章欄位和 RRS 行為均取自 Base 6.0。枚舉順序與 Bus Number 配置是作者推演，不是原文指定程序。查核日期：2026-10-20。</p></section>
+<section id="sources"><h2>版本與來源</h2><p>PCI Express Base Specification Revision 6.0 與 PCI Firmware Specification Revision 3.3；精確位置附於各節。Firmware 3.3 的 Base 參考版為 5.0，本章欄位和 RRS 行為均取自 Base 6.0。枚舉順序與 Bus Number 配置是作者推演，不是原文指定程序。查核日期：2026-10-28。</p></section>

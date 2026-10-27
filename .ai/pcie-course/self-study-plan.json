@@ -597,5 +597,17 @@
       "CAP-008"
     ],
     "remaining": "Bridge Bus／資源視窗、Reset 與完整適用性分別連到其他章節；尚未據此標示 CFG 或 CAP 全分類完成。"
+  },
+  "chapter_3_revision": {
+    "status": "locally_verified",
+    "location": "DOCS/pcie-course/chapter-3.html",
+    "covered": "以既有枚舉案例連接橋接 Bus 範圍、部分快照、讀取結果與路徑檢查；區分未實作 Function 與 Register。",
+    "references": [
+      "CFG-003",
+      "CFG-005",
+      "ROUTE-003",
+      "ROUTE-010"
+    ],
+    "remaining": "其他 Routing、Reset 與資源配置細節留在對應章節，不因局部帶讀標示整個分類完成。"
   }
 }

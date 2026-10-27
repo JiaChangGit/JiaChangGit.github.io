@@ -100,10 +100,10 @@
         "PCI-FW-3.3"
       ],
       "title_en": "From Unknown Topology to Function Discovery",
-      "description": "沿著含 Switch 的拓樸配置 Bus Number，分清存在性、RRS 未就緒與存取失敗，再追蹤 Configuration Request 路由。",
+      "description": "沿橋接範圍發現 Function，辨認 RRS 與 Configuration Routing，並以部分快照逐層檢查失敗路徑。",
       "publication_date": "2026-10-20",
-      "teaching_revision": 2,
-      "revision_date": "2026-10-23"
+      "teaching_revision": 3,
+      "revision_date": "2026-10-28"
     },
     {
       "number": 4,

@@ -2,7 +2,7 @@
   "schema_version": 1,
   "course": "pcie-course",
   "chapter": 3,
-  "updated": "2026-10-20",
+  "updated": "2026-10-28",
   "page_index_base": 1,
   "claims": [
     {
@@ -433,6 +433,30 @@
           "result": "0xFFFF"
         }
       ]
+    },
+    {
+      "id": "PCIE-CH3-UNIMPLEMENTED-001",
+      "claim": "未實作 Bus、Device 或 Function 的 Configuration Request 回 UR；對已實作 Function 的未實作 Register，在無其他需回報錯誤時讀取成功並回 0。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.3.1",
+        "7.3.3"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        911,
+        913
+      ],
+      "pdf_pages": [
+        911,
+        913
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-28",
+      "notes": "分別是不存在的目標與目標中未實作的 Register，不由單一軟體讀值判定原因。"
     }
   ]
 }

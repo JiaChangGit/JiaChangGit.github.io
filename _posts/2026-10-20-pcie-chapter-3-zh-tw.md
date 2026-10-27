@@ -2,14 +2,14 @@
 layout: post
 title: "PCIe Chapter 3：從未知拓樸到完成裝置發現"
 date: 2026-10-20 00:00:00 +0800
-last_modified_at: 2026-10-23 00:00:00 +0800
+last_modified_at: 2026-10-28 00:00:00 +0800
 permalink: /pcie/chapter-3-zh-tw/
 categories: [PCIe]
 tags: [PCIe, Specification]
 lang: zh-TW
 spec_teaching: true
 spec_series: pcie
-description: "沿著含 Switch 的拓樸配置 Bus Number，分清存在性、RRS 未就緒與存取失敗，再追蹤 Configuration Request 路由。"
+description: "沿橋接範圍發現 Function，辨認 RRS 與 Configuration Routing，並以部分快照逐層檢查失敗路徑。"
 ---
 
 <style>
@@ -378,6 +378,7 @@ html[data-theme="dark"] .pcie-article { color-scheme: dark; }
 <div class="pcie-article spec-teaching" data-spec-series="pcie" lang="zh-Hant-TW">
 <nav class="bottom-nav" aria-label="課程與語言版本"><a href="/DOCS/pcie-course/index.html">課程總覽</a><a href="/DOCS/pcie-course/chapter-3.html">繁中完整教學</a><a href="/pcie/chapter-3-en/">English</a></nav>
 <article class="lesson">
+<p><strong>【模擬資料】</strong>本章拓撲、Bus Number 與讀值為教學用途建立，不代表特定硬體或平台。</p>
 <section id="chapter-overview"><h2>先看本章的角色與路徑</h2><figure class="diagram"><svg viewBox="0 0 900 470" role="img" aria-labelledby="ch3-guide-title ch3-guide-desc"><title id="ch3-guide-title">完成後的橋接範圍快照；導圖以這張結果圖定位每次探查，編號先後在步驟中說明。</title><desc id="ch3-guide-desc">完成後的橋接範圍快照；導圖以這張結果圖定位每次探查，編號先後在步驟中說明。</desc><g data-walk-target="root"><rect x="300" y="20" width="300" height="65" rx="9" fill="var(--surface-alt)" stroke="var(--line)"/><text x="450.0" y="45" text-anchor="middle" font-size="15">Root Port 00:01.0</text><text x="450.0" y="68" text-anchor="middle" font-size="15">完成後下游範圍 01–04</text></g><g data-walk-target="e-root"><path d="M450 85 L450 135" fill="none" stroke="var(--accent)" stroke-width="2"/><polygon points="450.0,135.0 455.0,125.0 445.0,125.0" fill="var(--accent)"/></g><g data-walk-target="up"><rect x="300" y="135" width="300" height="65" rx="9" fill="var(--surface-alt)" stroke="var(--line)"/><text x="450.0" y="160" text-anchor="middle" font-size="15">Switch Upstream 01:00.0</text><text x="450.0" y="183" text-anchor="middle" font-size="15">完成後下游範圍 02–04</text></g><g data-walk-target="a"><path d="M450 200 L225 260" fill="none" stroke="var(--accent)" stroke-width="2"/><polygon points="225.0,260.0 236.0,262.3 233.4,252.6" fill="var(--accent)"/></g><g data-walk-target="b"><path d="M450 200 L675 260" fill="none" stroke="var(--accent)" stroke-width="2"/><polygon points="675.0,260.0 666.6,252.6 664.0,262.3" fill="var(--accent)"/></g><g data-walk-target="dp-a"><rect x="75" y="260" width="300" height="65" rx="9" fill="var(--surface-alt)" stroke="var(--line)"/><text x="225.0" y="285" text-anchor="middle" font-size="15">Downstream A 02:01.0</text><text x="225.0" y="308" text-anchor="middle" font-size="15">完成後範圍 03–03</text></g><g data-walk-target="dp-b"><rect x="525" y="260" width="300" height="65" rx="9" fill="var(--surface-alt)" stroke="var(--line)"/><text x="675.0" y="285" text-anchor="middle" font-size="15">Downstream B 02:02.0</text><text x="675.0" y="308" text-anchor="middle" font-size="15">完成後範圍 04–04</text></g><g data-walk-target="to-a"><path d="M225 325 L225 375" fill="none" stroke="var(--accent)" stroke-width="2"/><polygon points="225.0,375.0 230.0,365.0 220.0,365.0" fill="var(--accent)"/></g><g data-walk-target="to-b"><path d="M675 325 L675 375" fill="none" stroke="var(--accent)" stroke-width="2"/><polygon points="675.0,375.0 680.0,365.0 670.0,365.0" fill="var(--accent)"/></g><g data-walk-target="ep-a"><rect x="75" y="375" width="300" height="65" rx="9" fill="var(--surface-alt)" stroke="var(--line)"/><text x="225.0" y="400" text-anchor="middle" font-size="15">Endpoint：03:00.0／03:00.1</text></g><g data-walk-target="ep-b"><rect x="525" y="375" width="300" height="65" rx="9" fill="var(--surface-alt)" stroke="var(--line)"/><text x="675.0" y="400" text-anchor="middle" font-size="15">Endpoint：04:00.0</text></g></svg><figcaption><p>作者的教學拓樸；Bus Number 配置策略是示範，規格定義欄位及路由條件。</p></figcaption></figure><p class="lead">枚舉是由已知根部向下發現 Function 的過程。本章沿用前兩章的拓樸，先替橋接路徑建立可轉送的 Bus 範圍，再探查下游，最後記錄已找到的功能。</p><p>前情提要：Chapter 1 教你辨認 Port 與 Function；Chapter 2 教你在已知 Function 的設定空間中找欄位。現在要建立那些已知位置。</p><p><strong>規格路線：</strong>Figures 7-1／7-2 的階層 → Figure 7-14 的橋接 Bus 欄位 → Figures 7-7／7-8 的身分與標頭。</p></section>
 <p class="lead">枚舉要先建立可走的設定路徑，才能找到下游 Function。讀到某個值時，也必須分清有效身分、暫時未就緒，以及存取失敗。本章把 Bridge 的 Bus Number 配置與這些結果放在同一個流程中。</p>
 <p><a href="/DOCS/pcie-course/chapter-3.html">完整中文教學</a> · <a href="/DOCS/pcie-course/index.html">課程路線</a> · <a href="/pcie/chapter-3-en/">English</a></p>
@@ -401,6 +402,16 @@ html[data-theme="dark"] .pcie-article { color-scheme: dark; }
 <section id="routing"><h2>Header 的 Type 與要求封包的 Type，必須分開</h2>
 <p>Configuration Header Type 1 描述 Bridge 的標頭格式；Configuration Request Type 1 則用於向更深層路由。對目標 03:00.1，Root Port 的下一層 Bus 是 01，因此仍以 Type 1 往 Switch 送；Switch 判定 Bus 03 正是 Downstream A 的下一層，再轉為 Type 0 送到 Endpoint。對 Bridge 自身設定空間的有效 Type 0 Request，同樣可以由 Bridge 處理。</p>
 <p>本例描述對外路由結果，不假設 Switch 的內部邏輯 Bus 是另一條實體 PCIe Link。若目標不在有效範圍，則依 UR 規則處理。（Base 6.0 §7.3.2–§7.3.3，pp.912–913。）</p></section>
+<section id="path-diagnosis"><h2>已知目標 BDF，讀取卻失敗時，先檢查哪一段？</h2>
+<p>沿用本章的拓撲，目標是 Endpoint 的 <code>03:00.1</code>。先找到連向它的分支，再由根部向下檢查每個 Bridge 的 Secondary／Subordinate Bus Number，確認目標 Bus 是否落在該分支的設定範圍。這裡的檢查順序是查閱方法，不代表硬體一定以這個時間順序處理。</p>
+<aside class="example"><strong>【模擬資料】從部分快照追查路徑</strong><p>假設平台允許使用 Bus 00–3F，正在管理此階層的軟體讀取相同時期的設定：Root Port 為 Secondary=01、Subordinate=02；通往目標的 Switch 與 Downstream A 的 Bus 設定尚未知。對 <code>03:00.1</code> 的 Configuration Read 沒取得可用資料。</p>
+<div class="table-wrap"><table style="min-width: 720px"><caption>把已知資料放回拓撲；表格可左右滑動</caption><thead><tr><th scope="col">觀察對象</th><th scope="col">目前資料</th><th scope="col">接下來要做什麼</th></tr></thead><tbody><tr><td>平台與 Root Port</td><td>可用上限為 3F；Root Port 設為 01–02。</td><td>Bus 03 超出這個 Port 目前記錄的範圍。先核對此 Port 是否確實連向目標，以及設定是否正值枚舉過渡期。</td></tr><tr><td>Switch Upstream Port 與 Downstream A</td><td>尚未取得 Bus Number。</td><td>沿已建立的路徑讀取其 Secondary／Subordinate，確認目標分支的範圍如何配置；若仍在配置中，依平台擁有權與寫入完成條件處理。</td></tr><tr><td>Endpoint Function 1</td><td>這次讀取未取得可用資料。</td><td>先恢復或確認路徑，再根據有效的設定結果判斷存在性與就緒狀態。此快照無法指出卡片是否存在或哪個元件故障。</td></tr></tbody></table></div>
+<p>若系統原本已完成設定，Root Port 的 01–02 與預期通往 Bus 03 的路徑不一致，值得追查設定來源與時間；若軟體仍在配置，它也可能只是暫時狀態。不要在缺少管理權或完整配置資訊時，直接照本例的數字修改真實系統。</p></aside>
+<p>讀規格時，先用 Figure 7-14 找 Secondary／Subordinate 的位置，再讀 §7.5.1.3.3–7.5.1.3.4 了解各欄位所記錄的範圍；接著到 §7.3.3 判讀 Type 1 Request 的轉送與轉換。若寫入採 ECAM，§7.2.2 要求平台提供軟體可確認寫入已由 Completer 完成的方法；本例不指定平台必須採用哪一種方法。（Base 6.0，文件頁／PDF 頁 908、912–913、936–937。）</p>
+<h3>Function 不存在，和其中一個 Register 未實作，有什麼不同？</h3>
+<p>以可觀察到 PCIe Completion 的資料為例：指定未實作的 Bus、Device 或 Function 時，§7.3.1 規定回 Unsupported Request（UR）；對已實作 Function 內未實作的 Register 讀取，在沒有其他需回報的錯誤時，§7.3.3 規定回 Successful Completion，讀取資料為 0。兩者的目標與結果不同。</p>
+<p>如果只看到軟體的讀值，仍要先確認存取是否成功、讀的是哪個 BDF 與 offset，以及平台如何呈現交易結果。Root Complex 在 §2.3.2 所述的條件下，會為依賴全 1 讀值的軟體合成 UR 讀取結果；那不是 UR Completion 自帶的 payload。RRS 的特殊值則依<a href="#rrs">前面的就緒情境</a>判讀。（Base 6.0，文件頁／PDF 頁 220–221、911、913。）</p></section>
+
 <section id="finish"><h2>找到 BDF 後，仍未完成資源與工作設定</h2>
 <p>枚舉結果提供 Function 清單、橋接路徑與身分線索，不能直接證明 MMIO 或 DMA 已可用。Firmware 3.3 §3.5（pp.34–35）要求開機／主控台路徑及所有 Host Bridge 完成指定配置，其他裝置可留給 OS；不能只因任意 Endpoint 尚未配置就宣告韌體違規。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>MMIO</dt><dd>Memory-Mapped I/O，記憶體映射輸入輸出</dd></div><div><dt>DMA</dt><dd>Direct Memory Access，裝置直接存取記憶體</dd></div></dl>
 <details class="question"><summary>讀到 0xFFFF0001，就以 Device ID FFFFh 選擇驅動程式，可以嗎？</summary><p>在本例 RRS 條件下不可以。這是暫時未就緒的合成值，尚未取得真正身分；應處理重試與就緒，而非當成未知產品繼續初始化。（§2.3.2，p.220。）</p></details>
