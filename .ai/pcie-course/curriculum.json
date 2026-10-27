@@ -185,10 +185,10 @@
         "LINUX-6.12-BARRIERS"
       ],
       "title_en": "DMA, Visibility, and Transaction Ordering",
-      "description": "分清 DMA 位址、所有權交接與 PCIe 排序，再以資料和旗標判讀 RO、No Snoop 及其限制。",
+      "description": "從 DMA 位址與所有權交接出發，依排序表分析資料寫入與 MSI-X 通知，分清 PCIe 與平台同步責任。",
       "publication_date": "2026-10-21",
-      "teaching_revision": 2,
-      "revision_date": "2026-10-23"
+      "teaching_revision": 3,
+      "revision_date": "2026-10-28"
     },
     {
       "number": 7,

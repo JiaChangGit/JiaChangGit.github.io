@@ -1,3 +1,4 @@
+<aside class="note"><strong>【模擬資料】</strong><p>本章位址、資料與工作流程為教學用途建立，不代表特定硬體或平台。</p></aside>
 <!-- pcie-walk: walks/chapter6-overview.json -->
 <div class="guided-walk" id="ch6-overview" role="group" aria-labelledby="ch6-overview-title" data-walk-version="1">
 <h3 id="ch6-overview-title">把描述項、DMA 資料與完成通知接起來</h3>
@@ -78,6 +79,14 @@
 <p>回到 CPU：A2a 只回答兩筆交易在適用路徑內能否互相越過。CPU 是否以正確的映射和同步方式觀察 F、再使用 D，仍要滿足上一節的交接條件。不能拿一條封包排序規則代替整套記憶體使用協定。</p>
 <details class="source-note"><summary>排序表應該連同哪些條文閱讀？</summary><p>§2.4.1 Table 2-42（p.222）給出欄列與符號；A2a／A2b（p.223）給出 Posted 對 Posted 的條件。A2b 的註解指出部分使用方式會禁止 RO-enabled Posted Request 越過先前 Posted Request，因此 RO=1 是可能放寬的條件，並非必定超車。不同 TC 的界線見 p.222；No Snoop 不影響排序見 p.224。案例排除另有規則的 Flow-Through IDE。</p></details></section>
 
+<section id="dma-interrupt"><h2>資料寫完就送中斷，軟體一定能先看到資料嗎？</h2>
+<p>沿用前節的資料 D，現在把後續動作換成 MSI-X（Message Signaled Interrupts Extended，以記憶體寫入通知中斷）交易。先判斷兩筆 PCIe 寫入的順序，再檢查平台如何讓 CPU 讀到結果。這兩段需要各自的證據。</p>
+<aside class="example"><strong>【模擬資料】同一 Function 的資料與中斷</strong><p>假設 Endpoint <code>03:00.0</code> 先發出一般 Memory Write，將 64 bytes 的 D 寫到 <code>0x40001000</code>；隨後發出 MSI-X Memory Write，表示這筆工作已完成。MSI-X 的目標位址與資料已由平台配置。兩筆都是 Posted Request，資料寫入與 MSI-X 均為 RO=0、IDO=0；MSI-X 的 No Snoop=0。本例的 DMA 映射有效、BME 已啟用，並排除 Flow-Through IDE。</p>
+<p>螢幕較窄時，可左右滑動表格查看完整內容。</p><div class="table-wrap"><table style="min-width: 640px"><caption>比較兩筆交易的 Traffic Class</caption><thead><tr><th scope="col">假設</th><th scope="col">PCIe 排序如何判讀？</th><th scope="col">軟體還要確認什麼？</th></tr></thead><tbody><tr><td>D 與 MSI-X 都使用 TC0</td><td>同一 TC 中，後發的 MSI-X 是 RO=0、IDO=0 的 Posted Request。依 Table 2-42 的 A2a，它不得越過先發的 D。</td><td>確認裝置介面的完成語意、平台的 DMA 同步與 CPU 接手方式；封包排序不會自動替軟體讀取資料。</td></tr><tr><td>D 使用 TC1，MSI-X 使用 TC0</td><td>Table 2-42 不提供跨 TC 的順序要求；不可用上一列的 A2a 推導兩者順序。</td><td>裝置必須確保不同 TC 的資料與中斷具有適當同步；具體方法依實作與裝置介面確認。</td></tr></tbody></table></div>
+<p>第一列限制的是這兩筆 PCIe 交易能否互相越過，並不單憑這項規則證明中斷已送達 CPU、驅動已執行，或快取中的資料已可直接使用。第二列也不是宣稱一定會亂序：只靠這張排序表，無法建立所需的跨 TC 順序。</p></aside>
+<p>查閱順序是：先在 §6.1.4 確認 MSI-X 使用 Memory Write，且 RO 與 No Snoop 必須為 0；IDO 在啟用條件成立時可設為 1，本例明確設為 0。再到 §2.4.1 的 Table 2-42，以先發的 D 找欄、後發的 MSI-X 找列，讀 A2a 與 A2b。最後回 §6.1.4 的 implementation note，查資料與中斷使用不同 TC 時的同步要求。（Base 6.0，文件頁／PDF 頁 222–223、661。）</p>
+<p>平台補充：若本例的驅動使用 Linux，資料與所有權仍依該緩衝區的映射方式及裝置介面處理；例如 consistent memory 的 DMA barrier 與 MMIO 存取有不同適用範圍。這部分參考 <a href="https://docs.kernel.org/6.12/core-api/wrappers/memory-barriers.html">Linux 6.12 memory barriers</a> 與 <a href="https://docs.kernel.org/6.12/core-api/dma-api-howto.html">DMA mapping Guide</a>，不是 Base 6.0 對所有作業系統的規定。</p></section>
+
 <section id="attributes"><h2>5. 設定欄位允許 RO，是否代表每個封包都用了 RO？</h2>
 <p>不是。設定空間決定允許使用的行為；真正的 TLP Attribute 才描述這筆交易。本例延續 PCIe Capability 位於 <code>0x70</code>，因此 Device Control 位於 <code>0x78</code>。假設這個 16-bit Register 讀回 <code>0x2810</code>：</p>
 <div class="table-wrap"><table><caption>本例 Device Control 的能力使用許可</caption><thead><tr><th scope="col">欄位</th><th scope="col">由 0x2810 取得的值</th><th scope="col">能證明的事情</th></tr></thead><tbody>
@@ -96,4 +105,4 @@
 <details open class="question"><summary>Device Control 的 Enable No Snoop=1，可以省掉所有 cache 與 barrier 的考量嗎？</summary><p>不行。它只提供有條件的發送許可，而且 No Snoop 不改變交易順序。軟體仍須遵循平台的記憶體介面；欄位含義見 Table 7-21（p.961）。</p></details>
 <details open class="question"><summary>BAR0 與 BME 都正確，裝置仍把 CPU 指標 p 當成 DMA 位址使用，問題解決了嗎？</summary><p>沒有。BAR0 解決裝置資源的存取，BME 控制要求的發送許可；兩者都不負責把 p 轉成這個裝置可用的 DMA 位址。請回到 <a href="#addresses">位址對照表</a> 確認描述項實際交給裝置的是哪一種值。</p></details></section>
 <section id="next"><h2>7. 接著讓軟體知道有工作完成</h2><p>資料與狀態已按介面約定交接後，裝置還需要通知軟體處理。<a href="chapter-7.html">Chapter 7</a> 會從 Capability 找到 MSI-X Table，設定一個 entry，並追蹤遮罩、Pending 與中斷寫入。</p></section>
-<section id="sources"><h2>版本與來源</h2><p>PCIe 規則以 Base 6.0 為準；平台背景固定使用 Linux 6.12 的 <a href="https://docs.kernel.org/6.12/core-api/dma-api-howto.html">DMA mapping Guide</a> 與 <a href="https://docs.kernel.org/6.12/core-api/wrappers/memory-barriers.html">memory barriers 文件</a>。這些補充文件不是 IOMMU 硬體規格，也不使本章案例成為 Linux 驅動程式範本。查核日期：2026-10-21。</p></section>
+<section id="sources"><h2>版本與來源</h2><p>PCIe 規則以 Base 6.0 為準；平台背景固定使用 Linux 6.12 的 <a href="https://docs.kernel.org/6.12/core-api/dma-api-howto.html">DMA mapping Guide</a> 與 <a href="https://docs.kernel.org/6.12/core-api/wrappers/memory-barriers.html">memory barriers 文件</a>。這些補充文件不是 IOMMU 硬體規格，也不使本章案例成為 Linux 驅動程式範本。查核日期：2026-10-28。</p></section>

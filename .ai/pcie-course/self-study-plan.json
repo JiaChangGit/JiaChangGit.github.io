@@ -634,5 +634,18 @@
       "PAYLOAD-010"
     ],
     "remaining": "Completion Timeout、Replay 與深入 TLP 合法性留待各技術主題；不因此標示整個分類完成。"
+  },
+  "chapter_6_revision": {
+    "status": "locally_verified",
+    "location": "DOCS/pcie-course/chapter-6.html",
+    "covered": "在既有 DMA 案例比較同 TC 與跨 TC 的資料寫入及 MSI-X 通知，區分 PCIe 排序與平台同步。",
+    "references": [
+      "ORDER-001",
+      "ORDER-002",
+      "ORDER-004",
+      "MSG-005",
+      "MSG-009"
+    ],
+    "remaining": "完整 Ordering Table、IDO 特例、中斷設定與 Replay 等留在對應章節，不以局部案例標示整個分類完成。"
   }
 }

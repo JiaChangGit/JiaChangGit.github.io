@@ -2,7 +2,7 @@
   "schema_version": 1,
   "course": "pcie-course",
   "chapter": 6,
-  "updated": "2026-10-21",
+  "updated": "2026-10-28",
   "page_index_base": 1,
   "claims": [
     {
@@ -217,6 +217,34 @@
           "result": "0x90001080"
         }
       ]
+    },
+    {
+      "id": "PCIE-CH6-MSI-TC-001",
+      "claim": "MSI/MSI-X 為 Memory Write，RO 和 No Snoop 須為 0；啟用條件下允許設定 IDO，並非限定 TC0。裝置使用不同 TC 傳送資料與中斷時，須確保適當同步，方法由實作決定。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.1.4",
+        "2.4.1"
+      ],
+      "figures": [],
+      "tables": [
+        "2-42"
+      ],
+      "document_pages": [
+        222,
+        223,
+        661
+      ],
+      "pdf_pages": [
+        222,
+        223,
+        661
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-28",
+      "notes": "案例限定同一 Function、先資料後 MSI-X、MSI-X RO=0、IDO=0，並排除 Flow-Through IDE。"
     }
   ]
 }

@@ -2,14 +2,14 @@
 layout: post
 title: "PCIe Chapter 6：DMA、可見性與交易順序"
 date: 2026-10-21 00:00:00 +0800
-last_modified_at: 2026-10-23 00:00:00 +0800
+last_modified_at: 2026-10-28 00:00:00 +0800
 permalink: /pcie/chapter-6-zh-tw/
 categories: [PCIe]
 tags: [PCIe, Specification]
 lang: zh-TW
 spec_teaching: true
 spec_series: pcie
-description: "分清 DMA 位址、所有權交接與 PCIe 排序，再以資料和旗標判讀 RO、No Snoop 及其限制。"
+description: "從 DMA 位址與所有權交接出發，依排序表分析資料寫入與 MSI-X 通知，分清 PCIe 與平台同步責任。"
 ---
 
 <style>
@@ -378,6 +378,7 @@ html[data-theme="dark"] .pcie-article { color-scheme: dark; }
 <div class="pcie-article spec-teaching" data-spec-series="pcie" lang="zh-Hant-TW">
 <nav class="bottom-nav" aria-label="課程與語言版本"><a href="/DOCS/pcie-course/index.html">課程總覽</a><a href="/DOCS/pcie-course/chapter-6.html">繁中完整教學</a><a href="/pcie/chapter-6-en/">English</a></nav>
 <article class="lesson">
+<p><strong>【模擬資料】</strong>本章位址、資料與工作流程為教學用途建立，不代表特定硬體或平台。</p>
 <section id="chapter-overview"><h2>先看本章的角色與路徑</h2><figure class="diagram"><svg viewBox="0 0 900 565" role="img" aria-labelledby="ch6-guide-title ch6-guide-desc"><title id="ch6-guide-title">軟體發布描述項，裝置寫入資料與旗標，再由主機依平台同步條件接手。</title><desc id="ch6-guide-desc">軟體發布描述項，裝置寫入資料與旗標，再由主機依平台同步條件接手。</desc><g data-walk-target="software"><rect x="20" y="15" width="250" height="60" rx="9" fill="var(--surface-alt)" stroke="var(--line)"/><text x="145.0" y="40" text-anchor="middle" font-size="15">驅動程式／主機端</text></g><g data-walk-target="device"><rect x="325" y="15" width="250" height="60" rx="9" fill="var(--surface-alt)" stroke="var(--line)"/><text x="450.0" y="40" text-anchor="middle" font-size="15">裝置：執行工作</text></g><g data-walk-target="memory"><rect x="630" y="15" width="250" height="60" rx="9" fill="var(--surface-alt)" stroke="var(--line)"/><text x="755.0" y="40" text-anchor="middle" font-size="15">平台可供 DMA 的記憶體</text></g><g data-walk-target="s-line"><path d="M145 75 L145 540" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="6 5"/></g><g data-walk-target="d-line"><path d="M450 75 L450 540" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="6 5"/></g><g data-walk-target="m-line"><path d="M755 75 L755 540" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="6 5"/></g><g data-walk-target="descriptor"><path d="M145 145 L755 145" fill="none" stroke="var(--accent)" stroke-width="2"/><polygon points="755.0,145.0 745.0,140.0 745.0,150.0" fill="var(--accent)"/><text x="450.0" y="136.0" text-anchor="middle" font-size="13">寫入描述項及資料</text></g><g data-walk-target="notify"><path d="M145 235 L450 235" fill="none" stroke="var(--accent)" stroke-width="2"/><polygon points="450.0,235.0 440.0,230.0 440.0,240.0" fill="var(--accent)"/><text x="297.5" y="226.0" text-anchor="middle" font-size="13">依平台規則發布後通知裝置</text></g><g data-walk-target="data"><path d="M450 335 L755 335" fill="none" stroke="var(--accent)" stroke-width="2"/><polygon points="755.0,335.0 745.0,330.0 745.0,340.0" fill="var(--accent)"/><text x="602.5" y="326.0" text-anchor="middle" font-size="13">裝置寫入結果資料</text></g><g data-walk-target="flag"><path d="M450 425 L755 425" fill="none" stroke="var(--accent)" stroke-width="2"/><polygon points="755.0,425.0 745.0,420.0 745.0,430.0" fill="var(--accent)"/><text x="602.5" y="416.0" text-anchor="middle" font-size="13">依適用排序寫完成旗標</text></g><g data-walk-target="consume"><path d="M755 515 L145 515" fill="none" stroke="var(--accent)" stroke-width="2"/><polygon points="145.0,515.0 155.0,520.0 155.0,510.0" fill="var(--accent)"/><text x="450.0" y="506.0" text-anchor="middle" font-size="13">主機依平台同步條件接手結果</text></g></svg><figcaption><p>作者的簡化工作週期。PCIe 交易排序與 CPU／快取同步各有責任，兩者共同決定資料何時可用。</p></figcaption></figure><dl class="st-terms" aria-label="本段名詞"><div><dt>DMA</dt><dd>Direct Memory Access，裝置直接存取記憶體</dd></div></dl><p class="lead">DMA（Direct Memory Access，直接記憶體存取）讓裝置發起記憶體交易。要讓一次工作正確完成，軟體還需交接緩衝區所有權，並處理平台要求的同步。</p><p>前情提要：Chapter 5 已建立 Request／Completion 的概念。本章沿著軟體準備工作、裝置寫入資料、軟體接手結果的過程，區分 PCIe 排序與 CPU／快取同步的責任。</p><p><strong>閱讀路線：</strong>DMA 位址與映射背景 → 描述項發布 → Base Table 2-42 的交易排序 → 封包屬性與主機接手條件。</p></section>
 <p class="lead">合法的 PCIe 寫入，不足以單獨證明 CPU 可以安全使用結果。DMA 還需要正確位址、有效映射、裝置與軟體的所有權交接，以及適用的記憶體同步。本章用「先寫資料，再寫完成旗標」分清各層保證。</p>
 <p><a href="/DOCS/pcie-course/chapter-6.html">完整中文教學</a> · <a href="/DOCS/pcie-course/index.html">課程路線</a> · <a href="/pcie/chapter-6-en/">English</a></p>
@@ -395,12 +396,20 @@ html[data-theme="dark"] .pcie-article { color-scheme: dark; }
 <div class="table-wrap"><table><caption>相同工作，不同排序條件</caption><thead><tr><th scope="col">條件</th><th scope="col">結論</th></tr></thead><tbody><tr><td>同一 Function、TC0，F 的 RO=0／IDO=0</td><td>A2a：F 不得越過 D。</td></tr><tr><td>同一 TC，F 的 RO=1，路徑容許該放寬</td><td>A2b：可能越過，但不要求一定越過。</td></tr><tr><td>D 在 TC0，F 在 TC1</td><td>這張表不提供跨 TC 順序保證。</td></tr><tr><td>只改 No Snoop</td><td>不改變排序；快取一致性條件則不同。</td></tr></tbody></table><dl class="st-terms" aria-label="本段名詞"><div><dt>TC</dt><dd>Traffic Class，流量類別</dd></div></dl></div>
 <p>表中的 Yes 表示後者必須能越過，以避免 deadlock；No 表示禁止；Y/N 表示實作可選。這些字不是在判斷交易成敗。封包沒有互相越過，也不會自動完成 CPU 端的所有權與同步工作。</p>
 <details class="source-note"><summary>排序來源</summary><p>§2.4.1 Table 2-42（p.222）、A2a／A2b 及註解（p.223）、No Snoop 規則（p.224）。本例排除 Flow-Through IDE。</p></details></section>
+<section id="dma-interrupt"><h2>資料寫完就送中斷，軟體一定能先看到資料嗎？</h2>
+<p>沿用前節的資料 D，現在把後續動作換成 MSI-X（Message Signaled Interrupts Extended，以記憶體寫入通知中斷）交易。先判斷兩筆 PCIe 寫入的順序，再檢查平台如何讓 CPU 讀到結果。這兩段需要各自的證據。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>MSI-X</dt><dd>Message Signaled Interrupts Extension，表格式訊息中斷</dd></div></dl>
+<aside class="example"><strong>【模擬資料】同一 Function 的資料與中斷</strong><p>假設 Endpoint <code>03:00.0</code> 先發出一般 Memory Write，將 64 bytes 的 D 寫到 <code>0x40001000</code>；隨後發出 MSI-X Memory Write，表示這筆工作已完成。MSI-X 的目標位址與資料已由平台配置。兩筆都是 Posted Request，資料寫入與 MSI-X 均為 RO=0、IDO=0；MSI-X 的 No Snoop=0。本例的 DMA 映射有效、BME 已啟用，並排除 Flow-Through IDE。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>MSI-X</dt><dd>Message Signaled Interrupts Extension，表格式訊息中斷</dd></div><div><dt>IDE</dt><dd>Integrity and Data Encryption，完整性與資料加密</dd></div></dl>
+<p>螢幕較窄時，可左右滑動表格查看完整內容。</p><div class="table-wrap"><table style="min-width: 640px"><caption>比較兩筆交易的 Traffic Class</caption><thead><tr><th scope="col">假設</th><th scope="col">PCIe 排序如何判讀？</th><th scope="col">軟體還要確認什麼？</th></tr></thead><tbody><tr><td>D 與 MSI-X 都使用 TC0</td><td>同一 TC 中，後發的 MSI-X 是 RO=0、IDO=0 的 Posted Request。依 Table 2-42 的 A2a，它不得越過先發的 D。</td><td>確認裝置介面的完成語意、平台的 DMA 同步與 CPU 接手方式；封包排序不會自動替軟體讀取資料。</td></tr><tr><td>D 使用 TC1，MSI-X 使用 TC0</td><td>Table 2-42 不提供跨 TC 的順序要求；不可用上一列的 A2a 推導兩者順序。</td><td>裝置必須確保不同 TC 的資料與中斷具有適當同步；具體方法依實作與裝置介面確認。</td></tr></tbody></table></div>
+<p>第一列限制的是這兩筆 PCIe 交易能否互相越過，並不單憑這項規則證明中斷已送達 CPU、驅動已執行，或快取中的資料已可直接使用。第二列也不是宣稱一定會亂序：只靠這張排序表，無法建立所需的跨 TC 順序。</p></aside>
+<p>查閱順序是：先在 §6.1.4 確認 MSI-X 使用 Memory Write，且 RO 與 No Snoop 必須為 0；IDO 在啟用條件成立時可設為 1，本例明確設為 0。再到 §2.4.1 的 Table 2-42，以先發的 D 找欄、後發的 MSI-X 找列，讀 A2a 與 A2b。最後回 §6.1.4 的 implementation note，查資料與中斷使用不同 TC 時的同步要求。（Base 6.0，文件頁／PDF 頁 222–223、661。）</p>
+<p>平台補充：若本例的驅動使用 Linux，資料與所有權仍依該緩衝區的映射方式及裝置介面處理；例如 consistent memory 的 DMA barrier 與 MMIO 存取有不同適用範圍。這部分參考 <a href="https://docs.kernel.org/6.12/core-api/wrappers/memory-barriers.html">Linux 6.12 memory barriers</a> 與 <a href="https://docs.kernel.org/6.12/core-api/dma-api-howto.html">DMA mapping Guide</a>，不是 Base 6.0 對所有作業系統的規定。</p></section>
+
 <section id="fields"><h2>控制位元是許可，不是每筆交易的實際屬性</h2>
 <p>PCIe Capability 在 0x70，Device Control 在 0x78；假設讀到 0x2810，bit 4 與 bit 11 表示允許有條件地使用 RO／No Snoop，bits 14:12=010b 表示 MRRS=512 bytes。這不表示每個 TLP 都設定了 RO 或 No Snoop。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>TLP</dt><dd>Transaction Layer Packet，交易層封包</dd></div></dl>
-<p>實際封包須讀 Attr[1] 的 RO、Attr[0] 的 No Snoop 與 Attr[2] 的 IDO；三個 bits 在 Non-Flit Header 中並非全部相鄰。No Snoop 不改變排序，也不是清 cache 的命令；許可使用時，仍須保證目標位址未存在系統任何 cache 中。IDO 有獨立的啟用與身分條件，本例固定為零。MSI/MSI-X 更明定 RO／No Snoop 必須為零。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>MSI</dt><dd>Message Signaled Interrupt，訊息中斷</dd></div><div><dt>MSI-X</dt><dd>Message Signaled Interrupts Extension，表格式訊息中斷</dd></div></dl>
+<p>實際封包須讀 Attr[1] 的 RO、Attr[0] 的 No Snoop 與 Attr[2] 的 IDO；三個 bits 在 Non-Flit Header 中並非全部相鄰。No Snoop 不改變排序，也不是清 cache 的命令；許可使用時，仍須保證目標位址未存在系統任何 cache 中。IDO 有獨立的啟用與身分條件，本例固定為零。MSI/MSI-X 更明定 RO／No Snoop 必須為零。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>MSI</dt><dd>Message Signaled Interrupt，訊息中斷</dd></div></dl>
 <details class="source-note"><summary>欄位查詢路線</summary><p>Figure 7-25（p.959）→ Table 7-21（pp.960–962）→ Figure 2-29／Tables 2-12、2-13（pp.160–161）→ Figure 2-5（p.120）。MSI 屬性限制見 p.661。</p></details></section>
 <section id="checks"><h2>核對推論的範圍</h2><details class="question"><summary>一次讀完整描述項，就保證完整快照嗎？</summary><p>沒有。正在更新的資料需要另外的介面與同步保證；§2.4.2（p.228）不提供這項原子性。</p></details><details class="question"><summary>一次測試沒有看見 RO 重排，就能依賴永遠不重排嗎？</summary><p>不能。「允許重排」不代表每次都重排，單次結果也不會把允許改成禁止。</p></details></section>
-<p>下一章把資料順序接到 MSI-X 通知。查核日期：2026-10-21。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>MSI-X</dt><dd>Message Signaled Interrupts Extension，表格式訊息中斷</dd></div></dl>
+<p>下一章把資料順序接到 MSI-X 通知。查核日期：2026-10-28。</p>
 </article>
 <nav class="bottom-nav" aria-label="課程與語言版本"><a href="/DOCS/pcie-course/index.html">課程總覽</a><a href="/DOCS/pcie-course/chapter-6.html">繁中完整教學</a><a href="/pcie/chapter-6-en/">English</a></nav>
 </div>
