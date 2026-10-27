@@ -271,10 +271,10 @@
         "PCIE-BASE-6.0"
       ],
       "title_en": "Reset Scope and Recovery Conditions",
-      "description": "從單一 Function 的 FLR 查詢，判斷重設範圍、舊 Completion、就緒時間與設定恢復。",
+      "description": "從單一 Function 的 FLR 流程與前後快照，判讀舊 Completion、就緒條件、保留欄位與錯誤紀錄。",
       "publication_date": "2026-10-21",
-      "revision_date": "2026-10-23",
-      "teaching_revision": 2
+      "revision_date": "2026-10-28",
+      "teaching_revision": 3
     },
     {
       "number": 10,

@@ -2,14 +2,14 @@
 layout: post
 title: "PCIe Chapter 9：Reset 的範圍與恢復條件"
 date: 2026-10-21 00:00:00 +0800
-last_modified_at: 2026-10-23 00:00:00 +0800
+last_modified_at: 2026-10-28 00:00:00 +0800
 permalink: /pcie/chapter-9-zh-tw/
 categories: [PCIe]
 tags: [PCIe, Specification]
 lang: zh-TW
 spec_teaching: true
 spec_series: pcie
-description: "從單一 Function 的 FLR 查詢，判斷重設範圍、舊 Completion、就緒時間與設定恢復。"
+description: "從單一 Function 的 FLR 流程與前後快照，判讀舊 Completion、就緒條件、保留欄位與錯誤紀錄。"
 ---
 
 <style>
@@ -378,6 +378,7 @@ html[data-theme="dark"] .pcie-article { color-scheme: dark; }
 <div class="pcie-article spec-teaching" data-spec-series="pcie" lang="zh-Hant-TW">
 <nav class="bottom-nav" aria-label="課程與語言版本"><a href="/DOCS/pcie-course/index.html">課程總覽</a><a href="/DOCS/pcie-course/chapter-9.html">繁中完整教學</a><a href="/pcie/chapter-9-en/">English</a></nav>
 <article class="lesson">
+<aside class="note"><strong>【模擬資料】</strong><p>本章的拓撲、讀值與時間為教學用途建立，不代表特定硬體或平台。</p></aside>
 <figure class="diagram"><svg viewBox="0 0 900 640" role="img" aria-labelledby="flr-walk-title flr-walk-desc"><title id="flr-walk-title">保留其他功能的工作，只重設 03:00.0</title><desc id="flr-walk-desc">時間向下。軟體確認能力、停止新工作並處理舊交易，寫入重設控制，等待必要條件，再恢復設定。03:00.1 與共用連線不受此功能重設影響。</desc>
 <g><rect x="15" y="20" width="260" height="64" rx="12" fill="var(--blue-soft)" stroke="var(--line)"/><text x="145" y="59" text-anchor="middle">系統軟體</text><path d="M145 84 V610" stroke="var(--line)" stroke-dasharray="5 5"/></g>
 <g><rect x="320" y="20" width="260" height="64" rx="12" fill="var(--blue-soft)" stroke="var(--line)"/><text x="450" y="59" text-anchor="middle">目標 03:00.0</text><path d="M450 84 V610" stroke="var(--line)" stroke-dasharray="5 5"/></g>
@@ -394,7 +395,21 @@ html[data-theme="dark"] .pcie-article { color-scheme: dark; }
 <section id="locate"><h2>先查能力，再處理 Pending，最後才觸發</h2><div class="table-wrap"><table><caption>作者假設的 FLR 讀值</caption><thead><tr><th scope="col">位址／寬度</th><th scope="col">值</th><th scope="col">判讀</th></tr></thead><tbody><tr><td>0x74／32 bits</td><td>0x10008000</td><td>Device Capabilities bit 28=1，支援 FLR。</td></tr><tr><td>0x7A／16 bits</td><td>0x0020</td><td>Device Status bit 5=1，有未完成 Non-Posted Requests。</td></tr><tr><td>0x78／16 bits</td><td>0x2810</td><td>Device Control 既有設定。</td></tr><tr><td>0x04／16 bits</td><td>0x0006</td><td>Command 的 MSE（Memory Space Enable，記憶體空間回應許可）、BME（Bus Master Enable，裝置發送許可）已開啟。</td></tr></tbody></table></div><p>依序讀 Figure 7-24／Table 7-20、Figure 7-26／Table 7-22、Figure 7-25／Table 7-21。完成停工與必要等待後，以 16-bit 寫入 <code>0x2810 | 0x8000 = 0xA810</code> 觸發 FLR，不連帶寫入相鄰的 RW1C（寫 1 清除）狀態。Initiate FLR 讀值永遠為零；同一 bit 在 PCIe-to-PCI/PCI-X Bridge 另有意義，因此必須先確認 Function 類型。</p><details class="source-note"><summary>欄位定位</summary><p>Figures 7-24–7-26、Tables 7-20–7-22（pp.955、958–959、962、965–966）。</p></details></section>
 <section id="pending"><h2>停止新 Request，不代表舊 Completion 已消失</h2><p>BME（裝置發送許可）=0 不會收回先前送出的 Request。Transactions Pending 只反映此 Function 發出的 Non-Posted Requests；它們可能已完成或被 timeout 終止，這個 bit 不涵蓋所有 Posted Writes、CPU 存取或外部工作，且 FLR 完成時本身就必須清零。</p><p>作者情境中，Tag（交易識別標記）=0x13 的舊 MRd（Memory Read，記憶體讀取） 尚未回覆便發生 FLR。若立即重新使用該 Tag，遲到的 Completion 可能被誤配給新交易。軟體應先協調其他存取者、停止裝置新工作及 DMA（Direct Memory Access，直接記憶體存取）／中斷，再處理未完成交易。p.727 的 Implementation Note 提供清 Command、輪詢 Pending 或等待足夠時間後才發 FLR 的範例演算法；它不能取代裝置特有的停工程序。</p><details class="source-note"><summary>Pending 與 stale Completion</summary><p>Table 7-22（p.966）；§6.6.2（pp.725–727）。</p></details></section>
 <section id="wait"><h2>FLR 完成、設定就緒與舊交易等待須分開確認</h2><p>觸發 FLR 的 Configuration Write 必須先取得 Completion，再開始 FLR。Function 必須在 100 ms 內完成 FLR，但特有的後續初始化可能更久；超過此時限仍需初始化時，必須以 RRS（要求稍後重試）回覆 Configuration Request。回過非 RRS Completion 後，下次 Reset 前不得再回 RRS。</p><p>若觸發時 Transactions Pending=1，初始化前仍須容許舊 Completion 到達，或合理確信不會再到達；規格建議依 FLR 前的 Completion Timeout 等待。若當時 timeout 停用，時間由系統決定但不得少於 100 ms。FRS（Function Readiness Status，功能就緒狀態通知）的 Configuration-Ready 可提早允許 Configuration 存取，仍不保證先前 Requests 全部完成。FLR 進行中 Request 可被靜默丟棄，不能任意用 MMIO（Memory-Mapped I/O，記憶體映射 I/O）輪詢當作完成通知。</p><p>Conventional Reset 的起點又不同。在無 DRS（Device Readiness Status，裝置就緒狀態通知）／其他提早就緒例外的分支，支援高於 5 GT/s 的 Downstream Port 要從 Link training 完成後等至少 100 ms。作者例：Reset 於 t=0 ms 結束，training 於 t=40 ms 完成，首次 Configuration Request 最早為 t=140 ms。只支援到 5 GT/s 的對應分支從 Reset 結束計時。未使用 Readiness Notifications 時，Conventional Reset 結束後至少容許 1 s，才可因尚無 Successful Completion 判定故障；這不是首次可存取時間。</p><details class="source-note"><summary>各種等待的依據</summary><p>FLR：§6.6.2（pp.725–727）；Conventional Reset、Immediate Readiness、DRS 與時間回報例外：§6.6.1（pp.722–723）。</p></details></section>
-<section id="restore"><h2>按欄位恢復，不整份寫回 dump</h2><p>FLR 清除 BME、MSI（Message Signaled Interrupts，訊息式中斷）Enable 等發送許可，但保留明列的 Max_Payload_Size（最大承載資料大小）、ASPM Control（連線自動省電控制）、RCB（Read Completion Boundary，讀取回覆邊界）、HwInit（硬體初始化）與 sticky（具狀態保留屬性）欄位；Link 狀態機與 VC0（預設虛擬通道）不被重設。完整例外見 §6.6.2，Flit-capable 實作另有要求。Sticky 也不代表所有斷電／Reset 都永久保留。</p><p>恢復時需分清 RO（唯讀）、RW1C（寫 1 清除）、觸發控制與可寫設定，重新建立必要的資源、裝置工作介面、中斷與 DMA 條件後才開放工作。FLR 不會替軟體清除主機 buffer，PCIe Base 也不定義每張卡的 queue 重建方式。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>DMA</dt><dd>Direct Memory Access，裝置直接存取記憶體</dd></div></dl><details class="source-note"><summary>保存與恢復來源</summary><p>§6.6.2（pp.724–726）；Table 7-2（pp.914–915）。</p></details></section>
+<section id="restore"><h2>依欄位判讀保留值，再恢復工作</h2>
+<p>先讀 §6.6.2 的 FLR 規則與保留例外，再以 Table 7-2 解讀欄位屬性。重設後有些發送許可會清除，部分設定與錯誤紀錄則保留；逐欄核對後，才能決定軟體接著要恢復什麼。</p>
+<h3 id="retained-status">用前後快照查清楚舊錯誤為何還在</h3>
+<div class="example"><p><strong>【模擬資料】以下快照為教學用途建立，不代表特定硬體或平台。</strong>沿用普通 Function 03:00.0，PCI Express Capability 在 0x70；另假設 AER（Advanced Error Reporting，進階錯誤回報）已定位在 0x100、版本 2，採 Non-Flit Mode（個別交易封包傳遞模式）。本例先前已記錄 Completion Timeout，軟體清除 Command 並妥善處理舊交易後取得第一份快照；完成 FLR、設定已就緒後取得第二份。期間沒有新錯誤或 AER 清除寫入。下表只列相關欄位。</p>
+<p>螢幕較窄時，可左右滑動表格查看完整內容。</p>
+<div class="table-wrap"><table style="min-width: 640px"><caption>03:00.0 的 FLR 前後讀值</caption><thead><tr><th scope="col">欄位與位置</th><th scope="col">FLR 前 → 後</th><th scope="col">對照規格</th></tr></thead><tbody>
+<tr><th scope="row">Bus Master Enable，Command bit 2，0x04</th><td>0 → 0</td><td>停工時已由軟體清零，FLR 也要求清除此發送許可。維持零表示尚未重新開放相應的新請求，本身不能證明重設已完成。</td></tr>
+<tr><th scope="row">Max_Payload_Size，Device Control bits 7:5，0x78</th><td>000b → 000b</td><td>FLR 明列保留；000b 是 128 bytes 的大小設定。</td></tr>
+<tr><th scope="row">Completion Timeout Status，Uncorrectable Error Status bit 14，0x104</th><td>1 → 1</td><td>Table 7-135 的屬性為 RW1CS（重設時保留、寫 1 清除的狀態）；Table 7-2 規定 Hot Reset 與 FLR 不初始化或修改它。</td></tr>
+</tbody></table></div></div>
+<p>查錯誤紀錄時，從 Figure 7-155 的 bit 14 接到 Table 7-135，再查 Table 7-2 的 RW1CS。Default=0 沒有取消保留規則；在本例前提下，重設後的 1 是舊紀錄。若事件與寫入歷史不完整，還需要查期間是否發生新錯誤。</p>
+<p>保存錯誤資料後，對 0x104 做 32-bit 寫入 <code>0x00004000</code>，只清 bit 14。其他已定義的狀態位元寫 0，不受這次清除影響；沒有新錯誤時，bit 14 隨後讀為 0。先前保存的資料仍記錄這次 Timeout。快照與其他 AER 欄位的處理見 <a href="/DOCS/pcie-course/chapter-12.html#preserve">Chapter 12</a>。</p>
+<p>完整保留例外仍查 §6.6.2，包括 Max_Payload_Size、ASPM Control（連線自動省電控制）、RCB（Read Completion Boundary，讀取回覆邊界）、HwInit（硬體初始化）與 sticky（重設時保留）類型；Flit-capable 實作另有要求。Physical／Data Link 狀態機與 VC0（預設虛擬通道）不被 FLR 重設。Cold／Warm Reset 與輔助電源的保留條件要另查。</p>
+<p>恢復時，按 RO（唯讀）、RW1C（寫 1 清除）、RW1CS、觸發控制與可寫設定分別處理，再重建裝置介面、中斷與 DMA 條件，最後開放工作。FLR 不替軟體清除主機 buffer，也不定義每張卡的 queue 重建方式。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>DMA</dt><dd>Direct Memory Access，裝置直接存取記憶體</dd></div></dl>
+<details class="source-note"><summary>保留與欄位來源</summary><p>Base 6.0 §6.6.2 <em>Function Level Reset (FLR)</em>（PDF／印刷 pp.724–726）；Table 7-2 <em>Register and Register Bit-Field Types</em>（pp.914–915）；Figure 7-5／Table 7-4 <em>Command Register</em>（pp.918–919）；Figure 7-25／Table 7-21 <em>Device Control Register</em>（pp.959–960）；Figure 7-154／Table 7-134 <em>Advanced Error Reporting Extended Capability Header</em>（p.1112）；Figure 7-155／Table 7-135 <em>Uncorrectable Error Status Register</em>（p.1113）。本段引用的 PDF 與印刷頁碼相同。</p></details></section>
 <section id="questions"><h2>回到這次重設的範圍</h2><details class="question"><summary>FLR 沒有讓 Link 重訓，是否代表失敗？</summary><p>不是。FLR 不得影響 Link；應查 Function 的重設與恢復條件。</p></details><details class="question"><summary>FLR 後 Pending=0，就能回收所有 DMA buffer 嗎？</summary><p>不能。還需要舊交易等待、裝置停工、其他軟體存取協調及平台 DMA 生命週期條件。</p></details></section>
 </article>
 <nav class="bottom-nav" aria-label="課程與語言版本"><a href="/DOCS/pcie-course/index.html">課程總覽</a><a href="/DOCS/pcie-course/chapter-9.html">繁中完整教學</a><a href="/pcie/chapter-9-en/">English</a></nav>

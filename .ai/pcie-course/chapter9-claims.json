@@ -256,6 +256,63 @@
         "wait": 100,
         "first_config": 140
       }
+    },
+    {
+      "id": "PCIE-CH9-RETAINED-STATUS-001",
+      "claim": "FLR 後逐欄判讀：BME 發送許可須清除，Max_Payload_Size 是明列保留例外；AER Completion Timeout Status 為 RW1CS，Hot Reset 與 FLR 不初始化或修改該狀態，Default=0 不取消保留規則。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.6.2",
+        "7.4",
+        "7.5.1.1.3",
+        "7.5.3.4",
+        "7.8.4.1",
+        "7.8.4.2"
+      ],
+      "figures": [
+        "7-5",
+        "7-25",
+        "7-154",
+        "7-155"
+      ],
+      "tables": [
+        "7-2",
+        "7-4",
+        "7-21",
+        "7-134",
+        "7-135"
+      ],
+      "document_pages": [
+        724,
+        725,
+        726,
+        914,
+        915,
+        918,
+        919,
+        959,
+        960,
+        1112,
+        1113
+      ],
+      "pdf_pages": [
+        724,
+        725,
+        726,
+        914,
+        915,
+        918,
+        919,
+        959,
+        960,
+        1112,
+        1113
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-28",
+      "notes": "作者快照：普通 Function、Non-Flit Mode、AER version 2 at 0x100，停工時先清 Command，FLR 前後無新錯誤與 AER 清除寫入。只列選定欄位。Max_Payload_Size=000b 沿用主案例 128-byte 能力，不把相同讀值單獨當成保留或 FLR 完成的證據。"
     }
   ]
 }

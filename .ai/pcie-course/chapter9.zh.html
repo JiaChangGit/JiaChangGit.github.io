@@ -1,3 +1,4 @@
+<aside class="note"><strong>【模擬資料】</strong><p>本章的拓撲、讀值與時間為教學用途建立，不代表特定硬體或平台。</p></aside>
 <!-- pcie-walk: walks/chapter9-reset.json -->
 <div class="guided-walk" id="reset-walk" role="group" aria-labelledby="reset-walk-title" data-walk-version="1">
 <h3 id="reset-walk-title">只重設一個功能，軟體要完成哪些事？</h3>
@@ -84,11 +85,22 @@
 <p>作者時間例：Reset 在 t=0 ms 結束，一個支援 16 GT/s 的 Port 到 t=40 ms 才完成 Link training。上述分支的第一個 Configuration Request 最早在 t=140 ms，而不是 t=100 ms。這個時間不是保證裝置已成功完成初始化；它仍可能依法回 RRS。</p>
 <p>Immediate Readiness（立即就緒）、DRS（裝置就緒通知）、Readiness Time Reporting（就緒時間回報），以及系統已知的特定裝置需求，可能改變可存取時間，必須依各自條件判斷。未使用 Readiness Notifications 時，在 Conventional Reset 結束後至少要容許 1.0 s，才能因有效 Configuration Request 尚未取得 Successful Completion 而判定裝置故障；這與前述第一次可送 Request 的等待是不同規則。</p>
 <details class="source-note"><summary>Conventional Reset 的時間分支</summary><p>§6.6.1（pp.722–723）。本例選用支援高於 5 GT/s、無提早就緒例外的分支。RRS 的 Host 可見性與合法使用時機已在 <a href="chapter-3.html">Chapter 3</a>說明；不要把 RRS 當成一般 MMIO 的重試狀態。</p></details></section>
-<section id="restore"><h2>6. FLR 後，能把整份 Configuration dump 寫回去嗎？</h2>
-<p>軟體要按欄位用途與存取屬性恢復設定。RO（唯讀）欄位不用寫回；RW1C（寫 1 清除）欄位寫回原值會清除狀態；觸發控制與共享欄位則各有使用條件。FLR 的基本要求是把 Function Register 與專屬狀態機回到指定的初始化值，但 §6.6.2 明列了一批保留例外。</p>
-<div class="table-wrap"><table><caption>恢復設定前先分類</caption><thead><tr><th scope="col">欄位／狀態</th><th scope="col">FLR 行為或注意事項</th></tr></thead><tbody><tr><td>BME、MSI（Message Signaled Interrupts，訊息式中斷）Enable 等發送許可</td><td>會清除，Function 在 Link 上停止相應的新 Request 發送；恢復工作前重新建立必要條件。</td></tr><tr><td>Max_Payload_Size（最大承載資料大小）、ASPM Control（連線自動省電控制）、RCB（Read Completion Boundary，讀取回覆邊界）等明列欄位</td><td>不因 FLR 回到初始化值。不能因為同在 Device／Link Control 就把整個 Register 一起清零。</td></tr><tr><td>HwInit（硬體初始化）、ROS／RWS／RW1CS（具狀態保留屬性的唯讀／讀寫／寫 1 清除欄位）</td><td>依屬性與 §6.6.2 保留。Sticky 不等於永遠不變；不同 Reset 與輔助電源條件須另外查表。</td></tr><tr><td>Physical／Data Link（實體層／資料連結層）狀態機、VC0（預設虛擬通道）</td><td>不被 FLR 重設；不要求重新訓練整條 Link。</td></tr><tr><td>主機記憶體與裝置特有工作介面</td><td>FLR 不替軟體重新建立 queue、DMA 映射或中斷路徑；也不能當成主機 buffer 已清除。</td></tr></tbody></table></div>
-<p>本例在確認就緒與舊交易條件後，依系統軟體保存的有效配置恢復資源，再重建裝置工作介面與中斷，最後開放新工作。哪些裝置 Register 必須重新設定，要讀該裝置介面的規格；PCIe Base 不知道每張卡的 queue 格式。</p>
-<details class="source-note"><summary>保存、初始化與欄位屬性</summary><p>§6.6.2（pp.724–726）包含完整例外清單及外部介面、秘密狀態的處理要求；Table 7-2（pp.914–915）定義 HwInit 與 sticky 類型。Flit-capable 實作另有 MUST@FLIT 的保留要求，不把本表短例當成完整清單。</p></details></section>
+<section id="restore"><h2>6. 依欄位判讀保留值，再恢復工作</h2>
+<p>FLR 會把 Function 專屬狀態帶回規定的初始值，同時保留 §6.6.2 明列的例外。恢復設定前，先讀各欄位的屬性與重設規則，才能知道哪些值應清除、哪些值應保留，以及哪些設定需要由軟體重建。</p>
+<h3 id="retained-status">FLR 後仍讀到舊錯誤，該從哪裡查起？</h3>
+<div class="example"><p><strong>【模擬資料】以下快照為教學用途建立，不代表特定硬體或平台。</strong>沿用普通多功能裝置的 03:00.0，PCI Express Capability 起點為 0x70；另假設已定位 AER（Advanced Error Reporting，進階錯誤回報）的起點為 0x100、版本為 2，採 Non-Flit Mode（以個別交易封包進行可靠傳遞）。</p>
+<p>本例在停工前已留下 Completion Timeout 紀錄。軟體完成前述停工程序，清除 Command 並處理舊交易後，才取得「FLR 前」快照；「FLR 後」快照則在已滿足重設與設定就緒條件時讀取。假設兩次快照之間沒有新錯誤，也沒有軟體清除 AER 紀錄。下表只列相關欄位，不是完整 Register dump。</p>
+<p>螢幕較窄時，可左右滑動表格查看完整內容。</p>
+<div class="table-wrap"><table style="min-width: 640px"><caption>同一個 Function 的 FLR 前後快照</caption><thead><tr><th scope="col">欄位與位置</th><th scope="col">FLR 前 → FLR 後</th><th scope="col">對照規則後的判讀</th></tr></thead><tbody>
+<tr><th scope="row">Bus Master Enable，Command bit 2，0x04</th><td>0 → 0</td><td>軟體停工時已清零，FLR 也要求清除這項發送許可。兩次都是零，表示此時仍未重新開放相應的新請求；這個讀值本身不證明 FLR 已完成。</td></tr>
+<tr><th scope="row">Max_Payload_Size，Device Control bits 7:5，0x78</th><td>000b → 000b</td><td>§6.6.2 明列保留此欄位。Table 7-21 把 000b 定義為 128 bytes 的大小設定，這個零不是「沒有 Payload 能力」。</td></tr>
+<tr><th scope="row">Completion Timeout Status，Uncorrectable Error Status bit 14，0x104</th><td>1 → 1</td><td>Table 7-135 將此 bit 定義為 RW1CS（重設時保留、寫 1 清除的狀態）。依 Table 7-2，FLR 不會初始化或修改它；在本例前提下，這是保留下來的舊紀錄。</td></tr>
+</tbody></table></div></div>
+<p>查第三列時，先用 Figure 7-155 找到 Completion Timeout Status，再讀 Table 7-135 的 Attributes 與 Default。表中的 Default 雖然是 0，RW1CS 的規則卻明確要求 Hot Reset 與 FLR 保留這個 bit。因此，本例重設後仍為 1，符合保留要求。若沒有兩次快照之間的寫入與事件紀錄，就還需要查清期間是否發生過新錯誤。</p>
+<p>軟體保存相關錯誤資料後，可對 0x104 做 32-bit 寫入 <code>0x00004000</code>，只對 bit 14 寫 1；其他已定義的狀態位元寫 0，不會被這次寫入清除。假設沒有新錯誤，之後讀到 bit 14=0，表示這筆紀錄已清除。錯誤曾經發生的歷史，仍由先前保存的資料保留。需要一起保存哪些 AER 欄位，接到 <a href="chapter-12.html#preserve">Chapter 12 的錯誤快照與清除流程</a>閱讀。</p>
+<p>Max_Payload_Size、ASPM Control（連線自動省電控制）、RCB（Read Completion Boundary，讀取回覆邊界）等保留例外，須逐項查 §6.6.2；HwInit（硬體初始化）與 sticky（重設時保留）類型則接到 Table 7-2。共用的實體層、資料連結層狀態機與 VC0（預設虛擬通道）不被 FLR 重設。保留也有條件：涉及 Cold／Warm Reset 或輔助電源時，要重新核對相應規則。</p>
+<p>最後按欄位用途恢復可寫設定，再重建裝置工作介面、中斷及 DMA 條件，完成後才開放新工作。RO（唯讀）欄位不用寫回，RW1C（寫 1 清除）或 RW1CS 狀態不能跟著整份 dump 寫回；觸發控制與共用欄位也各有使用條件。FLR 不會替軟體重新建立 queue 或清除主機 buffer；裝置 Register 的重建順序需查該介面規格。</p>
+<details class="source-note"><summary>從 Reset 規則查到欄位屬性</summary><p>PCI Express Base Specification Revision 6.0：§6.6.2 <em>Function Level Reset (FLR)</em>（PDF／印刷 pp.724–726）定義保留例外與發送許可清除；Table 7-2 <em>Register and Register Bit-Field Types</em>（PDF／印刷 pp.914–915）定義 HwInit、sticky 與 RW1CS。Figure 7-5／Table 7-4 <em>Command Register</em>（PDF／印刷 pp.918–919）定義 BME；Figure 7-25／Table 7-21 <em>Device Control Register</em>（PDF／印刷 pp.959–960）定義 Max_Payload_Size。Figure 7-154／Table 7-134 <em>Advanced Error Reporting Extended Capability Header</em>（PDF／印刷 p.1112）定位結構與版本；Figure 7-155／Table 7-135 <em>Uncorrectable Error Status Register</em>（PDF／印刷 p.1113）定位 bit 14 的屬性與初始值。本表的前後讀值與清除操作由作者依這些規則建立。Flit-capable 實作另有 MUST@FLIT 保留要求，完整清單仍以 §6.6.2 為準。</p></details></section>
 <section id="practice"><h2>7. 把 03:00.0 的重設流程接起來</h2>
 <p>回到開頭的需求：03:00.1 繼續工作，軟體重新建立 03:00.0 的工作環境。先用 Figure 7-24 確認支援，再以 Figure 7-26 觀察未完成交易；本例先處理舊交易，才依 Figure 7-25 寫入觸發控制。設定就緒後，軟體按欄位屬性恢復配置，最後重建裝置工作與通知路徑。</p>
 <details class="question" open><summary>Link 沒有重新訓練，接下來要觀察哪裡？</summary><p>這正是單一功能重設的預期範圍。接下來觀察 03:00.0 的設定就緒與恢復過程；共用連線持續運作，03:00.1 也繼續工作。（§6.6.2，pp.724–726。）</p></details>

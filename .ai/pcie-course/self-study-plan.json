@@ -671,5 +671,18 @@
       "FC-002"
     ],
     "remaining": "本章為建立與可靠傳遞的入門帶讀；完整 LTSSM 子狀態、FC 計數、Replay 與 FLIT 等仍須於各主題深入，不因此標示全分類完成。"
+  },
+  "chapter_9_revision": {
+    "status": "locally_verified",
+    "location": "DOCS/pcie-course/chapter-9.html",
+    "covered": "以 FLR 前後欄位快照取代概括保留表，串接 Reset 規則、Table 7-2 屬性與 AER 欄位，說明 BME、Max_Payload_Size 與 RW1CS 錯誤紀錄的不同判讀。",
+    "references": [
+      "CFG-006",
+      "CFG-007",
+      "RESET-006",
+      "RESET-010",
+      "ERR-010"
+    ],
+    "remaining": "完整 Reset 傳播、初始化與裝置恢復仍須在各主題進一步核對；AER 通知與完整快照流程連回 Chapter 12，不因此標示 Reset 或 AER 全分類完成。"
   }
 }
