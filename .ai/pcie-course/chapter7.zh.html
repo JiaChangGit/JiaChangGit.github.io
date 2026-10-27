@@ -1,3 +1,4 @@
+<aside class="note"><strong>【模擬資料】</strong><p>本章的位址、讀值與事件為教學用途建立，不代表特定硬體或平台。</p></aside>
 <!-- pcie-walk: walks/chapter7-notify.json -->
 <div class="guided-walk" id="interrupt-walk" role="group" aria-labelledby="interrupt-walk-title" data-walk-version="1">
 <h3 id="interrupt-walk-title">從設定表走到一次中斷通知</h3>
@@ -113,6 +114,14 @@ PBA base = 0x80004000 + (0x00003000 &amp; 0xFFFFFFF8) = 0x80007000</code></pre>
 <p>Pending bits 由裝置依事件狀態更新。規格建議軟體只讀、不寫；寫入的結果未定義。RW1C（寫入 1 清除）的方式不適用於這些位元。訊息送出後 PBA 可先清零，CPU 的處理常式則可能稍後才執行。</p>
 <details class="source-note"><summary>Pending 與服務次數來源</summary><p>Figure 7-58（p.1019）、Equation 7-2／7-3（p.1021）、Figure 7-67／Table 7-56（pp.1026–1027）。遮罩、事件已滿足與清除 Pending 的條件：§6.1.4.5（p.664）。同一向量重複傳送不保證每個訊息都各自獲得服務，需配合裝置與驅動程式交握：§6.1.4.6（pp.665–666）。</p></details></section>
 
+<section id="shared-vector"><h2>兩個 entry 共用向量，只遮罩一個會怎樣？</h2>
+<p>MSI-X 的 Mask bit（遮罩位元）屬於 Table entry（設定表項目）。如果兩個 entry 使用同一組 Message Address／Data，也就是共用同一個中斷向量，遮罩其中一個 entry 不會自動遮罩另一個。</p>
+<aside class="example"><strong>【模擬資料】entry 3 與 entry 4 共用向量</strong><p>沿用前面的 8-entry Table 和 entry 3 目標。假設系統軟體已將 entry 3、entry 4 都配置為 Address=<code>0xFEE01000</code>、Data=<code>0x00000045</code>，兩者各自對應裝置事件 S3、S4。這組資料是系統配置紀錄；MSI-X Message Address 的讀取結果未定義，不靠讀回它證明內容。MSI-X 已啟用、Function Mask=0；entry 3 的 Mask=1，entry 4 的 Mask=0，其他通知條件皆已滿足。</p>
+<p>以下是一種事件順序，假設期間沒有其他新事件或競爭操作。螢幕較窄時，可左右滑動表格查看完整內容。</p>
+<div class="table-wrap"><table style="min-width: 640px"><caption>從事件、遮罩到軟體處理</caption><thead><tr><th scope="col">階段</th><th scope="col">狀態與動作</th><th scope="col">應如何判讀？</th></tr></thead><tbody><tr><td>1. S3 發生</td><td>entry 3 處於遮罩；裝置原本需要使用它發送通知。</td><td>裝置不得用 entry 3 發送，並設 PBA 的 bit 3。</td></tr><tr><td>2. S4 發生</td><td>entry 4 未遮罩，裝置使用 entry 4 發出通知。</td><td>這個通知的 Address／Data 與 entry 3 相同；只憑通知內容不能判斷 entry 3 已解除遮罩。</td></tr><tr><td>3. 軟體處理事件</td><td>假設依裝置介面檢查狀態後，S3 與 S4 都已處理；entry 3 仍遮罩。</td><td>S3 已被滿足時，裝置必須清除它的 Pending bit。S4 的通知本身不等於 S3 已處理。</td></tr><tr><td>4. 解除 entry 3 遮罩</td><td>假設 S3 的 Pending 已清除，且沒有新事件。</td><td>不會因已處理的 S3 留下一筆待送通知。若遮罩期間發生新的 S3，則需重新設 Pending。</td></tr></tbody></table></div>
+<p>若其餘 PBA bits 都為零，在階段 1 完成後讀取本例的 PBA QWORD，可看到 bit 3 為 1，即 <code>0x0000000000000008</code>。這個 bit 表示有待送通知，不表示事件數量。PBA 並不取代裝置的事件狀態或佇列；軟體如何確認及處理 S3、S4，由裝置介面定義。</p></aside>
+<p>查閱時先用 Table 7-55 確認 entry 的 Mask bit，再讀 §6.1.4.5：規格特別指出，多個 entries 若配置相同向量，必須遮罩所有這些 entries，才能保證 Function 不會用該 Address／Data 發送。再用 Figure 7-67／Table 7-56 找每個 entry 對應的 Pending bit，接回遮罩期間事件被滿足或再次發生的規則。Function Mask=1 會讓全部 entries 都按遮罩處理，但不改寫各自的 Mask bit。（Base 6.0，文件頁／PDF 頁 664–665、1026–1027。）</p></section>
+
 <section id="ordering"><h2>7. 資料寫入如何接上中斷通知？</h2>
 <p>本例讓同一 Function 的資料寫入與 MSI-X 都使用 TC0（同一流量類別）。中斷寫入是 Posted Request（沒有一般完成回覆的請求），且 RO（放寬排序）必須為零；適用的排序規則不允許它越過該 Function 先前送出的 Posted 寫入。§6.1.4.7 進一步要求系統保證：由該訊息引發的中斷處理常式，能觀察到先於該訊息到達的 Posted 更新。因此，不必為了沖出這些先前寫入，額外讀一次裝置 Register。</p>
 <p>使用資料時仍須滿足 <a href="chapter-6.html#publish">Chapter 6 的映射與同步前提</a>。處理常式依裝置介面找出完成項目，再存取對應資料。若資料與中斷使用不同 TC，裝置必須另外確保同步。</p>
@@ -124,4 +133,4 @@ PBA base = 0x80004000 + (0x00003000 &amp; 0xFFFFFFF8) = 0x80007000</code></pre>
 <details open class="question"><summary>通知暫時被遮罩時，沿哪些欄位追蹤事件？</summary><p>先看 Table 7-49 的 Function Mask，再看 Table 7-55 的 entry Mask。任一層遮罩有效，裝置就按 §6.1.4.5 將通知留待處理，以 Table 7-56 的 Pending bit 表示。事件仍待處理而遮罩解除後，裝置安排送出通知，送出後清除 Pending。</p></details>
 <details open class="question"><summary>之後要更改通知目標，如何接回設定流程？</summary><p>先依規定遮罩，確認更新順序，再改 Address／Data，完成後解除遮罩。對原本未遮罩的項目，先以 DWORD 更新 Mask，避免用同一次 QWORD 寫入同時更動 Data 與遮罩；未遮罩時更改目的資料的結果未定義。（§6.1.4.2、§6.1.4.5，pp.662–665。）</p></details></section>
 <section id="next"><h2>9. 下一步：這些封包如何可靠地通過 Link？</h2><p>到這裡，已能從設定空間走到資料搬移與通知。<a href="chapter-8.html">Chapter 8</a> 回到 Link，說明訓練、流量控制與重送的責任；Chapter 9–10 接續 Reset 與電源管理，可由 <a href="index.html">課程路線</a> 查看安排。</p></section>
-<section id="sources"><h2>版本與來源</h2><p>本章以 PCI Express Base Specification Revision 6.0 的 §6.1、§7.7.1–§7.7.2 為準；文件頁碼與 PDF 頁碼一致。查核日期：2026-10-21。未把其他版本的中斷欄位或特定 CPU 的中斷編碼混入通用規則；數值案例與初始化安排均已標示為作者推演。</p></section>
+<section id="sources"><h2>版本與來源</h2><p>本章以 PCI Express Base Specification Revision 6.0 的 §6.1、§7.7.1–§7.7.2 為準；文件頁碼與 PDF 頁碼一致。查核日期：2026-10-28。未把其他版本的中斷欄位或特定 CPU 的中斷編碼混入通用規則；數值案例與初始化安排均已標示為作者推演。</p></section>

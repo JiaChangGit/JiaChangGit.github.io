@@ -647,5 +647,16 @@
       "MSG-009"
     ],
     "remaining": "完整 Ordering Table、IDO 特例、中斷設定與 Replay 等留在對應章節，不以局部案例標示整個分類完成。"
+  },
+  "chapter_7_revision": {
+    "status": "locally_verified",
+    "location": "DOCS/pcie-course/chapter-7.html",
+    "covered": "補充共用 MSI-X 向量時的 per-entry Mask、Pending 與裝置事件處理順序。",
+    "references": [
+      "MSG-002",
+      "MSG-005",
+      "MSG-010"
+    ],
+    "remaining": "Message Routing、INTx、Hot-Plug、Error Message 和 Root 接收等其他通知主題仍在各章處理。"
   }
 }

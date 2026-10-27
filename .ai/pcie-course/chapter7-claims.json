@@ -2,7 +2,7 @@
   "schema_version": 1,
   "course": "pcie-course",
   "chapter": 7,
-  "updated": "2026-10-21",
+  "updated": "2026-10-28",
   "page_index_base": 1,
   "claims": [
     {
@@ -400,6 +400,41 @@
           "result": "8"
         }
       ]
+    },
+    {
+      "id": "PCIE-CH7-SHARED-VECTOR-001",
+      "claim": "MSI-X 逐 entry 遮罩；多個 entries 共用 Address/Data 時，須遮罩所有相同向量的 entries 才能保證 Function 不以該組 Address/Data 發送。已遮罩的事件被滿足時裝置須清 Pending，新事件發生則重新設置。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.1.4.5",
+        "7.7.2.8",
+        "7.7.2.9"
+      ],
+      "figures": [
+        "7-66",
+        "7-67"
+      ],
+      "tables": [
+        "7-55",
+        "7-56"
+      ],
+      "document_pages": [
+        664,
+        665,
+        1026,
+        1027
+      ],
+      "pdf_pages": [
+        664,
+        665,
+        1026,
+        1027
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-28",
+      "notes": "案例兩個 entries 共用向量，但事件 S3/S4 與軟體處理方式是作者假設。"
     }
   ]
 }

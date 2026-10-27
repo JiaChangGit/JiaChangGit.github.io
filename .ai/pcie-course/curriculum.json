@@ -214,10 +214,10 @@
         "PCIE-BASE-6.0"
       ],
       "title_en": "From Device Events to Interrupt Service",
-      "description": "從 MSI-X Capability 找到 Table 與 PBA，推演 entry 設定、遮罩、Pending 和中斷寫入。",
+      "description": "從 MSI-X Capability 找到設定表與 PBA，帶讀遮罩、待送通知及多個 entry 共用向量的處理。",
       "publication_date": "2026-10-21",
-      "revision_date": "2026-10-23",
-      "teaching_revision": 2
+      "revision_date": "2026-10-28",
+      "teaching_revision": 3
     },
     {
       "number": 8,
