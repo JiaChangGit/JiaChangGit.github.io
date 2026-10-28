@@ -824,5 +824,16 @@
       "EQ-008"
     ],
     "remaining": "完整Tx jitter分解/濾波演算法、PAM4線性SNDR/RLM、係數空間與全部Tx電氣參數仍須深入；本章未作實機量測或完整合規判定。"
+  },
+  "chapter_21_revision": {
+    "status": "locally_verified",
+    "location": "DOCS/pcie-course/chapter-21.html#rx-calibration",
+    "covered": "以16GT Endpoint CC案例串起通道IL選列、TP2/TP2P、纜線損耗邊界、Table8-10目標與Note4/8、五次平均、校準與DUT掃Sj/BER的不同結果，連回平台通道與Refclk模型。",
+    "references": [
+      "PHY-009",
+      "EQ-008",
+      "ENC-010"
+    ],
+    "remaining": "完整各速率校準搜尋/所有壓力與Sj輪廓、Rx全部電氣項目、通道模擬及Refclk全部傳遞函數仍須深入；未執行實機或統計信賴度評估，未宣稱接收器或全Base6完成。"
   }
 }

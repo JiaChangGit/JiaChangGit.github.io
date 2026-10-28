@@ -14,6 +14,32 @@ import re
 
 ROOT=Path(__file__).resolve().parents[1]
 
+def rx_calibration_case(x):
+    """Arithmetic for the source-checked 16 GT/s Non-Root calibration excerpt.
+
+    This checks means and unit conversions, not channel masks, stress-search
+    completion, test-tool accuracy, DUT BER, or statistical confidence.
+    """
+    if x['gt_s']!=16 or x['receiver_type']!='non-root':
+        raise ValueError('This teaching model is scoped to the 16 GT/s Non-Root case')
+    ui=Fraction(1000,x['gt_s']); target_ew=ui*Fraction(3,10)
+    rows={}
+    for name,label,unit,target,tolerance in [('eh','EH','mVPP',Fraction(15),Fraction(3,2)),
+                                            ('ew','EW','ps',target_ew,Fraction(1,2))]:
+        raw=x[name]
+        if len(raw)<5 or any(Fraction(str(v))<=0 for v in raw):
+            raise ValueError('At least five positive calibration samples are required')
+        values=[Fraction(str(v)) for v in raw]; mean=sum(values)/len(values)
+        fmt=lambda value:f'{float(value):g}'
+        rows[name]=[label,', '.join(str(v) for v in raw)+' '+unit,
+                    fmt(mean)+' '+unit,fmt(target-tolerance)+'–'+fmt(target+tolerance)+' '+unit]
+    # Table 8-8's 16 GT/s Non-Root nominal high-frequency range, and the
+    # source rule extending options 2 dB below / 3 dB above, were read in PDF.
+    loss_min=Fraction(245,10)-2; loss_max=Fraction(255,10)+3
+    summary=[f'{float(ui):g} ps',f'{float(target_ew):g} ps',
+             f'{float(loss_min):g}–{float(loss_max):g} dB']
+    return rows,summary
+
 def differential_voltage_case(x):
     """Idealized symmetric voltage geometry, not a waveform/compliance engine."""
     high=x['high_mv']; low=x['low_mv']
@@ -156,6 +182,9 @@ def result_tokens(model, x):
     if model=='differential_voltage':
         rows,summary=differential_voltage_case(x)
         return [token for row in rows.values() for token in row]+summary
+    if model=='rx_calibration':
+        rows,summary=rx_calibration_case(x)
+        return [token for row in rows.values() for token in row]+summary
     if model=='lane':
         if x['lane']<0:raise ValueError('Negative Lane number')
         control=x['control_base']+x['lane']*x['stride']
@@ -191,6 +220,16 @@ def normalized(text):
     return re.sub(r'[\s,，]','',text).casefold()
 
 def validate_case(case, text):
+    if case['model']=='rx_calibration':
+        rows,summary=rx_calibration_case(case['inputs']); missing=[]
+        for name,expected in rows.items():
+            row=re.search(r'<tr\b[^>]*data-rx-check="'+name+r'"[^>]*>(.*?)</tr>',text,re.S)
+            cells=re.findall(r'<td\b[^>]*>(.*?)</td>',row.group(1),re.S) if row else []
+            actual=[normalized(unescape(re.sub(r'<[^>]+>',' ',cell))) for cell in cells]
+            if actual!=[normalized(cell) for cell in expected]:missing.append(name+': calibration mean cells do not match')
+        passage=normalized(section_text(text,case['section']))
+        missing.extend(token for token in summary if normalized(token) not in passage)
+        return missing
     if case['model']=='differential_voltage':
         rows,summary=differential_voltage_case(case['inputs']); missing=[]
         for name,expected in rows.items():

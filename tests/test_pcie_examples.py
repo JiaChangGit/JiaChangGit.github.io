@@ -1,6 +1,6 @@
 """Boundary checks and a deliberately incorrect published-result regression."""
 import unittest
-from scripts.validate_pcie_examples import result_tokens,validate_case,polling_gate_rows,differential_voltage_case
+from scripts.validate_pcie_examples import result_tokens,validate_case,polling_gate_rows,differential_voltage_case,rx_calibration_case
 
 class TeachingArithmeticTest(unittest.TestCase):
     def test_one_dw_rejects_last_enable(self):
@@ -133,5 +133,24 @@ class DifferentialVoltageTeachingTest(unittest.TestCase):
         self.assertEqual(rows['high'],['H','825','375','+450','600'])
         self.assertEqual(rows['low'],['L','375','825','−450','600'])
         self.assertEqual(summary,['450 mVPP','900 mVPP','600 mV'])
+
+class ReceiverCalibrationTeachingTest(unittest.TestCase):
+    def setUp(self):
+        self.inputs=dict(gt_s=16,receiver_type='non-root',eh=['14.5','15.0','15.5','15.2','14.8'],
+                         ew=['18.5','18.8','18.9','18.6','18.95'])
+    def test_wrong_mean_is_detected_in_its_own_row(self):
+        rows,summary=rx_calibration_case(self.inputs)
+        self.assertEqual(rows['ew'][2:],["18.75 ps","18.25–19.25 ps"])
+        self.assertEqual(rows['eh'][2:],["15 mVPP","13.5–16.5 mVPP"])
+        text='<section id="rx-calibration">'+''.join('<tr data-rx-check="'+name+'">'+''.join('<td>'+v+'</td>' for v in values)+'</tr>' for name,values in rows.items())+'<p>'+'; '.join(summary)+'</p></section>'
+        case=dict(section='rx-calibration',model='rx_calibration',inputs=self.inputs)
+        self.assertEqual(validate_case(case,text),[])
+        self.assertTrue(validate_case(case,text.replace('<td>18.75 ps</td>','<td>18.95 ps</td>')))
+    def test_four_measurements_are_insufficient(self):
+        self.inputs['eh'].pop()
+        with self.assertRaises(ValueError):rx_calibration_case(self.inputs)
+    def test_the_same_ui_model_cannot_be_reused_at_64_gt(self):
+        self.inputs['gt_s']=64
+        with self.assertRaises(ValueError):rx_calibration_case(self.inputs)
 
 if __name__=='__main__':unittest.main()

@@ -582,10 +582,10 @@
       "title_en": "Receiver, Channel, and Reference Clock",
       "question": "發送端符合規格，為什麼接收端還要另做測試？",
       "topics": [
-        "接收器容忍條件與測試情境",
-        "通道損耗、串擾、拓樸及量測位置",
-        "Refclk 架構與各自的時脈條件",
-        "Appendix C 與板級實作邊界"
+        "接收測試的校準流程、模型眼圖與 BER 結果",
+        "TP2／TP2P、通道損耗與壓力參考點",
+        "Refclk 架構、Sj 條件與濾波模型",
+        "平台通道與外形規格的分工邊界"
       ],
       "prerequisites": [
         18,
@@ -597,8 +597,8 @@
         "PCIE-BASE-6.0"
       ],
       "publication_date": "2026-10-24",
-      "revision_date": "2026-10-24",
-      "teaching_revision": 2
+      "revision_date": "2026-10-29",
+      "teaching_revision": 3
     },
     {
       "number": 22,
