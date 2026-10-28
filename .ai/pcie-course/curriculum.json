@@ -501,8 +501,9 @@
         "PCIE-BASE-6.0"
       ],
       "publication_date": "2026-10-24",
-      "revision_date": "2026-10-24",
-      "teaching_revision": 2
+      "revision_date": "2026-10-28",
+      "teaching_revision": 3,
+      "description": "從VC初始化接到有限Non-Flit credit計數，以20byte寫入帶讀回繞、Ack、UpdateFC與Replay，分清接收緩衝、重送副本及交易結果。"
     },
     {
       "number": 18,

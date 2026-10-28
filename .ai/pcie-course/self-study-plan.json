@@ -772,5 +772,19 @@
       "FC-006"
     ],
     "remaining": "MFVC、多Function仲裁、完整WRR／Time-based WRR表格、Shared FC與等時性完整預算及設定仍須深入；不因此標示VC或Base6全規格完成。"
+  },
+  "chapter_17_revision": {
+    "status": "locally_verified",
+    "location": "DOCS/pcie-course/chapter-17.html#credit-cycle",
+    "covered": "帶讀DL_Up與FC_INIT2差別，使用有限未縮放Non-Flit PH/PD累積計數的五個時點，解釋UpdateFC回繞、Ack不回收credit及Replay不重複消耗；區分反方向Completion和延遲量測邊界。",
+    "references": [
+      "DLL-002",
+      "FC-001",
+      "FC-003",
+      "FC-004",
+      "REPLAY-001",
+      "REPLAY-004"
+    ],
+    "remaining": "完整ScaledFC、Shared/MergedFC計帳、Replay計數與Timer、全部初始化例外及AppendixH公式仍須深入；不因此標示DataLink或Base6全規格完成。"
   }
 }

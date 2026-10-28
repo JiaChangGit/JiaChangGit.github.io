@@ -2,7 +2,7 @@
   "schema_version": 1,
   "course": "pcie-course",
   "chapter": 17,
-  "updated": "2026-10-24",
+  "updated": "2026-10-28",
   "claims": [
     {
       "id": "PCIE-CH17-001",
@@ -32,34 +32,48 @@
         "2-45"
       ],
       "status": "verified",
-      "verified_on": "2026-10-24"
+      "verified_on": "2026-10-28"
     },
     {
       "id": "PCIE-CH17-002",
-      "claim": "非Flit與Flit完整性、序號及重送確認不同。",
+      "claim": "Non-Flit序號與LCRC保護逐Link傳輸；有效Ack清除相應重送副本，Flit模式重送在Flit層且不使用Ack/Nak DLLP。",
       "kind": "specification",
       "source_id": "PCIE-BASE-6.0",
       "revision": "6.0",
       "sections": [
+        "3.1",
         "3.6.2",
+        "3.6.2.1",
+        "3.6.2.2",
+        "3.6.2.3",
         "3.6.3"
       ],
       "document_pages": [
+        263,
         264,
         288,
-        300
+        293,
+        294,
+        297,
+        298,
+        300,
+        301
       ],
       "pdf_pages": [
+        263,
         264,
         288,
-        300
+        293,
+        294,
+        297,
+        298,
+        300,
+        301
       ],
-      "figures": [
-        "3-17"
-      ],
+      "figures": [],
       "tables": [],
       "status": "verified",
-      "verified_on": "2026-10-24"
+      "verified_on": "2026-10-28"
     },
     {
       "id": "PCIE-CH17-003",
@@ -79,28 +93,163 @@
       "figures": [],
       "tables": [],
       "status": "verified",
-      "verified_on": "2026-10-24"
+      "verified_on": "2026-10-28"
     },
     {
       "id": "PCIE-CH17-004",
-      "claim": "更新延遲附錄僅資訊性及計算參數。",
+      "claim": "更新延遲從接收端釋放空間量到UpdateFC第一Symbol送出；主文表格為建議值，AppendixH僅資訊性；必須安排更新的條件與週期規則另列。",
       "kind": "specification",
       "source_id": "PCIE-BASE-6.0",
       "revision": "6.0",
       "sections": [
+        "2.6.1.2",
         "H",
         "H.1"
       ],
       "document_pages": [
-        1581
+        246,
+        247,
+        248,
+        249,
+        251,
+        252,
+        1581,
+        1582
       ],
       "pdf_pages": [
-        1581
+        246,
+        247,
+        248,
+        249,
+        251,
+        252,
+        1581,
+        1582
       ],
       "figures": [],
-      "tables": [],
+      "tables": [
+        "2-48",
+        "2-49",
+        "2-50"
+      ],
       "status": "verified",
-      "verified_on": "2026-10-24"
+      "verified_on": "2026-10-28"
+    },
+    {
+      "id": "PCIE-CH17-INIT-001",
+      "claim": "DL_Init在FC_INIT1回報DL_Down、FC_INIT2回報DL_Up；該VC仍禁止TLP傳送直到離開FC_INIT2，DLFeature依功能支援條件進入。",
+      "sections": [
+        "3.2",
+        "3.2.1",
+        "3.3",
+        "3.4",
+        "3.4.1",
+        "2.6.1"
+      ],
+      "figures": [
+        "3-2"
+      ],
+      "tables": [],
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "document_pages": [
+        264,
+        265,
+        266,
+        267,
+        268,
+        269,
+        270,
+        271,
+        272,
+        273,
+        241
+      ],
+      "pdf_pages": [
+        264,
+        265,
+        266,
+        267,
+        268,
+        269,
+        270,
+        271,
+        272,
+        273,
+        241
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-28"
+    },
+    {
+      "id": "PCIE-CH17-COUNTERS-001",
+      "claim": "有限未縮放Non-Flit的Header/Data計數寬度8/12bits；Consumed與Limit累積取模，UpdateFC載入新Limit，Ack不回收credit，重送不再次計數。InitFC有限與Infinite語意不同；credit返回不表示交易完成或系統可見。",
+      "sections": [
+        "2.6",
+        "2.6.1",
+        "2.6.1.1",
+        "2.6.1.2",
+        "3.5",
+        "3.6.2.1",
+        "3.6.2.2"
+      ],
+      "figures": [
+        "3-11"
+      ],
+      "tables": [
+        "2-44",
+        "2-45",
+        "2-46",
+        "2-47"
+      ],
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "document_pages": [
+        235,
+        236,
+        237,
+        238,
+        239,
+        240,
+        241,
+        242,
+        244,
+        245,
+        246,
+        247,
+        280,
+        281,
+        284,
+        293,
+        294,
+        297,
+        298
+      ],
+      "pdf_pages": [
+        235,
+        236,
+        237,
+        238,
+        239,
+        240,
+        241,
+        242,
+        244,
+        245,
+        246,
+        247,
+        280,
+        281,
+        284,
+        293,
+        294,
+        297,
+        298
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-28"
     }
   ]
 }

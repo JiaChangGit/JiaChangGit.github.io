@@ -52,4 +52,27 @@ class VirtualChannelSetupTest(unittest.TestCase):
         self.inputs['extended_count']=0
         with self.assertRaises(ValueError):result_tokens('vc_setup',self.inputs)
 
+class FiniteCreditTimelineTest(unittest.TestCase):
+    def setUp(self):
+        self.inputs=dict(payload_bytes=20,consumed=[254,4094],limit=[255,4094],
+                         updates=[[0,0],[1,2]],finite=True)
+    def test_ack_cannot_return_credit(self):
+        rows=[('wait','PH=FEh; PD=FFEh','PH=FFh; PD=FFEh','1 PH / 0 PD'),
+              ('ready','PH=FEh; PD=FFEh','PH=00h; PD=000h','2 PH / 2 PD'),
+              ('sent','PH=FFh; PD=000h','PH=00h; PD=000h','1 PH / 0 PD'),
+              ('acked','PH=FFh; PD=000h','PH=00h; PD=000h','1 PH / 0 PD'),
+              ('updated','PH=FFh; PD=000h','PH=01h; PD=002h','2 PH / 2 PD')]
+        text=''.join('<tr data-fc-stage="'+r[0]+'"><td>'+'</td><td>'.join(r[1:])+'</td></tr>' for r in rows)
+        case=dict(section='credit-cycle',model='finite_fc',inputs=self.inputs)
+        self.assertEqual(validate_case(case,text),[])
+        wrong=text.replace('data-fc-stage="acked"><td>PH=FFh; PD=000h',
+                           'data-fc-stage="acked"><td>PH=FEh; PD=FFEh')
+        self.assertTrue(any(e.startswith('acked:') for e in validate_case(case,wrong)))
+    def test_tlp_requiring_more_data_credit_is_blocked(self):
+        self.inputs['payload_bytes']=36
+        with self.assertRaises(ValueError):result_tokens('finite_fc',self.inputs)
+    def test_infinite_advertisement_needs_a_different_model(self):
+        self.inputs['finite']=False
+        with self.assertRaises(ValueError):result_tokens('finite_fc',self.inputs)
+
 if __name__=='__main__':unittest.main()

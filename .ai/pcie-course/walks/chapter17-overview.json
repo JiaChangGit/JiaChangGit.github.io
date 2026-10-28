@@ -2,7 +2,7 @@
   "walk_id": "ch17-overview",
   "title": "credit、Ack 和 Completion 各自在哪一步發生？",
   "summary_html": "<p>FC（Flow Control，流量控制）確認相鄰接收端有空間；重送機制處理 Link 上的資料傳輸錯誤；Completion（完成回覆）則回到交易本身。這一章把三者放在同一條路徑，從發送前的空間檢查，走到接收、回報與後續處理。</p>",
-  "svg": "<svg viewBox=\"0 0 900 420\" role=\"img\" aria-labelledby=\"ch17-zh-t ch17-zh-d\"><title id=\"ch17-zh-t\">本章角色與事件</title><desc id=\"ch17-zh-d\">接收空間回報與錯誤重送是兩個獨立機制；成功Ack不代表交易完成。</desc><g data-walk-target=\"tx\"><rect x=\"20\" y=\"30\" width=\"300\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"170.0\" y=\"59\" text-anchor=\"middle\" font-size=\"16\">傳送端：先確認接收資源</text></g><g data-walk-target=\"rx\"><rect x=\"550\" y=\"30\" width=\"320\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"710.0\" y=\"59\" text-anchor=\"middle\" font-size=\"16\">相鄰接收端：檢查與接收</text></g><g data-walk-target=\"buf\"><rect x=\"550\" y=\"335\" width=\"320\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"710.0\" y=\"364\" text-anchor=\"middle\" font-size=\"16\">接收緩衝釋放空間</text></g><g data-walk-target=\"retry\"><rect x=\"20\" y=\"335\" width=\"300\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"170.0\" y=\"364\" text-anchor=\"middle\" font-size=\"16\">傳送端：保留重送資料</text></g><g data-walk-target=\"data\"><path d=\"M320 65 L550 65\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"550,65 540.0,70.0 540.0,60.0\" fill=\"var(--accent)\"/><text x=\"435.0\" y=\"55.0\" text-anchor=\"middle\" font-size=\"16\">送出 TLP</text></g><g data-walk-target=\"ack\"><path d=\"M550 145 L320 145\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"320,145 330.0,140.0 330.0,150.0\" fill=\"var(--accent)\"/><text x=\"435.0\" y=\"135.0\" text-anchor=\"middle\" font-size=\"16\">Ack／Nak：非 Flit</text></g><g data-walk-target=\"keep\"><path d=\"M170 110 L170 335\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"170,335 165.0,325.0 175.0,325.0\" fill=\"var(--accent)\"/><text x=\"170.0\" y=\"212.5\" text-anchor=\"middle\" font-size=\"16\">留存副本</text></g><g data-walk-target=\"free\"><path d=\"M710 110 L710 335\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"710,335 705.0,325.0 715.0,325.0\" fill=\"var(--accent)\"/><text x=\"710.0\" y=\"212.5\" text-anchor=\"middle\" font-size=\"16\">資料往前處理</text></g><g data-walk-target=\"credit\"><path d=\"M550 365 L320 365\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"320,365 330.0,360.0 330.0,370.0\" fill=\"var(--accent)\"/><text x=\"435.0\" y=\"355.0\" text-anchor=\"middle\" font-size=\"16\">UpdateFC：空間回報</text></g></svg>",
+  "svg": "<svg viewBox=\"0 0 900 420\" role=\"img\" aria-labelledby=\"ch17-zh-t ch17-zh-d\"><title id=\"ch17-zh-t\">傳送確認與接收額度分別回報</title><desc id=\"ch17-zh-d\">接收空間回報與錯誤重送是兩個獨立機制；成功Ack不代表交易完成。</desc><g data-walk-target=\"tx\"><rect x=\"20\" y=\"30\" width=\"300\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"170.0\" y=\"59\" text-anchor=\"middle\" font-size=\"16\">傳送端：先確認接收資源</text></g><g data-walk-target=\"rx\"><rect x=\"550\" y=\"30\" width=\"320\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"710.0\" y=\"59\" text-anchor=\"middle\" font-size=\"16\">相鄰接收端：檢查與接收</text></g><g data-walk-target=\"buf\"><rect x=\"550\" y=\"335\" width=\"320\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"710.0\" y=\"364\" text-anchor=\"middle\" font-size=\"16\">接收緩衝釋放空間</text></g><g data-walk-target=\"retry\"><rect x=\"20\" y=\"335\" width=\"300\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"170.0\" y=\"364\" text-anchor=\"middle\" font-size=\"16\">傳送端：保留重送資料</text></g><g data-walk-target=\"data\"><path d=\"M320 65 L550 65\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"550,65 540.0,70.0 540.0,60.0\" fill=\"var(--accent)\"/><text x=\"435.0\" y=\"55.0\" text-anchor=\"middle\" font-size=\"16\">送出 TLP</text></g><g data-walk-target=\"ack\"><path d=\"M550 145 L320 145\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"320,145 330.0,140.0 330.0,150.0\" fill=\"var(--accent)\"/><text x=\"435.0\" y=\"135.0\" text-anchor=\"middle\" font-size=\"16\">Ack／Nak：非 Flit</text></g><g data-walk-target=\"keep\"><path d=\"M170 110 L170 335\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"170,335 165.0,325.0 175.0,325.0\" fill=\"var(--accent)\"/><text x=\"90\" y=\"212.5\" text-anchor=\"middle\" font-size=\"16\">留存副本</text></g><g data-walk-target=\"free\"><path d=\"M710 110 L710 335\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"710,335 705.0,325.0 715.0,325.0\" fill=\"var(--accent)\"/><text x=\"800\" y=\"212.5\" text-anchor=\"middle\" font-size=\"16\">資料往前處理</text></g><g data-walk-target=\"credit\"><path d=\"M550 365 L320 365\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"320,365 330.0,360.0 330.0,370.0\" fill=\"var(--accent)\"/><text x=\"435.0\" y=\"355.0\" text-anchor=\"middle\" font-size=\"16\">UpdateFC：空間回報</text></g></svg>",
   "order_html": "<p>先追蹤一筆普通非 Flit 傳輸，再分別看確認訊息與空間回報。兩條回報路徑不是固定先後的時序。</p>",
   "caption_html": "<p>作者依 Base 6.0 繪製的教學示意；省略與本章無關的交換。</p>",
   "steps": [
@@ -12,11 +12,12 @@
         "tx",
         "data"
       ],
-      "html": "<p>FC（傳送前檢查相鄰緩衝資源的機制）逐 Link 追蹤 credit。要求還沒送出前，發送端就必須確認對方有足夠的標頭與資料接收資源。</p>",
+      "html": "<p>先確認該 VC 已完成 FC_INIT2，再用封包種類找出需要的 Header 與 Data credit。本章以有限額度的累積計數追蹤一筆寫入。</p>",
       "condition_html": "<p>圖中一條 Link 的可用空間，不代表最終目的端已接收或處理這筆交易。</p>",
-      "source_html": "<p>Base 6.0 §2.6，pp.235–237。</p>",
+      "source_html": "<p>Base 6.0 §2.6.1，pp.237、241；§3.4.1，p.273。</p>",
       "claim_ids": [
-        "PCIE-CH17-001"
+        "PCIE-CH17-001",
+        "PCIE-CH17-INIT-001"
       ]
     },
     {
@@ -27,9 +28,9 @@
         "retry",
         "keep"
       ],
-      "html": "<p>普通非 Flit 傳輸由序號與 LCRC 檢查，接收端回 Ack 或 Nak；傳送端保留副本以供重送。</p>",
+      "html": "<p>收到涵蓋這筆 TLP 的有效 Ack 後，可釋放相應重送副本；這個確認不會增加可用 credit。</p>",
       "condition_html": "<p>LCRC（Link Cyclic Redundancy Check，鏈結循環冗餘檢查）保護單一 Link；Flit 模式改在 Flit 層重送，不使用這組 Ack／Nak DLLP。</p>",
-      "source_html": "<p>Base 6.0 §3.6.2、§3.6.3，pp.288、300。</p>",
+      "source_html": "<p>Base 6.0 §3.6.2.2，pp.297–298；§2.6.1.1，pp.242–246。</p>",
       "claim_ids": [
         "PCIE-CH17-002"
       ]
@@ -41,11 +42,11 @@
         "buf",
         "credit"
       ],
-      "html": "<p>接收資料往前處理，空出的緩衝由流量控制更新回報。重送同一筆資料由鏈結層處理，交易層不會每次重送再消耗一份新 credit。</p>",
+      "html": "<p>接收端釋放空間後回報新的累積上限；傳送端收到有效 UpdateFC 才更新 CREDIT_LIMIT。同一 TLP 的 Link Replay 不重新消耗一份額度。</p>",
       "condition_html": "<p>交易是否完成仍依要求種類與完成回覆判讀，不能由一個 Ack 或 UpdateFC 判定。</p>",
-      "source_html": "<p>Base 6.0 §2.6，pp.235–236。</p>",
+      "source_html": "<p>Base 6.0 §2.6，p.236；§2.6.1.1、§2.6.1.2，pp.242–247。</p>",
       "claim_ids": [
-        "PCIE-CH17-001"
+        "PCIE-CH17-COUNTERS-001"
       ]
     }
   ]
