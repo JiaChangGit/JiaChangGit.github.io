@@ -14,6 +14,29 @@ import re
 
 ROOT=Path(__file__).resolve().parents[1]
 
+def margin_command_rows(x):
+    """Recompute the 16 GT/s local Upstream Port example, not a margining engine.
+
+    Field meanings were reviewed separately against Base 6.0. This narrow case
+    does not validate Retimer relay, PAM4 measurements or a hardware procedure.
+    """
+    if x['gt_s']!=16 or x['port_type']!='upstream' or x['receiver']!=6:
+        raise ValueError('This case targets local Rx(F) at 16 GT/s')
+    if not 6<=x['timing_steps']<=63 or not 20<=x['max_timing_percent']<=50:
+        raise ValueError('Invalid reported NRZ timing parameters')
+    if not x['caps']&4 or not 1<=x['right_steps']<=x['timing_steps']:
+        raise ValueError('Right-step case requires independent timing and an in-range step')
+    if not 0<=x['errors']<=63 or not 0<=x['limit']<=63 or not 0<=x['caps']<=31:
+        raise ValueError('Margin payload out of range')
+    def word(payload,kind):return f'{(payload<<8)|(kind<<3)|x["receiver"]:04X}h'
+    report=lambda query,value:[word(query,1),word(value,1)]
+    step=word(x['right_steps'],3)
+    return dict(cap=report(0x88,x['caps']),steps=report(0x8a,x['timing_steps']),
+                offset=report(0x8b,x['max_timing_percent']),
+                limit=[word(0xc0|x['limit'],2)]*2,
+                setup=[step,word(0x40,3)],running=[step,word(0x80,3)],
+                errors=[step,word(0x80|x['errors'],3)])
+
 def rx_calibration_case(x):
     """Arithmetic for the source-checked 16 GT/s Non-Root calibration excerpt.
 
@@ -131,6 +154,8 @@ def finite_fc_stages(x):
 
 def result_tokens(model, x):
     """Derive the visible results; keep address and time units explicit."""
+    if model=='margin_command':
+        return [token for row in margin_command_rows(x).values() for token in row]
     if model=='byte_enable':
         length=x['length_dw']
         if length<1 or not 0<=x['first_be']<16 or not 0<=x['last_be']<16:
@@ -220,6 +245,15 @@ def normalized(text):
     return re.sub(r'[\s,，]','',text).casefold()
 
 def validate_case(case, text):
+    if case['model']=='margin_command':
+        missing=[]
+        for name,expected in margin_command_rows(case['inputs']).items():
+            row=re.search(r'<tr\b[^>]*data-margin-case="'+name+r'"[^>]*>(.*?)</tr>',text,re.S)
+            cells=re.findall(r'<td\b[^>]*>(.*?)</td>',row.group(1),re.S) if row else []
+            actual=[normalized(unescape(re.sub(r'<[^>]+>',' ',cell))) for cell in cells[1:3]]
+            if actual!=[normalized(cell) for cell in expected]:
+                missing.append(name+': command or response fields do not match')
+        return missing
     if case['model']=='rx_calibration':
         rows,summary=rx_calibration_case(case['inputs']); missing=[]
         for name,expected in rows.items():

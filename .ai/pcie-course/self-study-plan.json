@@ -835,5 +835,17 @@
       "ENC-010"
     ],
     "remaining": "完整各速率校準搜尋/所有壓力與Sj輪廓、Rx全部電氣項目、通道模擬及Refclk全部傳遞函數仍須深入；未執行實機或統計信賴度評估，未宣稱接收器或全Base6完成。"
+  },
+  "chapter_22_revision": {
+    "status": "locally_verified",
+    "location": "DOCS/pcie-course/chapter-22.html#margin-example",
+    "covered": "以16GT直連Endpoint Rx(F) Lane3案例，串起能力鏈、Ready、No Command、能力查詢、Step回報、取樣量與雙Port復原；區分Retimer代送與Flit記錄用途。",
+    "references": [
+      "CAP-004",
+      "PHY-009",
+      "EQ-008",
+      "FLIT-009"
+    ],
+    "remaining": "完整多Lane／Retimer輪廓掃描、PAM4三眼裕量、Flit Logging與FBER全部欄位及錯誤注入流程仍須深入；本輪未做硬體量測或宣稱全Base完成。"
   }
 }

@@ -1,10 +1,10 @@
 {
   "walk_id": "ch22-overview",
   "title": "要檢查某條 Lane，設定空間應該怎麼查？",
-  "summary_html": "<p>Lane Margining（通道裕量量測）可協助觀察接收端的時間與電壓餘裕。先用 Extended Capability（延伸能力結構）找到入口，再確認 Port、Lane 編號與就緒狀態，最後才讀控制與結果。本章也把 Flit 記錄和錯誤注入分開定位。</p>",
-  "svg": "<svg viewBox=\"0 0 900 420\" role=\"img\" aria-labelledby=\"ch22-zh-t ch22-zh-d\"><title id=\"ch22-zh-t\">本章角色與事件</title><desc id=\"ch22-zh-d\">診斷前先確認能力與就緒，再操作指定範圍。</desc><g data-walk-target=\"n0\"><rect x=\"30\" y=\"40\" width=\"350\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"205.0\" y=\"69\" text-anchor=\"middle\" font-size=\"16\">找到對應 Port 的能力</text></g><g data-walk-target=\"n1\"><rect x=\"515\" y=\"40\" width=\"350\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"690.0\" y=\"69\" text-anchor=\"middle\" font-size=\"16\">確認用途、模式與就緒</text></g><g data-walk-target=\"n2\"><rect x=\"515\" y=\"285\" width=\"350\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"690.0\" y=\"314\" text-anchor=\"middle\" font-size=\"16\">依 Lane／接收端選擇控制</text></g><g data-walk-target=\"n3\"><rect x=\"30\" y=\"285\" width=\"350\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"205.0\" y=\"314\" text-anchor=\"middle\" font-size=\"16\">讀取回報並恢復正常設定</text></g><g data-walk-target=\"a\"><path d=\"M380 74 L515 74\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"515,74 505.0,79.0 505.0,69.0\" fill=\"var(--accent)\"/><text x=\"447.5\" y=\"64.0\" text-anchor=\"middle\" font-size=\"16\"></text></g><g data-walk-target=\"b\"><path d=\"M690 108 L690 285\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"690,285 685.0,275.0 695.0,275.0\" fill=\"var(--accent)\"/><text x=\"690.0\" y=\"186.5\" text-anchor=\"middle\" font-size=\"16\"></text></g><g data-walk-target=\"c\"><path d=\"M515 319 L380 319\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"380,319 390.0,314.0 390.0,324.0\" fill=\"var(--accent)\"/><text x=\"447.5\" y=\"309.0\" text-anchor=\"middle\" font-size=\"16\"></text></g></svg>",
+  "summary_html": "<p>Lane Margining（接收端裕量量測）讓軟體在 Link 維持 L0 時，觀察接收端偏離正常取樣位置後的表現。本章以 16.0 GT/s Endpoint 的一條 Lane 為例，從 Extended Capability（延伸能力結構）找到控制位置，查詢接收端能力，再讀懂命令回報與復原流程。</p>",
+  "svg": "<svg viewBox=\"0 0 900 250\" role=\"img\" aria-labelledby=\"ch22-zh-t ch22-zh-d\"><title id=\"ch22-zh-t\">Lane Margining 的規格閱讀路線</title><desc id=\"ch22-zh-d\">診斷前先確認能力與就緒，再操作指定範圍。</desc><g data-walk-target=\"n0\"><rect x=\"30\" y=\"40\" width=\"350\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"205.0\" y=\"69\" text-anchor=\"middle\" font-size=\"16\">找到對應 Port 的能力</text></g><g data-walk-target=\"n1\"><rect x=\"515\" y=\"40\" width=\"350\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"690.0\" y=\"69\" text-anchor=\"middle\" font-size=\"16\">確認用途、模式與就緒</text></g><g data-walk-target=\"n2\"><rect x=\"515\" y=\"175\" width=\"350\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"690.0\" y=\"204\" text-anchor=\"middle\" font-size=\"16\">依 Lane／接收端選擇控制</text></g><g data-walk-target=\"n3\"><rect x=\"30\" y=\"175\" width=\"350\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"205.0\" y=\"204\" text-anchor=\"middle\" font-size=\"16\">讀取回報並恢復正常設定</text></g><g data-walk-target=\"a\"><path d=\"M380 74 L515 74\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"515,74 505.0,79.0 505.0,69.0\" fill=\"var(--accent)\"/><text x=\"447.5\" y=\"64.0\" text-anchor=\"middle\" font-size=\"16\"></text></g><g data-walk-target=\"b\"><path d=\"M690 84 L690 175\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"690,175 685.0,165.0 695.0,165.0\" fill=\"var(--accent)\"/><text x=\"690.0\" y=\"129.5\" text-anchor=\"middle\" font-size=\"16\"></text></g><g data-walk-target=\"c\"><path d=\"M515 209 L380 209\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"380,209 390.0,204.0 390.0,214.0\" fill=\"var(--accent)\"/><text x=\"447.5\" y=\"199.0\" text-anchor=\"middle\" font-size=\"16\"></text></g></svg>",
   "order_html": "<p>圖是本章的診斷閱讀順序。真正的命令交握、等待與復原仍按所選診斷機制的操作規則進行。</p>",
-  "caption_html": "<p>作者依 Base 6.0 繪製的教學示意；省略與本章無關的交換。</p>",
+  "caption_html": "<p>作者繪製的規格閱讀路線；命令之間的等待與交握，見下方完整案例。</p>",
   "steps": [
     {
       "title": "從正確的 Function 找入口",
@@ -25,11 +25,12 @@
         "n1",
         "b"
       ],
-      "html": "<p>Margining Port Status 的 Ready 指出能否接受命令；需要驅動軟體時，另有 Software Ready 的適用條件。</p>",
-      "condition_html": "<p>Ready=0 時寫入指定 Lane 控制欄位，行為未定義，不能編造一個固定失敗回覆。</p>",
-      "source_html": "<p>Base 6.0 §7.7.10.3／Figure 7-128、Table 7-113，p.1081。</p>",
+      "html": "<p>Margining Ready 表示能接受命令。另依 §4.2.18.3 確認目前速率、啟用中的 Lane，以及兩端電源與自主變速／變寬設定。</p>",
+      "condition_html": "<p>需要驅動程式參與時，Margining Software Ready 才有定義；Margining Ready=0 時，寫入指定命令欄位的行為未定義。</p>",
+      "source_html": "<p>Base 6.0 §7.7.10.2–§7.7.10.3，pp.1080–1081；§4.2.18.3，pp.560–561。</p>",
       "claim_ids": [
-        "PCIE-CH22-002"
+        "PCIE-CH22-002",
+        "PCIE-CH22-005"
       ]
     },
     {
@@ -39,12 +40,14 @@
         "c",
         "n3"
       ],
-      "html": "<p>按每個 Lane 的 Control／Status 項目追蹤 Receiver Number、Margin Type 與 Payload，再依操作流程讀結果、恢復設定。</p>",
+      "html": "<p>先完成 No Command 交握，再送新命令。回報要一起核對 Receiver Number、Margin Type、Usage Model 與該命令的 Payload 語意；測完依序恢復正常位置並清除量測錯誤紀錄。</p>",
       "condition_html": "<p>Lane 項目依預設 Lane 編號，不隨 Lane reversal 或協商寬度重新編號。</p>",
-      "source_html": "<p>Base 6.0 §7.7.10、§7.7.10.4–§7.7.10.5，pp.1078–1082。</p>",
+      "source_html": "<p>Base 6.0 §4.2.18.1–§4.2.18.3，pp.551–561；§7.7.10，pp.1078–1083。</p>",
       "claim_ids": [
         "PCIE-CH22-001",
-        "PCIE-CH22-002"
+        "PCIE-CH22-002",
+        "PCIE-CH22-004",
+        "PCIE-CH22-005"
       ]
     }
   ]

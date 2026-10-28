@@ -606,10 +606,10 @@
       "title_en": "Link Diagnostics, Lane Margining, and Flit Records",
       "question": "要檢查某條 Lane，設定空間應該怎麼查？",
       "topics": [
-        "不同 PHY Extended Capability 的定位與判讀",
-        "Lane Margining 的能力、控制、狀態及觀察範圍",
-        "Flit Logging、錯誤注入與計數的不同用途",
-        "Device 3 與 Secondary PCIe 欄位如何接回主機制"
+        "從 Port、Function 與預設 Lane 找到 Margining 入口",
+        "能力查詢、No Command 交握與 Step Margin 回覆",
+        "獨立取樣器、取樣量、錯誤上限與測後復原",
+        "Flit Logging、Device 3 與錯誤注入的不同用途"
       ],
       "prerequisites": [
         12,
@@ -622,8 +622,8 @@
         "PCIE-BASE-6.0"
       ],
       "publication_date": "2026-10-24",
-      "revision_date": "2026-10-24",
-      "teaching_revision": 2
+      "revision_date": "2026-10-29",
+      "teaching_revision": 3
     },
     {
       "number": 23,

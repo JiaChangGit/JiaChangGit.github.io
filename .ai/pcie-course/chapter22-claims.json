@@ -2,7 +2,7 @@
   "schema_version": 1,
   "course": "pcie-course",
   "chapter": 22,
-  "updated": "2026-10-24",
+  "updated": "2026-10-29",
   "claims": [
     {
       "id": "PCIE-CH22-001",
@@ -34,7 +34,7 @@
         "7-111"
       ],
       "status": "verified",
-      "verified_on": "2026-10-24"
+      "verified_on": "2026-10-29"
     },
     {
       "id": "PCIE-CH22-002",
@@ -43,28 +43,37 @@
       "source_id": "PCIE-BASE-6.0",
       "revision": "6.0",
       "sections": [
+        "7.7.10.2",
         "7.7.10.3",
         "7.7.10.4",
         "7.7.10.5"
       ],
       "document_pages": [
+        1080,
         1081,
-        1082
+        1082,
+        1083
       ],
       "pdf_pages": [
+        1080,
         1081,
-        1082
+        1082,
+        1083
       ],
       "figures": [
         "7-128",
-        "7-129"
+        "7-129",
+        "7-127",
+        "7-130"
       ],
       "tables": [
         "7-113",
-        "7-114"
+        "7-114",
+        "7-112",
+        "7-115"
       ],
       "status": "verified",
-      "verified_on": "2026-10-24"
+      "verified_on": "2026-10-29"
     },
     {
       "id": "PCIE-CH22-003",
@@ -76,21 +85,30 @@
         "7.7.7",
         "7.7.8",
         "7.7.9",
-        "7.8.13"
+        "7.8.13",
+        "4.2.3.1.1"
       ],
       "document_pages": [
+        343,
         1055,
+        1056,
         1060,
+        1061,
         1072,
         1077,
-        1171
+        1171,
+        1172
       ],
       "pdf_pages": [
+        343,
         1055,
+        1056,
         1060,
+        1061,
         1072,
         1077,
-        1171
+        1171,
+        1172
       ],
       "figures": [
         "7-97",
@@ -98,9 +116,109 @@
         "7-120",
         "7-211"
       ],
+      "tables": [
+        "7-110"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-29"
+    },
+    {
+      "id": "PCIE-CH22-004",
+      "claim": "Receiver編號、命令欄位與回覆Payload、No Command和Step狀態，並區分獨立取樣器錯誤。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "4.2.18",
+        "4.2.18.1",
+        "4.2.18.1.1",
+        "4.2.18.1.2",
+        "4.2.18.2"
+      ],
+      "document_pages": [
+        550,
+        551,
+        552,
+        553,
+        554,
+        555,
+        556,
+        557,
+        558,
+        559,
+        560
+      ],
+      "pdf_pages": [
+        550,
+        551,
+        552,
+        553,
+        554,
+        555,
+        556,
+        557,
+        558,
+        559,
+        560
+      ],
+      "figures": [
+        "4-60"
+      ],
+      "tables": [
+        "4-63"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-29"
+    },
+    {
+      "id": "PCIE-CH22-005",
+      "claim": "軟體準備、atomic命令與讀取、No Command交握、時間限制、方向結束復原及變速退出。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "4.2.18.3"
+      ],
+      "document_pages": [
+        560,
+        561
+      ],
+      "pdf_pages": [
+        560,
+        561
+      ],
+      "figures": [],
       "tables": [],
       "status": "verified",
-      "verified_on": "2026-10-24"
+      "verified_on": "2026-10-29"
+    },
+    {
+      "id": "PCIE-CH22-006",
+      "claim": "各速率裕量要求、參數與單調步數，sample count和獨立取樣器的量測邊界。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "8.4.4"
+      ],
+      "document_pages": [
+        1395,
+        1396,
+        1397,
+        1398
+      ],
+      "pdf_pages": [
+        1395,
+        1396,
+        1397,
+        1398
+      ],
+      "figures": [],
+      "tables": [
+        "8-12"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-29"
     }
   ]
 }

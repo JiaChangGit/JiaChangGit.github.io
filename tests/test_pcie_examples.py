@@ -1,6 +1,6 @@
 """Boundary checks and a deliberately incorrect published-result regression."""
 import unittest
-from scripts.validate_pcie_examples import result_tokens,validate_case,polling_gate_rows,differential_voltage_case,rx_calibration_case
+from scripts.validate_pcie_examples import result_tokens,validate_case,polling_gate_rows,differential_voltage_case,rx_calibration_case,margin_command_rows
 
 class TeachingArithmeticTest(unittest.TestCase):
     def test_one_dw_rejects_last_enable(self):
@@ -152,5 +152,23 @@ class ReceiverCalibrationTeachingTest(unittest.TestCase):
     def test_the_same_ui_model_cannot_be_reused_at_64_gt(self):
         self.inputs['gt_s']=64
         with self.assertRaises(ValueError):rx_calibration_case(self.inputs)
+
+class MarginCommandTeachingTest(unittest.TestCase):
+    def setUp(self):
+        self.inputs=dict(gt_s=16,port_type='upstream',receiver=6,caps=21,
+                         timing_steps=32,max_timing_percent=25,limit=5,right_steps=5,errors=2)
+    def test_response_payload_is_not_a_command_echo(self):
+        rows=margin_command_rows(self.inputs)
+        self.assertEqual(rows['errors'],['051Eh','821Eh'])
+        text=''.join('<tr data-margin-case="'+name+'"><td>stage</td>'+''.join('<td>'+v+'</td>' for v in values)+'</tr>' for name,values in rows.items())
+        case=dict(model='margin_command',inputs=self.inputs)
+        self.assertEqual(validate_case(case,text),[])
+        self.assertTrue(validate_case(case,text.replace('<td>150Eh</td>','<td>880Eh</td>')))
+    def test_rx_f_encoding_cannot_be_reused_on_root_port(self):
+        self.inputs['port_type']='downstream'
+        with self.assertRaises(ValueError):margin_command_rows(self.inputs)
+    def test_step_exceeding_reported_capability_is_rejected(self):
+        self.inputs['right_steps']=33
+        with self.assertRaises(ValueError):margin_command_rows(self.inputs)
 
 if __name__=='__main__':unittest.main()
