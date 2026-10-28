@@ -813,5 +813,16 @@
       "ARCH-008"
     ],
     "remaining": "完整Configuration寬度/Lane分配、各速率Recovery與EqualizationPhase、Retimer全模式及L0p完整握手仍須深入；本章未宣稱覆蓋完整LTSSM或Base6。"
+  },
+  "chapter_20_revision": {
+    "status": "locally_verified",
+    "location": "DOCS/pcie-course/chapter-20.html#voltage-case",
+    "covered": "串起TP1與Replica參考、Table8-5時脈選表、單端/差分/共模公式，以5GT fullswing代表值驗算900mVPP並依Table8-6與Note3核對單項範圍；分清各速率jitter圖樣、規範強度與AC共模不deembed例外。",
+    "references": [
+      "PHY-001",
+      "PHY-009",
+      "EQ-008"
+    ],
+    "remaining": "完整Tx jitter分解/濾波演算法、PAM4線性SNDR/RLM、係數空間與全部Tx電氣參數仍須深入；本章未作實機量測或完整合規判定。"
   }
 }

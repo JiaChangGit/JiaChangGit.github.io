@@ -1,6 +1,6 @@
 """Boundary checks and a deliberately incorrect published-result regression."""
 import unittest
-from scripts.validate_pcie_examples import result_tokens,validate_case,polling_gate_rows
+from scripts.validate_pcie_examples import result_tokens,validate_case,polling_gate_rows,differential_voltage_case
 
 class TeachingArithmeticTest(unittest.TestCase):
     def test_one_dw_rejects_last_enable(self):
@@ -115,5 +115,23 @@ class PollingGateTeachingTest(unittest.TestCase):
     def test_configuration_accepts_any_qualifying_detected_lane(self):
         self.inputs['config'][0].update(after=16,rx=[8,0])
         self.assertEqual(polling_gate_rows(self.inputs)['config-wait'][-1],'Configuration')
+
+class DifferentialVoltageTeachingTest(unittest.TestCase):
+    def setUp(self):
+        self.inputs=dict(high_mv=[825,375],low_mv=[375,825])
+    def test_factor_of_two_error_is_not_hidden_by_other_correct_values(self):
+        rows,summary=differential_voltage_case(self.inputs)
+        text='<section id="voltage-case">'+''.join('<tr data-voltage-state="'+name+'">'+''.join('<td>'+v+'</td>' for v in values)+'</tr>' for name,values in rows.items())+'<p>'+'; '.join(summary)+'</p></section>'
+        case=dict(section='voltage-case',model='differential_voltage',inputs=self.inputs)
+        self.assertEqual(validate_case(case,text),[])
+        self.assertTrue(validate_case(case,text.replace('<td>+450</td>','<td>+900</td>')))
+    def test_symmetric_shortcut_rejects_asymmetric_levels(self):
+        self.inputs['low_mv']=[400,800]
+        with self.assertRaises(ValueError):differential_voltage_case(self.inputs)
+    def test_common_mode_is_average_not_difference(self):
+        rows,summary=differential_voltage_case(self.inputs)
+        self.assertEqual(rows['high'],['H','825','375','+450','600'])
+        self.assertEqual(rows['low'],['L','375','825','−450','600'])
+        self.assertEqual(summary,['450 mVPP','900 mVPP','600 mV'])
 
 if __name__=='__main__':unittest.main()

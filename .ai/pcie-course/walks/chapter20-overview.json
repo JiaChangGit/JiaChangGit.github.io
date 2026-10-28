@@ -2,9 +2,9 @@
   "walk_id": "ch20-overview",
   "title": "要判讀發送端電氣規格，為什麼不能先抄一個電壓上限？",
   "summary_html": "<p>Tx（Transmitter，發送端）的電氣數值，必須和量測位置、參考時脈、速率及測試圖樣一起讀。這章從 Figure 8-1 的量測路徑開始，再把電壓、等化與抖動接到適用條件。</p>",
-  "svg": "<svg viewBox=\"0 0 900 420\" role=\"img\" aria-labelledby=\"ch20-zh-t ch20-zh-d\"><title id=\"ch20-zh-t\">本章角色與事件</title><desc id=\"ch20-zh-d\">電氣量測先定義觀察點及時脈，再選相應速率與圖樣。</desc><g data-walk-target=\"dut\"><rect x=\"20\" y=\"60\" width=\"230\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"135.0\" y=\"89\" text-anchor=\"middle\" font-size=\"16\">Tx：待測發送端</text></g><g data-walk-target=\"breakout\"><rect x=\"335\" y=\"60\" width=\"230\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"450.0\" y=\"89\" text-anchor=\"middle\" font-size=\"16\">測試板引出通道</text></g><g data-walk-target=\"scope\"><rect x=\"650\" y=\"60\" width=\"230\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"765.0\" y=\"89\" text-anchor=\"middle\" font-size=\"16\">量測設備：取得波形</text></g><g data-walk-target=\"ref\"><rect x=\"20\" y=\"290\" width=\"230\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"135.0\" y=\"319\" text-anchor=\"middle\" font-size=\"16\">參考時脈條件</text></g><g data-walk-target=\"process\"><rect x=\"470\" y=\"290\" width=\"410\" height=\"68\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"675.0\" y=\"319\" text-anchor=\"middle\" font-size=\"16\">回到器件 pin 的參考點</text><text x=\"675.0\" y=\"343\" text-anchor=\"middle\" font-size=\"16\">依參數、單位與註腳判讀</text></g><g data-walk-target=\"a\"><path d=\"M250 94 L335 94\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"335,94 325.0,99.0 325.0,89.0\" fill=\"var(--accent)\"/><text x=\"292.5\" y=\"84.0\" text-anchor=\"middle\" font-size=\"16\">訊號</text></g><g data-walk-target=\"b\"><path d=\"M565 94 L650 94\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"650,94 640.0,99.0 640.0,89.0\" fill=\"var(--accent)\"/><text x=\"607.5\" y=\"84.0\" text-anchor=\"middle\" font-size=\"16\">波形</text></g><g data-walk-target=\"c\"><path d=\"M135 290 L135 128\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"135,128 140.0,138.0 130.0,138.0\" fill=\"var(--accent)\"/><text x=\"135.0\" y=\"199.0\" text-anchor=\"middle\" font-size=\"16\">依架構供應</text></g><g data-walk-target=\"d\"><path d=\"M765 128 L675 290\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"675,290 675.4856429311786,278.8302125828915 684.227215692394,283.6866418946778\" fill=\"var(--accent)\"/><text x=\"720.0\" y=\"199.0\" text-anchor=\"middle\" font-size=\"16\">後處理</text></g></svg>",
+  "svg": "<svg viewBox=\"0 0 900 420\" role=\"img\" aria-labelledby=\"ch20-zh-t ch20-zh-d\"><title id=\"ch20-zh-t\">Tx 量測路徑與參考條件</title><desc id=\"ch20-zh-d\">電氣量測先定義觀察點及時脈，再選相應速率與圖樣。</desc><g data-walk-target=\"dut\"><rect x=\"20\" y=\"60\" width=\"230\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"135.0\" y=\"89\" text-anchor=\"middle\" font-size=\"16\">Tx：待測發送端</text></g><g data-walk-target=\"breakout\"><rect x=\"335\" y=\"60\" width=\"230\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"450.0\" y=\"89\" text-anchor=\"middle\" font-size=\"16\">測試板引出通道</text></g><g data-walk-target=\"scope\"><rect x=\"650\" y=\"60\" width=\"230\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"765.0\" y=\"89\" text-anchor=\"middle\" font-size=\"16\">量測設備：取得波形</text></g><g data-walk-target=\"ref\"><rect x=\"20\" y=\"290\" width=\"230\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"135.0\" y=\"319\" text-anchor=\"middle\" font-size=\"16\">參考時脈條件</text></g><g data-walk-target=\"process\"><rect x=\"470\" y=\"290\" width=\"410\" height=\"68\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"675.0\" y=\"319\" text-anchor=\"middle\" font-size=\"16\">依參數選擇後處理與參考點</text><text x=\"675.0\" y=\"343\" text-anchor=\"middle\" font-size=\"16\">依參數、單位與註腳判讀</text></g><g data-walk-target=\"a\"><path d=\"M250 94 L335 94\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"335,94 325.0,99.0 325.0,89.0\" fill=\"var(--accent)\"/><text x=\"292.5\" y=\"84.0\" text-anchor=\"middle\" font-size=\"16\">訊號</text></g><g data-walk-target=\"b\"><path d=\"M565 94 L650 94\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"650,94 640.0,99.0 640.0,89.0\" fill=\"var(--accent)\"/><text x=\"607.5\" y=\"84.0\" text-anchor=\"middle\" font-size=\"16\">波形</text></g><g data-walk-target=\"c\"><path d=\"M135 290 L135 104\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"135,104 140.0,114.0 130.0,114.0\" fill=\"var(--accent)\"/><text x=\"230\" y=\"210\" text-anchor=\"middle\" font-size=\"16\">依架構供應</text></g><g data-walk-target=\"d\"><path d=\"M765 104 L675 290\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"675,290 675.4856429311786,278.8302125828915 684.227215692394,283.6866418946778\" fill=\"var(--accent)\"/><text x=\"795\" y=\"210\" text-anchor=\"middle\" font-size=\"16\">後處理</text></g></svg>",
   "order_html": "<p>沿訊號由待測元件走到量測設備，再看如何把結果還原到規格的參考點；下方時脈支線是條件，不是額外量測步驟。</p>",
-  "caption_html": "<p>作者依 Base 6.0 繪製的教學示意；省略與本章無關的交換。</p>",
+  "caption_html": "<p>作者繪製的量測關係圖。下方後處理依參數選擇；完整測法與例外須回到正文及條目註記。</p>",
   "steps": [
     {
       "title": "先畫出量測路徑",
@@ -17,7 +17,7 @@
       ],
       "html": "<p>Figure 8-1 把器件、引出通道與可量測位置分開。規格以器件 pin 為參考，但實際可碰到的測試接點通常離 pin 有一段通道。</p>",
       "condition_html": "<p>量到的波形若仍含引出通道影響，不能直接當成 pin 上的數值。</p>",
-      "source_html": "<p>Base 6.0 §8.3.1／Figure 8-1，p.1318。</p>",
+      "source_html": "<p>Base 6.0 §8.3.1–8.3.1.1、Figure 8-1，pp.1318–1320。</p>",
       "claim_ids": [
         "PCIE-CH20-001"
       ]
@@ -28,9 +28,9 @@
         "ref",
         "c"
       ],
-      "html": "<p>非內嵌參考時脈的典型測試採低抖動時脈來源；內嵌參考時脈另有同步取樣資料與時脈的方式。</p>",
+      "html": "<p>先辨識 Refclk（參考時脈）架構與可量測條件，再依 Table 8-5 選擷取資料或同步擷取資料與時脈，並採用對應的後處理模型。</p>",
       "condition_html": "<p>Independent Refclk（獨立參考時脈）架構的取樣條件另依原文處理。</p>",
-      "source_html": "<p>Base 6.0 §8.3.1，p.1318。</p>",
+      "source_html": "<p>Base 6.0 §8.3.1，pp.1318–1319；§8.3.5.3–8.3.5.4、Table 8-5，p.1338。</p>",
       "claim_ids": [
         "PCIE-CH20-001"
       ]
@@ -41,9 +41,9 @@
         "d",
         "process"
       ],
-      "html": "<p>依速率選取電壓、等化與抖動規則，再核對單位、最小／最大值及註腳。</p>",
+      "html": "<p>依速率與測試項目選參數，核對單位、最小／最大值與註腳。差分擺幅和共模雜訊有各自的測法，不一定套用相同的通道還原。</p>",
       "condition_html": "<p>同一參數名稱跨速率的數值或測試圖樣可能不同。</p>",
-      "source_html": "<p>Base 6.0 §8.3.3、§8.3.5，pp.1321、1336。</p>",
+      "source_html": "<p>Base 6.0 §8.3.2–8.3.3，pp.1320–1326；§8.3.5，p.1336；Table 8-6，pp.1348、1350–1351。</p>",
       "claim_ids": [
         "PCIE-CH20-002",
         "PCIE-CH20-003"

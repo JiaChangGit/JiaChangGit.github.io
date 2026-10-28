@@ -14,6 +14,23 @@ import re
 
 ROOT=Path(__file__).resolve().parents[1]
 
+def differential_voltage_case(x):
+    """Idealized symmetric voltage geometry, not a waveform/compliance engine."""
+    high=x['high_mv']; low=x['low_mv']
+    if len(high)!=2 or len(low)!=2:
+        raise ValueError('Expected two conductors in each representative state')
+    positive=high[0]-high[1]; negative=low[0]-low[1]
+    if positive<=0 or positive!=-negative:
+        raise ValueError('The teaching case requires symmetric differential swing')
+    rows={}
+    for name,label,pair in [('high','H',high),('low','L',low)]:
+        diff=pair[0]-pair[1]
+        signed=('+'+str(diff)) if diff>=0 else '−'+str(-diff)
+        rows[name]=[label,str(pair[0]),str(pair[1]),signed,f'{sum(pair)/2:g}']
+    single=high[0]-low[0]; differential=positive-negative
+    summary=[f'{single} mVPP',f'{differential} mVPP',f'{sum(high)/2:g} mV']
+    return rows,summary
+
 def polling_gate_rows(x):
     """Evaluate the selected pre-timeout, two-Lane Polling teaching path.
 
@@ -136,6 +153,9 @@ def result_tokens(model, x):
         return [token for row in flit_dlp_rows(x).values() for token in row]
     if model=='polling_gates':
         return [token for row in polling_gate_rows(x).values() for token in row]
+    if model=='differential_voltage':
+        rows,summary=differential_voltage_case(x)
+        return [token for row in rows.values() for token in row]+summary
     if model=='lane':
         if x['lane']<0:raise ValueError('Negative Lane number')
         control=x['control_base']+x['lane']*x['stride']
@@ -171,6 +191,16 @@ def normalized(text):
     return re.sub(r'[\s,，]','',text).casefold()
 
 def validate_case(case, text):
+    if case['model']=='differential_voltage':
+        rows,summary=differential_voltage_case(case['inputs']); missing=[]
+        for name,expected in rows.items():
+            row=re.search(r'<tr\b[^>]*data-voltage-state="'+name+r'"[^>]*>(.*?)</tr>',text,re.S)
+            cells=re.findall(r'<td\b[^>]*>(.*?)</td>',row.group(1),re.S) if row else []
+            actual=[normalized(unescape(re.sub(r'<[^>]+>',' ',cell))) for cell in cells]
+            if actual!=[normalized(cell) for cell in expected]:missing.append(name+': voltage cells do not match')
+        passage=normalized(section_text(text,case['section']))
+        missing.extend(token for token in summary if normalized(token) not in passage)
+        return missing
     if case['model']=='polling_gates':
         missing=[]
         for name,expected in polling_gate_rows(case['inputs']).items():

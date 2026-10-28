@@ -2,74 +2,135 @@
   "schema_version": 1,
   "course": "pcie-course",
   "chapter": 20,
-  "updated": "2026-10-24",
+  "updated": "2026-10-29",
   "claims": [
     {
       "id": "PCIE-CH20-001",
-      "claim": "電氣測試以pin為參考，Tx測試板與時脈取樣條件。",
+      "claim": "Tx pin參考、breakout與replica通道，Refclk可取得與embedded/IR架構決定擷取和後處理；電壓預設deembed但須保留條目例外。",
       "kind": "specification",
       "source_id": "PCIE-BASE-6.0",
       "revision": "6.0",
       "sections": [
-        "8.3.1"
+        "8.3.1",
+        "8.3.1.1",
+        "8.3.5.1",
+        "8.3.5.2",
+        "8.3.5.3",
+        "8.3.5.4"
       ],
       "document_pages": [
-        1318
+        1318,
+        1319,
+        1320,
+        1336,
+        1337,
+        1338
       ],
       "pdf_pages": [
-        1318
+        1318,
+        1319,
+        1320,
+        1336,
+        1337,
+        1338
       ],
       "figures": [
         "8-1",
         "8-2"
       ],
-      "tables": [],
+      "tables": [
+        "8-5"
+      ],
       "status": "verified",
-      "verified_on": "2026-10-24"
+      "verified_on": "2026-10-29"
     },
     {
       "id": "PCIE-CH20-002",
-      "claim": "Tx差分電壓與按速率的等化控制。",
+      "claim": "單端/差分/共模定義、對稱差分乘二前提，各速率擺幅與preset測法不同；full/reduced swing依Table8-6列及Note3查正式測法。",
       "kind": "specification",
       "source_id": "PCIE-BASE-6.0",
       "revision": "6.0",
       "sections": [
+        "8.3.2",
         "8.3.3",
         "8.3.3.1",
-        "8.3.3.2"
+        "8.3.3.2",
+        "8.3.3.3",
+        "8.3.3.4",
+        "8.3.3.5",
+        "8.3.3.6",
+        "8.3.3.7",
+        "8.3.6"
       ],
       "document_pages": [
-        1321
+        1320,
+        1321,
+        1322,
+        1323,
+        1324,
+        1325,
+        1326,
+        1347,
+        1348,
+        1351
       ],
       "pdf_pages": [
-        1321
+        1320,
+        1321,
+        1322,
+        1323,
+        1324,
+        1325,
+        1326,
+        1347,
+        1348,
+        1351
       ],
       "figures": [
-        "8-3"
+        "8-3",
+        "8-7"
       ],
-      "tables": [],
+      "tables": [
+        "8-1",
+        "8-2",
+        "8-6"
+      ],
       "status": "verified",
-      "verified_on": "2026-10-24"
+      "verified_on": "2026-10-29"
     },
     {
       "id": "PCIE-CH20-003",
-      "claim": "Jitter測試圖樣、速率與環境條件。",
+      "claim": "依速率/待測量選jitter圖樣與等化，保留50GHz頻寬要求與64GT濾波建議強度；AC共模列明示不做deembedding。",
       "kind": "specification",
       "source_id": "PCIE-BASE-6.0",
       "revision": "6.0",
       "sections": [
-        "8.3.5"
+        "8.3.5",
+        "8.3.5.1",
+        "8.3.5.2",
+        "8.3.5.3",
+        "8.3.5.4",
+        "8.3.6"
       ],
       "document_pages": [
-        1336
+        1336,
+        1337,
+        1338,
+        1350
       ],
       "pdf_pages": [
-        1336
+        1336,
+        1337,
+        1338,
+        1350
       ],
       "figures": [],
-      "tables": [],
+      "tables": [
+        "8-5",
+        "8-6"
+      ],
       "status": "verified",
-      "verified_on": "2026-10-24"
+      "verified_on": "2026-10-29"
     }
   ]
 }
