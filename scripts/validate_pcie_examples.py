@@ -14,6 +14,27 @@ import re
 
 ROOT=Path(__file__).resolve().parents[1]
 
+def polling_gate_rows(x):
+    """Evaluate the selected pre-timeout, two-Lane Polling teaching path.
+
+    Receive runs are already qualified consecutive sequences from a complete
+    trace. This is not a TS decoder or the full LTSSM timeout state machine.
+    """
+    rows={}
+    for snapshot in x['active']:
+        sent=snapshot['sent']; rx=snapshot['rx']
+        if sent<0 or len(rx)!=2 or any(v<0 for v in rx):
+            raise ValueError('Invalid two-Lane Polling.Active counters')
+        state='Polling.Configuration' if sent>=1024 and all(v>=8 for v in rx) else 'Polling.Active'
+        rows[snapshot['id']]=[snapshot['point'],str(sent),str(rx[0]),str(rx[1]),state]
+    for snapshot in x['config']:
+        before=snapshot['before']; after=snapshot['after']; rx=snapshot['rx']
+        if min(before,after)<0 or len(rx)!=2 or any(v<0 for v in rx):
+            raise ValueError('Invalid two-Lane Polling.Configuration counters')
+        state='Configuration' if after>=16 and any(v>=8 for v in rx) else 'Polling.Configuration'
+        rows[snapshot['id']]=[snapshot['point'],str(before),str(after),str(before+after),f'{rx[0]} / {rx[1]}',state]
+    return rows
+
 def flit_dlp_rows(x):
     """Decode two preselected DLP formats, not a Flit validity/replay engine.
 
@@ -113,6 +134,8 @@ def result_tokens(model, x):
         return [token for row in finite_fc_stages(x).values() for token in row]
     if model=='flit_dlp':
         return [token for row in flit_dlp_rows(x).values() for token in row]
+    if model=='polling_gates':
+        return [token for row in polling_gate_rows(x).values() for token in row]
     if model=='lane':
         if x['lane']<0:raise ValueError('Negative Lane number')
         control=x['control_base']+x['lane']*x['stride']
@@ -148,6 +171,15 @@ def normalized(text):
     return re.sub(r'[\s,，]','',text).casefold()
 
 def validate_case(case, text):
+    if case['model']=='polling_gates':
+        missing=[]
+        for name,expected in polling_gate_rows(case['inputs']).items():
+            row=re.search(r'<tr\b[^>]*data-polling-stage="'+re.escape(name)+r'"[^>]*>(.*?)</tr>',text,re.S)
+            cells=re.findall(r'<td\b[^>]*>(.*?)</td>',row.group(1),re.S) if row else []
+            actual=[normalized(unescape(re.sub(r'<[^>]+>',' ',cell))) for cell in cells]
+            if actual!=[normalized(cell) for cell in expected]:
+                missing.append(name+': counter cells or next state do not match')
+        return missing
     if case['model']=='flit_dlp':
         missing=[]
         for name,tokens in flit_dlp_rows(case['inputs']).items():

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated": "2026-10-28",
+  "updated": "2026-10-29",
   "source_id": "PCIE-BASE-6.0",
   "source_revision": "6.0 (6.0-1.0-PUB)",
   "editorial_policy": "使用者提供的題目、代碼、分類與輸出格式均為參考；本清單是可修改的編輯提案，不是固定題數或強制答案模板。",
@@ -800,5 +800,18 @@
       "ENC-009"
     ],
     "remaining": "完整Flit初始握手、所有Replay排程/回繞/Timer、跨Flit重組全部例外、FEC與CRC演算法及各速率OrderedSet仍須深入；不因此宣稱Flit或全Base6完成。"
+  },
+  "chapter_19_revision": {
+    "status": "locally_verified",
+    "location": "DOCS/pcie-course/chapter-19.html#polling-gates",
+    "covered": "以2.5GT/s初次Polling的五個快照，帶讀本端送出量、各Lane連續接收、首次TS2接收後起算及Timeout替代分支；修正Recovery總覽箭頭，連回LinkTraining適用性及Retimer電氣分段。",
+    "references": [
+      "LTSSM-003",
+      "LTSSM-005",
+      "LTSSM-008",
+      "ENC-003",
+      "ARCH-008"
+    ],
+    "remaining": "完整Configuration寬度/Lane分配、各速率Recovery與EqualizationPhase、Retimer全模式及L0p完整握手仍須深入；本章未宣稱覆蓋完整LTSSM或Base6。"
   }
 }

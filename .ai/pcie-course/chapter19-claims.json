@@ -2,35 +2,58 @@
   "schema_version": 1,
   "course": "pcie-course",
   "chapter": 19,
-  "updated": "2026-10-24",
+  "updated": "2026-10-29",
   "claims": [
     {
       "id": "PCIE-CH19-001",
-      "claim": "訓練狀態各自目的、L0s限制與L0p。",
+      "claim": "LTSSM主狀態目的與Timeout容許範圍，L0s限制及L0p在L0內動態活動寬度與轉換期間差異。",
       "kind": "specification",
       "source_id": "PCIE-BASE-6.0",
       "revision": "6.0",
       "sections": [
+        "4.2.6",
         "4.2.6.1",
         "4.2.6.2",
         "4.2.6.3",
         "4.2.6.4",
         "4.2.6.5",
         "4.2.6.6",
-        "4.2.6.7"
+        "4.2.6.7",
+        "4.2.6.8",
+        "4.2.6.9",
+        "4.2.6.10",
+        "4.2.6.11",
+        "4.2.6.12",
+        "4.2.7"
       ],
       "document_pages": [
         444,
-        445
+        445,
+        446,
+        447,
+        450,
+        451,
+        452,
+        453,
+        454
       ],
       "pdf_pages": [
         444,
-        445
+        445,
+        446,
+        447,
+        450,
+        451,
+        452,
+        453,
+        454
       ],
-      "figures": [],
+      "figures": [
+        "4-48"
+      ],
       "tables": [],
       "status": "verified",
-      "verified_on": "2026-10-24"
+      "verified_on": "2026-10-29"
     },
     {
       "id": "PCIE-CH19-002",
@@ -42,15 +65,17 @@
         "4.2.4"
       ],
       "document_pages": [
-        392
+        392,
+        393
       ],
       "pdf_pages": [
-        392
+        392,
+        393
       ],
       "figures": [],
       "tables": [],
       "status": "verified",
-      "verified_on": "2026-10-24"
+      "verified_on": "2026-10-29"
     },
     {
       "id": "PCIE-CH19-003",
@@ -64,18 +89,100 @@
       ],
       "document_pages": [
         564,
-        566
+        565,
+        566,
+        567
       ],
       "pdf_pages": [
         564,
-        566
+        565,
+        566,
+        567
       ],
       "figures": [
         "4-61"
       ],
       "tables": [],
       "status": "verified",
-      "verified_on": "2026-10-24"
+      "verified_on": "2026-10-29"
+    },
+    {
+      "id": "PCIE-CH19-POLLING-001",
+      "claim": "Detect部分Lane須隔12ms重測；Polling.Active正常路徑須送至少1024TS1且所有偵測成功Lane連續合格八組，Timeout另有分支；Polling.Configuration的16TS2自首次收到TS2後起算；Polling.Speed不可達且初次到L0為2.5GT/s。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "4.2.6",
+        "4.2.7.1.2",
+        "4.2.7.2.1",
+        "4.2.7.2.3",
+        "4.2.7.2.4",
+        "4.2.7.3",
+        "4.2.7.3.1.1"
+      ],
+      "document_pages": [
+        444,
+        456,
+        457,
+        458,
+        463,
+        464,
+        465,
+        482
+      ],
+      "pdf_pages": [
+        444,
+        456,
+        457,
+        458,
+        463,
+        464,
+        465,
+        482
+      ],
+      "figures": [
+        "4-49",
+        "4-50",
+        "4-51"
+      ],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-29"
+    },
+    {
+      "id": "PCIE-CH19-STATUS-001",
+      "claim": "LinkTraining在Polling為0並不等於訓練結束；Configuration/Recovery或Retrain等待時設1；對Endpoint、SwitchUpstream與PCIe-to-PCI橋不適用，PhysicalLinkUp與DLLLinkActive不同。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "4.2.7",
+        "7.5.3.8"
+      ],
+      "document_pages": [
+        452,
+        453,
+        454,
+        978,
+        979
+      ],
+      "pdf_pages": [
+        452,
+        453,
+        454,
+        978,
+        979
+      ],
+      "figures": [
+        "7-29"
+      ],
+      "tables": [
+        "4-48",
+        "7-26"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-29"
     }
   ]
 }

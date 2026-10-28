@@ -8,6 +8,7 @@
     {"chapter":16,"section":"vc-enable","model":"vc_setup","inputs":{"resource":1,"extended_count":1,"vc_id":1,"tc_map":128,"left_capability":384,"right_capability":512}},
     {"chapter":17,"section":"credit-cycle","model":"finite_fc","inputs":{"payload_bytes":20,"consumed":[254,4094],"limit":[255,4094],"updates":[[0,0],[1,2]],"finite":true}},
     {"chapter":18,"section":"dlp-replay","model":"flit_dlp","inputs":{"payload":[81,42,128,0,0,0],"selective":[29,41,128,0,0,0]}},
+    {"chapter":19,"section":"polling-gates","model":"polling_gates","inputs":{"active":[{"id":"active-early","point":"A0","sent":1000,"rx":[8,7]},{"id":"active-tx","point":"A1","sent":1023,"rx":[31,30]},{"id":"active-ready","point":"A2","sent":1024,"rx":[32,31]}],"config":[{"id":"config-wait","point":"B0","before":6,"after":15,"rx":[8,8]},{"id":"config-ready","point":"B1","before":6,"after":16,"rx":[9,9]}]}},
     {"chapter":22,"section":"walk","model":"lane","inputs":{"lane":3,"control_base":8,"stride":4,"status_delta":2}},
     {"chapter":24,"section":"ltr","model":"ltr","inputs":{"value":10,"scale":2,"requirement":1}},
     {"chapter":26,"section":"rid","model":"vf_rid","inputs":{"pf":768,"first":16,"stride":2,"count":3}},

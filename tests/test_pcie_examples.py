@@ -1,6 +1,6 @@
 """Boundary checks and a deliberately incorrect published-result regression."""
 import unittest
-from scripts.validate_pcie_examples import result_tokens,validate_case
+from scripts.validate_pcie_examples import result_tokens,validate_case,polling_gate_rows
 
 class TeachingArithmeticTest(unittest.TestCase):
     def test_one_dw_rejects_last_enable(self):
@@ -94,5 +94,26 @@ class FlitDlpTeachingTest(unittest.TestCase):
     def test_truncated_dlp_is_rejected(self):
         self.inputs['selective'].pop()
         with self.assertRaises(ValueError):result_tokens('flit_dlp',self.inputs)
+
+class PollingGateTeachingTest(unittest.TestCase):
+    def setUp(self):
+        self.inputs=dict(active=[dict(id='active-ready',point='A2',sent=1024,rx=[32,31])],
+                         config=[dict(id='config-wait',point='B0',before=6,after=15,rx=[8,8])])
+    def test_total_sent_does_not_replace_post_receive_count(self):
+        rows=polling_gate_rows(self.inputs)
+        self.assertEqual(rows['config-wait'],['B0','6','15','21','8 / 8','Polling.Configuration'])
+        text=''.join('<tr data-polling-stage="'+name+'">'+''.join('<td>'+cell+'</td>' for cell in cells)+'</tr>' for name,cells in rows.items())
+        case=dict(section='polling-gates',model='polling_gates',inputs=self.inputs)
+        self.assertEqual(validate_case(case,text),[])
+        self.assertTrue(validate_case(case,text.replace('<td>Polling.Configuration</td></tr>','<td>Configuration</td></tr>')))
+    def test_one_short_lane_blocks_the_normal_active_path(self):
+        self.inputs['active'][0]['rx']=[32,7]
+        self.assertEqual(polling_gate_rows(self.inputs)['active-ready'][-1],'Polling.Active')
+        self.inputs['active'][0]['rx']=[32,8]
+        self.inputs['active'][0]['sent']=1023
+        self.assertEqual(polling_gate_rows(self.inputs)['active-ready'][-1],'Polling.Active')
+    def test_configuration_accepts_any_qualifying_detected_lane(self):
+        self.inputs['config'][0].update(after=16,rx=[8,0])
+        self.assertEqual(polling_gate_rows(self.inputs)['config-wait'][-1],'Configuration')
 
 if __name__=='__main__':unittest.main()
