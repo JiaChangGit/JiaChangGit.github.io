@@ -14,6 +14,65 @@ import re
 
 ROOT=Path(__file__).resolve().parents[1]
 
+def power_budget_case(x):
+    """Decode the chapter's non-extended D0, substate-0 two-rail example.
+
+    This is not a general budget manager. Alternative high-power ranges and
+    extended/hidden connector entries require their own source interpretation.
+    """
+    rows={}; totals={3:Fraction(0),7:Fraction(0)}; seen=set()
+    for i,value in enumerate(x['entries']):
+        raw=int(value,16)
+        if not 0<=raw<=0xffffffff or raw>>21:
+            raise ValueError('This case uses only non-extended entries')
+        base=raw&255;scale=(raw>>8)&3;sub=(raw>>10)&7
+        state=(raw>>13)&3;kind=(raw>>15)&7;rail=(raw>>18)&7
+        if scale==0 and base>0xef:
+            raise ValueError('Alternative power-range encoding is not linear watts')
+        if state or sub or kind not in totals or rail not in (0,1):
+            raise ValueError('This case is D0 substate 0, sustained/maximum, 12 V/3.3 V')
+        if (kind,rail) in seen:raise ValueError('Duplicate operating-condition rail')
+        seen.add((kind,rail));factor=Fraction(1,10**scale);power=base*factor
+        totals[kind]+=power
+        rows[str(i)]=[str(i),f'{raw:08X}h','D0 / 0',f'{kind:03b}b',
+                      f'{rail:03b}b / '+('12 V' if rail==0 else '3.3 V'),
+                      str(base),f'{float(factor):g}×',f'{float(power):g} W']
+    if seen!={(3,0),(3,1),(7,0),(7,1)}:
+        raise ValueError('The example requires both rails for each reported type')
+    return rows,[f'{float(totals[k]):g} W' for k in (3,7)]
+
+def dpa_profile_case(x):
+    """Derive allocations, target latencies and the illustrated Status values.
+
+    Assumes D0, control enabled, no reset, emergency override or competing
+    writes. These checks do not establish actual transition completion.
+    """
+    cap=int(x['capability'],16);indicator=int(x['latency_indicator'],16)
+    count=(cap&31)+1;unit=(cap>>8)&3;scale=(cap>>12)&3
+    if unit==3:raise ValueError('Reserved DPA latency unit')
+    if len(x['allocation'])!=count:raise ValueError('DPA array size must be Substate_Max+1')
+    if any(not 0<=v<=255 for v in x['allocation']):raise ValueError('DPA entries are bytes')
+    if any(b>a for a,b in zip(x['allocation'],x['allocation'][1:])):
+        raise ValueError('DPA allocations must not increase with substate number')
+    factor=[Fraction(10),Fraction(1),Fraction(1,10),Fraction(1,100)][scale]
+    powers=[v*factor for v in x['allocation']];latency=[(cap>>16)&255,(cap>>24)&255]
+    profiles={}
+    for i,(value,power) in enumerate(zip(x['allocation'],powers)):
+        bit=(indicator>>i)&1;delay=latency[bit]*(10**unit)
+        profiles[str(i)]=[str(i),f'D+{0x10+i:02X}h',f'{value:02X}h',
+                          f'{float(power):g} W',str(bit),f'{delay} ms']
+    high=x['high'];low=x['low']
+    if not 0<=high<count or not 0<=low<count or powers[high]<=powers[low]:
+        raise ValueError('The transition case needs distinct higher/lower allocations')
+    control=lambda state:f'{state:04X}h'
+    status=lambda state:f'{0x100|state:04X}h'
+    watts=lambda state:f'{float(powers[state]):g} W'
+    transitions=dict(initial=[control(high),status(high),watts(high)],
+                     **{'down-pending':[control(low),status(high),watts(high)],
+                        'down-done':[control(low),status(low),watts(low)],
+                        'up-pending':[control(high),status(high),watts(high)]})
+    return profiles,transitions
+
 def margin_command_rows(x):
     """Recompute the 16 GT/s local Upstream Port example, not a margining engine.
 
@@ -154,6 +213,12 @@ def finite_fc_stages(x):
 
 def result_tokens(model, x):
     """Derive the visible results; keep address and time units explicit."""
+    if model=='power_budget':
+        rows,totals=power_budget_case(x)
+        return [token for row in rows.values() for token in row]+totals
+    if model=='dpa_profile':
+        profile,transitions=dpa_profile_case(x)
+        return [token for rows in (profile,transitions) for row in rows.values() for token in row]
     if model=='margin_command':
         return [token for row in margin_command_rows(x).values() for token in row]
     if model=='byte_enable':
@@ -245,6 +310,25 @@ def normalized(text):
     return re.sub(r'[\s,，]','',text).casefold()
 
 def validate_case(case, text):
+    if case['model'] in ('power_budget','dpa_profile'):
+        missing=[]
+        if case['model']=='power_budget':
+            rows,totals=power_budget_case(case['inputs'])
+            groups=[('data-budget-entry',rows,None)]
+            passage=normalized(section_text(text,case['section']))
+            missing.extend(token for token in totals if normalized(token) not in passage)
+        else:
+            profiles,transitions=dpa_profile_case(case['inputs'])
+            groups=[('data-dpa-profile',profiles,None),('data-dpa-transition',transitions,slice(1,4))]
+        for attribute,rows,selection in groups:
+            for name,expected in rows.items():
+                row=re.search(r'<tr\b[^>]*'+attribute+'="'+name+r'"[^>]*>(.*?)</tr>',text,re.S)
+                cells=re.findall(r'<td\b[^>]*>(.*?)</td>',row.group(1),re.S) if row else []
+                if selection:cells=cells[selection]
+                actual=[normalized(unescape(re.sub(r'<[^>]+>',' ',cell))) for cell in cells]
+                if actual!=[normalized(cell) for cell in expected]:
+                    missing.append(attribute+' '+name+': derived cells do not match')
+        return missing
     if case['model']=='margin_command':
         missing=[]
         for name,expected in margin_command_rows(case['inputs']).items():

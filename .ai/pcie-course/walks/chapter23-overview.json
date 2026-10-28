@@ -1,50 +1,52 @@
 {
   "walk_id": "ch23-overview",
   "title": "裝置已進 D0，功率限制還有哪些層次？",
-  "summary_html": "<p>D0 是 Function 的工作電源狀態，並沒有單獨決定整張卡可以消耗多少功率。Power Budgeting（功率預算）處理系統供應與裝置需求；DPA（Dynamic Power Allocation，動態功率配置）處理 D0 內的功率子狀態；緊急降載另有用途與優先關係。</p>",
-  "svg": "<svg viewBox=\"0 0 900 420\" role=\"img\" aria-labelledby=\"ch23-zh-t ch23-zh-d\"><title id=\"ch23-zh-t\">本章角色與事件</title><desc id=\"ch23-zh-d\">功率預算、D0內子狀態與緊急降載分開處理。</desc><g data-walk-target=\"n0\"><rect x=\"30\" y=\"40\" width=\"350\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"205.0\" y=\"69\" text-anchor=\"middle\" font-size=\"16\">平台：確認可供應功率</text></g><g data-walk-target=\"n1\"><rect x=\"515\" y=\"40\" width=\"350\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"690.0\" y=\"69\" text-anchor=\"middle\" font-size=\"16\">裝置：回報功耗資料</text></g><g data-walk-target=\"n2\"><rect x=\"515\" y=\"285\" width=\"350\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"690.0\" y=\"314\" text-anchor=\"middle\" font-size=\"16\">管理者：依機制授權與配置</text></g><g data-walk-target=\"n3\"><rect x=\"30\" y=\"285\" width=\"350\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"205.0\" y=\"314\" text-anchor=\"middle\" font-size=\"16\">裝置：按狀態限制功耗</text></g><g data-walk-target=\"a\"><path d=\"M380 74 L515 74\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"515,74 505.0,79.0 505.0,69.0\" fill=\"var(--accent)\"/><text x=\"447.5\" y=\"64.0\" text-anchor=\"middle\" font-size=\"16\"></text></g><g data-walk-target=\"b\"><path d=\"M690 108 L690 285\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"690,285 685.0,275.0 695.0,275.0\" fill=\"var(--accent)\"/><text x=\"690.0\" y=\"186.5\" text-anchor=\"middle\" font-size=\"16\"></text></g><g data-walk-target=\"c\"><path d=\"M515 319 L380 319\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"380,319 390.0,314.0 390.0,324.0\" fill=\"var(--accent)\"/><text x=\"447.5\" y=\"309.0\" text-anchor=\"middle\" font-size=\"16\"></text></g></svg>",
-  "order_html": "<p>圖先串起供應、回報與限制；不同功率機制的詳細啟用條件須各自核對，不代表每張卡都有全部功能。</p>",
-  "caption_html": "<p>作者依 Base 6.0 繪製的教學示意；省略與本章無關的交換。</p>",
+  "summary_html": "<p>D0 表示 Function 處於工作電源狀態，功率仍受系統授權與所用機制限制。Power Budgeting（功率預算資料）讓系統了解裝置在指定條件下的需求；DPA（Dynamic Power Allocation，動態功率配置）則讓軟體在 D0 內調整 Function 的功率配置。本章先讀功耗資料，再帶一次降功率與升功率的完整案例。</p>",
+  "svg": "<svg viewBox=\"0 0 900 280\" style=\"min-width:640px\" role=\"img\" aria-labelledby=\"ch23-zh-t ch23-zh-d\"><title id=\"ch23-zh-t\">不同功率機制的對象與用途</title><desc id=\"ch23-zh-d\">三欄分別表示功耗回報、插卡授權與D0內功率配置，並非三個連續步驟。緊急降功耗另有優先關係。</desc><g data-walk-target=\"n0\"><rect x=\"20\" y=\"25\" width=\"260\" height=\"95\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"150\" y=\"60\" text-anchor=\"middle\" font-size=\"17\">回報功耗資料</text><text x=\"150\" y=\"94\" text-anchor=\"middle\" font-size=\"16\">Power Budgeting</text></g><g data-walk-target=\"a\"><text x=\"150\" y=\"157\" text-anchor=\"middle\" font-size=\"16\">按相同條件整理需求</text></g><g data-walk-target=\"n1\"><rect x=\"320\" y=\"25\" width=\"260\" height=\"95\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"450\" y=\"60\" text-anchor=\"middle\" font-size=\"17\">整張卡的功率授權</text><text x=\"450\" y=\"94\" text-anchor=\"middle\" font-size=\"16\">Slot / Power Limit</text></g><g data-walk-target=\"b\"><text x=\"450\" y=\"157\" text-anchor=\"middle\" font-size=\"16\">依授權機制限制功率</text></g><g data-walk-target=\"n2\"><rect x=\"620\" y=\"25\" width=\"260\" height=\"95\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"750\" y=\"60\" text-anchor=\"middle\" font-size=\"17\">Function 的功率配置</text><text x=\"750\" y=\"94\" text-anchor=\"middle\" font-size=\"16\">DPA within D0</text></g><g data-walk-target=\"c\"><text x=\"750\" y=\"157\" text-anchor=\"middle\" font-size=\"16\">依 Control 與 Status 判讀</text></g><g data-walk-target=\"n3\"><rect x=\"20\" y=\"205\" width=\"860\" height=\"55\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--accent)\"/><text x=\"450\" y=\"239\" text-anchor=\"middle\" font-size=\"17\">Emergency Power Reduction：支援時優先處理</text></g></svg>",
+  "order_html": "<p>圖中三欄是不同機制的分工，不是硬體必須依序執行的流程。以下從資料代表的對象開始，再看授權與 D0 內的調整。</p>",
+  "caption_html": "<p>作者依 Base 6.0 §§6.8、6.9、6.16、6.24 繪製。每種能力均須先確認是否實作及其適用條件。DPA 是 Dynamic Power Allocation（動態功率配置）。</p>",
   "steps": [
     {
-      "title": "先確認預算資料代表誰",
+      "title": "先確認資料代表誰與哪種條件",
       "targets": [
         "n0",
-        "a",
-        "n1"
+        "a"
       ],
-      "html": "<p>Table 6-10 依單功能、多功能或多裝置插卡，解釋回報代表整個裝置還是個別 Function。</p>",
-      "condition_html": "<p>同一張卡的資料不能不分部署方式就全部相加，否則可能重複計算。</p>",
-      "source_html": "<p>Base 6.0 §6.8／Table 6-10，pp.742–743。</p>",
+      "condition_html": "<p>功耗資料可能涵蓋 Function、Device 或整張卡；同一組數字也可能分別表示持續功率與最大功率。</p>",
+      "html": "<p>先用 Table 6-10 判斷回報範圍，再用 Data Select 選資料，依 Table 7-122 解讀電源軌、狀態、Type 與倍率。</p>",
+      "source_html": "<p>Base 6.0 §6.8，pp.742–744；§7.8.1，pp.1090–1098。</p>",
       "claim_ids": [
-        "PCIE-CH23-001"
-      ]
-    },
-    {
-      "title": "再找相應的配置入口",
-      "targets": [
-        "b",
-        "n2"
-      ],
-      "html": "<p>Figure 7-136 提供 Power Budgeting（回報與管理裝置功率的能力）布局，Data Select 決定 Data Register 目前代表哪一筆資料。</p>",
-      "condition_html": "<p>資料還帶有電源軌、狀態與條件；一筆 Data 不是所有工作模式的功耗。</p>",
-      "source_html": "<p>Base 6.0 §7.8.1，pp.1090–1091。</p>",
-      "claim_ids": [
+        "PCIE-CH23-001",
         "PCIE-CH23-002"
       ]
     },
     {
-      "title": "最後核對目前限制與例外",
+      "title": "分清需求回報與功率授權",
       "targets": [
+        "n1",
+        "b"
+      ],
+      "condition_html": "<p>讀到一筆功耗需求，不會自動增加系統給插卡的功率額度。</p>",
+      "html": "<p>Slot Power Limit 透過訊息把限制交給同一條 Link 的對端；Power Limit PM Sub State 另有初始化時機限制，不能當成一般運作中的任意調整欄位。</p>",
+      "source_html": "<p>Base 6.0 §§6.8.3、6.9，pp.744–746。</p>",
+      "claim_ids": [
+        "PCIE-CH23-006"
+      ]
+    },
+    {
+      "title": "在 D0 內追蹤配置與轉換",
+      "targets": [
+        "n2",
         "c",
         "n3"
       ],
-      "html": "<p>DPA（D0 內的動態功率配置）與 Slot Power Limit、Emergency Power Reduction 各有控制方式。先確認使用哪一種，再判讀目前狀態。</p>",
-      "condition_html": "<p>緊急降載是避免系統損害的 fail-safe，不是一般效能調節策略。</p>",
-      "source_html": "<p>Base 6.0 §6.16、§6.24，pp.777–778、812。</p>",
+      "condition_html": "<p>降功率期間，Status 先保留較高配置；升功率期間，Status 就必須顯示較高配置。</p>",
+      "html": "<p>沿 DPA 的 Capability、Latency Indicator、Power Allocation Array、Control 與 Status 帶讀轉換。緊急降功耗屬於另外的保護機制。</p>",
+      "source_html": "<p>Base 6.0 §6.16，pp.777–778；§7.9.12，pp.1236–1241；§6.24，pp.812–813。</p>",
       "claim_ids": [
         "PCIE-CH23-003",
-        "PCIE-CH23-004"
+        "PCIE-CH23-004",
+        "PCIE-CH23-007"
       ]
     }
   ]

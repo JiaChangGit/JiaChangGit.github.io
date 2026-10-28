@@ -631,10 +631,10 @@
       "title_en": "Power Budgeting, Allocation, and Emergency Reduction",
       "question": "裝置已進 D0，功率限制還有哪些層次？",
       "topics": [
-        "完整電源狀態、輔助電源、事件與橋接分工",
-        "Power Budgeting 與 Slot Power Limit 的對象",
-        "Dynamic Power Allocation 的能力、狀態與控制",
-        "Emergency Power Reduction 與 SR-IOV 電源關係"
+        "按回報範圍、工作條件與電源軌整理 Power Budgeting 資料",
+        "區分功耗需求、Slot 授權與初始化時的 Power Limit",
+        "串起 DPA 配置陣列、目標延遲、Control 與 Status",
+        "Enabled 的 RW1C、緊急降功耗恢復與 PF／VF 分工"
       ],
       "prerequisites": [
         10,
@@ -645,8 +645,8 @@
         "PCIE-BASE-6.0"
       ],
       "publication_date": "2026-10-24",
-      "revision_date": "2026-10-24",
-      "teaching_revision": 2
+      "revision_date": "2026-10-29",
+      "teaching_revision": 3
     },
     {
       "number": 24,

@@ -1,6 +1,6 @@
 """Boundary checks and a deliberately incorrect published-result regression."""
 import unittest
-from scripts.validate_pcie_examples import result_tokens,validate_case,polling_gate_rows,differential_voltage_case,rx_calibration_case,margin_command_rows
+from scripts.validate_pcie_examples import result_tokens,validate_case,polling_gate_rows,differential_voltage_case,rx_calibration_case,margin_command_rows,power_budget_case,dpa_profile_case
 
 class TeachingArithmeticTest(unittest.TestCase):
     def test_one_dw_rejects_last_enable(self):
@@ -170,5 +170,34 @@ class MarginCommandTeachingTest(unittest.TestCase):
     def test_step_exceeding_reported_capability_is_rejected(self):
         self.inputs['right_steps']=33
         with self.assertRaises(ValueError):margin_command_rows(self.inputs)
+
+class PowerAllocationTeachingTest(unittest.TestCase):
+    def setUp(self):
+        self.budget=dict(entries=['000181B4','00058132','000381C8','0007813C'])
+        self.dpa=dict(capability='08031002',latency_indicator='00000004',allocation=[26,18,10],high=0,low=2)
+    def test_sustained_and_maximum_are_separate_totals(self):
+        rows,totals=power_budget_case(self.budget)
+        self.assertEqual(totals,['23 W','26 W'])
+        text='<section id="budget-entries">'+''.join('<tr data-budget-entry="'+n+'">'+''.join('<td>'+v+'</td>' for v in values)+'</tr>' for n,values in rows.items())+'; '.join(totals)+'</section>'
+        case=dict(model='power_budget',section='budget-entries',inputs=self.budget)
+        self.assertEqual(validate_case(case,text),[])
+        self.assertTrue(validate_case(case,text.replace('<td>18 W</td>','<td>180 W</td>')))
+    def test_high_power_range_is_not_treated_as_a_linear_value(self):
+        self.budget['entries'][0]='000180F0'
+        with self.assertRaisesRegex(ValueError,'power-range'):power_budget_case(self.budget)
+    def test_upward_transition_already_reports_the_higher_allocation(self):
+        profile,transitions=dpa_profile_case(self.dpa)
+        self.assertEqual(profile['2'][-1],'8 ms')
+        self.assertEqual(profile['0'][-1],'3 ms')
+        self.assertEqual(transitions['up-pending'],['0000h','0100h','26 W'])
+        text=''.join('<tr data-dpa-profile="'+n+'">'+''.join('<td>'+v+'</td>' for v in values)+'</tr>' for n,values in profile.items())+''.join('<tr data-dpa-transition="'+n+'"><td>stage</td>'+''.join('<td>'+v+'</td>' for v in values)+'</tr>' for n,values in transitions.items())
+        case=dict(model='dpa_profile',inputs=self.dpa)
+        self.assertEqual(validate_case(case,text),[])
+        wrong='<tr data-dpa-transition="up-pending"><td>stage</td><td>0000h</td><td>0102h</td><td>10 W</td></tr>'
+        import re
+        self.assertTrue(validate_case(case,re.sub(r'<tr data-dpa-transition="up-pending">.*?</tr>',wrong,text)))
+    def test_nonmonotonic_allocation_array_is_rejected(self):
+        self.dpa['allocation']=[26,10,18]
+        with self.assertRaises(ValueError):dpa_profile_case(self.dpa)
 
 if __name__=='__main__':unittest.main()

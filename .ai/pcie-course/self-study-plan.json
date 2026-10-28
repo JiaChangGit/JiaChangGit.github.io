@@ -847,5 +847,17 @@
       "FLIT-009"
     ],
     "remaining": "完整多Lane／Retimer輪廓掃描、PAM4三眼裕量、Flit Logging與FBER全部欄位及錯誤注入流程仍須深入；本輪未做硬體量測或宣稱全Base完成。"
+  },
+  "chapter_23_revision": {
+    "status": "locally_verified",
+    "location": "DOCS/pcie-course/chapter-23.html#dpa-transition",
+    "covered": "以單功能插卡解碼四筆Power Budgeting資料，分別加總持續與最大功率；串起DPA配置陣列、目標延遲、降／升功率Status與Enabled RW1C，補上Slot授權、Power Limit初始化、緊急降功耗與PF/VF邊界。",
+    "references": [
+      "PM-001",
+      "CAP-004",
+      "CFG-004",
+      "PM-010"
+    ],
+    "remaining": "Extended Power Budgeting完整connector／sense資料、所有輔助電源授權與外形規格、平台總預算政策及實機功率量測仍須深入；未宣稱全Base完成。"
   }
 }
