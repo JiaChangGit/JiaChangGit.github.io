@@ -786,5 +786,19 @@
       "REPLAY-004"
     ],
     "remaining": "完整ScaledFC、Shared/MergedFC計帳、Replay計數與Timer、全部初始化例外及AppendixH公式仍須深入；不因此標示DataLink或Base6全規格完成。"
+  },
+  "chapter_18_revision": {
+    "status": "locally_verified",
+    "location": "DOCS/pcie-course/chapter-18.html#dlp-replay",
+    "covered": "從速率/模式、256-byte區域及Table4-12 x4位置，帶讀FEC/CRC正常接收，再以六byte DLP解碼Explicit與SelectiveNak序號、最新DLP及Replay範圍；附錄按實際用途索引。",
+    "references": [
+      "FLIT-001",
+      "FLIT-002",
+      "FLIT-004",
+      "FLIT-005",
+      "REPLAY-009",
+      "ENC-009"
+    ],
+    "remaining": "完整Flit初始握手、所有Replay排程/回繞/Timer、跨Flit重組全部例外、FEC與CRC演算法及各速率OrderedSet仍須深入；不因此宣稱Flit或全Base6完成。"
   }
 }

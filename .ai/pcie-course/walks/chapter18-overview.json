@@ -1,10 +1,10 @@
 {
   "walk_id": "ch18-overview",
   "title": "Flit、編碼與錯誤更正，怎麼放在同一張圖裡？",
-  "summary_html": "<p>前章已分清交易完成與 Link 重送。現在再往下看：TLP（Transaction Layer Packet，交易層封包）先裝入 Flit（固定大小的傳輸單元），再依速率編碼送上 Lane。這三個層次各自處理不同範圍，不能把「一個 Flit」理解成「一筆交易」。</p>",
-  "svg": "<svg viewBox=\"0 0 900 420\" role=\"img\" aria-labelledby=\"ch18-zh-t ch18-zh-d\"><title id=\"ch18-zh-t\">本章角色與事件</title><desc id=\"ch18-zh-d\">先分清交易封包、固定傳輸單元及線路編碼，再讀完整性保護。</desc><g data-walk-target=\"tlp\"><rect x=\"40\" y=\"25\" width=\"820\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"450.0\" y=\"54\" text-anchor=\"middle\" font-size=\"16\">TLP：交易封包，標頭與資料依種類而定</text></g><g data-walk-target=\"flit\"><rect x=\"40\" y=\"145\" width=\"820\" height=\"68\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"450.0\" y=\"174\" text-anchor=\"middle\" font-size=\"16\">Flit：256 bytes</text><text x=\"450.0\" y=\"198\" text-anchor=\"middle\" font-size=\"16\">236 TLP ＋ 6 DLP ＋ 8 CRC ＋ 6 ECC</text></g><g data-walk-target=\"wire\"><rect x=\"40\" y=\"310\" width=\"820\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"450.0\" y=\"339\" text-anchor=\"middle\" font-size=\"16\">線路：按速率使用編碼；64 GT/s 使用 PAM4</text></g><g data-walk-target=\"a\"><path d=\"M450 69 L450 145\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"450,145 445.0,135.0 455.0,135.0\" fill=\"var(--accent)\"/><text x=\"450.0\" y=\"97.0\" text-anchor=\"middle\" font-size=\"16\">裝入固定單元</text></g><g data-walk-target=\"b\"><path d=\"M450 213 L450 310\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"450,310 445.0,300.0 455.0,300.0\" fill=\"var(--accent)\"/><text x=\"450.0\" y=\"251.5\" text-anchor=\"middle\" font-size=\"16\">跨 Lane 傳送</text></g></svg>",
+  "summary_html": "<p>前章已分清 credit、Ack 與交易完成。本章把 TLP（交易層封包）放進 Flit（固定大小的傳輸單元），再沿 Lane 追到接收端。先看正常的配置與檢查，再用 Selective Replay 案例說明 DLP 與 TLP 的不同處理。</p>",
+  "svg": "<svg viewBox=\"0 0 900 420\" role=\"img\" aria-labelledby=\"ch18-zh-t ch18-zh-d\"><title id=\"ch18-zh-t\">本章角色與事件</title><desc id=\"ch18-zh-d\">先分清交易封包、固定傳輸單元及線路編碼，再讀完整性保護。</desc><g data-walk-target=\"tlp\"><rect x=\"40\" y=\"25\" width=\"820\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"450.0\" y=\"54\" text-anchor=\"middle\" font-size=\"16\">TLP：交易封包，標頭與資料依種類而定</text></g><g data-walk-target=\"flit\"><rect x=\"40\" y=\"145\" width=\"820\" height=\"68\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"450.0\" y=\"174\" text-anchor=\"middle\" font-size=\"16\">Flit：256 bytes</text><text x=\"450.0\" y=\"198\" text-anchor=\"middle\" font-size=\"16\">236 TLP ＋ 6 DLP ＋ 8 CRC ＋ 6 ECC</text></g><g data-walk-target=\"wire\"><rect x=\"40\" y=\"310\" width=\"820\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"450.0\" y=\"339\" text-anchor=\"middle\" font-size=\"16\">線路：按速率使用編碼；64 GT/s 使用 PAM4</text></g><g data-walk-target=\"a\"><path d=\"M450 69 L450 145\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"450,145 445.0,135.0 455.0,135.0\" fill=\"var(--accent)\"/><text x=\"300\" y=\"105\" text-anchor=\"middle\" font-size=\"16\">裝入固定單元</text></g><g data-walk-target=\"b\"><path d=\"M450 213 L450 310\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"450,310 445.0,300.0 455.0,300.0\" fill=\"var(--accent)\"/><text x=\"300\" y=\"260\" text-anchor=\"middle\" font-size=\"16\">跨 Lane 傳送</text></g></svg>",
   "order_html": "<p>由上往下看資料包裝層次；這張圖不是接收端逐時脈實作，也不指定一個封包必須佔幾個 Flit。</p>",
-  "caption_html": "<p>作者依 Base 6.0 繪製的教學示意；省略與本章無關的交換。</p>",
+  "caption_html": "<p>作者繪製的分層總覽。DLP 是 Data Link Layer Payload（鏈結管理負載），CRC 是 Cyclic Redundancy Check（循環冗餘檢查），ECC 是 Error Correcting Code（錯誤更正碼）。</p>",
   "steps": [
     {
       "title": "先確認速率與模式",
@@ -24,9 +24,9 @@
         "a",
         "flit"
       ],
-      "html": "<p>Flit（256-byte 固定單元）內含交易內容、DLP（Data Link Layer Payload，資料鏈結層負載）與檢查／更正資訊。先到 §4.2.3.3 讀 byte 分配，再選符合 Link 寬度的配置表。</p>",
+      "html": "<p>Flit（256-byte 固定傳輸單元）內的 236 bytes 用於 TLP，另有 6 bytes DLP（Data Link Layer Payload，鏈結管理資訊）、8 bytes CRC 與 6 bytes ECC。先讀 §4.2.3.3 的區域，再選符合 Link 寬度的配置表。</p>",
       "condition_html": "<p>236 bytes 是 TLP 區域，仍包括交易標頭等開銷，不能全部當成應用資料。</p>",
-      "source_html": "<p>Base 6.0 §4.2.3.3，p.351。</p>",
+      "source_html": "<p>Base 6.0 §4.2.3.3，pp.351–356；本章 x4 案例使用 Table 4-12，p.354。</p>",
       "claim_ids": [
         "PCIE-CH18-002"
       ]
@@ -37,9 +37,9 @@
         "b",
         "wire"
       ],
-      "html": "<p>PAM4（四階脈衝振幅調變）每個訊號間隔表達兩個 bits；FEC（Forward Error Correction，前向錯誤更正）、CRC 與重送一起處理可靠性。</p>",
+      "html": "<p>PAM4（四階脈衝振幅調變）在 64.0 GT/s 每個訊號間隔表示 2 bits。FEC（Forward Error Correction，前向錯誤更正）先處理可更正錯誤，再以 CRC 檢查；無效 Flit 的後續處理由接收與重送規則決定。</p>",
       "condition_html": "<p>更正能力有限；不能把存在 FEC 解讀成任何損壞都能修好。</p>",
-      "source_html": "<p>Base 6.0 §4.2.3.1.1，p.343。</p>",
+      "source_html": "<p>Base 6.0 Figures 4-22、4-23，p.342；§4.2.3.1.1，pp.342–343；§4.2.3.4.2，p.359。</p>",
       "claim_ids": [
         "PCIE-CH18-003"
       ]

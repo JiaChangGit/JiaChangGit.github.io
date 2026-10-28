@@ -14,6 +14,27 @@ import re
 
 ROOT=Path(__file__).resolve().parents[1]
 
+def flit_dlp_rows(x):
+    """Decode two preselected DLP formats, not a Flit validity/replay engine.
+
+    The example uses a normal Flit_Marker with no PTM indication. Sequence
+    legality relative to receiver history remains an explicit teaching assumption.
+    """
+    rows={}
+    for name,usage,command in [('payload',1,0),('selective',0,3)]:
+        data=x[name]
+        if len(data)!=6 or any(not isinstance(v,int) or not 0<=v<=255 for v in data):
+            raise ValueError('DLP must contain six bytes')
+        if (data[0]>>6!=usage or (data[0]>>2)&3!=command
+                or not data[0]&0x10 or data[2:]!=[0x80,0,0,0]):
+            raise ValueError('Outside the selected DLP teaching formats')
+        sequence=((data[0]&3)<<8)|data[1]
+        if not 1<=sequence<1023:
+            raise ValueError('Example excludes reserved zero and sequence rollover')
+        rows[name]=[' '.join(f'{v:02X}' for v in data),f'{command:02b}b',f'{sequence:03X}h']
+        if command==3:rows[name].append(f'{sequence+1:03X}h')
+    return rows
+
 def finite_fc_stages(x):
     """One finite, unscaled Non-Flit Posted-credit teaching timeline.
 
@@ -90,6 +111,8 @@ def result_tokens(model, x):
         return tokens+[f'{disabled:08X}h',f'{disabled|(1<<31):08X}h',f'{0xff^tc_map:02X}h']
     if model=='finite_fc':
         return [token for row in finite_fc_stages(x).values() for token in row]
+    if model=='flit_dlp':
+        return [token for row in flit_dlp_rows(x).values() for token in row]
     if model=='lane':
         if x['lane']<0:raise ValueError('Negative Lane number')
         control=x['control_base']+x['lane']*x['stride']
@@ -125,6 +148,13 @@ def normalized(text):
     return re.sub(r'[\s,，]','',text).casefold()
 
 def validate_case(case, text):
+    if case['model']=='flit_dlp':
+        missing=[]
+        for name,tokens in flit_dlp_rows(case['inputs']).items():
+            row=re.search(r'<tr\b[^>]*data-dlp-case="'+name+r'"[^>]*>(.*?)</tr>',text,re.S)
+            passage=normalized(unescape(re.sub(r'<[^>]+>',' ',row.group(1)))) if row else ''
+            missing.extend(name+': '+token for token in tokens if normalized(token) not in passage)
+        return missing
     if case['model']=='finite_fc':
         missing=[]
         for stage,tokens in finite_fc_stages(case['inputs']).items():

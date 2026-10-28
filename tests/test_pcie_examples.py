@@ -75,4 +75,24 @@ class FiniteCreditTimelineTest(unittest.TestCase):
         self.inputs['finite']=False
         with self.assertRaises(ValueError):result_tokens('finite_fc',self.inputs)
 
+class FlitDlpTeachingTest(unittest.TestCase):
+    def setUp(self):
+        self.inputs=dict(payload=[0x51,0x2a,0x80,0,0,0],selective=[0x1d,0x29,0x80,0,0,0])
+    def test_high_sequence_bits_and_selective_target_are_decoded(self):
+        tokens=result_tokens('flit_dlp',self.inputs)
+        self.assertEqual(tokens,['51 2A 80 00 00 00','00b','12Ah',
+                                 '1D 29 80 00 00 00','11b','129h','12Ah'])
+        # A correct sequence elsewhere must not hide a wrong Nak-row target.
+        text=('<tr data-dlp-case="payload"><td>51 2A 80 00 00 00; 00b; 12Ah</td></tr>'
+              '<tr data-dlp-case="selective"><td>1D 29 80 00 00 00; 11b; 129h; 12Ah</td></tr>')
+        case=dict(section='dlp-replay',model='flit_dlp',inputs=self.inputs)
+        self.assertEqual(validate_case(case,text),[])
+        self.assertTrue(validate_case(case,text.replace('11b; 129h; 12Ah','11b; 129h; 129h')))
+    def test_reserved_usage_does_not_decode_as_payload(self):
+        self.inputs['payload'][0]=0x91
+        with self.assertRaises(ValueError):result_tokens('flit_dlp',self.inputs)
+    def test_truncated_dlp_is_rejected(self):
+        self.inputs['selective'].pop()
+        with self.assertRaises(ValueError):result_tokens('flit_dlp',self.inputs)
+
 if __name__=='__main__':unittest.main()
