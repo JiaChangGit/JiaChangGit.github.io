@@ -507,14 +507,14 @@ html[data-theme="dark"] .spec-teaching[data-spec-series="nvme"] { --st-accent:#7
 <article class="field-note" id="figure-PCIE14-FIG-045"><h4>PCIe Figure 45 · Offset MSIXCAP + 4h: MTAB - MSI-X Table Offset / Table BIR</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-045-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe45-1">PCIe45-1</span><span class="paragraph-text">MSI-X Table 的 BIR 選 BAR，offset 選 BAR 內位置。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>BIR</dt><dd>BAR Indicator Register，指出某個記憶體結構位於哪一個 PCIe BAR。</dd></div></dl><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.4.3</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.4.3, Figure 45, 文件頁 25, PDF 頁 25</p></details></div>
-<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe45-2">PCIe45-2</span><span class="paragraph-text">TBIR 指 BAR2、TO 指該 BAR 內的表格起點；不能把 TO 單獨當成主機實體位址。</span></p></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe45-2">PCIe45-2</span><span class="paragraph-text">【模擬資料】假設直接以 PCIe 連接，且 BAR4 是已配置的記憶體 BAR：TBIR=4 指向 BAR4，TO 指出該 BAR 內的 Table 起點。Figure 45 將 BIR=2 列為不適用；64-bit BAR 則以其低 DWORD 選擇。若經 PCI-to-PCI bridge，還須依表中的橋接限制重新檢查。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Dword（Double word）；32 bits，也就是 4 bytes。對比 word=16 bits；例如 zero-based dword count=3 代表 4 個 Dwords，也就是 16 bytes。</dd></div></dl></div>
 <div class="figure-detail"><a class="reading-link" href="#fields-pcie-interrupts">欄位、條件與相關細節：從 CQ 找到中斷向量與訊息 →</a></div></article>
 
 <!-- figure-table:PCIE14-FIG-046 -->
 <article class="field-note" id="figure-PCIE14-FIG-046"><h4>PCIe Figure 46 · Offset MSIXCAP + 8h: MPBA - MSI-X PBA Offset / PBA BIR</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-046-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe46-1">PCIe46-1</span><span class="paragraph-text">PBA 有自己的 BAR 選擇與 offset。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.4.4</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.4.4, Figure 46, 文件頁 25, PDF 頁 25</p></details></div>
-<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe46-2">PCIe46-2</span><span class="paragraph-text">Table 在 BAR0、PBA 在 BAR2 的配置需要分別定位；不能從 Table 地址加固定距離猜 PBA 在哪裡。</span></p></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe46-2">PCIe46-2</span><span class="paragraph-text">【模擬資料】假設直接以 PCIe 連接，且 BAR4 是已配置的記憶體 BAR：Table 可由 TBIR=0 定位在 BAR0，PBA 由 PBIR=4 與其 offset 定位在 BAR4。Figure 46 將 BIR=2 列為不適用；不要從 Table 的位址猜測 PBA 的位置。</span></p></div>
 <div class="figure-detail"><a class="reading-link" href="#fields-pcie-interrupts">欄位、條件與相關細節：從 CQ 找到中斷向量與訊息 →</a></div></article>
 </details>
 <details open class="figure-reading-group" id="reading-config-error"><summary>圖表組 05 · Configuration Space 與 PCIe 錯誤回報 · 46 張圖表</summary>

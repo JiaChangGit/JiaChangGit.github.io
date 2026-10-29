@@ -44,8 +44,8 @@ DATA = '''
 42|MSI-X 把向量表與 pending bitmap 放到指定記憶體區域。|先定位 Table 與 PBA，才能理解每個向量的設定及待處理狀態；兩者不一定位於同一個 BAR 區段。
 43|MSI-X capability header 用於識別與串接能力清單。|找到 MSI-X 的 CID 後，再以 MSIXCAP 加上相對 offset 讀 MXC、MTAB，避免使用另一個 capability 的基底。
 44|MSI-X 控制欄位區分啟用、整體遮罩與表格大小。|TS 原始值 7 表示 8 個 table entries；Function Mask 控制整體通知，不等於刪除向量表內容。
-45|MSI-X Table 的 BIR 選 BAR，offset 選 BAR 內位置。|TBIR 指 BAR2、TO 指該 BAR 內的表格起點；不能把 TO 單獨當成主機實體位址。
-46|PBA 有自己的 BAR 選擇與 offset。|Table 在 BAR0、PBA 在 BAR2 的配置需要分別定位；不能從 Table 地址加固定距離猜 PBA 在哪裡。
+45|MSI-X Table 的 BIR 選 BAR，offset 選 BAR 內位置。|【模擬資料】假設直接以 PCIe 連接，且 BAR4 是已配置的記憶體 BAR：TBIR=4 指向 BAR4，TO 指出該 BAR 內的 Table 起點。Figure 45 將 BIR=2 列為不適用；64-bit BAR 則以其低 DWORD 選擇。若經 PCI-to-PCI bridge，還須依表中的橋接限制重新檢查。
+46|PBA 有自己的 BAR 選擇與 offset。|【模擬資料】假設直接以 PCIe 連接，且 BAR4 是已配置的記憶體 BAR：Table 可由 TBIR=0 定位在 BAR0，PBA 由 PBIR=4 與其 offset 定位在 BAR4。Figure 46 將 BIR=2 列為不適用；不要從 Table 的位址猜測 PBA 的位置。
 47|PCI Express capability 將裝置能力、控制與連線資訊分組。|先辨識這些欄位屬於 device 還是 link，再把能力值與目前狀態比較，避免把最大能力當實際連線結果。
 48|PCIe capability header 提供識別與下一項能力位置。|由 capability list 找到此項後，再讀相對位置的 Device Control；不要把 capability 的 CID 當 NVMe 命令 CID。
 49|PCIe Capabilities 欄位描述 port 類型、版本等能力資訊。|判斷裝置角色時讀 DPT；VER 是這個 capability 的版本，不是 NVMe Base Specification 版本。

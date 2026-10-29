@@ -24,6 +24,18 @@ SPEC.loader.exec_module(VALIDATOR)
 
 
 class NvmeReportContractTest(unittest.TestCase):
+    def test_pcie_transport_msix_examples_select_supported_bars(self):
+        from scripts.nvme_figure_examples_pcie import LESSONS
+
+        # Transport 1.4 Figures 45–46 list 0, 4 and 5 as BAR choices;
+        # BIR 1 and 2 are n/a and 3, 6 and 7 are reserved.
+        for figure, field in [(45, 'TBIR'), (46, 'PBIR')]:
+            example = LESSONS[figure]['example']
+            selected = re.findall(rf'{field}=(\d+)', example)
+            self.assertTrue(selected, f'Figure {figure} needs an explicit example')
+            self.assertTrue(all(int(value) in {0, 4, 5} for value in selected))
+        self.assertIn('直接以 PCIe 連接', LESSONS[45]['example'])
+
     def test_admin_io_overloaded_terms_use_command_context(self):
         from scripts.nvme_reader_terms import definitions
         for lang in ['zh','en']:
