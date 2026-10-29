@@ -941,5 +941,11 @@
     "location": "DOCS/pcie-course/chapter-30.html#vpd",
     "covered": "VPD兩次讀取、大小端與名稱解析、寫入握手，以及RCEC同Bus bitmap與額外Bus範圍。",
     "remaining": "VPD完整keyword與checksum範例、Link Declaration所有entry、VSEC/DVSEC版本和完整Root Complex拓樸仍需深入；未宣稱全Base完成。"
+  },
+  "chapter_31_revision": {
+    "status": "locally_verified",
+    "location": "DOCS/pcie-course/chapter-31.html#lookup",
+    "covered": "三DWORD Discovery請求與回覆、逐DWORD信箱交握、Next Index走訪、Error與Abort的恢復及SPDM邊界。",
+    "remaining": "SPDM協定與信任驗證由外部規格定義，DOE中斷所有細節、複雜協定及完整CMA要求仍需深入；未宣稱全Base完成。"
   }
 }

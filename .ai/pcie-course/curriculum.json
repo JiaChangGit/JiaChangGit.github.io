@@ -827,7 +827,7 @@
       "number": 31,
       "title": "DOE 與元件量測、認證",
       "title_en": "DOE and Component Measurement and Authentication",
-      "question": "想取得元件的安全量測資料，先如何交換物件？",
+      "question": "如何透過 DOE 找到並交換元件支援的協定？",
       "topics": [
         "DOE 的協定探索、信箱、控制與狀態",
         "物件交換的先後、長度、等待與錯誤處理",
@@ -845,8 +845,8 @@
         "PCIE-BASE-6.0"
       ],
       "publication_date": "2026-10-24",
-      "revision_date": "2026-10-24",
-      "teaching_revision": 2
+      "revision_date": "2026-10-29",
+      "teaching_revision": 3
     },
     {
       "number": 32,
