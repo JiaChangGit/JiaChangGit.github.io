@@ -89,6 +89,14 @@ class QuestionBankTests(unittest.TestCase):
         self.assertEqual(positions,[7,0,1]);self.assertEqual((2-7)%8,len(positions))
         self.assertIn('(2−7+8) mod 8=3',AIDS['doorbells']['example'][0])
 
+    def test_repeated_doorbell_is_not_described_as_a_safe_noop(self):
+        q=next(q for q in QUESTIONS if q['id']==23)
+        for answer in q['answers'][4]:
+            self.assertIn('Figure 153',answer)
+            self.assertIn('Invalid Doorbell Write Value',answer)
+        for answer in q['answers'][9]:
+            self.assertIn('Asynchronous Event Request',answer)
+
     def test_apst_field_encoding_and_units(self):
         raw=(2000<<8)|(3<<3)
         self.assertEqual(raw,0x0007D018)

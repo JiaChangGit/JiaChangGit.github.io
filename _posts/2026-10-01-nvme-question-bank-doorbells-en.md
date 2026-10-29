@@ -63,12 +63,12 @@ last_modified_at: 2026-10-23
 <p class="qa-answer-lead" id="q-023-a-01">Validate pointer movement without treating a ring index as a monotonically increasing counter.</p><div class="qa-sections">
 <section class="qa-section" id="q-023-s-01" data-answer-section="1"><h3><span>1.</span> Distinguish the failure conditions</h3>
 <span class="qa-anchor" id="q-023-a-02"></span><p>Errors affect the target queue and possibly SQs sharing its CQ. Access to a nonexistent queue differs from an invalid value on an existing queue.</p>
-<span class="qa-anchor" id="q-023-a-04"></span><p>New values lie in 0..size−1. A repeated value announces no new slots; a numerically smaller value may be a valid wrap.</p>
+<span class="qa-anchor" id="q-023-a-04"></span><p>Valid indices lie in 0..size−1; a numerically smaller value may be a valid wrap. Do not assume that rewriting the same value is a harmless no-op: Base 2.4 Figure 153 lists it as a possible cause of Invalid Doorbell Write Value.</p>
 <span class="qa-anchor" id="q-023-a-07"></span><p>Invalid values on an existing queue have Invalid Doorbell Write Value asynchronous handling; writing a nonexistent queue doorbell is undefined. Event information is not a CQE status for the MMIO write.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>MMIO</dt><dd>Memory-Mapped I/O, mapped device-register access</dd></div></dl>
 </section>
 <section class="qa-section" id="q-023-s-02" data-answer-section="2"><h3><span>2.</span> Establish the cause from evidence</h3>
 <span class="qa-anchor" id="q-023-a-03"></span><p>Need size, previous pointer, available/consumed slots and QID mapping. The new value alone is insufficient.</p>
-<span class="qa-anchor" id="q-023-a-05"></span><p>For size=8, Tail 6→1 advances three slots, provided three are free and populated. A 6→6 write cannot announce a full ring of new commands.</p>
+<span class="qa-anchor" id="q-023-a-05"></span><p>Teaching example: for size=8, Tail 6→1 advances three slots, provided three are free and populated. A 6→6 write cannot announce a full ring and may be an invalid write.</p>
 </section>
 <section class="qa-section" id="q-023-s-03" data-answer-section="3"><h3><span>3.</span> Outcome and follow-up checks</h3>
 <span class="qa-anchor" id="q-023-a-06"></span><p>A valid movement communicates the correct count. Doorbell readback is vendor-specific and is not a verification method.</p>
