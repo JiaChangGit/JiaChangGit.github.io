@@ -983,5 +983,11 @@
     "location": "DOCS/pcie-course/chapter-37.html#shared-path",
     "covered": "共同路徑容量、在途讀取與效能觀察、Flit 量測能力和狀態的示範。",
     "remaining": "規格計數器名稱與單位疑義、平台實測及全 Base 6.0 逐節涵蓋仍需持續核對；不宣稱完成。"
+  },
+  "chapter_27_invalidation_audit": {
+    "status": "locally_verified",
+    "location": "DOCS/pcie-course/chapter-27.html#invalidate-scope",
+    "covered": "Base 6.0 §§10.3.2–10.3.8 的完成、佇列、重疊、隱含事件與 PASID 失效範圍。",
+    "remaining": "平台 IOMMU 與 ATS 停用／重用的實作依據仍需依平台文件確認；其他 Base 節次仍需逐節核對。"
   }
 }

@@ -359,6 +359,91 @@
       "tables": [],
       "status": "verified",
       "verified_on": "2026-10-29"
+    },
+    {
+      "id": "PCIE-CH27-008",
+      "claim": "Invalidate Completion 合併、要求接受、共用佇列深度及跨 TC 回覆條件。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "10.3.2",
+        "10.3.3",
+        "10.3.4",
+        "10.3.5"
+      ],
+      "document_pages": [
+        1500,
+        1501,
+        1502,
+        1503
+      ],
+      "pdf_pages": [
+        1500,
+        1501,
+        1502,
+        1503
+      ],
+      "figures": [
+        "10-21",
+        "10-22"
+      ],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-29"
+    },
+    {
+      "id": "PCIE-CH27-009",
+      "claim": "隱含失效事件、PASID 與 Global Invalidate 的快取範圍及回覆條件。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "10.3.1",
+        "10.3.7",
+        "10.3.8"
+      ],
+      "document_pages": [
+        1498,
+        1504,
+        1505
+      ],
+      "pdf_pages": [
+        1498,
+        1504,
+        1505
+      ],
+      "figures": [
+        "10-20"
+      ],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-29"
+    },
+    {
+      "id": "PCIE-CH27-010",
+      "claim": "失效要求與在途轉譯回覆重疊時的排序和完成條件。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "10.3.3",
+        "10.3.6"
+      ],
+      "document_pages": [
+        1501,
+        1503,
+        1504
+      ],
+      "pdf_pages": [
+        1501,
+        1503,
+        1504
+      ],
+      "figures": [],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-29"
     }
   ]
 }

@@ -15702,10 +15702,12 @@
       "document_page": 1499,
       "pdf_page": 1499,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html"
+      ],
+      "review_note": "Completion 格式、ID、ITag Vector、CC、跨 TC 與合併條件已在案例及佇列段落帶讀。"
     },
     {
       "section": "10.3.3",
@@ -15713,10 +15715,12 @@
       "document_page": 1501,
       "pdf_page": 1501,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html"
+      ],
+      "review_note": "新要求、Read、Posted Write 與多 TC 完成條件已帶讀；Shadow Function 須另參照 Chapter 26。"
     },
     {
       "section": "10.3.4",
@@ -15724,10 +15728,12 @@
       "document_page": 1501,
       "pdf_page": 1501,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html"
+      ],
+      "review_note": "已帶讀 Posted-to-Posted 接受相依、ATS 關閉時回覆與實作佇列範圍。"
     },
     {
       "section": "10.3.5",
@@ -15735,10 +15741,12 @@
       "document_page": 1502,
       "pdf_page": 1502,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html"
+      ],
+      "review_note": "已帶讀 Queue Depth、零值、反壓及 PF/VF 共用限制；實際流控策略由平台決定。"
     },
     {
       "section": "10.3.6",
@@ -15746,10 +15754,12 @@
       "document_page": 1503,
       "pdf_page": 1503,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html"
+      ],
+      "review_note": "已帶讀不同 TC 的重疊查詢、無效標記與舊回覆的完成邊界。"
     },
     {
       "section": "10.3.7",
@@ -15757,10 +15767,12 @@
       "document_page": 1504,
       "pdf_page": 1504,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html"
+      ],
+      "review_note": "已帶讀三種全 ATC 失效事件、PASID 停用範圍及沒有顯式 Completion。"
     },
     {
       "section": "10.3.8",
@@ -15768,10 +15780,12 @@
       "document_page": 1505,
       "pdf_page": 1505,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html"
+      ],
+      "review_note": "已帶讀帶／不帶 PASID、Global 支援與控制、零匹配及回覆規則。"
     },
     {
       "section": "10.4",
