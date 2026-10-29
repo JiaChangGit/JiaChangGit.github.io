@@ -399,6 +399,56 @@
       "status": "verified",
       "verified_on": "2026-10-28",
       "notes": "新案例限定 Non-Flit、TC0、BCM=0、全 byte 啟用，並明確標記擷取與觀察範圍。"
+    },
+    {
+      "id": "PCIE-CH5-TAG-RANGE-001",
+      "claim": "Requester ID 與未完成 Tag 組成 Transaction ID；可用 Tag 範圍依三個 Enable、完成端與路徑共同能力及模式由 Table 2-11 決定。未完成 Non-Posted Requests 時修改 10-bit 或 14-bit Requester Enable 的結果未定義。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.6.2",
+        "7.5.3.4",
+        "7.5.3.15",
+        "7.5.3.16",
+        "7.7.9.2",
+        "7.7.9.3"
+      ],
+      "document_pages": [
+        153,
+        154,
+        155,
+        156,
+        960,
+        991,
+        997,
+        1073,
+        1075
+      ],
+      "pdf_pages": [
+        153,
+        154,
+        155,
+        156,
+        960,
+        991,
+        997,
+        1073,
+        1075
+      ],
+      "figures": [
+        "2-28"
+      ],
+      "tables": [
+        "2-11",
+        "7-21",
+        "7-33",
+        "7-34",
+        "7-108",
+        "7-109"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-30"
     }
   ]
 }

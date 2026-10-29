@@ -780,10 +780,13 @@
         "PCIE-CH1-RID-001",
         "PCIE-CH1-RIDSEGMENT-001",
         "PCIE-CH1-IDENTITY-001",
-        "PCIE-CH1-EXAMPLE-001"
+        "PCIE-CH1-EXAMPLE-001",
+        "PCIE-CH5-TAG-RANGE-001"
       ],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-5.html#tag-range"
+      ],
+      "review_note": "已部分帶讀 Transaction ID 與 Table 2-11 Tag 範圍；尚須核對 Segment、Requester ID 擷取、Shadow／Phantom Function 等其餘規則，暫不列為完整帶讀。"
     },
     {
       "section": "2.2.6.3",

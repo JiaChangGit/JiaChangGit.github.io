@@ -108,6 +108,21 @@ class PacketLayoutTest(unittest.TestCase):
                 self.assertEqual(ohc[0] & 0xf, prefix[0] & 0xf)
                 self.assertEqual(ohc[1:], prefix[1:])
 
+    def test_tag_table_ranges_follow_size_and_path(self):
+        course = Path(__file__).resolve().parents[1] / '.ai' / 'pcie-course'
+        range_5 = f'0–{(1 << 5) - 1}'
+        range_8 = f'0–{(1 << 8) - 1}'
+        range_10 = f'{1 << 8}–{(1 << 10) - 1}'
+        range_14 = f'{1 << 10}–{(1 << 14) - 1}'
+        for suffix in ('zh.html', 'post.zh.html', 'post.en.html'):
+            text = (course / ('chapter5.' + suffix)).read_text(encoding='utf-8')
+            match = re.search(r'<section id="tag-range">(.*?)</section>', text, re.S)
+            self.assertIsNotNone(match, suffix)
+            rows = re.findall(r'<tr><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td></tr>', match.group(1))
+            self.assertEqual(len(rows), 2)
+            self.assertEqual(rows[0][1:], (range_8, range_10, range_10))
+            self.assertEqual(rows[1][1:], (range_5, range_10, range_14))
+
 class VirtualChannelSetupTest(unittest.TestCase):
     def setUp(self):
         self.inputs=dict(resource=1,extended_count=1,vc_id=1,tc_map=0x80,

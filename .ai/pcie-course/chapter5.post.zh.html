@@ -29,5 +29,14 @@
 <p>兩個 Completion 的 Lower Address 都是 0x00，因為各自起始位址的低 7 bits 都為 0；這個欄位不足以單獨還原完整位址。表中沒有提供 Completer ID 或各端的完整紀錄，因此 B 的資料範圍雖已覆蓋，仍需核對 Completion 的其他欄位及 Requester 接收結果。A 的後半段可能在擷取結束後返回、未被擷取，或尚未返回；現有資料不足以判定 Timeout 或指定故障位置。</p></aside>
 <p>規格閱讀順序：Figure 2-28 先建立 Transaction ID；Figure 2-73 找到 Completion 的 Requester ID、Tag、Status、Byte Count 和 Lower Address，再讀 §2.3.1.1 的 Byte Count 與遞增位址規則。不同 Transaction ID 的 Completion 允許互相超越，不表示一定會重新排序。核對完整封包時還要確認 Completer ID、TC、Attributes、資料長度與適用條件。（Base 6.0，文件頁／PDF 頁 153、196–198、215、218、224。）</p></section>
 
+<section id="tag-range"><h2>Tag 位數變大後，可以任意選數值嗎？</h2>
+<p>先回到 Figure 2-28：Requester ID 與 Tag 一起識別未完成的交易；在同一個 PCIe Hierarchy（階層）中，同一個 Requester ID 的未完成 Non-Posted Requests，不論 Traffic Class，都必須使用不同的 Tag。現在要擴大可用範圍時，還需要把 Requester 設定、完成端能力與中間路徑一起帶入 Table 2-11。Flit Mode 的跨 Hierarchy Segment 識別另有規則，本例不展開。</p>
+<p>表格左邊三欄依序是 14-Bit Tag Requester Enable、10-Bit Tag Requester Enable 和 Extended Tag Field Enable；右邊依完成端<strong>及路徑</strong>共同支援的最大 Tag 能力分欄。先確認 Requester 本身支援並允許使用該能力，再選正確欄位。Enable=1 不是完成端支援能力的證明，也不是一定會同時送出該數量的要求。</p>
+<div class="example"><p><strong>【模擬資料】以下資料為教學用途建立，不代表特定硬體或平台。</strong>下列兩列是互不相依的設定；Requester、目標及中間路徑均已確認支援表中使用的能力，且未使用 VF 或 Phantom Function。第二列中使用 14-bit Tag 的路徑均以 Flit Mode 傳送。</p>
+<p>手機閱讀時，表格可以左右滑動。</p><div class="table-wrap"><table><thead><tr><th scope="col">14-bit／10-bit／Extended Enable</th><th scope="col">8-bit 完成端／路徑</th><th scope="col">10-bit 完成端／路徑</th><th scope="col">14-bit 完成端／路徑</th></tr></thead><tbody><tr><td>0／1／1</td><td>0–255</td><td>256–1023</td><td>256–1023</td></tr><tr><td>1／1／0</td><td>0–31</td><td>256–1023</td><td>1024–16383</td></tr></tbody></table></div>
+<p>例如第一列如果目的端與路徑共同支援 10-bit Tag，Table 2-11 的可用範圍從 256 開始；不能把它讀成「任何小於 1024 的 Tag 都屬於這個 10-bit 範圍」。同一列若目的端和路徑只支援 8-bit，則使用 0–255。5-bit 完成端／路徑的範圍恆為 0–31。</p></div>
+<p>查設定時，Extended Tag Field Enable 在 PCI Express Capability 的 Device Control；10-Bit Tag Requester Enable 在 Device Control 2；14-Bit Tag Requester Enable 則在 Device 3 Extended Capability 的 Device Control 3。應先走訪對應 Capability，再查各欄位的適用條件；VF 另有 PF 的控制規則。軟體若在 Function 尚有未完成 Non-Posted Requests 時修改 10-bit 或 14-bit Requester Enable，結果為 undefined（未定義）。</p>
+<p>若同時向較大與較小 Tag 能力的目標發送要求，還須依 Table 2-11 使用各自範圍，並避免較大 Tag 因不支援的完成端截斷而與仍未完成的小 Tag 混淆。發送前確認完整路徑，比等到 Completion 的 Tag 異常後再推測更容易定位問題。</p>
+<p class="source">PCI Express Base 6.0 §2.2.6.2、Figure 2-28／Table 2-11，文件頁／PDF 頁 153–156；§7.5.3.4、Table 7-21，p.960；§7.5.3.15–§7.5.3.16、Tables 7-33–7-34，pp.991、997；§7.7.9.2–§7.7.9.3、Tables 7-108–7-109，pp.1073、1075。</p></section>
 <section id="checks"><h2>用兩個問題確認理解</h2><details class="question"><summary>第一個回覆帶 128 bytes，Byte Count=256，是錯誤嗎？</summary><p>不是。它還包含這筆要求後續的 128 bytes；本片段大小另由 Length 表示。</p></details><details class="question"><summary>只看到 Base 6.0，就能套 Figure 2-31 解所有封包嗎？</summary><p>不能。本章選用 Non-Flit Mode；Flit Mode 的 Header 定義在 §2.2.1.2，布局不同。</p></details></section>
 <p>下一章將從合法交易進一步檢查 DMA 位址與資料可見性。所有來源頁碼均為 Base 6.0 的文件／PDF 頁碼，查核日期為 2026-10-28。</p>
