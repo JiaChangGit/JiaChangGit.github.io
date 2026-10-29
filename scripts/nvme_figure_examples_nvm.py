@@ -90,7 +90,7 @@ DATA = '''
 85|啟用命令擴充後，Write Zeroes 的低位元改由 CEV 定義。|同一筆命令從一般模式改用擴充模式時，先更換對 CDW13 的解釋，再填參數。
 86|Write Zeroes 的低位 tag 初值與全零資料內容是兩件事。|資料全部設為零時，Reference Tag 仍需符合目的位置與保護類型；不能以全零使用者資料推導 tag 必為零。
 87|Write Zeroes 的 Application Tag 欄位描述保護資訊。|若系統使用特定 Application Tag 識別資料類別，清零資料後仍須按命令及格式規則處理這個 tag。
-88|Write Zeroes 的完成資訊可回報實際清零的 LBA 數量。|使用允許部分處理的情境時，將 LBACZ 與要求範圍對照，不能只看成功狀態就假設整段都已處理。
+88|NSZ=1 的 Write Zeroes 成功時，LBACZ 是表示清零範圍的旗標，不是 LBA 數量。|LBACZ=1 表示整個 namespace 的 logical blocks 已清為零；LBACZ=0 表示命令指定的 logical blocks 已清為零，不能據此判斷範圍以外的狀態。若命令失敗，清零可能已經部分或全部發生，LBACZ 也不能套用成功時的定義。
 89|Write Zeroes 的錯誤要連回清零、配置與保護設定。|相同 LBA 範圍可能因 PI 設定不同而不被接受；先依命令專屬狀態找條件，而非改成一般 Write 就認為語意等同。
 90|非同步通知告知狀態已變，詳細內容還需讀對應資料。|收到 LBA Status Information 相關通知後，再讀相應 log；通知本身不包含所有受影響的 LBA 清單。
 91|Format NVM 決定 PI 類型與 metadata 的傳輸安排。|兩個格式都使用 4 KiB 資料，仍可能因 PI 與 MSET 不同而需要不同的 I/O buffer 排列。

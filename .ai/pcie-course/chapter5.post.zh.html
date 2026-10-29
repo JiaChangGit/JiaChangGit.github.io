@@ -17,7 +17,7 @@
 <p>另假設 Endpoint 從有效 DMA 位址 0x40001000 讀 256 bytes，Requester ID=0x0300、Tag=0x13，BME 與映射都已準備好。Requester 的最大讀取要求為 512 bytes；Completer 的有效 Payload 上限及 RCB 都為 128 bytes，路徑接收能力相容。這筆 Length=64 DW 的要求，可按下表回覆：</p>
 <div class="table-wrap"><table><caption>作者推演的兩段成功回覆</caption><thead><tr><th scope="col">資料範圍</th><th scope="col">Length</th><th scope="col">Byte Count</th><th scope="col">Lower Address</th></tr></thead><tbody><tr><td>0x40001000–0x4000107F</td><td>32 DW</td><td>256 bytes</td><td>0x00</td></tr><tr><td>0x40001080–0x400010FF</td><td>32 DW</td><td>128 bytes</td><td>0x00</td></tr></tbody></table></div>
 <p>兩個回覆皆為 SC、BCM=0，並保留相同的 Requester ID／Tag。Byte Count 包含目前片段及後續尚待回傳的資料。同一要求的回覆按位址遞增；不同 Transaction ID 的回覆可交換順序，也不得合併成一個 Completion。</p>
-<p>另一項獨立限制是 Request 不得跨 4 KiB：從 0x40001FF0 讀 32 bytes 會到 0x4000200F，必須拆成兩筆各 16 bytes 的要求。若讀取回覆失敗，Cpl 不帶有效讀取資料並終止該要求；UR／CA 不能當成讀到零，RRS 也不是 MMIO 的通用重試結果。</p>
+<p>另一項獨立限制是 Memory Request 不得跨 4 KiB：從 0x40001FF0 讀 32 bytes 會到 0x4000200F，必須拆成兩筆各 16 bytes 的要求。接收端可以選擇檢查跨界；若已實作的檢查發現違規，便視為 Malformed TLP（格式錯誤的封包）。沒有錯誤紀錄不代表原要求一定合法。這是 Non-Flit Mode 的一般 Memory Read；AtomicOp 的對齊另見 Chapter 15。</p><p>若讀取回覆失敗，Cpl 不帶有效讀取資料並終止該要求；UR／CA 不能當成讀到零，RRS 也不是 MMIO 的通用重試結果。</p>
 <details class="source-note"><summary>切分與邊界來源</summary><p>§2.2.7.1（pp.162–163）；§2.3.1.1（pp.214–218）；§2.4.1 D5a／D5b（p.224）與 §2.4.2（p.228）。RCB 限制回覆切分位置，4 KiB 規則限制 Request，兩者不同。</p></details></section>
 <section id="matching-trace"><h2>兩個裝置用了相同 Tag，回覆要怎麼分？</h2>
 <p>先把每個 Completion 的 Requester ID（原要求者識別號）和 Tag（要求者分配的交易標籤）一起對回原始 Request，再用 Status、Length、Byte Count 和 Lower Address 檢查資料範圍。完成分組後，才知道哪筆讀取還缺哪些資料。</p>

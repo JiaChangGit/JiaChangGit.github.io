@@ -101,6 +101,7 @@
 
 <section id="bounds"><h2>6. 長度沒超過上限，就一定是合法要求嗎？</h2>
 <p>還要檢查 4 KiB 邊界。假設要從 <code>0x40001FF0</code> 讀 32 bytes，結尾會落在 <code>0x4000200F</code>。即使 MRRS 容許 32 bytes，這個 Address／Length 組合跨過了 4 KiB 邊界，仍不得作為單一 Memory Request 發出。可改成兩筆 16-byte 要求：<code>0x40001FF0–0x40001FFF</code> 與 <code>0x40002000–0x4000200F</code>，各自追蹤 Tag。</p>
+<p>回到 §2.2.7.1 的 Memory Request 規則：發送端不得產生跨越邊界的 Address／Length 組合；接收端可以選擇實作這項檢查。若接收端有實作，且檢查發現違規，就將該 TLP 視為 Malformed TLP（格式錯誤的封包）。所以，沒有看到這類錯誤紀錄，還不足以證明原要求沒有跨界。這裡分析的是 Non-Flit Mode 的一般 Memory Read；AtomicOp 的 operand 與對齊另有規則，見 <a href="chapter-15.html">Chapter 15</a>。</p>
 <p>這裡談的是 Request 的邊界限制；上一節談的是同一 Request 的 Completion 切分，兩者發生在不同階段。</p>
 <p>收到 Completion 也要先看 Status。SC 表示這次要求成功完成；UR、CA 是不同的失敗結果，不能把無資料的 Cpl 解成讀到了零。RRS 只在規定的 Configuration 情境適用，並不是普通 MMIO 讀取的通用「稍後再試」。若分段讀取中收到失敗 Completion，該回覆會終結這筆要求，不應繼續等剩餘成功片段。</p>
 <details class="source-note"><summary>邊界與失敗回覆來源</summary><p>4 KiB 規則：§2.2.7.1，p.163。Status：Table 2-37，p.197；RRS 限制：§2.3.1，p.214 的說明；失敗讀取回覆與終止：§2.3.1.1，pp.214、218。接收端對部分非法封包的檢查是可選的，不代表發送端可以產生那些封包。</p></details></section>
