@@ -379,6 +379,40 @@
       ],
       "status": "verified",
       "verified_on": "2026-10-30"
+    },
+    {
+      "id": "PCIE-CH14-PREFIX-RC-001",
+      "claim": "Root Port 間帶 End-End Prefix 的 P2P 轉送為可選且依實作；支援位元不保證所有 Port 組合。Root Complex 拆分轉送的 TLP 時須複製 Prefix，且依條件宣告支援。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.10.4",
+        "2.2.10.4.2",
+        "7.5.3.15"
+      ],
+      "document_pages": [
+        201,
+        202,
+        203,
+        989,
+        992
+      ],
+      "pdf_pages": [
+        201,
+        202,
+        203,
+        989,
+        992
+      ],
+      "figures": [
+        "7-36"
+      ],
+      "tables": [
+        "7-33"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-30"
     }
   ]
 }

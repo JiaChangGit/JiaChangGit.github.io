@@ -78,6 +78,20 @@ class PacketLayoutTest(unittest.TestCase):
             self.assertEqual(dedicated[1] & 0x7f, 0)
             self.assertEqual(dedicated[2:], bytes(2))
 
+    def test_root_port_prefix_maximum_uses_nonzero_default_encoding(self):
+        course = Path(__file__).resolve().parents[1] / '.ai' / 'pcie-course'
+        for suffix in ('zh.html', 'post.zh.html', 'post.en.html'):
+            text = (course / ('chapter14.' + suffix)).read_text(encoding='utf-8')
+            match = re.search(r'<section id="prefix-root-routing">(.*?)</section>', text, re.S)
+            self.assertIsNotNone(match, suffix)
+            if suffix.endswith('en.html'):
+                self.assertIn('<code>01b</code> means one', match.group(1))
+                self.assertIn('<code>00b</code> means four', match.group(1))
+            else:
+                self.assertIn('<code>01b</code> 表示支援一個', match.group(1))
+                self.assertIn('<code>00b</code> 表示支援四個', match.group(1))
+            self.assertIn('Unsupported Request', match.group(1))
+
 class VirtualChannelSetupTest(unittest.TestCase):
     def setUp(self):
         self.inputs=dict(resource=1,extended_count=1,vc_id=1,tc_map=0x80,

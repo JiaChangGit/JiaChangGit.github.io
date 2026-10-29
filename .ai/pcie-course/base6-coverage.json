@@ -1270,10 +1270,14 @@
       "document_page": 203,
       "pdf_page": 203,
       "planned_chapter": 14,
-      "status": "unreviewed",
-      "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "status": "guided",
+      "existing_claim_candidates": [
+        "PCIE-CH14-PREFIX-RC-001"
+      ],
+      "teaching_locations": [
+        "chapter-14.html#prefix-root-routing"
+      ],
+      "review_note": "以 Root Port P2P 案例帶讀非逐對保證、UR／UC、支援上限與回報、主機及 RCiEP 條件和拆分 Prefix 複製。"
     },
     {
       "section": "2.2.11",
