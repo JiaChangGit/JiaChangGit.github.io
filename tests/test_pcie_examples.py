@@ -121,6 +121,18 @@ class PacketLayoutTest(unittest.TestCase):
             self.assertIn(f'{requester_id:04X}h', match.group(1))
             self.assertIn('04:00.0', match.group(1))
 
+    def test_ari_requester_capture_keeps_eight_bit_function_number(self):
+        function = 0x14
+        before, after = ((bus << 8) | function for bus in (0x03, 0x04))
+        self.assertEqual((before, after), (0x0314, 0x0414))
+        course = Path(__file__).resolve().parents[1] / '.ai' / 'pcie-course'
+        for suffix in ('zh.html', 'post.zh.html', 'post.en.html'):
+            text = (course / ('chapter26.' + suffix)).read_text(encoding='utf-8')
+            match = re.search(r'<section id="ari-capture">(.*?)</section>', text, re.S)
+            self.assertIsNotNone(match, suffix)
+            self.assertIn(f'{before:04X}h', match.group(1))
+            self.assertIn(f'{after:04X}h', match.group(1))
+
     def test_tag_table_ranges_follow_size_and_path(self):
         course = Path(__file__).resolve().parents[1] / '.ai' / 'pcie-course'
         range_5 = f'0–{(1 << 5) - 1}'

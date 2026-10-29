@@ -274,6 +274,40 @@
       ],
       "status": "verified",
       "verified_on": "2026-10-29"
+    },
+    {
+      "id": "PCIE-CH26-ARI-CAPTURE-001",
+      "claim": "ARI Device 的 Functions 只要求擷取 Type 0 Configuration Write 的 Bus Number；可逐 Function 或逐 Device 保存，若逐 Device 保存則所有 Functions 必須更新並使用共同值。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.6.2",
+        "6.4",
+        "6.13"
+      ],
+      "document_pages": [
+        156,
+        157,
+        717,
+        718,
+        760,
+        761,
+        762
+      ],
+      "pdf_pages": [
+        156,
+        157,
+        717,
+        718,
+        760,
+        761,
+        762
+      ],
+      "figures": [],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-30"
     }
   ]
 }
