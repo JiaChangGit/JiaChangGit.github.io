@@ -15401,10 +15401,14 @@
       "document_page": 1469,
       "pdf_page": 1469,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html#lookup",
+        "chapter-27.html#pasid",
+        "chapter-27.html#translation-case"
+      ],
+      "review_note": "依 Base 6.0 pp.1469–1470、1477–1480 導讀架構、PASID 身分與 AT 欄位；Shadow Function 細節另查 §7.9.21。"
     },
     {
       "section": "10.1.1",
@@ -15438,10 +15442,14 @@
       "document_page": 1477,
       "pdf_page": 1477,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html#lookup",
+        "chapter-27.html#pasid",
+        "chapter-27.html#translation-case"
+      ],
+      "review_note": "依 Base 6.0 pp.1469–1470、1477–1480 導讀架構、PASID 身分與 AT 欄位；Shadow Function 細節另查 §7.9.21。"
     },
     {
       "section": "10.1.4",
@@ -15462,10 +15470,14 @@
       "document_page": 1478,
       "pdf_page": 1478,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html#lookup",
+        "chapter-27.html#pasid",
+        "chapter-27.html#translation-case"
+      ],
+      "review_note": "依 Base 6.0 pp.1469–1470、1477–1480 導讀架構、PASID 身分與 AT 欄位；Shadow Function 細節另查 §7.9.21。"
     },
     {
       "section": "10.2.1",
