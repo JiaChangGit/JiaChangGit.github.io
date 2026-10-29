@@ -2,7 +2,7 @@
   "schema_version": 1,
   "course": "pcie-course",
   "chapter": 37,
-  "updated": "2026-10-24",
+  "updated": "2026-10-29",
   "claims": [
     {
       "id": "PCIE-CH37-001",
@@ -86,6 +86,69 @@
       ],
       "status": "verified",
       "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH37-004",
+      "claim": "單方向 64.0 GT/s ×4 的線路容量與 FLIT TLP 區域上限假設。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "8.1",
+        "4.2.3.3"
+      ],
+      "document_pages": [
+        351,
+        1317
+      ],
+      "pdf_pages": [
+        351,
+        1317
+      ],
+      "figures": [],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-29"
+    },
+    {
+      "id": "PCIE-CH37-005",
+      "claim": "Flit Performance Measurement 的適用 Port、模式、追蹤數、控制與狀態。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.8.12",
+        "7.8.12.2",
+        "7.8.12.3",
+        "7.8.12.4"
+      ],
+      "document_pages": [
+        1166,
+        1167,
+        1168,
+        1169,
+        1170
+      ],
+      "pdf_pages": [
+        1166,
+        1167,
+        1168,
+        1169,
+        1170
+      ],
+      "figures": [
+        "7-205",
+        "7-207",
+        "7-208",
+        "7-209"
+      ],
+      "tables": [
+        "7-188",
+        "7-189",
+        "7-190"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-29"
     }
   ]
 }

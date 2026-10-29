@@ -971,5 +971,17 @@
     "location": "DOCS/pcie-course/chapter-35.html#image-walk",
     "covered": "一般 ROM BAR 解碼、兩個映像的相對指標與長度、驗證結果，以及 Base 6.0 與 Firmware 3.3 的文件邊界。",
     "remaining": "Enhanced Allocation ROM、UEFI 專屬映像解析及平台信任政策需另查適用規格與平台文件；未宣稱完成全 Base 規格。"
+  },
+  "chapter_36_revision": {
+    "status": "locally_verified",
+    "location": "DOCS/pcie-course/chapter-36.html#ordering-walk",
+    "covered": "同 TC 排序表的列欄與條件、跨裝置 IDO、停止交易與 Message Code／Subtype 查詢。",
+    "remaining": "Flow-Through IDE 的修正排序、多 TC 系統依賴設計、平台同步及所有 Message 專屬規則需另行查閱；未宣稱全 Base 完成。"
+  },
+  "chapter_37_revision": {
+    "status": "locally_verified",
+    "location": "DOCS/pcie-course/chapter-37.html#shared-path",
+    "covered": "共同路徑容量、在途讀取與效能觀察、Flit 量測能力和狀態的示範。",
+    "remaining": "規格計數器名稱與單位疑義、平台實測及全 Base 6.0 逐節涵蓋仍需持續核對；不宣稱完成。"
   }
 }
