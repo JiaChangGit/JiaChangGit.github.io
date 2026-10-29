@@ -219,7 +219,7 @@ last_modified_at: 2026-10-23
 <span class="qa-anchor" id="q-283-a-06"></span><p>Dword granularity requires four-byte address/length multiples, not page alignment.</p>
 </section>
 <section class="qa-section" id="q-283-s-03" data-answer-section="3"><h3><span>3.</span> Handle missing or inconsistent evidence</h3>
-<span class="qa-anchor" id="q-283-a-07"></span><p>Exceeding SDT may reduce performance; it is not a universal rejection limit, and capsule-only limits do not define PCIe list limits.</p>
+<span class="qa-anchor" id="q-283-a-07"></span><p>Simulated data: a PCIe controller supports Bit Bucket and reports SDT=2. A read destination SGL has two nonzero-length Data Blocks and one nonzero-length Bit Bucket. Under §4.3.2 the SDT count is three, so performance may be reduced; exceeding the recommendation alone does not require command failure. Segment descriptors and zero-length Data Blocks are excluded from this count. Figure 338 defines SDT=0 as no recommended maximum reported. MSDBD limits descriptors in a capsule, not all PCIe memory-list descriptors.</p>
 <span class="qa-anchor" id="q-283-a-16"></span><p>Legal behavior must match capabilities while retaining the Admin SGL prohibition.</p>
 <span class="qa-anchor" id="q-283-a-17"></span><p>First decode individual SGLS fields instead of testing nonzero.</p>
 </section>

@@ -219,7 +219,7 @@ last_modified_at: 2026-10-23
 <span class="qa-anchor" id="q-283-a-06"></span><p>SGLS=10b 時，Data Block 位址與長度須是 4-byte 倍數；這不表示每個資料區塊都要 page-aligned。</p>
 </section>
 <section class="qa-section" id="q-283-s-03" data-answer-section="3"><h3><span>3.</span> 證據不足或不一致時怎麼判斷</h3>
-<span class="qa-anchor" id="q-283-a-07"></span><p>超過 SDT 可能降低效能，但 SDT 不是一律拒絕命令的硬上限；不得把 capsule 專用欄位當成 PCIe 清單上限。</p>
+<span class="qa-anchor" id="q-283-a-07"></span><p>【模擬資料】假設 PCIe Controller 支援 Bit Bucket，SDT=2，且一筆讀取命令的目的 SGL 含兩個 Length 非零的 Data Block 與一個 Length 非零的 Bit Bucket。依 §4.3.2，計入 SDT 的數量是 3，超過建議值，效能可能降低；這不代表命令因此必須失敗。Segment descriptor 與 Length 為零的 Data Block 不列入這項計數。Figure 338 的 SDT=0 表示沒有回報建議上限；MSDBD 則是 capsule 內的限制，不能當成 PCIe 記憶體清單的通用上限。</p>
 <span class="qa-anchor" id="q-283-a-16"></span><p>支援宣告與合法描述資料必須一致；Admin 命令的 SGL 禁用規則仍優先。</p>
 <span class="qa-anchor" id="q-283-a-17"></span><p>先完整解碼 SGLS，而不是只看整個欄位非零。</p>
 </section>
