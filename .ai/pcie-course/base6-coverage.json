@@ -15471,10 +15471,13 @@
       "document_page": 1478,
       "pdf_page": 1478,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html#translation-case",
+        "chapter-27.html#translation-request-fields"
+      ],
+      "review_note": "依 Base 6.0 pp.1478–1483 補充轉譯要求案例與模式差異；涵蓋導讀，進階例外仍需閱讀規格。"
     },
     {
       "section": "10.2.2",
@@ -15482,10 +15485,13 @@
       "document_page": 1480,
       "pdf_page": 1480,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html#translation-case",
+        "chapter-27.html#translation-request-fields"
+      ],
+      "review_note": "依 Base 6.0 pp.1478–1483 補充轉譯要求案例與模式差異；涵蓋導讀，進階例外仍需閱讀規格。"
     },
     {
       "section": "10.2.2.1",
@@ -15493,10 +15499,13 @@
       "document_page": 1482,
       "pdf_page": 1482,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html#translation-case",
+        "chapter-27.html#translation-request-fields"
+      ],
+      "review_note": "依 Base 6.0 pp.1478–1483 補充轉譯要求案例與模式差異；涵蓋導讀，進階例外仍需閱讀規格。"
     },
     {
       "section": "10.2.2.2",
@@ -15504,10 +15513,13 @@
       "document_page": 1482,
       "pdf_page": 1482,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html#translation-case",
+        "chapter-27.html#translation-request-fields"
+      ],
+      "review_note": "依 Base 6.0 pp.1478–1483 補充轉譯要求案例與模式差異；涵蓋導讀，進階例外仍需閱讀規格。"
     },
     {
       "section": "10.2.2.3",
@@ -15515,10 +15527,13 @@
       "document_page": 1482,
       "pdf_page": 1482,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html#translation-case",
+        "chapter-27.html#translation-request-fields"
+      ],
+      "review_note": "依 Base 6.0 pp.1478–1483 補充轉譯要求案例與模式差異；涵蓋導讀，進階例外仍需閱讀規格。"
     },
     {
       "section": "10.2.2.4",
@@ -15526,10 +15541,13 @@
       "document_page": 1483,
       "pdf_page": 1483,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html#translation-case",
+        "chapter-27.html#translation-request-fields"
+      ],
+      "review_note": "依 Base 6.0 pp.1478–1483 補充轉譯要求案例與模式差異；涵蓋導讀，進階例外仍需閱讀規格。"
     },
     {
       "section": "10.2.2.5",
@@ -15537,10 +15555,13 @@
       "document_page": 1483,
       "pdf_page": 1483,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html#translation-case",
+        "chapter-27.html#translation-request-fields"
+      ],
+      "review_note": "依 Base 6.0 pp.1478–1483 補充轉譯要求案例與模式差異；涵蓋導讀，進階例外仍需閱讀規格。"
     },
     {
       "section": "10.2.2.6",
@@ -15548,10 +15569,13 @@
       "document_page": 1483,
       "pdf_page": 1483,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html#translation-case",
+        "chapter-27.html#translation-request-fields"
+      ],
+      "review_note": "依 Base 6.0 pp.1478–1483 補充轉譯要求案例與模式差異；涵蓋導讀，進階例外仍需閱讀規格。"
     },
     {
       "section": "10.2.3",
@@ -15559,10 +15583,13 @@
       "document_page": 1483,
       "pdf_page": 1483,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html#translation-range-fields",
+        "chapter-27.html#permissions"
+      ],
+      "review_note": "依 Base 6.0 pp.1483–1489 解讀範圍、屬性、權限與錯誤回覆；未取代全部適用條件。"
     },
     {
       "section": "10.2.3.1",
@@ -15570,10 +15597,13 @@
       "document_page": 1487,
       "pdf_page": 1487,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html#translation-range-fields",
+        "chapter-27.html#permissions"
+      ],
+      "review_note": "依 Base 6.0 pp.1483–1489 解讀範圍、屬性、權限與錯誤回覆；未取代全部適用條件。"
     },
     {
       "section": "10.2.3.2",
@@ -15581,10 +15611,13 @@
       "document_page": 1487,
       "pdf_page": 1487,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html#translation-range-fields",
+        "chapter-27.html#permissions"
+      ],
+      "review_note": "依 Base 6.0 pp.1483–1489 解讀範圍、屬性、權限與錯誤回覆；未取代全部適用條件。"
     },
     {
       "section": "10.2.3.3",
@@ -15592,10 +15625,13 @@
       "document_page": 1488,
       "pdf_page": 1488,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html#translation-range-fields",
+        "chapter-27.html#permissions"
+      ],
+      "review_note": "依 Base 6.0 pp.1483–1489 解讀範圍、屬性、權限與錯誤回覆；未取代全部適用條件。"
     },
     {
       "section": "10.2.3.4",
@@ -15603,10 +15639,13 @@
       "document_page": 1488,
       "pdf_page": 1488,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html#translation-range-fields",
+        "chapter-27.html#permissions"
+      ],
+      "review_note": "依 Base 6.0 pp.1483–1489 解讀範圍、屬性、權限與錯誤回覆；未取代全部適用條件。"
     },
     {
       "section": "10.2.3.5",
@@ -15614,10 +15653,13 @@
       "document_page": 1489,
       "pdf_page": 1489,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html#translation-range-fields",
+        "chapter-27.html#permissions"
+      ],
+      "review_note": "依 Base 6.0 pp.1483–1489 解讀範圍、屬性、權限與錯誤回覆；未取代全部適用條件。"
     },
     {
       "section": "10.2.3.6",

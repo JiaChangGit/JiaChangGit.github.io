@@ -616,6 +616,88 @@
       "tables": [],
       "status": "verified",
       "verified_on": "2026-10-29"
+    },
+    {
+      "id": "PCIE-CH27-016",
+      "claim": "Translation Request 的 Address Type、Length、NW、PASID、Tag 與排序規則；包含 Flit Mode 與 Non-Flit Mode 差異。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "10.2.1",
+        "10.2.2",
+        "10.2.2.1",
+        "10.2.2.2",
+        "10.2.2.3",
+        "10.2.2.4",
+        "10.2.2.5",
+        "10.2.2.6"
+      ],
+      "document_pages": [
+        1478,
+        1479,
+        1480,
+        1481,
+        1482,
+        1483
+      ],
+      "pdf_pages": [
+        1478,
+        1479,
+        1480,
+        1481,
+        1482,
+        1483
+      ],
+      "figures": [
+        "10-6",
+        "10-7",
+        "10-8",
+        "10-9",
+        "10-10",
+        "10-11",
+        "10-12",
+        "10-13"
+      ],
+      "tables": [
+        "10-1"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-29"
+    },
+    {
+      "id": "PCIE-CH27-017",
+      "claim": "Translation Completion 的 S 與 Translated Address 範圍編碼、STU 下限、N 欄位與 No Snoop 限制。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "10.2.3",
+        "10.2.3.1",
+        "10.2.3.2",
+        "10.2.3.3"
+      ],
+      "document_pages": [
+        1485,
+        1486,
+        1487,
+        1488
+      ],
+      "pdf_pages": [
+        1485,
+        1486,
+        1487,
+        1488
+      ],
+      "figures": [
+        "10-14"
+      ],
+      "tables": [
+        "10-3",
+        "10-5"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-29"
     }
   ]
 }
