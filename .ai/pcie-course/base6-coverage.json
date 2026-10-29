@@ -686,13 +686,16 @@
       "document_page": 149,
       "pdf_page": 149,
       "planned_chapter": 14,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [
         "PCIE-CH5-BYTES-001",
         "PCIE-CH5-EXAMPLE-001"
       ],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-14.html#bytes",
+        "chapter-14.html#byte-enable-rules"
+      ],
+      "review_note": "依 Base 6.0 pp.149–152 導讀 Byte Enable 位元、連續性、可選檢查與模式差異；zero-length 與 TH 例外仍須閱讀規格。"
     },
     {
       "section": "2.2.5.1",
@@ -706,9 +709,12 @@
         "PCIE-CH5-EXAMPLE-001"
       ],
       "teaching_locations": [
-        "chapter-14.html"
+        "chapter-14.html#bytes",
+        "chapter-14.html#byte-enable-rules",
+        "chapter-14.html#zero-length-read",
+        "chapter-14.html#th-byte-enable"
       ],
-      "review_note": "Read the cited pages and authored a connected explanation and worked example. Subsections require their own coverage review."
+      "review_note": "依 Base 6.0 pp.149–152 導讀 Byte Enable 連續性、TH 重用、zero-length Read 與可選檢查；其他例外仍依規格判斷。"
     },
     {
       "section": "2.2.5.2",
@@ -716,10 +722,13 @@
       "document_page": 152,
       "pdf_page": 152,
       "planned_chapter": 14,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-14.html#bytes",
+        "chapter-14.html#byte-enable-rules"
+      ],
+      "review_note": "依 Base 6.0 pp.149–152 導讀 Byte Enable 位元、連續性、可選檢查與模式差異；zero-length 與 TH 例外仍須閱讀規格。"
     },
     {
       "section": "2.2.6",

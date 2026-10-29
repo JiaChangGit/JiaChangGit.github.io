@@ -191,6 +191,84 @@
         "Length2DW, FirstBE12, LastBE3, eight payload bytes; no4KB crossing",
         "Header bytes shown in specification byte order, not CPU DWORD readback"
       ]
+    },
+    {
+      "id": "PCIE-CH14-BYTE-ENABLE-RULES-001",
+      "claim": "Non-Flit Byte Enable 長度、連續性與可選檢查；Flit Mode 無 OHC-A1 時的 Memory Request 預設值。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.5",
+        "2.2.5.1",
+        "2.2.5.2"
+      ],
+      "document_pages": [
+        149,
+        150,
+        151,
+        152
+      ],
+      "pdf_pages": [
+        149,
+        150,
+        151,
+        152
+      ],
+      "figures": [
+        "2-26"
+      ],
+      "tables": [
+        "2-10"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-29"
+    },
+    {
+      "id": "PCIE-CH14-ZERO-READ-001",
+      "claim": "Non-Flit zero-length Read 的 Completion、資料未指定及同目標、同 Traffic Class 的 flush 說明。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.5.1"
+      ],
+      "document_pages": [
+        151,
+        152
+      ],
+      "pdf_pages": [
+        151,
+        152
+      ],
+      "figures": [],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-29"
+    },
+    {
+      "id": "PCIE-CH14-TH-BE-001",
+      "claim": "Non-Flit Memory Read／DMWr 的 TH=1 時 Steering Tag 與隱含 Byte Enable 規則。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.5.1"
+      ],
+      "document_pages": [
+        149,
+        150
+      ],
+      "pdf_pages": [
+        149,
+        150
+      ],
+      "figures": [
+        "2-26"
+      ],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-29"
     }
   ]
 }
