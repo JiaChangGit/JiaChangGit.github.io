@@ -2,7 +2,7 @@
   "schema_version": 1,
   "course": "pcie-course",
   "chapter": 34,
-  "updated": "2026-10-24",
+  "updated": "2026-10-29",
   "claims": [
     {
       "id": "PCIE-CH34-001",
@@ -108,6 +108,103 @@
       "tables": [],
       "status": "verified",
       "verified_on": "2026-10-24"
+    },
+    {
+      "id": "PCIE-CH34-005",
+      "claim": "Readiness Time Reporting 的 Valid、計時起點、編碼與適用條件。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.9.16",
+        "7.9.16.2",
+        "7.9.16.3"
+      ],
+      "document_pages": [
+        1264,
+        1265,
+        1266,
+        1267
+      ],
+      "pdf_pages": [
+        1264,
+        1265,
+        1266,
+        1267
+      ],
+      "figures": [
+        "7-314",
+        "7-315",
+        "7-317",
+        "7-318"
+      ],
+      "tables": [
+        "7-279",
+        "7-280"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-29"
+    },
+    {
+      "id": "PCIE-CH34-006",
+      "claim": "FRS 佇列順序、Overflow、移除與中斷條件。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.22.2",
+        "6.22.3"
+      ],
+      "document_pages": [
+        809,
+        810
+      ],
+      "pdf_pages": [
+        809,
+        810
+      ],
+      "figures": [],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-29"
+    },
+    {
+      "id": "PCIE-CH34-007",
+      "claim": "非規範性非同步熱插拔模型與 NPEM 命令介面邊界。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "I",
+        "I.1",
+        "6.28"
+      ],
+      "document_pages": [
+        1587,
+        1588,
+        1589,
+        836,
+        837,
+        838,
+        839
+      ],
+      "pdf_pages": [
+        1587,
+        1588,
+        1589,
+        836,
+        837,
+        838,
+        839
+      ],
+      "figures": [
+        "6-35",
+        "6-36",
+        "6-37"
+      ],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-29"
     }
   ]
 }

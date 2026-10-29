@@ -959,5 +959,11 @@
     "location": "DOCS/pcie-course/chapter-33.html#lifecycle",
     "covered": "PMUX兩端Protocol Array與Channel設定、Status與速度變更、Recovery與Reset差異，以及Alternate Protocol索引和協商遮罩。",
     "remaining": "PMUX所有Packet framing與CRC逐bit計算、特定多工協定、Alternate Protocol完整Training與硬體實作仍需深入；未宣稱全Base完成。"
+  },
+  "chapter_34_revision": {
+    "status": "locally_verified",
+    "location": "DOCS/pcie-course/chapter-34.html#readiness-path",
+    "covered": "DRS 與 FRS 事件範圍、時間欄位起點及 Valid、FRS 佇列溢位，以及非同步熱插拔和 NPEM 的管理邊界。",
+    "remaining": "完整 RRS 軟體流程、SR-IOV VF 專屬就緒規則、NPEM 各狀態與 SFI 詳細命令仍需另行研讀；未宣稱全 Base 規格完成。"
   }
 }
