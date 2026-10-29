@@ -2,6 +2,8 @@
 EXAMPLES={}
 GUIDES={}
 NVM_EXAMPLES={
+ 94:dict(takeaway='LBA Range Type 的 NUM 指示這次提供的項目數。',example='NUM 原始值為 1 時要按該欄位的從零起算規則準備 2 個項目，不是只配置 1 個描述子。'),
+ 95:dict(takeaway='完成回覆中的 NUM 要在回覆語境中解釋。',example='把要求的 range 數與回覆欄位分開記錄，才能知道控制器實際回報多少項；兩個欄位名稱相同不代表傳輸方向相同。'),
  90:dict(takeaway='NVM 的 Notice 表補充命令集特定事件，仍使用 Base AER 的 AET／AEI 格式。',example='事件值只指出需要關注哪種 NVM 狀態，不是一般 Read 的完成結果；相關但未納入的 Log 不在本次展開。'),
  110:dict(takeaway='Error Information 的 NVM User Data 欄位在適用時指出發生錯誤的最低編號 LBA。',example='若本次可回報錯誤範圍包含 LBA 100 與 108，這個欄位依定義取最低的 100；不把其他 Log 的位置保證套到這裡。'),
  132:dict(takeaway='Namespace Granularity List 用 GDM 決定格式到粒度描述子的對應，ND 表示零起算的描述子數量。',example='ND=1 表示兩筆描述子；要知道 Format Index 1 用哪一筆，還需先讀 GDM 的對應規則。'),

@@ -1955,15 +1955,15 @@ html[data-theme="dark"] .spec-teaching[data-spec-series="nvme"] { --st-accent:#7
 <!-- figure-table:NVMCS13-NVM-FIG-094 -->
 <article class="field-note" id="figure-NVMCS13-NVM-FIG-094"><h4>NVM Figure 94 · LBA Range Type – Command Dword 11</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:NVMCS13-NVM-FIG-094-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM94-1">NVM94-1</span><span class="paragraph-text">LBA Range Type 的 NUM 指示這次提供的項目數。</span></p><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.3.2</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.3.2, Figure 94, 文件頁 65, PDF 頁 65</p></details></div>
-<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM94-2">NVM94-2</span><span class="paragraph-text">NUM 原始值為 1 時要按該欄位的從零起算規則準備 2 個項目，不是只配置 1 個描述子。</span></p></div>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM94-1">NVM94-1</span><span class="paragraph-text">LBA Range Type 的命令欄位 NUM 只供 Set Features 指定項目數，Get Features 會忽略它。</span></p><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.3.2</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.3.2, Figure 94, 文件頁 65, PDF 頁 65</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM94-2">NVM94-2</span><span class="paragraph-text">【模擬資料】Set Features 的 NUM 原始值為 1 時，資料結構中有 2 個項目。這個欄位不能用來要求 Get Features 回傳指定數量。</span></p></div>
 <div class="figure-detail"><a class="reading-link" href="#fields-nvm-basic-features">欄位、條件與相關細節：Feature 的選擇值與功能資料分開解讀 →</a></div></article>
 
 <!-- figure-table:NVMCS13-NVM-FIG-095 -->
 <article class="field-note" id="figure-NVMCS13-NVM-FIG-095"><h4>NVM Figure 95 · LBA Range Type – Completion Queue Entry Dword 0</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:NVMCS13-NVM-FIG-095-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM95-1">NVM95-1</span><span class="paragraph-text">完成回覆中的 NUM 要在回覆語境中解釋。</span></p><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.3.2</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.3.2, Figure 95, 文件頁 65, PDF 頁 65</p></details></div>
-<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM95-2">NVM95-2</span><span class="paragraph-text">把要求的 range 數與回覆欄位分開記錄，才能知道控制器實際回報多少項；兩個欄位名稱相同不代表傳輸方向相同。</span></p></div>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM95-1">NVM95-1</span><span class="paragraph-text">Get Features 完成回覆中的 NUM 指出資料 buffer 有多少個有效 LBA range。</span></p><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.3.2</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.3.2, Figure 95, 文件頁 65, PDF 頁 65</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM95-2">NVM95-2</span><span class="paragraph-text">【模擬資料】如果成功回覆的 NUM 為 1，依從零起算的編碼，buffer 有 2 個有效項目；再依 Figure 96 讀取每個 64-byte 項目。完成回覆的 NUM 與 Set Features 命令中的 NUM 位於不同位置。</span></p></div>
 <div class="figure-detail"><a class="reading-link" href="#fields-nvm-basic-features">欄位、條件與相關細節：Feature 的選擇值與功能資料分開解讀 →</a></div></article>
 
 <!-- figure-table:NVMCS13-NVM-FIG-096 -->

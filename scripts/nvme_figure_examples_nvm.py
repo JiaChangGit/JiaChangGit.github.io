@@ -96,8 +96,8 @@ DATA = '''
 91|Format NVM 決定 PI 類型與 metadata 的傳輸安排。|兩個格式都使用 4 KiB 資料，仍可能因 PI 與 MSET 不同而需要不同的 I/O buffer 排列。
 92|Feature 表把設定識別碼、作用範圍及保存特性放在一起比較。|對 namespace 的設定不應直接當成整個控制器設定；報告某項 Feature 時要說出改變的是哪個物件。
 93|Set Features 的重疊範圍錯誤有其特定 Feature 上下文。|設定兩個不能互相重疊的 LBA ranges 時，即使各自起點和長度合法，合在一起仍可能衝突。
-94|LBA Range Type 的 NUM 指示這次提供的項目數。|NUM 原始值為 1 時要按該欄位的從零起算規則準備 2 個項目，不是只配置 1 個描述子。
-95|完成回覆中的 NUM 要在回覆語境中解釋。|把要求的 range 數與回覆欄位分開記錄，才能知道控制器實際回報多少項；兩個欄位名稱相同不代表傳輸方向相同。
+94|LBA Range Type 的命令欄位 NUM 只供 Set Features 指定項目數，Get Features 會忽略它。|【模擬資料】Set Features 的 NUM 原始值為 1 時，資料結構中有 2 個項目。這個欄位不能用來要求 Get Features 回傳指定數量。
+95|Get Features 完成回覆中的 NUM 指出資料 buffer 有多少個有效 LBA range。|【模擬資料】如果成功回覆的 NUM 為 1，依從零起算的編碼，buffer 有 2 個有效項目；再依 Figure 96 讀取每個 64-byte 項目。完成回覆的 NUM 與 Set Features 命令中的 NUM 位於不同位置。
 96|LBA Range Type 項目把範圍與資料用途資訊放在一起。|同一 namespace 可有不同用途的兩段範圍，每段分別記錄 SLBA、NLB、Type 與屬性，而非替整個 namespace 只填一個 Type。
 97|Error Recovery 把恢復時間限制與未配置區塊的讀取行為分開設定。|DULBE 影響讀取 deallocated blocks 時是否回報錯誤；TLER 則處理恢復時間，兩者不會互相取代。
 98|Write Atomicity Normal 的 DN 會影響正常寫入原子性要求的使用。|比較 DN 設定前後時，仍要保留 power-fail 參數；正常運作的設定不能當成斷電保證的總開關。

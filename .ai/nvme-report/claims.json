@@ -20551,7 +20551,7 @@
       "printed_pages": "65",
       "pdf_pages": "65",
       "normative_keyword": "none",
-      "zh_tw": "LBA Range Type 的 NUM 指示這次提供的項目數。",
+      "zh_tw": "LBA Range Type 的命令欄位 NUM 只供 Set Features 指定項目數，Get Features 會忽略它。",
       "en": "Figure 94, \"LBA Range Type – Command Dword 11\": NUM low6 is zero-based: Set specifies valid entries and Get returns the count in CQE DW0. Neither is a byte count.",
       "scope_entry_id": "NVMCS13-INCLUDE",
       "source_keywords": [
@@ -20579,7 +20579,7 @@
       "printed_pages": "65",
       "pdf_pages": "65",
       "normative_keyword": "none",
-      "zh_tw": "完成回覆中的 NUM 要在回覆語境中解釋。",
+      "zh_tw": "Get Features 完成回覆中的 NUM 指出資料 buffer 有多少個有效 LBA range。",
       "en": "Figure 95, \"LBA Range Type – Completion Queue Entry Dword 0\": NUM low6 is zero-based: Set specifies valid entries and Get returns the count in CQE DW0. Neither is a byte count.",
       "scope_entry_id": "NVMCS13-INCLUDE",
       "source_keywords": [
