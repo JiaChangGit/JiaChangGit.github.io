@@ -1291,10 +1291,14 @@
       "document_page": 203,
       "pdf_page": 203,
       "planned_chapter": 14,
-      "status": "unreviewed",
-      "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "status": "guided",
+      "existing_claim_candidates": [
+        "PCIE-CH14-OHC-E-001"
+      ],
+      "teaching_locations": [
+        "chapter-14.html#ohc-e-reading"
+      ],
+      "review_note": "依 Figures 2-78–2-80 及 Figure 2-6 帶讀 E1/E2/E4、Prefix 對應、No Entry／保留編碼、尺寸選擇與 Root Port P2P 邊界。"
     },
     {
       "section": "2.3",

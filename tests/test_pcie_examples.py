@@ -92,6 +92,22 @@ class PacketLayoutTest(unittest.TestCase):
                 self.assertIn('<code>00b</code> 表示支援四個', match.group(1))
             self.assertIn('Unsupported Request', match.group(1))
 
+    def test_ohc_e_entries_preserve_type_and_three_content_bytes(self):
+        course = Path(__file__).resolve().parents[1] / '.ai' / 'pcie-course'
+        for suffix in ('zh.html', 'post.zh.html', 'post.en.html'):
+            text = (course / ('chapter14.' + suffix)).read_text(encoding='utf-8')
+            match = re.search(r'<section id="ohc-e-reading">(.*?)</section>', text, re.S)
+            self.assertIsNotNone(match, suffix)
+            cases = re.findall(r'<code>((?:9E|9F|1E|1F) [0-9A-F]{2} [0-9A-F]{2} [0-9A-F]{2})</code>', match.group(1))
+            self.assertEqual(len(cases), 4)
+            for original, entry in zip(cases[::2], cases[1::2]):
+                prefix, ohc = bytes.fromhex(original), bytes.fromhex(entry)
+                self.assertEqual(prefix[0] >> 5, 0b100)
+                self.assertEqual((prefix[0] >> 4) & 1, 1)
+                self.assertEqual(ohc[0] >> 4, 0b0001)
+                self.assertEqual(ohc[0] & 0xf, prefix[0] & 0xf)
+                self.assertEqual(ohc[1:], prefix[1:])
+
 class VirtualChannelSetupTest(unittest.TestCase):
     def setUp(self):
         self.inputs=dict(resource=1,extended_count=1,vc_id=1,tc_map=0x80,

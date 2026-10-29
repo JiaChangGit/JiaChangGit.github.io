@@ -445,6 +445,47 @@
       ],
       "status": "verified",
       "verified_on": "2026-10-30"
+    },
+    {
+      "id": "PCIE-CH14-OHC-E-001",
+      "claim": "Flit Mode OHC-E1/E2/E4 承載對應 E[3:0] 為 0011b–1111b 的 End-End Prefix 內容；依序填入並使用最小尺寸，No Entry 與保留編碼依規格處理。Root Port 間 OHC-E P2P 轉送依實作並須宣告。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.1.2",
+        "2.2.10.4",
+        "2.2.11",
+        "7.5.3.15"
+      ],
+      "document_pages": [
+        123,
+        131,
+        201,
+        203,
+        204,
+        992
+      ],
+      "pdf_pages": [
+        123,
+        131,
+        201,
+        203,
+        204,
+        992
+      ],
+      "figures": [
+        "2-6",
+        "2-78",
+        "2-79",
+        "2-80"
+      ],
+      "tables": [
+        "2-39",
+        "7-33"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-30"
     }
   ]
 }
