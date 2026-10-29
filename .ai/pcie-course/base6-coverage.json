@@ -1244,10 +1244,16 @@
       "document_page": 201,
       "pdf_page": 201,
       "planned_chapter": 14,
-      "status": "unreviewed",
-      "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "status": "guided",
+      "existing_claim_candidates": [
+        "PCIE-CH14-PREFIX-EGRESS-001"
+      ],
+      "teaching_locations": [
+        "chapter-14.html#prefix-reading",
+        "chapter-14.html#prefix-egress",
+        "chapter-14.html#prefix-root-routing"
+      ],
+      "review_note": "三段合併帶讀類型、四個 Prefix 上限、ECRC、路由、Switch 與 Function 能力、Root Port 例外、出口阻擋、UR／UC、Multicast 與軟體送出邊界。"
     },
     {
       "section": "2.2.10.4.1",

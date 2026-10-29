@@ -413,6 +413,38 @@
       ],
       "status": "verified",
       "verified_on": "2026-10-30"
+    },
+    {
+      "id": "PCIE-CH14-PREFIX-EGRESS-001",
+      "claim": "Non-Flit End-End Prefix 至多四個並依元件上限與類型處理；出口阻擋丟棄整筆 TLP、報錯，對 Non-Posted Request 返回 UR Completion；Multicast 各出口分別阻擋。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.10.4",
+        "7.5.3.16"
+      ],
+      "document_pages": [
+        201,
+        202,
+        994,
+        997
+      ],
+      "pdf_pages": [
+        201,
+        202,
+        994,
+        997
+      ],
+      "figures": [
+        "7-37"
+      ],
+      "tables": [
+        "2-39",
+        "7-34"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-30"
     }
   ]
 }
