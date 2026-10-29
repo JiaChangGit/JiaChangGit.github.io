@@ -947,5 +947,11 @@
     "location": "DOCS/pcie-course/chapter-31.html#lookup",
     "covered": "三DWORD Discovery請求與回覆、逐DWORD信箱交握、Next Index走訪、Error與Abort的恢復及SPDM邊界。",
     "remaining": "SPDM協定與信任驗證由外部規格定義，DOE中斷所有細節、複雜協定及完整CMA要求仍需深入；未宣稱全Base完成。"
+  },
+  "chapter_32_revision": {
+    "status": "locally_verified",
+    "location": "DOCS/pcie-course/chapter-32.html#association",
+    "covered": "跨Switch保護端點、Selective Stream配置與RID／位址關聯、啟用狀態、TEE與Appendix L讀法，附後續安全公告。",
+    "remaining": "IDE_KM完整交換、所有TLP模式與錯誤恢復、重新排序安全修正和平台信任政策需深入；未宣稱全Base完成。"
   }
 }

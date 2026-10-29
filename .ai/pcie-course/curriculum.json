@@ -852,7 +852,7 @@
       "number": 32,
       "title": "IDE 的保護範圍、Stream 與金鑰生命週期",
       "title_en": "IDE Protection, Streams, and Key Lifecycles",
-      "question": "IDE 開啟後，資料到底受到哪一段保護？",
+      "question": "如何確認 IDE Stream 的保護範圍和目前狀態？",
       "topics": [
         "Link IDE 與 Selective IDE 的保護範圍",
         "Stream 的身分、位址關聯、配置與狀態",
@@ -871,8 +871,8 @@
         "PCIE-BASE-6.0"
       ],
       "publication_date": "2026-10-24",
-      "revision_date": "2026-10-24",
-      "teaching_revision": 2
+      "revision_date": "2026-10-29",
+      "teaching_revision": 3
     },
     {
       "number": 33,
