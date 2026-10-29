@@ -20526,7 +20526,7 @@
       "printed_pages": "64",
       "pdf_pages": "64",
       "normative_keyword": "none",
-      "zh_tw": "Set Features 的重疊範圍錯誤有其特定 Feature 上下文。",
+      "zh_tw": "LBA Range Type 的重疊檢查是可選的；若控制器檢查並發現重疊，則必須回報 Overlapping Range。",
       "en": "Figure 93, \"Set Features – Command Specific Status Values\": This error is required when the controller checks LBA Range Type and detects overlap. Successful Set does not imply comprehensive validation.",
       "scope_entry_id": "NVMCS13-INCLUDE",
       "source_keywords": [

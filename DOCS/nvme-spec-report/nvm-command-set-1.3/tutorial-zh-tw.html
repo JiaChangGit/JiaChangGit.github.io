@@ -1943,8 +1943,8 @@ html[data-theme="dark"] .spec-teaching[data-spec-series="nvme"] { --st-accent:#7
 <!-- figure-table:NVMCS13-NVM-FIG-093 -->
 <article class="field-note" id="figure-NVMCS13-NVM-FIG-093"><h4>NVM Figure 93 · Set Features – Command Specific Status Values</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:NVMCS13-NVM-FIG-093-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM93-1">NVM93-1</span><span class="paragraph-text">Set Features 的重疊範圍錯誤有其特定 Feature 上下文。</span></p><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.3</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.3, Figure 93, 文件頁 64, PDF 頁 64</p></details></div>
-<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM93-2">NVM93-2</span><span class="paragraph-text">設定兩個不能互相重疊的 LBA ranges 時，即使各自起點和長度合法，合在一起仍可能衝突。</span></p></div>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM93-1">NVM93-1</span><span class="paragraph-text">LBA Range Type 的重疊檢查是可選的；若控制器檢查並發現重疊，則必須回報 Overlapping Range。</span></p><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.3</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.3, Figure 93, 文件頁 64, PDF 頁 64</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM93-2">NVM93-2</span><span class="paragraph-text">【模擬資料】兩段範圍分別為 LBA 100–109 和 105–114。§4.1.3.2 建議範圍不要重疊；若控制器實作這項檢查並偵測到重疊，就會依 Figure 93 回報錯誤。成功的 Set Features 不能證明控制器曾檢查所有範圍。</span></p></div>
 <div class="figure-detail"><a class="reading-link" href="#fields-nvm-support">欄位、條件與相關細節：從操作與狀態選出正確的規則列 →</a></div></article>
 <section class="field-guide" id="fields-nvm-basic-features"><h4 id="fields-heading-nvm-basic-features">Feature 的選擇值與功能資料分開解讀</h4>
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="38.43">38.43.</span><span class="paragraph-text">Get 或 Set Features 選定功能後，才依該功能的 buffer、命令 Dword 或 CQE 解釋回覆。</span></p>

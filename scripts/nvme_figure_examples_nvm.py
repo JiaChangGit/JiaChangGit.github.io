@@ -95,7 +95,7 @@ DATA = '''
 90|非同步通知告知狀態已變，詳細內容還需讀對應資料。|收到 LBA Status Information 相關通知後，再讀相應 log；通知本身不包含所有受影響的 LBA 清單。
 91|Format NVM 決定 PI 類型與 metadata 的傳輸安排。|兩個格式都使用 4 KiB 資料，仍可能因 PI 與 MSET 不同而需要不同的 I/O buffer 排列。
 92|Feature 表把設定識別碼、作用範圍及保存特性放在一起比較。|對 namespace 的設定不應直接當成整個控制器設定；報告某項 Feature 時要說出改變的是哪個物件。
-93|Set Features 的重疊範圍錯誤有其特定 Feature 上下文。|設定兩個不能互相重疊的 LBA ranges 時，即使各自起點和長度合法，合在一起仍可能衝突。
+93|LBA Range Type 的重疊檢查是可選的；若控制器檢查並發現重疊，則必須回報 Overlapping Range。|【模擬資料】兩段範圍分別為 LBA 100–109 和 105–114。§4.1.3.2 建議範圍不要重疊；若控制器實作這項檢查並偵測到重疊，就會依 Figure 93 回報錯誤。成功的 Set Features 不能證明控制器曾檢查所有範圍。
 94|LBA Range Type 的命令欄位 NUM 只供 Set Features 指定項目數，Get Features 會忽略它。|【模擬資料】Set Features 的 NUM 原始值為 1 時，資料結構中有 2 個項目。這個欄位不能用來要求 Get Features 回傳指定數量。
 95|Get Features 完成回覆中的 NUM 指出資料 buffer 有多少個有效 LBA range。|【模擬資料】如果成功回覆的 NUM 為 1，依從零起算的編碼，buffer 有 2 個有效項目；再依 Figure 96 讀取每個 64-byte 項目。完成回覆的 NUM 與 Set Features 命令中的 NUM 位於不同位置。
 96|LBA Range Type 項目把範圍與資料用途資訊放在一起。|同一 namespace 可有不同用途的兩段範圍，每段分別記錄 SLBA、NLB、Type 與屬性，而非替整個 namespace 只填一個 Type。
