@@ -216,12 +216,15 @@
       "document_page": 108,
       "pdf_page": 108,
       "planned_chapter": 0,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [
         "PCIE-ARCH-CONFIGURATION-001"
       ],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-0.html#startup",
+        "chapter-3.html"
+      ],
+      "review_note": "已核對 Base 6.0 pp.108–109；Chapter 0 導讀發現、資源、控制，Chapter 3 展開枚舉；韌體交接另依 PCI Firmware Specification。"
     },
     {
       "section": "1.5",
