@@ -207,6 +207,36 @@
       ],
       "status": "verified",
       "verified_on": "2026-10-29"
+    },
+    {
+      "id": "PCIE-CH36-NO-SNOOP-001",
+      "claim": "No Snoop 表示一致性預期而不改變排序；Enable No Snoop 的許可、快取條件與不適用交易類型須分開檢查。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.6.5",
+        "7.5.3.4"
+      ],
+      "document_pages": [
+        161,
+        959,
+        961
+      ],
+      "pdf_pages": [
+        161,
+        959,
+        961
+      ],
+      "figures": [
+        "7-25"
+      ],
+      "tables": [
+        "2-13",
+        "7-21"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-30"
     }
   ]
 }

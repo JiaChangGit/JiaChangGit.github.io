@@ -816,13 +816,16 @@
       "document_page": 161,
       "pdf_page": 161,
       "planned_chapter": 14,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [
         "PCIE-CH6-ATTR-001",
-        "PCIE-CH6-EXAMPLE-001"
+        "PCIE-CH6-EXAMPLE-001",
+        "PCIE-CH36-NO-SNOOP-001"
       ],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-36.html#no-snoop"
+      ],
+      "review_note": "依 §2.2.6.5 Table 2-13 及 Device Control Enable No Snoop 帶讀一致性預期、控制條件、適用交易與排序邊界；平台一致性與軟體同步另需平台文件。"
     },
     {
       "section": "2.2.6.6",
