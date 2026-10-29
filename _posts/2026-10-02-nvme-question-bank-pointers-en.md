@@ -99,7 +99,7 @@ last_modified_at: 2026-10-23
 <section class="qa-section" id="q-278-s-02" data-answer-section="2"><h3><span>2.</span> Fields, units and worked interpretation</h3>
 <span class="qa-anchor" id="q-278-a-04"></span><p>A nonfinal list page uses its last entry as a page-aligned link to the next list page.</p>
 <span class="qa-anchor" id="q-278-a-05"></span><p>Pack only required entries and use a chain only when additional coverage is necessary.</p>
-<span class="qa-anchor" id="q-278-a-06"></span><p>A page-aligned 4 KiB list has 512 slots:511 data pointers plus a link when nonfinal, or up to 512 data pointers when final.</p>
+<span class="qa-anchor" id="q-278-a-06"></span><p>Teaching example: a page-aligned 4 KiB list has 512 slots: 511 data pointers plus a link when nonfinal, or up to 512 data pointers when final. The first PRP List pointer may have a Qword-aligned page offset. At offset 64 bytes, (4096−64)÷8 = 504 slots remain; if another list page is needed, the last slot is its link, leaving up to 503 data-page entries. The next list page starts at its page boundary. Use Figure 93 to determine whether PRP2 is a list pointer, then §4.3.1 and Figures 111–113 for offsets, entries, and links.</p>
 </section>
 <section class="qa-section" id="q-278-s-03" data-answer-section="3"><h3><span>3.</span> Conditions that change the interpretation</h3>
 <span class="qa-anchor" id="q-278-a-07"></span><p>Remaining transfer length determines whether the final slot is data or linkage.</p>

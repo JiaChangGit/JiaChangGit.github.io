@@ -99,7 +99,7 @@ last_modified_at: 2026-10-23
 <section class="qa-section" id="q-278-s-02" data-answer-section="2"><h3><span>2.</span> 欄位、單位與判讀例子</h3>
 <span class="qa-anchor" id="q-278-a-04"></span><p>若仍需下一個清單頁，目前頁的最後一筆改放下一頁清單位址；後續清單頁必須 page-aligned。</p>
 <span class="qa-anchor" id="q-278-a-05"></span><p>逐頁填滿必要 entries，只有還有資料需要描述時才使用鏈結；不能保留無意義的空洞。</p>
-<span class="qa-anchor" id="q-278-a-06"></span><p>4KiB 且從頁首開始的清單有 512 格；非最後頁最多 511 個資料頁位址加 1 個鏈結，最後頁才可全放 512 個資料頁。</p>
+<span class="qa-anchor" id="q-278-a-06"></span><p>【模擬資料】4 KiB 清單從頁首開始有 512 格；非最後頁最多 511 個資料頁位址加 1 個鏈結，最後頁可全放資料頁位址。第一個 PRP List 指標也可以有 Qword 對齊的頁內 offset：若 offset 是 64 bytes，該頁剩餘 (4096−64)÷8＝504 格；還需要下一頁時，最後一格放鏈結，最多留下 503 格描述資料頁。鏈結指向的下一個清單頁必須從頁首開始。先用 Figure 93 判斷 PRP2 是否為清單指標，再讀 §4.3.1 和 Figures 111–113 檢查 offset、清單內容與鏈結。</p>
 </section>
 <section class="qa-section" id="q-278-s-03" data-answer-section="3"><h3><span>3.</span> 判讀時要保留的條件</h3>
 <span class="qa-anchor" id="q-278-a-07"></span><p>最後一格是不是鏈結由剩餘資料量決定；不能把每頁最後一格一律當資料，或一律當鏈結。</p>

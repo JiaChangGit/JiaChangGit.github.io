@@ -733,6 +733,66 @@
       ],
       "status": "verified",
       "verified_on": "2026-10-29"
+    },
+    {
+      "id": "PCIE-CH27-019",
+      "claim": "多筆轉譯 Completion 的數量、相鄰範圍、CplD 切分、Length、Byte Count 與 Lower Address。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "10.2.3",
+        "10.2.4"
+      ],
+      "document_pages": [
+        1485,
+        1492,
+        1493,
+        1496
+      ],
+      "pdf_pages": [
+        1485,
+        1492,
+        1493,
+        1496
+      ],
+      "figures": [
+        "10-14",
+        "10-15",
+        "10-16"
+      ],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-29"
+    },
+    {
+      "id": "PCIE-CH27-020",
+      "claim": "ATS Memory Attributes 的實作邊界、傳遞、預設值及變更後 Invalidation。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "10.1.4",
+        "10.2.3.9"
+      ],
+      "document_pages": [
+        1478,
+        1493,
+        1494,
+        1495
+      ],
+      "pdf_pages": [
+        1478,
+        1493,
+        1494,
+        1495
+      ],
+      "figures": [
+        "10-17"
+      ],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-29"
     }
   ]
 }
