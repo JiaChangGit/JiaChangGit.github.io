@@ -676,25 +676,25 @@
       "number": 25,
       "title": "PTM 與時間同步的角色、交換與精度",
       "title_en": "PTM Roles, Exchanges, and Precision",
-      "question": "兩個裝置的本地時鐘不同，要如何對齊事件時間？",
+      "question": "如何把兩回合 PTM 交換，換成可解讀事件的共同時間？",
       "topics": [
-        "PTM Root、Requester、Responder 的角色",
-        "能力查詢、Enable、Context 與交換流程",
-        "時間、延遲、粒度及結果有效性",
-        "狀態改變後何時需要重新建立有效資訊"
+        "PTM 時間階層、控制 Function 與啟用案例",
+        "兩回合時序、ResponseD 欄位與歷史資料配對",
+        "Equation 6-2 時間換算、Byte Order 與錯配案例",
+        "ePTM Replay 失效、粒度與擷取精度邊界"
       ],
       "prerequisites": [
-        5,
-        16,
-        19
+        1,
+        14,
+        18
       ],
       "status": "ready",
       "sources": [
         "PCIE-BASE-6.0"
       ],
       "publication_date": "2026-10-24",
-      "revision_date": "2026-10-24",
-      "teaching_revision": 2
+      "revision_date": "2026-10-29",
+      "teaching_revision": 3
     },
     {
       "number": 26,

@@ -874,5 +874,19 @@
       "PM-010"
     ],
     "remaining": "完整TPH各模式／Extended TPH封包、LTR全部動態延遲與時鐘策略、OBFF全部共享WAKE#拓撲與硬體／平台效益仍須深入；未宣稱全Base完成。"
+  },
+  "chapter_25_revision": {
+    "status": "locally_verified",
+    "location": "DOCS/pcie-course/chapter-25.html#time-case",
+    "covered": "以Root／Switch／Endpoint能力案例與雙回合時序圖，串起選Root、Enable、ResponseD歷史間隔、Equation6-2與事件換算，補上byte order、ePTM失效及粒度／不對稱限制。",
+    "references": [
+      "CAP-004",
+      "CAP-005",
+      "CAP-007",
+      "MSG-001",
+      "REPLAY-004",
+      "ARCH-006"
+    ],
+    "remaining": "全部PTM錯誤與ePTM狀態交互、跨多層時鐘速率換算、Propagation Delay Adaptation設定流程及實際精度量測仍須深入；未宣稱全Base完成。"
   }
 }

@@ -14,6 +14,55 @@ import re
 
 ROOT=Path(__file__).resolve().parents[1]
 
+def ptm_dialog_case(x):
+    """Two normalized-ns, drift-free dialogs; not a hardware clock estimator."""
+    if not x['normalized_ns'] or not x['symmetric']:
+        raise ValueError('This case assumes normalized ns and symmetric transit')
+    local=x['local']; responder=x['responder']; payload=x['propagation_bytes']
+    if len(local)!=4 or len(responder)!=4 or len(payload)!=4 or any(not 0<=v<=255 for v in payload):
+        raise ValueError('Missing timestamps or four-byte Propagation Delay')
+    t1,t4,t1next,t4next=local; t2,t3,t2next,t3next=responder
+    if not t1<t4<t1next<t4next or not t2<t3<t2next<t3next:
+        raise ValueError('Nonmonotonic dialog timestamps')
+    if t1next-t4<1000:raise ValueError('Next Request must wait at least 1 us after Response')
+    turnaround=int.from_bytes(bytes(payload),'big'); rtt=t4-t1
+    if turnaround!=t3-t2 or turnaround>=rtt:
+        raise ValueError('Propagation Delay does not match preceding dialog')
+    one_way=Fraction(rtt-turnaround,2); master=Fraction(t2next)-one_way
+    if t4next-t1next!=(t3next-t2next)+2*one_way:
+        raise ValueError('Current dialog conflicts with this fixed symmetric example')
+    if x['event_local']<t4next:raise ValueError('Example event must follow the current response')
+    event=master+x['event_local']-t1next
+    fmt=lambda n:f'{n.numerator:,} ns' if n.denominator==1 else f'{n.numerator}/{n.denominator} ns'
+    times={}
+    for name,dialog,port,kind,symbol,value,domain in [
+        ('t1',1,'Endpoint TX','Request','t1',t1,'Local'),('t2',1,'Switch RX','Request','t2',t2,'PTM Master Time'),
+        ('t3',1,'Switch TX','Response','t3',t3,'PTM Master Time'),('t4',1,'Endpoint RX','Response','t4',t4,'Local'),
+        ('t1-next',2,'Endpoint TX','Request','t1′',t1next,'Local'),('t2-next',2,'Switch RX','Request','t2′',t2next,'PTM Master Time'),
+        ('t3-next',2,'Switch TX','ResponseD','t3′',t3next,'PTM Master Time'),('t4-next',2,'Endpoint RX','ResponseD','t4′',t4next,'Local')]:
+        times[name]=[str(dialog),port+' '+kind,symbol,fmt(Fraction(value)),domain]
+    results={'rtt':fmt(Fraction(rtt)),'turnaround':fmt(Fraction(turnaround)),
+             'one-way':fmt(one_way),'master':fmt(master),'event':fmt(event)}
+    return times,results
+
+def ptm_config_case(x):
+    """Decode the chapter's selected Root and intervening Time Source fields."""
+    caps={k:int(x[k],16) for k in ('root','switch','endpoint')}
+    if any(not 0<=v<=0xffffffff for v in caps.values()):raise ValueError('Capability is not a DW')
+    if caps['root']&6!=6 or caps['switch']&7!=7 or caps['endpoint']&7!=1:
+        raise ValueError('Capabilities do not match this Root/Switch/Endpoint case')
+    if any(not v&8 for v in caps.values()):raise ValueError('This example assumes ePTM support')
+    grains=[(caps[k]>>8)&255 for k in ('root','switch')]
+    effective=0 if 0 in grains else max(grains)
+    rows={}
+    for key,name in [('root','Root Port'),('switch','Switch'),('endpoint','Endpoint')]:
+        raw=caps[key]; roles=f'Requester={raw&1}; Responder={(raw>>1)&1}; Root={(raw>>2)&1}; ePTM={(raw>>3)&1}; '
+        gran=(raw>>8)&255
+        description=('Granularity=RsvdP' if not raw&4 else 'no local clock' if gran==0 else '>254 ns' if gran==255 else f'{gran} ns')
+        rows[key]=[name,f'{raw:08X}h',roles+description]
+    granularity='Unknown' if effective==0 else '>254 ns' if effective==255 else f'{effective} ns'
+    return rows,['00000003h',f'{(effective<<8)|1:08X}h',granularity]
+
 def ltr_switch_case(x):
     """Recompute the two-source, fixed-latency teaching example, not RC policy."""
     if not isinstance(x['switch_ns'],int) or x['switch_ns']<0:
@@ -358,6 +407,23 @@ def normalized(text):
     return re.sub(r'[\s,，]','',text).casefold()
 
 def validate_case(case, text):
+    if case['model'] in ('ptm_dialog','ptm_config'):
+        missing=[]
+        if case['model']=='ptm_dialog':
+            times,results=ptm_dialog_case(case['inputs'])
+            groups=[('data-ptm-time',times,None),('data-ptm-result',{k:[v] for k,v in results.items()},slice(-1,None))]
+        else:
+            rows,summary=ptm_config_case(case['inputs']);groups=[('data-ptm-cap',rows,None)]
+            passage=normalized(section_text(text,case['section']))
+            missing.extend(token for token in summary if normalized(token) not in passage)
+        for attribute,rows,selection in groups:
+            for name,expected in rows.items():
+                row=re.search(r'<tr\b[^>]*'+attribute+'="'+name+r'"[^>]*>(.*?)</tr>',text,re.S)
+                cells=re.findall(r'<td\b[^>]*>(.*?)</td>',row.group(1),re.S) if row else []
+                if selection:cells=cells[selection]
+                actual=[normalized(unescape(re.sub(r'<[^>]+>',' ',cell))) for cell in cells]
+                if actual!=[normalized(cell) for cell in expected]:missing.append(attribute+' '+name+': derived cells do not match')
+        return missing
     if case['model'] in ('ltr_switch','tph_table'):
         missing=[]
         if case['model']=='ltr_switch':

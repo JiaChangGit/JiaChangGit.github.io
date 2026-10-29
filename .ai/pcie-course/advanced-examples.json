@@ -22,6 +22,8 @@
     {"chapter":23,"section":"budget-entries","model":"power_budget","inputs":{"entries":["000181B4","00058132","000381C8","0007813C"]}},
     {"chapter":23,"section":"dpa-transition","model":"dpa_profile","inputs":{"capability":"08031002","latency_indicator":"00000004","allocation":[26,18,10],"high":0,"low":2}},
     {"chapter":24,"section":"ltr-aggregate","model":"ltr_switch","inputs":{"switch_ns":1024,"sources":[{"id":"a","snoop":"880A","nosnoop":"080A"},{"id":"b","snoop":"8C01","nosnoop":"8808"}]}},
-    {"chapter":24,"section":"tph-table","model":"tph_table","inputs":{"capability":"00030203","entries":[49,66,83,100],"vector":2,"enabled_vectors":4}}
+    {"chapter":24,"section":"tph-table","model":"tph_table","inputs":{"capability":"00030203","entries":[49,66,83,100],"vector":2,"enabled_vectors":4}},
+    {"chapter":25,"section":"time-case","model":"ptm_dialog","inputs":{"normalized_ns":true,"symmetric":true,"local":[1000,1600,3000,3720],"responder":[3200,3400,5200,5520],"propagation_bytes":[0,0,0,200],"event_local":4000}},
+    {"chapter":25,"section":"configure","model":"ptm_config","inputs":{"root":"0000040E","switch":"0000080F","endpoint":"00000009"}}
   ]
 }

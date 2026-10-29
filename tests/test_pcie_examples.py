@@ -1,6 +1,6 @@
 """Boundary checks and a deliberately incorrect published-result regression."""
 import unittest
-from scripts.validate_pcie_examples import result_tokens,validate_case,polling_gate_rows,differential_voltage_case,rx_calibration_case,margin_command_rows,power_budget_case,dpa_profile_case,ltr_switch_case,tph_table_case
+from scripts.validate_pcie_examples import result_tokens,validate_case,polling_gate_rows,differential_voltage_case,rx_calibration_case,margin_command_rows,power_budget_case,dpa_profile_case,ltr_switch_case,tph_table_case,ptm_dialog_case,ptm_config_case
 
 class TeachingArithmeticTest(unittest.TestCase):
     def test_one_dw_rejects_last_enable(self):
@@ -230,5 +230,37 @@ class PlatformHintTeachingTest(unittest.TestCase):
         with self.assertRaises(ValueError):tph_table_case(self.tph)
         self.tph['entries']=[49,66,83]
         with self.assertRaises(ValueError):tph_table_case(self.tph)
+
+class PtmTeachingTest(unittest.TestCase):
+    def setUp(self):
+        self.dialog=dict(normalized_ns=True,symmetric=True,local=[1000,1600,3000,3720],responder=[3200,3400,5200,5520],propagation_bytes=[0,0,0,200],event_local=4000)
+        self.config=dict(root='0000040E',switch='0000080F',endpoint='00000009')
+    def test_previous_turnaround_is_used_with_previous_round_trip(self):
+        times,results=ptm_dialog_case(self.dialog)
+        self.assertEqual(results,dict(rtt='600 ns',turnaround='200 ns',**{'one-way':'200 ns','master':'5,000 ns','event':'6,000 ns'}))
+        text=''.join('<tr data-ptm-time="'+n+'">'+''.join('<td>'+v+'</td>' for v in row)+'</tr>' for n,row in times.items())+''.join('<tr data-ptm-result="'+n+'"><td>'+v+'</td></tr>' for n,v in results.items())
+        case=dict(model='ptm_dialog',inputs=self.dialog)
+        self.assertEqual(validate_case(case,text),[])
+        wrong=text.replace('data-ptm-result="master"><td>5,000 ns','data-ptm-result="master"><td>5,060 ns')
+        self.assertTrue(validate_case(case,wrong))
+    def test_reversed_payload_is_not_accepted_as_a_delay(self):
+        self.dialog['propagation_bytes']=[200,0,0,0]
+        with self.assertRaisesRegex(ValueError,'preceding dialog'):ptm_dialog_case(self.dialog)
+    def test_request_after_response_observes_minimum_wait(self):
+        self.dialog['local'][2]=2000
+        with self.assertRaisesRegex(ValueError,'wait'):ptm_dialog_case(self.dialog)
+    def test_unscaled_local_ticks_cannot_be_subtracted_as_nanoseconds(self):
+        self.dialog['normalized_ns']=False
+        with self.assertRaisesRegex(ValueError,'normalized'):ptm_dialog_case(self.dialog)
+    def test_endpoint_reserved_granularity_does_not_enter_path_maximum(self):
+        self.config['endpoint']='0000FA09'
+        rows,summary=ptm_config_case(self.config)
+        self.assertTrue(rows['endpoint'][2].endswith('Granularity=RsvdP'))
+        self.assertEqual(summary,['00000003h','00000801h','8 ns'])
+    def test_unknown_and_greater_than_254_are_special_encodings(self):
+        self.config['switch']='0000000F'
+        self.assertEqual(ptm_config_case(self.config)[1][-2:],['00000001h','Unknown'])
+        self.config['switch']='0000FF0F'
+        self.assertEqual(ptm_config_case(self.config)[1][-2:],['0000FF01h','>254 ns'])
 
 if __name__=='__main__':unittest.main()

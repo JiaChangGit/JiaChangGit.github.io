@@ -1,52 +1,54 @@
 {
   "walk_id": "ch25-overview",
-  "title": "兩個裝置的本地時鐘不同，要如何對齊事件時間？",
-  "summary_html": "<p>PTM（Precision Time Measurement，精確時間量測）讓元件建立本地時間與共同 PTM Master Time 的關係。先選定時間來源與角色，再沿 Request／Response 的多回合交換看時間戳記；它不是單純把某個 CPU 時鐘值廣播出去。</p>",
-  "svg": "<svg viewBox=\"0 0 900 420\" role=\"img\" aria-labelledby=\"ch25-zh-t ch25-zh-d\"><title id=\"ch25-zh-t\">本章角色與事件</title><desc id=\"ch25-zh-d\">每條Link以多回合交換建立本地時間與共同時間的關係。</desc><g data-walk-target=\"req\"><rect x=\"20\" y=\"25\" width=\"310\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"175.0\" y=\"54\" text-anchor=\"middle\" font-size=\"16\">Upstream Port：要求方</text></g><g data-walk-target=\"resp\"><rect x=\"555\" y=\"25\" width=\"325\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"717.5\" y=\"54\" text-anchor=\"middle\" font-size=\"16\">Downstream Port：回覆方</text></g><g data-walk-target=\"local\"><rect x=\"20\" y=\"330\" width=\"310\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"175.0\" y=\"359\" text-anchor=\"middle\" font-size=\"16\">本地時間戳記</text></g><g data-walk-target=\"master\"><rect x=\"555\" y=\"330\" width=\"325\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"717.5\" y=\"359\" text-anchor=\"middle\" font-size=\"16\">共同 PTM Master Time</text></g><g data-walk-target=\"a\"><path d=\"M330 115 L555 115\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"555,115 545.0,120.0 545.0,110.0\" fill=\"var(--accent)\"/><text x=\"442.5\" y=\"105.0\" text-anchor=\"middle\" font-size=\"16\">PTM Request</text></g><g data-walk-target=\"b\"><path d=\"M555 205 L330 205\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"330,205 340.0,200.0 340.0,210.0\" fill=\"var(--accent)\"/><text x=\"442.5\" y=\"195.0\" text-anchor=\"middle\" font-size=\"16\">Response／ResponseD</text></g><g data-walk-target=\"c\"><path d=\"M175 93 L175 330\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"175,330 170.0,320.0 180.0,320.0\" fill=\"var(--accent)\"/><text x=\"175.0\" y=\"201.5\" text-anchor=\"middle\" font-size=\"16\">保存歷史時間</text></g><g data-walk-target=\"d\"><path d=\"M715 93 L715 330\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"715,330 710.0,320.0 720.0,320.0\" fill=\"var(--accent)\"/><text x=\"715.0\" y=\"201.5\" text-anchor=\"middle\" font-size=\"16\">取得共同時間</text></g></svg>",
-  "order_html": "<p>圖只保留一條Link的角色與訊息方向；完整時間順序與跨回合關係請接到 Figure 6-22。</p>",
-  "caption_html": "<p>作者依 Base 6.0 繪製的教學示意；省略與本章無關的交換。</p>",
+  "title": "先找時間來源，再沿每條 Link 配對交換回合",
+  "summary_html": "<p>先定位時間來源，再用相鄰 Port 的交換取得換算資料。PTM Master Time 是同一時間階層共用的時間；本章接著以兩回合案例，帶讀歷史時間、公式與結果的有效條件。</p>",
+  "svg": "<svg viewBox=\"0 0 900 270\" style=\"min-width:640px\" role=\"img\" aria-labelledby=\"ch25-zh-t ch25-zh-d\"><title id=\"ch25-zh-t\">同一個時間階層中的兩條獨立 PTM Link</title><desc id=\"ch25-zh-d\">Root Port 提供時間。Switch 在上游取得時間，再從下游回覆 Endpoint；每條 Link 有各自的交換回合。</desc><g data-walk-target=\"root\"><rect x=\"20\" y=\"25\" width=\"210\" height=\"90\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"125\" y=\"58\" text-anchor=\"middle\" font-size=\"18\">Root Port</text><text x=\"125\" y=\"92\" text-anchor=\"middle\" font-size=\"15\">時間來源／回覆方</text></g><g data-walk-target=\"switch\"><rect x=\"345\" y=\"25\" width=\"210\" height=\"90\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"450\" y=\"58\" text-anchor=\"middle\" font-size=\"18\">Switch</text><text x=\"450\" y=\"92\" text-anchor=\"middle\" font-size=\"15\">上游要求／下游回覆</text></g><g data-walk-target=\"ep\"><rect x=\"670\" y=\"25\" width=\"210\" height=\"90\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"775\" y=\"58\" text-anchor=\"middle\" font-size=\"18\">Endpoint</text><text x=\"775\" y=\"92\" text-anchor=\"middle\" font-size=\"15\">Requester：要求方</text></g><g data-walk-target=\"link1\"><path d=\"M230 68 H345\" stroke=\"var(--accent)\" stroke-width=\"2\"/><text x=\"287.5\" y=\"48\" text-anchor=\"middle\" font-size=\"16\">Link 1</text></g><g data-walk-target=\"link2\"><path d=\"M555 68 H670\" stroke=\"var(--accent)\" stroke-width=\"2\"/><text x=\"612.5\" y=\"48\" text-anchor=\"middle\" font-size=\"16\">Link 2</text></g><g data-walk-target=\"context\"><rect x=\"40\" y=\"155\" width=\"820\" height=\"95\" rx=\"8\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"450\" y=\"191\" text-anchor=\"middle\" font-size=\"17\">每條 Link：Upstream Port 要求，Downstream Port 回覆。</text><text x=\"450\" y=\"225\" text-anchor=\"middle\" font-size=\"17\">Switch 內部如何傳遞共同時間，由實作決定。</text></g></svg>",
+  "order_html": "<p>PTM（Precision Time Measurement，精確時間量測）在每條 Link 分別交換。這張圖表示時間階層與角色，Switch 內部傳遞時間的機制另由實作決定。</p>",
+  "caption_html": "<p>PTM（Precision Time Measurement，精確時間量測）以同一個 Root 提供共同時間。本圖案例選 Root Port 為來源；作者依 Base 6.0 Figures 6-21、6-23 繪製。</p>",
   "steps": [
     {
-      "title": "先找共同時間從哪裡來",
+      "title": "先選定同一個時間階層",
       "targets": [
-        "master",
-        "d",
-        "resp"
+        "root",
+        "switch",
+        "ep"
       ],
-      "html": "<p>PTM（建立共同時間關係的量測機制）的 Root 提供時間域。Figure 6-21 示範不同 hierarchy 可以有各自的時間來源。</p>",
-      "condition_html": "<p>PTM Root 不是固定等於 PCIe Root Complex；可由符合能力的其他時間來源擔任。</p>",
-      "source_html": "<p>Base 6.0 §6.21.1／Figure 6-21，pp.795–796。</p>",
-      "claim_ids": [
-        "PCIE-CH25-001"
-      ]
-    },
-    {
-      "title": "沿單條Link追蹤交換",
-      "targets": [
-        "req",
-        "a",
-        "b",
-        "resp"
-      ],
-      "html": "<p>Upstream Port 代表要求者送 Request，Downstream Port 代表回覆者返回時間資訊；Figure 6-22 把 t1–t4 與後續回合放在一起。</p>",
-      "condition_html": "<p>回覆會使用先前回合的歷史時間戳記，不能把圖中所有值都當成同一回合。</p>",
-      "source_html": "<p>Base 6.0 §6.21.2／Figure 6-22，p.797。</p>",
-      "claim_ids": [
-        "PCIE-CH25-002"
-      ]
-    },
-    {
-      "title": "最後把結果接回能力與精度",
-      "targets": [
-        "local",
-        "c"
-      ],
-      "html": "<p>先確認能力、Root Select、Enable 與粒度，再討論時間換算。啟用順序須讓同一Link的回覆端先啟用。</p>",
-      "condition_html": "<p>Link不對稱延遲會影響精度；粒度欄位也不是所有誤差來源的總保證。</p>",
-      "source_html": "<p>Base 6.0 §6.21.3、§7.9.15，pp.800、1260–1263。</p>",
+      "html": "<p>PTM Root 提供時間來源。案例中 Switch 雖具備 Root 能力，仍選擇向上取得時間；Root Capable 與 Root Select 分別表示能力和選擇。</p>",
+      "condition_html": "<p>PCIe Root Complex 與 PTM Root 是不同角色；不同 PTM Hierarchy 可以有互不相同的共同時間。</p>",
+      "source_html": "<p>Base 6.0 §6.21.1，Figures 6-21、6-23，pp.795–799；Table 7-276，p.1263。</p>",
       "claim_ids": [
         "PCIE-CH25-001",
         "PCIE-CH25-003"
+      ]
+    },
+    {
+      "title": "在相鄰 Port 配對兩個回合",
+      "targets": [
+        "switch",
+        "link2",
+        "ep"
+      ],
+      "html": "<p>Endpoint 的 Upstream Port 送 Request，Switch 的 Downstream Port 回覆。先前的 Response 建立歷史資料；後續 ResponseD 才能帶回本回合時間與前一回合的處理間隔。</p>",
+      "condition_html": "<p>Propagation Delay 欄位是前次回覆處理間隔，不是已算好的單向 Link 延遲。</p>",
+      "source_html": "<p>Base 6.0 §6.21.2、§6.21.3.2，Figure 6-22、Equation 6-2，pp.797、803。</p>",
+      "claim_ids": [
+        "PCIE-CH25-002",
+        "PCIE-CH25-004"
+      ]
+    },
+    {
+      "title": "把換算結果連回有效條件",
+      "targets": [
+        "root",
+        "link1",
+        "context"
+      ],
+      "html": "<p>確認 Enable、時間粒度與同一次有效 Context，再套用時間公式。ePTM（Enhanced Precision Time Management，增強式精確時間管理）的 Replay 失效規則也必須納入歷史。</p>",
+      "condition_html": "<p>Effective Granularity 提供預期精度資訊；Link 不對稱、擷取位置與時鐘漂移仍會影響實際結果。</p>",
+      "source_html": "<p>Base 6.0 §§6.21.3–6.21.3.3，pp.800–805；Table 7-276，pp.1263–1264。</p>",
+      "claim_ids": [
+        "PCIE-CH25-003",
+        "PCIE-CH25-005"
       ]
     }
   ]

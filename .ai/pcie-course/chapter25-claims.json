@@ -2,57 +2,77 @@
   "schema_version": 1,
   "course": "pcie-course",
   "chapter": 25,
-  "updated": "2026-10-24",
+  "updated": "2026-10-29",
   "claims": [
     {
       "id": "PCIE-CH25-001",
-      "claim": "PTM角色、時間域與Retimer精度限制。",
+      "claim": "PTM角色、時間階層、Switch內部傳遞與Retimer不對稱邊界。",
       "kind": "specification",
       "source_id": "PCIE-BASE-6.0",
       "revision": "6.0",
       "sections": [
-        "6.21.1"
+        "6.21.1",
+        "6.21.2",
+        "6.21.3.3"
       ],
       "document_pages": [
         795,
-        796
+        796,
+        798,
+        799,
+        804,
+        805
       ],
       "pdf_pages": [
         795,
-        796
+        796,
+        798,
+        799,
+        804,
+        805
       ],
       "figures": [
-        "6-21"
+        "6-21",
+        "6-23",
+        "6-25"
       ],
       "tables": [],
       "status": "verified",
-      "verified_on": "2026-10-24"
+      "verified_on": "2026-10-29"
     },
     {
       "id": "PCIE-CH25-002",
-      "claim": "PTM交換方向、跨回合時間與公式。",
+      "claim": "PTM跨回合時間與Equation6-2，區分前次turnaround和本次MasterTime。",
       "kind": "specification",
       "source_id": "PCIE-BASE-6.0",
       "revision": "6.0",
       "sections": [
-        "6.21.2"
+        "6.21.2",
+        "6.21.3.2"
       ],
       "document_pages": [
-        797
+        797,
+        798,
+        799,
+        803
       ],
       "pdf_pages": [
-        797
+        797,
+        798,
+        799,
+        803
       ],
       "figures": [
-        "6-22"
+        "6-22",
+        "6-23"
       ],
       "tables": [],
       "status": "verified",
-      "verified_on": "2026-10-24"
+      "verified_on": "2026-10-29"
     },
     {
       "id": "PCIE-CH25-003",
-      "claim": "啟用順序、能力布局、ID與粒度。",
+      "claim": "PTM能力位置、ID、角色適用、Enable順序、RootSelect與粒度特殊編碼。",
       "kind": "specification",
       "source_id": "PCIE-BASE-6.0",
       "revision": "6.0",
@@ -68,14 +88,16 @@
         1260,
         1261,
         1262,
-        1263
+        1263,
+        1264
       ],
       "pdf_pages": [
         800,
         1260,
         1261,
         1262,
-        1263
+        1263,
+        1264
       ],
       "figures": [
         "7-310",
@@ -89,7 +111,82 @@
         "7-276"
       ],
       "status": "verified",
-      "verified_on": "2026-10-24"
+      "verified_on": "2026-10-29"
+    },
+    {
+      "id": "PCIE-CH25-004",
+      "claim": "PTM各訊息類型與格式、Payload／Header分工及PropagationDelay位元組解讀與適應能力。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.8.10",
+        "6.21.3",
+        "6.21.3.2"
+      ],
+      "document_pages": [
+        190,
+        191,
+        192,
+        800,
+        801,
+        803
+      ],
+      "pdf_pages": [
+        190,
+        191,
+        192,
+        800,
+        801,
+        803
+      ],
+      "figures": [
+        "2-61",
+        "2-62",
+        "2-63",
+        "2-64"
+      ],
+      "tables": [
+        "2-35"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-29"
+    },
+    {
+      "id": "PCIE-CH25-005",
+      "claim": "PTM擷取基準、ePTM Context失效、Request／Response等待與Switch刷新條件。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.21.3",
+        "6.21.3.1",
+        "6.21.3.2",
+        "6.21.3.3"
+      ],
+      "document_pages": [
+        800,
+        801,
+        802,
+        803,
+        804,
+        805
+      ],
+      "pdf_pages": [
+        800,
+        801,
+        802,
+        803,
+        804,
+        805
+      ],
+      "figures": [
+        "6-24",
+        "6-25"
+      ],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-29"
     }
   ]
 }
