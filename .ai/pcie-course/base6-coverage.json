@@ -96,15 +96,17 @@
       "document_page": 104,
       "pdf_page": 104,
       "planned_chapter": 1,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [
         "PCIE-CH4-PREFETCH-001",
         "PCIE-ARCH-TOPOLOGY-001",
         "PCIE-CONFIG-TYPE0-001",
         "PCIE-CAP-LINK-APPLICABILITY-001"
       ],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-1.html#integrated-endpoint"
+      ],
+      "review_note": "依 Base 6.0 pp.104–106 比較三類 Endpoint 的 Type 0、I/O 與 Memory Requester 能力；其他要求保留依規格逐項核對。"
     },
     {
       "section": "1.3.2.1",
@@ -112,12 +114,14 @@
       "document_page": 104,
       "pdf_page": 104,
       "planned_chapter": 1,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [
         "PCIE-ARCH-TOPOLOGY-001"
       ],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-1.html#integrated-endpoint"
+      ],
+      "review_note": "依 Base 6.0 pp.104–106 比較三類 Endpoint 的 Type 0、I/O 與 Memory Requester 能力；其他要求保留依規格逐項核對。"
     },
     {
       "section": "1.3.2.2",
@@ -125,14 +129,16 @@
       "document_page": 105,
       "pdf_page": 105,
       "planned_chapter": 1,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [
         "PCIE-CH4-PREFETCH-001",
         "PCIE-ARCH-TOPOLOGY-001",
         "PCIE-CONFIG-TYPE0-001"
       ],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-1.html#integrated-endpoint"
+      ],
+      "review_note": "依 Base 6.0 pp.104–106 比較三類 Endpoint 的 Type 0、I/O 與 Memory Requester 能力；其他要求保留依規格逐項核對。"
     },
     {
       "section": "1.3.2.3",
@@ -140,13 +146,15 @@
       "document_page": 105,
       "pdf_page": 105,
       "planned_chapter": 1,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [
         "PCIE-ARCH-TOPOLOGY-001",
         "PCIE-CAP-LINK-APPLICABILITY-001"
       ],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-1.html#integrated-endpoint"
+      ],
+      "review_note": "依 Base 6.0 pp.105–106、108 導讀 RCiEP 位置、Link Register 和 RCEC 關聯；其他欄位條件另查規格。"
     },
     {
       "section": "1.3.3",
@@ -168,12 +176,14 @@
       "document_page": 108,
       "pdf_page": 108,
       "planned_chapter": 1,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [
         "PCIE-ARCH-TOPOLOGY-001"
       ],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-1.html#integrated-endpoint"
+      ],
+      "review_note": "依 Base 6.0 pp.105–106、108 導讀 RCiEP 位置、Link Register 和 RCEC 關聯；其他欄位條件另查規格。"
     },
     {
       "section": "1.3.5",
@@ -15390,10 +15400,14 @@
       "document_page": 1469,
       "pdf_page": 1469,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html#lookup",
+        "chapter-27.html#ats-capability-details",
+        "chapter-27.html#pri-interface-stop"
+      ],
+      "review_note": "依 Base 6.0 Chapter 10 與 §10.5 導讀 ATS 架構、轉譯、失效、PRI 和能力結構；仍須依個別情境閱讀適用細節。"
     },
     {
       "section": "10.1",
@@ -15967,10 +15981,14 @@
       "document_page": 1513,
       "pdf_page": 1513,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html#lookup",
+        "chapter-27.html#ats-capability-details",
+        "chapter-27.html#pri-interface-stop"
+      ],
+      "review_note": "依 Base 6.0 Chapter 10 與 §10.5 導讀 ATS 架構、轉譯、失效、PRI 和能力結構；仍須依個別情境閱讀適用細節。"
     },
     {
       "section": "10.5.1",

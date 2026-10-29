@@ -724,6 +724,65 @@
       "status": "verified",
       "verified_on": "2026-10-24",
       "notes": ""
+    },
+    {
+      "id": "PCIE-CH1-NEW-RCIEP",
+      "claim": "RCiEP 架構位置、Link Register 適用性與 RCEC 關聯。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "1.3",
+        "1.3.2.3",
+        "1.3.4"
+      ],
+      "document_pages": [
+        102,
+        103,
+        105,
+        106,
+        108
+      ],
+      "pdf_pages": [
+        102,
+        103,
+        105,
+        106,
+        108
+      ],
+      "figures": [
+        "1-2"
+      ],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-29"
+    },
+    {
+      "id": "PCIE-CH1-ENDPOINT-TYPES-001",
+      "claim": "Legacy Endpoint、PCI Express Endpoint、RCiEP 的 Type 0 Header、I/O Request 與 Memory Requester 位址能力差異。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "1.3.2",
+        "1.3.2.1",
+        "1.3.2.2",
+        "1.3.2.3"
+      ],
+      "document_pages": [
+        104,
+        105,
+        106
+      ],
+      "pdf_pages": [
+        104,
+        105,
+        106
+      ],
+      "figures": [],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-29"
     }
   ]
 }
