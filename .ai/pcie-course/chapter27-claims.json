@@ -444,6 +444,115 @@
       "tables": [],
       "status": "verified",
       "verified_on": "2026-10-29"
+    },
+    {
+      "id": "PCIE-CH27-011",
+      "claim": "PASID 停止的兩種 PRI 路徑、Stop Marker 格式、順序與資源回收。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "10.4.1.1",
+        "10.4.1.2",
+        "10.4.1.2.1",
+        "10.5.2.5"
+      ],
+      "document_pages": [
+        1508,
+        1509,
+        1510,
+        1520
+      ],
+      "pdf_pages": [
+        1508,
+        1509,
+        1510,
+        1520
+      ],
+      "figures": [
+        "10-25",
+        "10-26"
+      ],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-29"
+    },
+    {
+      "id": "PCIE-CH27-012",
+      "claim": "PRG Response 的群組配對、PASID 條件、Response Code 與錯誤狀態。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "10.4.1.1",
+        "10.4.2",
+        "10.4.2.1",
+        "10.4.2.2",
+        "10.5.2.3"
+      ],
+      "document_pages": [
+        1508,
+        1511,
+        1512,
+        1513,
+        1519
+      ],
+      "pdf_pages": [
+        1508,
+        1511,
+        1512,
+        1513,
+        1519
+      ],
+      "figures": [
+        "10-27",
+        "10-28"
+      ],
+      "tables": [
+        "10-8",
+        "10-15"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-29"
+    },
+    {
+      "id": "PCIE-CH27-013",
+      "claim": "Page Request Interface 的 Enable、Reset、Stopped、Capacity 與 Allocation。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "10.5.2.1",
+        "10.5.2.2",
+        "10.5.2.3",
+        "10.5.2.4",
+        "10.5.2.5"
+      ],
+      "document_pages": [
+        1517,
+        1518,
+        1519,
+        1520
+      ],
+      "pdf_pages": [
+        1517,
+        1518,
+        1519,
+        1520
+      ],
+      "figures": [
+        "10-33",
+        "10-34",
+        "10-35",
+        "10-36"
+      ],
+      "tables": [
+        "10-13",
+        "10-14",
+        "10-15"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-29"
     }
   ]
 }

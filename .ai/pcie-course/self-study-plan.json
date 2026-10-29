@@ -995,5 +995,11 @@
     "location": "DOCS/pcie-course/chapter-19.html#l0p-case",
     "covered": "L0p 能力、控制、x8 至 x4 Request／Ack、FLIT DLLP 寬度編碼與退出延遲。",
     "remaining": "優先請求競爭、重試時間、升寬逐 Lane、其他控制欄位與平台政策仍須依原文及裝置資料確認；全 Base 逐節核對尚未完成。"
+  },
+  "chapter_27_pri_stop_audit": {
+    "status": "locally_verified",
+    "location": "DOCS/pcie-course/chapter-27.html#pri-pasid-stop",
+    "covered": "PASID 停止、Stop Marker、PRG Response 配對與錯誤，以及 Page Request Interface 的停止和資源條件。",
+    "remaining": "裝置專屬停止通知、Host 緩衝與平台回收策略依平台文件確認；其他 Base 節次仍待逐節核對。"
   }
 }

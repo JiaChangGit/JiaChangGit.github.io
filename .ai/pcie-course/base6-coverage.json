@@ -15823,10 +15823,12 @@
       "document_page": 1508,
       "pdf_page": 1508,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html"
+      ],
+      "review_note": "帶讀同一 PRG 的 PASID 一致性及 Response PASID 條件。"
     },
     {
       "section": "10.4.1.2",
@@ -15834,10 +15836,12 @@
       "document_page": 1509,
       "pdf_page": 1509,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html"
+      ],
+      "review_note": "比較有／無 Stop Marker 的停用 PASID、舊回覆和額度回收。"
     },
     {
       "section": "10.4.1.2.1",
@@ -15845,10 +15849,12 @@
       "document_page": 1509,
       "pdf_page": 1509,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html"
+      ],
+      "review_note": "帶讀 Stop Marker 的編碼、順序、完成邊界及 undefined 條件。"
     },
     {
       "section": "10.4.2",
@@ -15856,10 +15862,12 @@
       "document_page": 1511,
       "pdf_page": 1511,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html"
+      ],
+      "review_note": "帶讀 PRG 整組回覆、配對、失敗及 UPRGI；端點和 Host 的具體服務仍需平台文件。"
     },
     {
       "section": "10.4.2.1",
@@ -15867,10 +15875,12 @@
       "document_page": 1512,
       "pdf_page": 1512,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html"
+      ],
+      "review_note": "以 Table 10-8 對照 Success、Invalid Request、未使用值和 Response Failure。"
     },
     {
       "section": "10.4.2.2",
@@ -15878,10 +15888,12 @@
       "document_page": 1513,
       "pdf_page": 1513,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html"
+      ],
+      "review_note": "帶讀 Response PASID Required 的格式及 PRG 配對條件。"
     },
     {
       "section": "10.5",
@@ -15955,10 +15967,12 @@
       "document_page": 1517,
       "pdf_page": 1517,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html"
+      ],
+      "review_note": "帶讀 Capability Header ID、Version、Next Pointer 的位置。"
     },
     {
       "section": "10.5.2.2",
@@ -15966,10 +15980,12 @@
       "document_page": 1517,
       "pdf_page": 1517,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html"
+      ],
+      "review_note": "帶讀 Enable、Reset 的觸發條件與停止後重新啟用限制。"
     },
     {
       "section": "10.5.2.3",
@@ -15977,10 +15993,12 @@
       "document_page": 1518,
       "pdf_page": 1518,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html"
+      ],
+      "review_note": "帶讀 RF、UPRGI、Stopped 和 PRG Response PASID Required 的用途及適用條件。"
     },
     {
       "section": "10.5.2.4",
@@ -15988,10 +16006,12 @@
       "document_page": 1519,
       "pdf_page": 1519,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html"
+      ],
+      "review_note": "帶讀唯讀 Capacity 的資源上限與 Allocation 的關係。"
     },
     {
       "section": "10.5.2.5",
@@ -15999,10 +16019,12 @@
       "document_page": 1520,
       "pdf_page": 1520,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html"
+      ],
+      "review_note": "帶讀 PRG 預留、Allocation 修改條件、PASID／Shadow 共用和 Stop Marker 的邊界。"
     },
     {
       "section": "A",
