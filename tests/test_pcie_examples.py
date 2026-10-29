@@ -1,6 +1,6 @@
 """Boundary checks and a deliberately incorrect published-result regression."""
 import unittest
-from scripts.validate_pcie_examples import result_tokens,validate_case,polling_gate_rows,differential_voltage_case,rx_calibration_case,margin_command_rows,power_budget_case,dpa_profile_case,ltr_switch_case,tph_table_case,ptm_dialog_case,ptm_config_case,sriov_resource_case,vf_enable_case
+from scripts.validate_pcie_examples import result_tokens,validate_case,polling_gate_rows,differential_voltage_case,rx_calibration_case,margin_command_rows,power_budget_case,dpa_profile_case,ltr_switch_case,tph_table_case,ptm_dialog_case,ptm_config_case,sriov_resource_case,vf_enable_case,ats_read_case,invalidate_reply_case,pri_group_case
 
 class TeachingArithmeticTest(unittest.TestCase):
     def test_one_dw_rejects_last_enable(self):
@@ -302,5 +302,57 @@ class SriovTeachingTest(unittest.TestCase):
     def test_configuration_cannot_start_at_fifty_ms_in_this_case(self):
         self.enable['stages'][0]['config_status']='SC'
         with self.assertRaisesRegex(ValueError,'permitted access time'):vf_enable_case(self.enable)
+
+class AtsPriTeachingTest(unittest.TestCase):
+    def setUp(self):
+        self.ats=dict(pasid_cap='0808',pasid_control='0009',ats_cap='0024',ats_control='8000',pasid=33,rid=0x300,query_tag=0x2a,read_tag=0x2b,untranslated=0x40001234,translated_base=0x90000000,after_base=0xa0000000,read_bytes=4,read=1,write=0,untranslated_only=0)
+        self.invalidate=dict(itag=3,cc=2,required_tcs=[0,1],received_tcs=[0,1])
+        self.pri=dict(capacity=4,allocation=3,requests=[dict(address=0x40001000,rid=0x300,pasid=33,prg=5,last=False,read=True,write=False),dict(address=0x40002000,rid=0x300,pasid=33,prg=5,last=True,read=True,write=False)],response_code=0,response_prg=5,response_pasid_required=True,response_pasid=33)
+    def test_translation_preserves_page_offset_and_changes_transaction_context(self):
+        config,steps,prefix,summary,after=ats_read_case(self.ats)
+        self.assertEqual(steps['query'][-1],'40001000h; NW=1')
+        self.assertEqual(steps['read'][-1],'90000234h')
+        self.assertEqual(after,'A0000234h')
+        text='<section id="translation-case">'+''.join('<tr '+attr+'="'+name+'">'+''.join('<td>'+v+'</td>' for v in row)+'</tr>' for attr,rows in [('data-ats-config',config),('data-ats-step',steps)] for name,row in rows.items())+';'.join(summary)+'</section><code data-pasid-prefix="example">'+prefix+'</code><section id="pri">'+after+'</section>'
+        case=dict(model='ats_read',section='translation-case',inputs=self.ats)
+        self.assertEqual(validate_case(case,text),[])
+        self.assertTrue(validate_case(case,text.replace('<td>90000234h</td>','<td>90001234h</td>')))
+    def test_pasid_zero_is_valid_even_with_zero_width(self):
+        self.ats.update(pasid_cap='0008',pasid=0)
+        self.assertEqual(ats_read_case(self.ats)[2],'91 00 00 00')
+        self.ats['pasid']=1
+        with self.assertRaisesRegex(ValueError,'width'):ats_read_case(self.ats)
+    def test_success_status_cannot_override_unusable_entry_permissions(self):
+        self.ats['read']=0
+        with self.assertRaisesRegex(ValueError,'permission'):ats_read_case(self.ats)
+        self.ats.update(read=1,untranslated_only=1)
+        with self.assertRaisesRegex(ValueError,'permission'):ats_read_case(self.ats)
+    def test_first_invalidate_reply_does_not_complete_two_channel_flush(self):
+        self.invalidate['received_tcs']=[0]
+        self.assertEqual(invalidate_reply_case(self.invalidate)['tc0'][-2:],['1','Pending'])
+        self.invalidate['received_tcs']=[0,0]
+        with self.assertRaisesRegex(ValueError,'Duplicate'):invalidate_reply_case(self.invalidate)
+    def test_cc_zero_means_eight_and_itag31_is_high_bit(self):
+        self.invalidate.update(cc=0,itag=31,required_tcs=list(range(8)),received_tcs=list(range(8)))
+        rows=invalidate_reply_case(self.invalidate)
+        self.assertEqual(rows['tc0'][1:4],['80000000h','0','7'])
+        self.assertEqual(rows['tc7'][-1],'Complete')
+    def test_prg_must_reserve_all_page_requests_before_first_message(self):
+        self.pri['requests']*=2
+        with self.assertRaisesRegex(ValueError,'Whole PRG'):pri_group_case(self.pri)
+    def test_prg_last_and_required_response_pasid_are_checked(self):
+        self.pri['requests'][0]['last']=True
+        with self.assertRaisesRegex(ValueError,'Last'):pri_group_case(self.pri)
+        self.pri['requests'][0]['last']=False;self.pri['response_pasid']=34
+        with self.assertRaisesRegex(ValueError,'PASID mismatch'):pri_group_case(self.pri)
+    def test_one_group_response_returns_two_message_allocations(self):
+        config,rows=pri_group_case(self.pri)
+        self.assertEqual(rows['first'],['1','1','1'])
+        self.assertEqual(rows['reply'],['0','0','3'])
+        text=''.join('<tr data-ats-config="'+n+'">'+''.join('<td>'+v+'</td>' for v in row)+'</tr>' for n,row in config.items())+''.join('<tr data-pri-credit="'+n+'"><td>stage</td>'+''.join('<td>'+v+'</td>' for v in row)+'</tr>' for n,row in rows.items())
+        case=dict(model='pri_group',inputs=self.pri)
+        self.assertEqual(validate_case(case,text),[])
+        wrong=text.replace('data-pri-credit="reply"><td>stage</td><td>0</td><td>0</td><td>3','data-pri-credit="reply"><td>stage</td><td>0</td><td>0</td><td>2')
+        self.assertTrue(validate_case(case,wrong))
 
 if __name__=='__main__':unittest.main()

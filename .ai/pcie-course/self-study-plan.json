@@ -902,5 +902,20 @@
       "RESET-005"
     ],
     "remaining": "多PF Function Dependency、全部VF Tag與遷移相容欄位、VF Resizable BAR完整配置及平台虛擬機／IOMMU部署仍須深入；未宣稱全Base完成。"
+  },
+  "chapter_27_revision": {
+    "status": "locally_verified",
+    "location": "DOCS/pcie-course/chapter-27.html#translation-case",
+    "covered": "以單Function PASID21h串起三份能力配置、4KiB轉譯與Read、R/W/U分支、雙TC失效回覆及兩頁PRG額度，明確保留PRI成功後再查ATS。",
+    "references": [
+      "ADV-001",
+      "ADV-003",
+      "ADV-004",
+      "ADV-005",
+      "ADV-009",
+      "CAP-005",
+      "MSG-008"
+    ],
+    "remaining": "全部大頁／多項TranslationCompletion、AMA、GlobalMapping、PASID停止與StopMarker、Shadow／VF共享併發及平台IOMMU實作仍須深入；未宣稱全Base完成。"
   }
 }

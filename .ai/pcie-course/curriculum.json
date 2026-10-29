@@ -726,13 +726,12 @@
       "number": 27,
       "title": "ATS、PRI 與 PASID 的位址轉譯流程",
       "title_en": "ATS, PRI, and PASID Address-Translation Flows",
-      "question": "裝置快取了位址轉譯，映射改變時怎麼辦？",
+      "question": "轉譯、失效與頁面群組的回覆，如何接回真正的資料存取？",
       "topics": [
-        "Base Chapter 10 的 ATS 架構、Translation Request 與 Completion",
-        "已轉譯及未轉譯位址、Memory Attributes 與 PASID",
-        "轉譯快取、Invalidation Request 與完成條件",
-        "Page Request Interface 的群組、請求及回覆",
-        "ATS、PRI、PASID 的能力、控制、重設及失敗生命週期"
+        "PASID／ATS／Page Request 三份結構的配置與作用範圍",
+        "4KiB Translation Request、權限與 Memory Read 完整案例",
+        "ITag Vector、CC 與跨TC失效完成條件",
+        "兩頁PRG的Last、PASID、額度與重新查ATS流程"
       ],
       "prerequisites": [
         6,
@@ -744,8 +743,8 @@
         "PCIE-BASE-6.0"
       ],
       "publication_date": "2026-10-24",
-      "revision_date": "2026-10-24",
-      "teaching_revision": 2
+      "revision_date": "2026-10-29",
+      "teaching_revision": 3
     },
     {
       "number": 28,

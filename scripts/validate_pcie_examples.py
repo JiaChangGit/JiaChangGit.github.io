@@ -14,6 +14,76 @@ import re
 
 ROOT=Path(__file__).resolve().parents[1]
 
+def ats_read_case(x):
+    """One PASID, 4-KiB, ordinary Read case; not a TA or permission manager."""
+    pc=int(x['pasid_cap'],16);control=int(x['pasid_control'],16)
+    ac=int(x['ats_cap'],16);ats=int(x['ats_control'],16);pasid=x['pasid'];width=(pc>>8)&31
+    if not 0<=width<=20 or not 0<=pasid<1<<width:raise ValueError('PASID outside supported width')
+    if not pc&8 or control&15!=9 or not ats&0x8000 or ats&31 or not ac&32:
+        raise ValueError('This case requires enabled translated PASID, STU0 and aligned queries')
+    if x.get('pasid_change_while_ats'):raise ValueError('PASID Control cannot change while ATS is enabled')
+    if (x['read'],x['write'],x['untranslated_only'])!=(1,0,0):
+        raise ValueError('Returned permission does not allow this translated Read case')
+    va=x['untranslated'];base=x['translated_base'];after=x['after_base'];count=x['read_bytes']
+    if any(not 0<=v<1<<64 for v in (va,base,after)) or base%4096 or after%4096:
+        raise ValueError('Translation base is not 4-KiB aligned')
+    page=va&~4095;offset=va-page
+    if count!=4 or va%4 or offset+count>4096:raise ValueError('Read exceeds the scoped page or size')
+    prefix=' '.join(f'{v:02X}' for v in [0x91,(pasid>>16)&15,(pasid>>8)&255,pasid&255])
+    config={'pasid-cap':['PASID Capability','P+04h',f'{pc:04X}h'],
+            'pasid-control':['PASID Control','P+06h',f'{control:04X}h'],
+            'ats-cap':['ATS Capability','A+04h',f'{ac:04X}h'],
+            'ats-control':['ATS Control','A+06h',f'{ats:04X}h']}
+    rid=f'{x["rid"]:04X}h';q=f'{x["query_tag"]:02X}h';r=f'{x["read_tag"]:02X}h'
+    if q==r:raise ValueError('Teaching trace retains distinct query and data tags')
+    steps={'query':['MRd / Translation Request','01b',rid,q,'2 DW',f'{page:08X}h; NW=1'],
+           'translation':['CplD / Translation Completion','—',rid,q,'2 DW',f'Base={base:08X}h; S=0; R=1; W=0; U=0'],
+           'read':['MRd / Memory Read','10b',rid,r,'1 DW',f'{base+offset:08X}h'],
+           'data':['CplD / Memory Read data','—',rid,r,'1 DW',f'{count} bytes application data']}
+    return config,steps,prefix,[f'{offset:X}h',f'{base:08X}h–{base+4095:08X}h'],f'{after+offset:08X}h'
+
+def invalidate_reply_case(x):
+    """Count distinct per-TC replies for this case's required push channels."""
+    itag=x['itag'];cc=x['cc'];required=x['required_tcs'];received=x['received_tcs']
+    if not 0<=itag<=31 or not 0<=cc<=7:raise ValueError('ITag or CC outside encoding')
+    total=cc or 8
+    if len(set(required))!=len(required) or total!=len(required) or any(not 0<=tc<=7 for tc in required):
+        raise ValueError('CC does not match the required channels in this example')
+    seen=set();rows={}
+    for tc in received:
+        if tc not in required or tc in seen:raise ValueError('Duplicate or unrelated TC is not another completion')
+        seen.add(tc);pending=total-len(seen)
+        rows['tc'+str(tc)]=[str(tc),f'{1<<itag:08X}h',str(cc),str(pending),'Pending' if pending else 'Complete']
+    return rows
+
+def pri_group_case(x):
+    """One successful two-page PRG; reservation is not Link-level credit."""
+    allocation=x['allocation'];capacity=x['capacity'];requests=x['requests']
+    if not 0<allocation<=capacity or not requests or len(requests)>allocation:
+        raise ValueError('Whole PRG must fit its Page Request allocation before sending')
+    if len(requests)!=2:raise ValueError('This displayed example uses two pages')
+    if x['response_code']!=0:raise ValueError('This example models PRG Success, not failure recovery')
+    group=requests[0]['prg'];pasid=requests[0]['pasid'];rid=requests[0]['rid']
+    if not 0<=group<512:raise ValueError('PRG Index exceeds nine bits')
+    for i,request in enumerate(requests):
+        if request['prg']!=group or request['pasid']!=pasid or request['rid']!=rid:
+            raise ValueError('PRG Requester ID, index and PASID must match')
+        if request['last']!=(i==len(requests)-1) or not request['read'] or request['write'] or request['address']%4096:
+            raise ValueError('Page address, Last or requested permissions do not match this PRG')
+    if x['response_prg']!=group or (x['response_pasid_required'] and x['response_pasid']!=pasid):
+        raise ValueError('PRG response index or PASID mismatch')
+    if not x['response_pasid_required'] and x['response_pasid'] is not None:
+        raise ValueError('Unexpected PASID when PRG Response PASID Required is clear')
+    status=0x100|(0x8000 if x['response_pasid_required'] else 0)
+    config={'pri-status':['Page Request Status, before enable','R+06h',f'{status:04X}h'],
+            'pri-capacity':['Outstanding Page Request Capacity','R+08h',f'{capacity:08X}h'],
+            'pri-allocation':['Outstanding Page Request Allocation','R+0Ch',f'{allocation:08X}h'],
+            'pri-control':['Page Request Control, after enable','R+04h','0001h']}
+    free=allocation-len(requests)
+    rows={'initial':['0','0',str(allocation)],'reserve':['0','2',str(free)],
+          'first':['1','1',str(free)],'last':['2','0',str(free)],'reply':['0','0',str(allocation)]}
+    return config,rows
+
 def sriov_resource_case(x):
     """Single-PF ARI allocation example; not an allocator or isolation check."""
     num=x['num']; total=x['total']; pf=x['pf']; first=x['first']; stride=x['stride']
@@ -472,6 +542,28 @@ def normalized(text):
     return re.sub(r'[\s,，]','',text).casefold()
 
 def validate_case(case, text):
+    if case['model'] in ('ats_read','invalidate_reply','pri_group'):
+        missing=[]
+        if case['model']=='ats_read':
+            config,steps,prefix,summary,after=ats_read_case(case['inputs'])
+            groups=[('data-ats-config',config,slice(0,3)),('data-ats-step',steps,None)]
+            code=re.search(r'<code\b[^>]*data-pasid-prefix="example"[^>]*>(.*?)</code>',text,re.S)
+            if not code or normalized(code.group(1))!=normalized(prefix):missing.append('PASID Prefix bytes do not match')
+            passage=normalized(section_text(text,case['section']))
+            missing.extend(token for token in summary if normalized(token) not in passage)
+            if normalized(after) not in normalized(section_text(text,'pri')):missing.append('Post-PRI translated address does not match')
+        elif case['model']=='invalidate_reply':groups=[('data-invalidate-step',invalidate_reply_case(case['inputs']),None)]
+        else:
+            config,rows=pri_group_case(case['inputs'])
+            groups=[('data-ats-config',config,slice(0,3)),('data-pri-credit',rows,slice(1,None))]
+        for attribute,rows,selection in groups:
+            for name,expected in rows.items():
+                row=re.search(r'<tr\b[^>]*'+attribute+'="'+name+r'"[^>]*>(.*?)</tr>',text,re.S)
+                cells=re.findall(r'<td\b[^>]*>(.*?)</td>',row.group(1),re.S) if row else []
+                if selection:cells=cells[selection]
+                actual=[normalized(unescape(re.sub(r'<[^>]+>',' ',cell))) for cell in cells]
+                if actual!=[normalized(cell) for cell in expected]:missing.append(attribute+' '+name+': derived cells do not match')
+        return missing
     if case['model'] in ('sriov_resource','vf_enable'):
         missing=[]
         if case['model']=='sriov_resource':
