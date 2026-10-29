@@ -781,12 +781,14 @@
         "PCIE-CH1-RIDSEGMENT-001",
         "PCIE-CH1-IDENTITY-001",
         "PCIE-CH1-EXAMPLE-001",
-        "PCIE-CH5-TAG-RANGE-001"
+        "PCIE-CH5-TAG-RANGE-001",
+        "PCIE-CH5-TAG-ALIAS-001"
       ],
       "teaching_locations": [
-        "chapter-5.html#tag-range"
+        "chapter-5.html#tag-range",
+        "chapter-5.html#tag-alias"
       ],
-      "review_note": "已部分帶讀 Transaction ID 與 Table 2-11 Tag 範圍；尚須核對 Segment、Requester ID 擷取、Shadow／Phantom Function 等其餘規則，暫不列為完整帶讀。"
+      "review_note": "已部分帶讀 Transaction ID、Table 2-11 Tag 範圍及大小 Tag 並行的別名；尚須核對 Segment、Requester ID 擷取、Shadow／Phantom Function 等其餘規則，暫不列為完整帶讀。"
     },
     {
       "section": "2.2.6.3",

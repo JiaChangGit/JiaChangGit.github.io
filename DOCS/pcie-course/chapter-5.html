@@ -385,7 +385,7 @@ html[data-theme="dark"] .spec-teaching[data-spec-series="nvme"] { --st-accent:#7
     <div class="reading-layout">
       <aside class="toc-panel" aria-label="本頁目錄">
         <p class="toc-label">本章閱讀路徑</p>
-        <nav aria-label="章節段落"><ol><li><a href="#journey">1. 讀取時，誰提出要求，誰負責回覆？</a></li><li><a href="#types">2. 有寫入，就一定會有 Completion 嗎？</a></li><li><a href="#fields">3. 如何把「讀 4 bytes」對到 Request 與 Completion？</a></li><li><a href="#bytes">4. 如果只讀中間 6 bytes，Length 要填 6 嗎？</a></li><li><a href="#split">5. 為什麼一次讀取可能收到兩個 Completion？</a></li><li><a href="#matching-trace">兩個裝置用了相同 Tag，回覆要怎麼分？</a></li><li><a href="#tag-range">Tag 位數變大後，可以任意選數值嗎？</a></li><li><a href="#bounds">6. 長度沒超過上限，就一定是合法要求嗎？</a></li><li><a href="#practice">7. 沿回覆欄位重新配對交易</a></li><li><a href="#next">8. 從封包走到資料可見性</a></li><li><a href="#sources">版本與來源</a></li></ol></nav>
+        <nav aria-label="章節段落"><ol><li><a href="#journey">1. 讀取時，誰提出要求，誰負責回覆？</a></li><li><a href="#types">2. 有寫入，就一定會有 Completion 嗎？</a></li><li><a href="#fields">3. 如何把「讀 4 bytes」對到 Request 與 Completion？</a></li><li><a href="#bytes">4. 如果只讀中間 6 bytes，Length 要填 6 嗎？</a></li><li><a href="#split">5. 為什麼一次讀取可能收到兩個 Completion？</a></li><li><a href="#matching-trace">兩個裝置用了相同 Tag，回覆要怎麼分？</a></li><li><a href="#tag-range">Tag 位數變大後，可以任意選數值嗎？</a></li><li><a href="#tag-alias">同時使用大小 Tag，為什麼還要檢查低位元？</a></li><li><a href="#bounds">6. 長度沒超過上限，就一定是合法要求嗎？</a></li><li><a href="#practice">7. 沿回覆欄位重新配對交易</a></li><li><a href="#next">8. 從封包走到資料可見性</a></li><li><a href="#sources">版本與來源</a></li></ol></nav>
       </aside>
       <main id="content" tabindex="-1">
         <article class="lesson">
@@ -499,6 +499,13 @@ html[data-theme="dark"] .spec-teaching[data-spec-series="nvme"] { --st-accent:#7
 <p>查設定時，Extended Tag Field Enable 在 PCI Express Capability 的 Device Control；10-Bit Tag Requester Enable 在 Device Control 2；14-Bit Tag Requester Enable 則在 Device 3 Extended Capability 的 Device Control 3。應先走訪對應 Capability，再查各欄位的適用條件；VF 另有 PF 的控制規則。軟體若在 Function 尚有未完成 Non-Posted Requests 時修改 10-bit 或 14-bit Requester Enable，結果為 undefined（未定義）。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>VF</dt><dd>Virtual Function，虛擬功能</dd></div><div><dt>PF</dt><dd>Physical Function，實體功能</dd></div></dl>
 <p>若同時向較大與較小 Tag 能力的目標發送要求，還須依 Table 2-11 使用各自範圍，並避免較大 Tag 因不支援的完成端截斷而與仍未完成的小 Tag 混淆。發送前確認完整路徑，比等到 Completion 的 Tag 異常後再推測更容易定位問題。</p>
 <p class="source">PCI Express Base 6.0 §2.2.6.2、Figure 2-28／Table 2-11，文件頁／PDF 頁 153–156；§7.5.3.4、Table 7-21，p.960；§7.5.3.15–§7.5.3.16、Tables 7-33–7-34，pp.991、997；§7.7.9.2–§7.7.9.3、Tables 7-108–7-109，pp.1073、1075。</p></section>
+<section id="tag-alias"><h2>同時使用大小 Tag，為什麼還要檢查低位元？</h2>
+<p>前一節的範圍是發送要求前的選擇。§2.2.6.2 還要求：若 Requester 同時向較大與較小 Tag 能力的目標發送要求，即使某筆較大 Tag 要求意外由不具足夠能力的完成端回覆，也要避免它與仍未完成的小 Tag 交易混淆。</p>
+<div class="example"><p><strong>【模擬資料】以下資料為教學用途建立，不代表特定硬體或平台。</strong>同一 Requester ID 有兩筆尚未完成的 Read：送往它認為支援 10-bit 的路徑 A 的 Tag 是 <code>100h</code>，送往 8-bit 路徑 B 的 Tag 是 <code>00h</code>。A 的完整路徑能力尚未核實。兩個原始 Tag 不同，但低 8 bits 都是 <code>00h</code>。</p>
+<p>假設 A 的要求途中出錯，某個不具 10-bit Completer 能力的元件代為回覆，且這次回覆遺失了 Tag 高位，因而帶回 <code>00h</code>。若 Requester 只依這個回覆的 Requester ID 與低位 Tag 配對，就可能把 A 的異常回覆誤認成 B 的結果。這是教學假設，不表示每個中間元件都會以相同方式截斷 Tag。</p>
+<p>Base 6.0 p.159 的 <em>Using Larger Tags and Smaller Tags Concurrently</em> Implementation Note 提供一種配置方式：假設小 Tag 只使用低 8 bits 中的 <code>00h–0Fh</code>，則較大的 10-bit Tag 不使用低 8 bits 為 <code>00h–0Fh</code> 的值。這 16 個低位值各對應三個合法的 10-bit 高位組合，原本 768 個 10-bit 值因此少了 48 個，剩下 <strong>720</strong> 個；小 Tag 還有 16 個。</p></div>
+<p>這是規格提供的一種實作方法，不要求所有 Requester 都用同一種切分。規格要求的是避免上述混淆；實際可同時追蹤的交易數還受裝置資源及路徑條件限制。前一節的 Table 2-11 仍要先用來判斷每筆要求允許使用的 Tag 範圍。</p>
+<p class="source">PCI Express Base 6.0 §2.2.6.2，文件頁／PDF 頁 154–155；Implementation Note: Using Larger Tags and Smaller Tags Concurrently，p.159；Table 2-11，pp.155–156。</p></section>
 <section id="bounds"><h2>6. 長度沒超過上限，就一定是合法要求嗎？</h2>
 <p>還要檢查 4 KiB 邊界。假設要從 <code>0x40001FF0</code> 讀 32 bytes，結尾會落在 <code>0x4000200F</code>。即使 MRRS 容許 32 bytes，這個 Address／Length 組合跨過了 4 KiB 邊界，仍不得作為單一 Memory Request 發出。可改成兩筆 16-byte 要求：<code>0x40001FF0–0x40001FFF</code> 與 <code>0x40002000–0x4000200F</code>，各自追蹤 Tag。</p>
 <p>回到 §2.2.7.1 的 Memory Request 規則：發送端不得產生跨越邊界的 Address／Length 組合；接收端可以選擇實作這項檢查。若接收端有實作，且檢查發現違規，就將該 TLP 視為 Malformed TLP（格式錯誤的封包）。所以，沒有看到這類錯誤紀錄，還不足以證明原要求沒有跨界。這裡分析的是 Non-Flit Mode 的一般 Memory Read；AtomicOp 的 operand 與對齊另有規則，見 <a href="chapter-15.html">Chapter 15</a>。</p>

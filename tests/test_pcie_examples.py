@@ -123,6 +123,21 @@ class PacketLayoutTest(unittest.TestCase):
             self.assertEqual(rows[0][1:], (range_8, range_10, range_10))
             self.assertEqual(rows[1][1:], (range_5, range_10, range_14))
 
+    def test_tag_partition_avoids_alias_after_upper_bits_are_lost(self):
+        small = set(range(16))
+        large = set(range(256, 1024))
+        allowed = {value for value in large if (value & 0xff) not in small}
+        self.assertEqual(len(allowed), 720)
+        self.assertFalse({value & 0xff for value in allowed} & small)
+        self.assertIn(0x100 & 0xff, small)
+        course = Path(__file__).resolve().parents[1] / '.ai' / 'pcie-course'
+        for suffix in ('zh.html', 'post.zh.html', 'post.en.html'):
+            text = (course / ('chapter5.' + suffix)).read_text(encoding='utf-8')
+            match = re.search(r'<section id="tag-alias">(.*?)</section>', text, re.S)
+            self.assertIsNotNone(match, suffix)
+            for value in ('100h', '00h', '720'):
+                self.assertIn(value, match.group(1))
+
 class VirtualChannelSetupTest(unittest.TestCase):
     def setUp(self):
         self.inputs=dict(resource=1,extended_count=1,vc_id=1,tc_map=0x80,

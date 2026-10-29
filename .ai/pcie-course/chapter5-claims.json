@@ -449,6 +449,34 @@
       ],
       "status": "verified",
       "verified_on": "2026-10-30"
+    },
+    {
+      "id": "PCIE-CH5-TAG-ALIAS-001",
+      "claim": "大小 Tag 並行時須防止不具足夠能力之 Completer 所造成的別名；規格 Implementation Note 提供將低位 Tag 空間切分的可選實作範例。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.6.2"
+      ],
+      "document_pages": [
+        154,
+        155,
+        156,
+        159
+      ],
+      "pdf_pages": [
+        154,
+        155,
+        156,
+        159
+      ],
+      "figures": [],
+      "tables": [
+        "2-11"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-30"
     }
   ]
 }
