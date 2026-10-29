@@ -39,6 +39,33 @@ class SharedTeachingTests(unittest.TestCase):
             self.assertEqual(text.count('data-scenario="'+identifier+'"'),1)
             self.assertLess(text.index('data-scenario="'+identifier+'"'),text.index('接著看其他情境'))
 
+    def test_report_opening_links_match_existing_editions_and_anchors(self):
+        pairs=[
+            ('pcie-transport-1.4','2026-08-28-nvme-pcie-transport-1-4',
+             'doorbells','q-027','command','exercise-command-01'),
+            ('nvm-command-set-1.3','2026-09-03-nvme-nvm-command-set-1-3',
+             'data-io','q-321','io','exercise-io-01'),
+        ]
+        for report,post,question,qid,figure,fid in pairs:
+            tutorial=ROOT/'DOCS/nvme-spec-report'/report/'tutorial-zh-tw.html'
+            text=tutorial.read_text(encoding='utf-8')
+            for relative,anchor in [(f'../../nvme-question-bank/{question}.html',qid),
+                                    (f'../../nvme-quick-reference/{figure}.html',fid)]:
+                with self.subTest(report=report,edition='tutorial',target=relative):
+                    self.assertIn(f'href="{relative}#{anchor}"',text)
+                    self.assertIn(f'id="{anchor}"',(tutorial.parent/relative).resolve().read_text(encoding='utf-8'))
+            for language in ('zh-tw','en'):
+                text=(ROOT/'_posts'/f'{post}-{language}.md').read_text(encoding='utf-8')
+                for series,slug,anchor,pattern in [
+                    ('question-bank',question,qid,f'*-nvme-question-bank-{question}-{language}.md'),
+                    ('figure-reference',figure,fid,f'*-nvme-figure-reference-{figure}-{language}.md'),
+                ]:
+                    with self.subTest(report=report,edition=language,target=series):
+                        self.assertIn(f'href="/nvme/{series}/{slug}/{language}/#{anchor}"',text)
+                        targets=list((ROOT/'_posts').glob(pattern))
+                        self.assertEqual(len(targets),1)
+                        self.assertIn(f'id="{anchor}"',targets[0].read_text(encoding='utf-8'))
+
     def test_offline_assets_and_handlers_are_rejected(self):
         for html in ['<img src="https://example.com/x">','<p onclick="x()">x</p>','<a href="java\nscript:x">x</a>','<form action="/x">']:
             self.assertTrue(OfflineSafety(html).errors)

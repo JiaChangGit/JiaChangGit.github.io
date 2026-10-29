@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "phase": "release_prepared",
+  "phase": "ongoing",
   "completed": [
     "skill_review",
     "source_paths_confirmed",
@@ -15,18 +15,19 @@
     "skill schema validation and installed skill synchronization"
   ],
   "active": [
-    "implementation toolkit packaging and release verification"
+    "PCIe Base 6.0 subsection coverage audit and missing lessons",
+    "NVMe selected-series source and teaching review"
   ],
   "pending": [
-    "publish and verify same commit CI",
-    "Base 6.0 detailed subsection coverage audit: 1166 unreviewed locators remain"
+    "Base 6.0 detailed subsection coverage audit: 1146 unreviewed locators remain",
+    "Continue human review of the selected NVMe question bank, figure scenarios, and two reports; structural checks are not complete teaching verification"
   ],
-  "coverage_note": "38 ready topic lessons do not establish complete teaching of every Base 6.0 subsection; 158 guided locators and 1166 unreviewed locators are retained separately.",
+  "coverage_note": "38 ready PCIe topic lessons do not establish complete teaching of every Base 6.0 subsection; 178 guided locators and 1146 unreviewed locators are retained separately.",
   "self_study_revision": {
     "date": "2026-10-24",
     "policy": "Reference questions, classification and answer layouts are editorial inputs, not fixed requirements.",
     "batch": "Chapter 1 topology, transaction roles and per-Link observations in three editions",
-    "status": "locally_verified_release_prepared",
+    "status": "published",
     "verified": [
       "Base 6.0 original figure and field review",
       "162 existing tests",
@@ -36,9 +37,15 @@
       "manual desktop, phone, dark-mode and bilingual diagram review",
       "toolkit manifest integrity and public bundle exclusions"
     ],
-    "pending": [
-      "publication and same-commit CI"
-    ],
-    "coverage_note": "Other candidate questions and unreviewed Base 6.0 locators remain pending; first-batch completion does not imply full specification coverage."
+    "pending": [],
+    "coverage_note": "Other candidate questions and unreviewed Base 6.0 locators remain pending; first-batch completion does not imply full specification coverage.",
+    "publication_commit": "9cdbc3cf27def9a5099b7eab0bb501882798e7b1"
+  },
+  "current_scope_review": {
+    "date": "2026-10-29",
+    "nvme_question_bank": "Q1–Q328 and 27 volumes exist in three editions; scoped structural and source-index checks passed.",
+    "nvme_figure_scenarios": "Seven volumes, 45 selected scenarios and the figure index exist in three editions; scoped structural checks passed.",
+    "nvme_reports": "Transport 1.4 and NVM Command Set 1.3 exist in three editions; the openings now link to relevant question-bank and figure-scenario lessons.",
+    "limitations": "An inventory and passing checks do not prove every selected NVMe article has received a complete human teaching and source review. PCIe Base 6.0 detailed audit remains open."
   }
 }
