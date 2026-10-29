@@ -1,5 +1,7 @@
 """Boundary checks and a deliberately incorrect published-result regression."""
 import unittest
+from pathlib import Path
+import re
 from scripts.validate_pcie_examples import result_tokens,validate_case,polling_gate_rows,differential_voltage_case,rx_calibration_case,margin_command_rows,power_budget_case,dpa_profile_case,ltr_switch_case,tph_table_case,ptm_dialog_case,ptm_config_case,sriov_resource_case,vf_enable_case,ats_read_case,invalidate_reply_case,pri_group_case
 
 class L0pManagementTests(unittest.TestCase):
@@ -49,6 +51,32 @@ class PacketLayoutTest(unittest.TestCase):
     def test_request_crossing_4kb_is_rejected(self):
         self.inputs['address']=0x80001FFC
         with self.assertRaises(ValueError):result_tokens('partial_write_layout',self.inputs)
+
+    def test_nonflit_prefix_example_encodes_kind_and_order(self):
+        course = Path(__file__).resolve().parents[1] / '.ai' / 'pcie-course'
+        for suffix in ('zh.html', 'post.zh.html', 'post.en.html'):
+            text = (course / ('chapter14.' + suffix)).read_text(encoding='utf-8')
+            match = re.search(r'<section id="prefix-reading">(.*?)</section>', text, re.S)
+            self.assertIsNotNone(match, suffix)
+            values = [int(value[:-1], 16) for value in re.findall(r'<code>(8Eh|9Fh)</code>', match.group(1))]
+            self.assertEqual(values, [0x8e, 0x9f])
+            local, end_end = values
+            self.assertEqual((local >> 5, (local >> 4) & 1, local & 0xf), (4, 0, 14))
+            self.assertEqual((end_end >> 5, (end_end >> 4) & 1, end_end & 0xf), (4, 1, 15))
+
+    def test_flit_prefix_examples_select_credit_pool(self):
+        course = Path(__file__).resolve().parents[1] / '.ai' / 'pcie-course'
+        for suffix in ('zh.html', 'post.zh.html', 'post.en.html'):
+            text = (course / ('chapter17.' + suffix)).read_text(encoding='utf-8')
+            match = re.search(r'<section id="flit-prefix-credit">(.*?)</section>', text, re.S)
+            self.assertIsNotNone(match, suffix)
+            prefix_values = re.findall(r'<code>(8D [08]0 00 00)</code>', match.group(1))
+            self.assertEqual(prefix_values, ['8D 80 00 00', '8D 00 00 00'])
+            dedicated, shared = [bytes.fromhex(value) for value in prefix_values]
+            self.assertEqual(dedicated[0], 0x8d)
+            self.assertEqual((dedicated[1] >> 7, shared[1] >> 7), (1, 0))
+            self.assertEqual(dedicated[1] & 0x7f, 0)
+            self.assertEqual(dedicated[2:], bytes(2))
 
 class VirtualChannelSetupTest(unittest.TestCase):
     def setUp(self):

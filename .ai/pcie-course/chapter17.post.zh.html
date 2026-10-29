@@ -36,6 +36,13 @@
 <p>Flit Mode 還加入 Shared FC 與專用 credit，Shared Credit 是否與 Completion 合併、連續 TLP 的計帳粒度，以及使用哪組傳送檢查，都有額外規則。傳送一個 Flit，不等同於固定消耗一個 credit。</p>
 <p>傳輸保護也要換成 Flit 層的 CRC、FEC（Forward Error Correction，前向錯誤更正）與 Replay。§3.1 將 Flit 的鏈結 CRC 稱為 LCRC；§3.6.2.3（p.300）明確說明 Flit Mode 不使用 Ack／Nak DLLP。因此本例兩條回報箭頭的封包格式，不能原樣搬進 Flit Trace。完整 Flit 承載與保護方式接到 <a href="/DOCS/pcie-course/chapter-18.html">Chapter 18</a>。</p>
 <p class="source">規格閱讀：§3.3 Data Link Feature Exchange，pp.268–269；Table 2-47，p.241；§2.6，pp.235–236；§2.6.1，pp.241–242；§3.1 Data Link Layer Overview，pp.263–264；§3.6.2.3，p.300。</p></section>
+<section id="flit-prefix-credit"><h2>Flit Mode 怎麼指出這筆 TLP 使用哪一類 credit？</h2>
+<p>先確認 Link 正以 Flit Mode 運作，再看 §2.2.10.3 的 Figure 2-77。Flit Mode Local TLP Prefix 是附在 TLP 前面的 4-byte 欄位；它的 byte 0 是 <code>8Dh</code>，byte 1 的 bit 7 是 TLP Uses Dedicated Credits（此 TLP 使用專用額度）。這個 Prefix 只允許用在 Flit Mode。</p>
+<div class="example"><p><strong>【模擬資料】以下資料為教學用途建立，不代表特定硬體或平台。</strong>假設這條 Link 已啟用 Shared FC（共享流量控制），下列是三筆獨立 TLP 的不同狀況；每筆仍要依自身類型、長度與當時可用額度通過 Flow Control 檢查。</p>
+<p>手機閱讀時，表格可以左右滑動。</p><div class="table-wrap"><table><thead><tr><th scope="col">Local Prefix</th><th scope="col">bit 7</th><th scope="col">此 TLP 使用的額度</th></tr></thead><tbody><tr><td><code>8D 80 00 00</code></td><td>1</td><td>專用 credit</td></tr><tr><td><code>8D 00 00 00</code></td><td>0</td><td>共享 credit</td></tr><tr><td>沒有這個 Prefix</td><td>無</td><td>共享 credit</td></tr></tbody></table></div>
+<p>這兩個 Prefix 範例中的其他位元均為 0，並非指定所有 TLP 都要附上 Prefix。規格容許在 Flit Mode 的 TLP 使用它，但強烈建議只附在明確需要它的 TLP 上。§2.6.1 另外容許傳送端即使有足夠共享 credit，仍選擇使用專用 credit；選用時應以 Prefix 的 bit 7 表示。</p></div>
+<p>若這個 Prefix 被加到 Non-Flit TLP，便是錯誤。對支援 Flit Mode 的元件，規格要求視為 Malformed TLP；對不支援 Flit Mode 的元件，這項處理是強烈建議。這裡的條件是元件<strong>是否支援</strong> Flit Mode，與觀察當下 Link 是否處於該模式是兩個不同問題。</p>
+<p class="source">規格閱讀：Base 6.0 §2.2.10.3、Figure 2-77，文件頁／PDF 頁 200–201；§2.6.1，p.236；MUST@FLIT 的定義見 Terms and Acronyms，p.88。Non-Flit Prefix 的判讀另見 <a href="/DOCS/pcie-course/chapter-14.html#prefix-reading">Chapter 14</a>。</p></section>
 <section id="latency"><h2>接收端空間已釋放，發送端為什麼仍在等待？</h2>
 <p>先把時間線拆成三段：接收端處理 TLP 並增加 CREDITS_ALLOCATED、安排並送出 UpdateFC、傳送端收到有效更新並改變 CREDIT_LIMIT。第一段已完成時，後兩段可能還在進行；如果 DLLP 的完整性檢查失敗，這次更新也不會生效。</p>
 <p>讀 §2.6.1.2 的 Non-Flit Mode Flow Control Update Latency 說明時，留意量測起訖：從接收端釋放緩衝，到對應 UpdateFC 的第一個 Symbol 送出。Tables 2-48–2-50 給的是建議延遲，不包含之後跨 Link 傳輸及對端處理的全部時間。另有必須安排更新的條件與週期性更新規則，要分開查閱。</p>

@@ -1184,10 +1184,14 @@
       "document_page": 199,
       "pdf_page": 199,
       "planned_chapter": 14,
-      "status": "unreviewed",
-      "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "status": "guided",
+      "existing_claim_candidates": [
+        "PCIE-CH14-PREFIX-001"
+      ],
+      "teaching_locations": [
+        "chapter-14.html#prefix-reading"
+      ],
+      "review_note": "依 Non-Flit Fmt／Type、Prefix 長度、Header 與 Local/End-End 次序帶讀；案例說明違反規則的處理。"
     },
     {
       "section": "2.2.10.2",
@@ -1195,10 +1199,14 @@
       "document_page": 200,
       "pdf_page": 200,
       "planned_chapter": 14,
-      "status": "unreviewed",
-      "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "status": "guided",
+      "existing_claim_candidates": [
+        "PCIE-CH14-PREFIX-001"
+      ],
+      "teaching_locations": [
+        "chapter-14.html#prefix-reading"
+      ],
+      "review_note": "依 Prefix 類型、接收端支援、Extended Fmt 能力及 ECRC 保護範圍帶讀；各類型的專屬路由與 Flow Control 仍需查該類型規則。"
     },
     {
       "section": "2.2.10.2.1",
@@ -1206,10 +1214,14 @@
       "document_page": 200,
       "pdf_page": 200,
       "planned_chapter": 14,
-      "status": "unreviewed",
-      "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "status": "guided",
+      "existing_claim_candidates": [
+        "PCIE-CH14-PREFIX-001"
+      ],
+      "teaching_locations": [
+        "chapter-14.html#prefix-reading"
+      ],
+      "review_note": "依 Table 2-38 帶讀廠商 Local 類型、明確啟用、Extended Fmt 能力及可配置編碼的建議。"
     },
     {
       "section": "2.2.10.3",
@@ -1217,10 +1229,14 @@
       "document_page": 200,
       "pdf_page": 200,
       "planned_chapter": 14,
-      "status": "unreviewed",
-      "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "status": "guided",
+      "existing_claim_candidates": [
+        "PCIE-CH17-FLIT-PREFIX-001"
+      ],
+      "teaching_locations": [
+        "chapter-17.html#flit-prefix-credit"
+      ],
+      "review_note": "依 Figure 2-77 帶讀 Flit Mode Local Prefix、專用／共享額度選擇、使用建議及 Non-Flit 錯誤的 MUST@FLIT 條件。"
     },
     {
       "section": "2.2.10.4",
@@ -1239,10 +1255,14 @@
       "document_page": 203,
       "pdf_page": 203,
       "planned_chapter": 14,
-      "status": "unreviewed",
-      "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "status": "guided",
+      "existing_claim_candidates": [
+        "PCIE-CH14-PREFIX-001"
+      ],
+      "teaching_locations": [
+        "chapter-14.html#prefix-reading"
+      ],
+      "review_note": "依 Table 2-39 帶讀廠商 End-End 類型、明確啟用及兩種編碼可配置性的建議。"
     },
     {
       "section": "2.2.10.4.2",

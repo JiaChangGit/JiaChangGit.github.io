@@ -336,6 +336,49 @@
       ],
       "status": "verified",
       "verified_on": "2026-10-30"
+    },
+    {
+      "id": "PCIE-CH14-PREFIX-001",
+      "claim": "Non-Flit Prefix 是 1 DW，Local 排於 End-End 前且需基本 Header；Local 不受 ECRC 保護，End-End 隨受保護 TLP 納入；廠商自訂 Prefix 須先明確啟用並依類型檢查能力及錯誤處理。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.10.1",
+        "2.2.10.2",
+        "2.2.10.2.1",
+        "2.2.10.4",
+        "2.2.10.4.1",
+        "7.5.3.15"
+      ],
+      "document_pages": [
+        199,
+        200,
+        201,
+        202,
+        203,
+        989,
+        992
+      ],
+      "pdf_pages": [
+        199,
+        200,
+        201,
+        202,
+        203,
+        989,
+        992
+      ],
+      "figures": [
+        "7-36"
+      ],
+      "tables": [
+        "2-38",
+        "2-39",
+        "7-33"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-30"
     }
   ]
 }

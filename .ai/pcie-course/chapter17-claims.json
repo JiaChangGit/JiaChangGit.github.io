@@ -250,6 +250,35 @@
       ],
       "status": "verified",
       "verified_on": "2026-10-28"
+    },
+    {
+      "id": "PCIE-CH17-FLIT-PREFIX-001",
+      "claim": "Flit Mode Local Prefix 以 TLP Uses Dedicated Credits 選擇專用額度；清零或省略時使用共享額度；套用於 Non-Flit TLP 的 Malformed 處理屬 MUST@FLIT。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.10.3",
+        "2.6.1"
+      ],
+      "document_pages": [
+        88,
+        200,
+        201,
+        236
+      ],
+      "pdf_pages": [
+        88,
+        200,
+        201,
+        236
+      ],
+      "figures": [
+        "2-77"
+      ],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-30"
     }
   ]
 }
