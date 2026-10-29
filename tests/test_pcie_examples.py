@@ -1,6 +1,6 @@
 """Boundary checks and a deliberately incorrect published-result regression."""
 import unittest
-from scripts.validate_pcie_examples import result_tokens,validate_case,polling_gate_rows,differential_voltage_case,rx_calibration_case,margin_command_rows,power_budget_case,dpa_profile_case,ltr_switch_case,tph_table_case,ptm_dialog_case,ptm_config_case
+from scripts.validate_pcie_examples import result_tokens,validate_case,polling_gate_rows,differential_voltage_case,rx_calibration_case,margin_command_rows,power_budget_case,dpa_profile_case,ltr_switch_case,tph_table_case,ptm_dialog_case,ptm_config_case,sriov_resource_case,vf_enable_case
 
 class TeachingArithmeticTest(unittest.TestCase):
     def test_one_dw_rejects_last_enable(self):
@@ -262,5 +262,45 @@ class PtmTeachingTest(unittest.TestCase):
         self.assertEqual(ptm_config_case(self.config)[1][-2:],['00000001h','Unknown'])
         self.config['switch']='0000FF0F'
         self.assertEqual(ptm_config_case(self.config)[1][-2:],['0000FF01h','>254 ns'])
+
+class SriovTeachingTest(unittest.TestCase):
+    def setUp(self):
+        self.resources=dict(pf=0x300,total=8,num=3,first=16,stride=2,supported_pages=0x553,system_page=16,probe_low='FFFF000C',probe_high='FFFFFFFF',bar_low='9000000C',bar_high='00000000',window=[0x90000000,0x900fffff],other_rids=[0x320],reserved_buses=[3])
+        self.enable=dict(frs=False,shorter_time=False,stages=[dict(id='early',ms=50,control='0011'),dict(id='rrs',ms=120,control='0011',config_status='RRS'),dict(id='ready',ms=180,control='0011',config_status='SC'),dict(id='memory',ms=181,control='0019',memory_request=True)])
+    def test_rid_stride_does_not_increment_bar_bytes(self):
+        fields,rids,bars,summary=sriov_resource_case(self.resources)
+        self.assertEqual(rids['3'][2:4],['0314h','03h / 14h'])
+        self.assertEqual(bars['3'][1:3],['90020000h','9002FFFFh'])
+        self.assertIn('192 KiB',summary)
+        text='<section id="bar">'+''.join('<tr '+attr+'="'+name+'">'+''.join('<td>'+v+'</td>' for v in row)+'</tr>' for attr,rows in [('data-sriov-field',fields),('data-vf-rid',rids),('data-vf-bar',bars)] for name,row in rows.items())+';'.join(summary)+'</section>'
+        case=dict(model='sriov_resource',section='bar',inputs=self.resources)
+        self.assertEqual(validate_case(case,text),[])
+        self.assertTrue(validate_case(case,text.replace('<td>90020000h</td>','<td>90000004h</td>')))
+    def test_page_bitmap_must_select_one_supported_size(self):
+        self.resources['system_page']=0x11
+        with self.assertRaisesRegex(ValueError,'one supported bit'):sriov_resource_case(self.resources)
+        self.resources['system_page']=0x40  # 256 KiB exceeds the 64 KiB aperture.
+        with self.assertRaisesRegex(ValueError,'aperture'):sriov_resource_case(self.resources)
+    def test_wrapping_arithmetic_does_not_authorize_lower_bus(self):
+        self.resources.update(pf=0xfff0,reserved_buses=[0xff,0])
+        with self.assertRaisesRegex(ValueError,'lower than PF'):sriov_resource_case(self.resources)
+    def test_header_visibility_and_memory_enable_are_independent(self):
+        rows=vf_enable_case(self.enable)
+        self.assertEqual(rows['ready'],['180 ms','0011h','Yes / SC','No'])
+        self.assertEqual(rows['memory'][-1],'Yes, readiness established')
+        text=''.join('<tr data-vf-stage="'+n+'">'+''.join('<td>'+v+'</td>' for v in row)+'</tr>' for n,row in rows.items())
+        case=dict(model='vf_enable',inputs=self.enable)
+        self.assertEqual(validate_case(case,text),[])
+        wrong=text.replace('data-vf-stage="ready"><td>180 ms</td><td>0011h','data-vf-stage="ready"><td>180 ms</td><td>0019h')
+        self.assertTrue(validate_case(case,wrong))
+    def test_one_hundred_ms_alone_does_not_make_memory_ready(self):
+        self.enable['stages'][1].update(control='0019',memory_request=True)
+        with self.assertRaisesRegex(ValueError,'readiness'):vf_enable_case(self.enable)
+    def test_rrs_cannot_resume_after_success_without_reset(self):
+        self.enable['stages'].append(dict(id='late',ms=190,control='0019',config_status='RRS'))
+        with self.assertRaisesRegex(ValueError,'after success'):vf_enable_case(self.enable)
+    def test_configuration_cannot_start_at_fifty_ms_in_this_case(self):
+        self.enable['stages'][0]['config_status']='SC'
+        with self.assertRaisesRegex(ValueError,'permitted access time'):vf_enable_case(self.enable)
 
 if __name__=='__main__':unittest.main()

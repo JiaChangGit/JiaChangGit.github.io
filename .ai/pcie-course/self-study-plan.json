@@ -888,5 +888,19 @@
       "ARCH-006"
     ],
     "remaining": "全部PTM錯誤與ePTM狀態交互、跨多層時鐘速率換算、Propagation Delay Adaptation設定流程及實際精度量測仍須深入；未宣稱全Base完成。"
+  },
+  "chapter_26_revision": {
+    "status": "locally_verified",
+    "location": "DOCS/pcie-course/chapter-26.html#enable",
+    "covered": "以單PF三VF案例，串起相鄰Port的ARI設定、設定後RID、頁面與64bit BAR計算，以及VF Enable後等待、RRS／SC與MSE；比較VF Configuration特例、Reset與Shadow身份。",
+    "references": [
+      "ADV-006",
+      "ADV-007",
+      "CAP-005",
+      "CFG-008",
+      "REQ-007",
+      "RESET-005"
+    ],
+    "remaining": "多PF Function Dependency、全部VF Tag與遷移相容欄位、VF Resizable BAR完整配置及平台虛擬機／IOMMU部署仍須深入；未宣稱全Base完成。"
   }
 }

@@ -700,13 +700,12 @@
       "number": 26,
       "title": "多功能、ARI、SR-IOV 與 Shadow Functions",
       "title_en": "Multifunction, ARI, SR-IOV, and Shadow Functions",
-      "question": "一個裝置提供很多 Function，身分與資源怎麼算？",
+      "question": "同一組 VF 的 ARI 身分、BAR 範圍與可用時機，如何一起確認？",
       "topics": [
-        "ARI 的 Function 身分、探索與轉送",
-        "PF、VF、資源分配與啟用生命週期",
-        "VF BAR、VF Resizable BAR、MSI-X 與 Reset",
-        "Shadow Functions 的能力與使用條件",
-        "Base Chapter 9 的架構、初始化與完整欄位路線"
+        "多 Function 共用 Port 與 ARI 的實際轉送位置",
+        "SR-IOV 數量、頁面、RID 與 64-bit VF BAR 完整案例",
+        "VF Enable、RRS、Configuration 成功與 VF MSE 的時序",
+        "VF 特有 Configuration、Reset 及 Shadow Functions 邊界"
       ],
       "prerequisites": [
         1,
@@ -720,8 +719,8 @@
         "PCIE-BASE-6.0"
       ],
       "publication_date": "2026-10-24",
-      "revision_date": "2026-10-24",
-      "teaching_revision": 2
+      "revision_date": "2026-10-29",
+      "teaching_revision": 3
     },
     {
       "number": 27,

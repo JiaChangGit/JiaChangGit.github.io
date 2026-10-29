@@ -14,6 +14,71 @@ import re
 
 ROOT=Path(__file__).resolve().parents[1]
 
+def sriov_resource_case(x):
+    """Single-PF ARI allocation example; not an allocator or isolation check."""
+    num=x['num']; total=x['total']; pf=x['pf']; first=x['first']; stride=x['stride']
+    if not 1<=num<=total<=0xffff or not 0<=pf<=0xffff or not 1<=first<=0xffff or not 0<=stride<=0xffff:
+        raise ValueError('Invalid VF count or RID field')
+    if num>1 and not stride:raise ValueError('Multiple VFs require nonzero stride')
+    supported=x['supported_pages']; system=x['system_page']
+    if not 0<supported<=0xffffffff or supported&0x553!=0x553:
+        raise ValueError('Required page sizes absent from this PF')
+    if not 0<system<=0xffffffff or system&(system-1) or system&supported!=system:
+        raise ValueError('System Page Size must select one supported bit')
+    page=1<<(system.bit_length()-1+12)
+    probe_low=int(x['probe_low'],16); probe_high=int(x['probe_high'],16)
+    bar_low=int(x['bar_low'],16); bar_high=int(x['bar_high'],16)
+    if any(not 0<=v<=0xffffffff for v in (probe_low,probe_high,bar_low,bar_high)):
+        raise ValueError('VF BAR fields must be DWORDs')
+    if probe_low&7!=4 or bar_low&15!=probe_low&15:
+        raise ValueError('This example requires a consistent 64-bit Memory BAR pair')
+    mask=(probe_high<<32)|(probe_low&~15); aperture=((~mask)&((1<<64)-1))+1
+    if aperture<=0 or aperture&(aperture-1) or aperture<page or aperture%page:
+        raise ValueError('Per-VF aperture does not satisfy page alignment')
+    base=(bar_high<<32)|(bar_low&~15); end=base+num*aperture-1
+    if base%aperture or end>=1<<64 or base<x['window'][0] or end>x['window'][1]:
+        raise ValueError('VF memory ranges are unaligned or outside the Window')
+    seen={pf,*x['other_rids']}; rids={};bars={}
+    for ordinal in range(1,num+1):
+        rid=(pf+first+(ordinal-1)*stride)&0xffff
+        if rid in seen:raise ValueError('PF/VF identities overlap')
+        seen.add(rid)
+        bus=rid>>8;function=rid&255
+        if bus<pf>>8 or bus not in x['reserved_buses']:
+            raise ValueError('VF Bus Number lower than PF or not reserved')
+        if bus==pf>>8 and (rid>>3)&31<(pf>>3)&31:
+            raise ValueError('VF Device Number lower than associated PF')
+        rids[str(ordinal)]=[str(ordinal),f'{pf:04X}h + {first:04X}h + {ordinal-1}×{stride:04X}h',f'{rid:04X}h',f'{bus:02X}h / {function:02X}h',f'{bus:02X}h / {(rid>>3)&31:02X}h / {rid&7:02X}h']
+        start=base+(ordinal-1)*aperture
+        bars[str(ordinal)]=[str(ordinal),f'{start:08X}h',f'{start+aperture-1:08X}h',f'{aperture:X}h / {aperture//1024} KiB']
+    fields={'total':['TotalVFs','0Eh',f'{total:04X}h'],'num':['NumVFs','10h',f'{num:04X}h'],
+            'first':['First VF Offset','14h',f'{first:04X}h'],'stride':['VF Stride','16h',f'{stride:04X}h'],
+            'supported':['Supported Page Sizes','1Ch',f'{supported:08X}h'],'system':['System Page Size','20h',f'{system:08X}h']}
+    summary=[f'{mask:016X}h',f'{probe_low:08X}h',f'{probe_high:08X}h',f'{bar_low:08X}h',f'{bar_high:08X}h',f'{num*aperture:X}h',f'{num*aperture//1024} KiB']
+    return fields,rids,bars,summary
+
+def vf_enable_case(x):
+    """No FRS or shorter VF Enable Time; independent readiness and MSE gates."""
+    if x['frs'] or x['shorter_time']:
+        raise ValueError('This timeline assumes no early readiness alternatives')
+    rows={};successful=False;previous=-1
+    for stage in x['stages']:
+        time=stage['ms'];control=int(stage['control'],16);status=stage.get('config_status')
+        if time<0 or time<previous or not 0<=control<=0xffff or control&0x11!=0x11:
+            raise ValueError('Timeline requires monotonic times, ARI and VFs enabled')
+        previous=time;config_allowed=time>=100
+        if status and (status not in ('RRS','SC') or not config_allowed):
+            raise ValueError('Configuration Request before permitted access time')
+        if status=='RRS' and (successful or time>1000):
+            raise ValueError('RRS after success or beyond the initialization interval')
+        if status=='SC':successful=True
+        memory_allowed=bool(control&8) and (successful or time>=1000)
+        if stage.get('memory_request') and not memory_allowed:
+            raise ValueError('Memory Request lacks readiness or VF MSE')
+        config='No' if not config_allowed else 'Yes'+(' / '+status if status else '')
+        rows[stage['id']]=[f'{time} ms',f'{control:04X}h',config,'Yes, readiness established' if memory_allowed else 'No']
+    return rows
+
 def ptm_dialog_case(x):
     """Two normalized-ns, drift-free dialogs; not a hardware clock estimator."""
     if not x['normalized_ns'] or not x['symmetric']:
@@ -407,6 +472,24 @@ def normalized(text):
     return re.sub(r'[\s,，]','',text).casefold()
 
 def validate_case(case, text):
+    if case['model'] in ('sriov_resource','vf_enable'):
+        missing=[]
+        if case['model']=='sriov_resource':
+            fields,rids,bars,summary=sriov_resource_case(case['inputs'])
+            groups=[('data-sriov-field',fields,slice(0,3)),('data-vf-rid',rids,None),('data-vf-bar',bars,None)]
+            passage=normalized(section_text(text,case['section']))
+            missing.extend(token for token in summary if normalized(token) not in passage)
+        else:groups=[('data-vf-stage',vf_enable_case(case['inputs']),None)]
+        translations={'否':'No','可':'Yes','可／本次rrs':'Yes / RRS','可／本次sc':'Yes / SC','可已確認就緒':'Yes, readiness established'}
+        for attribute,rows,selection in groups:
+            for name,expected in rows.items():
+                row=re.search(r'<tr\b[^>]*'+attribute+'="'+name+r'"[^>]*>(.*?)</tr>',text,re.S)
+                cells=re.findall(r'<td\b[^>]*>(.*?)</td>',row.group(1),re.S) if row else []
+                if selection:cells=cells[selection]
+                actual=[normalized(unescape(re.sub(r'<[^>]+>',' ',cell))) for cell in cells]
+                actual=[normalized(translations.get(cell,cell)) for cell in actual]
+                if actual!=[normalized(cell) for cell in expected]:missing.append(attribute+' '+name+': derived cells do not match')
+        return missing
     if case['model'] in ('ptm_dialog','ptm_config'):
         missing=[]
         if case['model']=='ptm_dialog':
