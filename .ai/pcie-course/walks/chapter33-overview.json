@@ -1,9 +1,9 @@
 {
   "walk_id": "ch33-overview",
   "title": "同一條 Link 承載其他協定，PCIe 的哪些規則還適用？",
-  "summary_html": "<p>PMUX（Protocol Multiplexing，協定多工）讓PCIe封包與多工協定封包共用Link。Alternate Protocol（替代協定）的探索與協商則有另一組能力。先辨識機制與封包種類，再決定要使用哪一套資源、可靠性及控制規則。</p>",
+  "summary_html": "<p>PMUX（Protocol Multiplexing，協定多工）讓 PCIe 與多工協定封包共用 Link。Alternate Protocol 的探索與協商則使用另一組能力。先辨識封包種類，再選擇對應的資源、可靠性與控制規則。</p>",
   "svg": "<svg viewBox=\"0 0 900 420\" role=\"img\" aria-labelledby=\"ch33-zh-t ch33-zh-d\"><title id=\"ch33-zh-t\">本章角色與事件</title><desc id=\"ch33-zh-d\">多工封包與PCIe封包共用Link，但資源及可靠性模型分開。</desc><g data-walk-target=\"pcie\"><rect x=\"30\" y=\"40\" width=\"300\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"180.0\" y=\"69\" text-anchor=\"middle\" font-size=\"16\">PCIe：TLP／DLLP</text></g><g data-walk-target=\"pmux\"><rect x=\"30\" y=\"300\" width=\"300\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"180.0\" y=\"329\" text-anchor=\"middle\" font-size=\"16\">PMUX：協定專用封包</text></g><g data-walk-target=\"mux\"><rect x=\"440\" y=\"155\" width=\"180\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"530.0\" y=\"184\" text-anchor=\"middle\" font-size=\"16\">仲裁與多工</text></g><g data-walk-target=\"rx\"><rect x=\"680\" y=\"155\" width=\"200\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"780.0\" y=\"184\" text-anchor=\"middle\" font-size=\"16\">對端解多工</text></g><g data-walk-target=\"a\"><path d=\"M330 74 L440 180\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"440,180 429.32975487833284,176.66145704782193 436.2686872887421,169.4606781313594\" fill=\"var(--accent)\"/><text x=\"385.0\" y=\"117.0\" text-anchor=\"middle\" font-size=\"16\">PCIe流量</text></g><g data-walk-target=\"b\"><path d=\"M330 334 L440 223\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"440,223 436.5124954694481,233.6224908636995 429.4095045907092,226.58349089377816\" fill=\"var(--accent)\"/><text x=\"385.0\" y=\"268.5\" text-anchor=\"middle\" font-size=\"16\">多工流量</text></g><g data-walk-target=\"c\"><path d=\"M620 189 L680 189\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"680,189 670.0,194.0 670.0,184.0\" fill=\"var(--accent)\"/><text x=\"650.0\" y=\"179.0\" text-anchor=\"middle\" font-size=\"16\">共用Link</text></g></svg>",
-  "order_html": "<p>兩個來源是可並存的流量；圖中的共用Link不表示PMUX封包會成為TLP，或取得相同的重送與credit。</p>",
+  "order_html": "<p>PCIe 與 PMUX 的封包會在同一條 Link 上輪流傳送。接下來分別追蹤它們的資源、完整性檢查與恢復方式。</p>",
   "caption_html": "<p>作者依 Base 6.0 繪製的教學示意；省略與本章無關的交換。</p>",
   "steps": [
     {
@@ -14,7 +14,7 @@
         "pmux",
         "b"
       ],
-      "html": "<p>Figure G-2把PCIe與PMUX（與PCIe流量並存的協定多工）佇列接到共同仲裁與解多工。</p>",
+      "html": "<p>Figure G-2 顯示 PCIe 與 PMUX 的佇列、共同仲裁器，以及接收端的解多工。</p>",
       "condition_html": "<p>多工協定自己的訊息與路由語意不由PMUX通用機制定義。</p>",
       "source_html": "<p>Base 6.0 Appendix G，pp.1561–1563。</p>",
       "claim_ids": [
@@ -26,7 +26,7 @@
       "targets": [
         "mux"
       ],
-      "html": "<p>PMUX封包有自己的資源與LCRC，但不使用PCIe的TLP序號與Ack／Nak機制。</p>",
+      "html": "<p>PMUX Packet 使用自己的資源與 LCRC，不使用 PCIe TLP 的 Sequence Number 和 Ack／Nak。</p>",
       "condition_html": "<p>不能把Chapter 17的TLP重送保證直接貼到多工封包。</p>",
       "source_html": "<p>Base 6.0 Appendix G，pp.1562–1563。</p>",
       "claim_ids": [
@@ -39,7 +39,7 @@
         "c",
         "rx"
       ],
-      "html": "<p>每個通道須由軟體在Link兩端明確啟用；Link Down或指定Reset會停用通道。</p>",
+      "html": "<p>軟體須在 Link 兩端明確啟用各個 Channel；DL_Down 或指定 Reset 會停用通道。</p>",
       "condition_html": "<p>支援另一種協定，不代表所有速率、寬度與重設之後都保持原配置。</p>",
       "source_html": "<p>Base 6.0 §G.1、§G.4，pp.1563–1564、1573。</p>",
       "claim_ids": [

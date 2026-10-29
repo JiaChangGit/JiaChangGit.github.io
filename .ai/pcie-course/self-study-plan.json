@@ -953,5 +953,11 @@
     "location": "DOCS/pcie-course/chapter-32.html#association",
     "covered": "跨Switch保護端點、Selective Stream配置與RID／位址關聯、啟用狀態、TEE與Appendix L讀法，附後續安全公告。",
     "remaining": "IDE_KM完整交換、所有TLP模式與錯誤恢復、重新排序安全修正和平台信任政策需深入；未宣稱全Base完成。"
+  },
+  "chapter_33_revision": {
+    "status": "locally_verified",
+    "location": "DOCS/pcie-course/chapter-33.html#lifecycle",
+    "covered": "PMUX兩端Protocol Array與Channel設定、Status與速度變更、Recovery與Reset差異，以及Alternate Protocol索引和協商遮罩。",
+    "remaining": "PMUX所有Packet framing與CRC逐bit計算、特定多工協定、Alternate Protocol完整Training與硬體實作仍需深入；未宣稱全Base完成。"
   }
 }

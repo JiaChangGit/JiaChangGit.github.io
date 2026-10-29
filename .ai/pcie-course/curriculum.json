@@ -878,7 +878,7 @@
       "number": 33,
       "title": "Protocol Multiplexing 與替代協定",
       "title_en": "Protocol Multiplexing and Alternate Protocols",
-      "question": "同一條 Link 承載其他協定，PCIe 的哪些規則還適用？",
+      "question": "共用 Link 時，如何配置 PMUX Channel 並辨識協定？",
       "topics": [
         "Appendix G 的協定多工角色與交換",
         "Alternate Protocol 能力、選擇與適用條件",
@@ -895,8 +895,8 @@
         "PCIE-BASE-6.0"
       ],
       "publication_date": "2026-10-24",
-      "revision_date": "2026-10-24",
-      "teaching_revision": 2
+      "revision_date": "2026-10-29",
+      "teaching_revision": 3
     },
     {
       "number": 34,
