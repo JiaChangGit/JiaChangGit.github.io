@@ -640,10 +640,12 @@
       "document_page": 144,
       "pdf_page": 144,
       "planned_chapter": 14,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-14.html#digest-check"
+      ],
+      "review_note": "帶讀 Non-Flit Digest、長度與接收端檢查條件；ECRC 演算法和 MC_Overlay 詳細例外需另查相關章節。"
     },
     {
       "section": "2.2.4",

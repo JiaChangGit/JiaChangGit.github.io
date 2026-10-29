@@ -308,6 +308,34 @@
       "status": "verified",
       "verified_on": "2026-10-30",
       "notes": "案例為作者模擬；只分析選定條件，並非完整 §2.2.2 授課。"
+    },
+    {
+      "id": "PCIE-CH14-DIGEST-001",
+      "claim": "Non-Flit Mode TD 指示 1 DW Digest；TD 與實際長度不符為 Malformed TLP；不支援 ECRC 檢查的 Receiver 忽略 Digest，MC_Overlay 有指定例外。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.1.1",
+        "2.2.2",
+        "2.2.3"
+      ],
+      "figures": [
+        "2-5"
+      ],
+      "tables": [],
+      "document_pages": [
+        120,
+        142,
+        144
+      ],
+      "pdf_pages": [
+        120,
+        142,
+        144
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-30"
     }
   ]
 }

@@ -33,6 +33,10 @@ B0 B1 B2 B3</code></pre>
 <p>因此被選取的位址範圍是 <code>0x80001002–0x80001005</code>，共四個 bytes，但兩筆 TLP 的 Data Payload 都仍有八個 bytes。Length 維持 2 DW，接收端不會因為部分 bytes 沒被選中，就把它們從封包裡刪掉。本例也未跨越 4-KB 邊界，BE 選取的資料連續；其他長度、對齊或非連續組合，須再依 §2.2.5.1 檢查。</p>
 <p>在本例的 Non-Flit 格式中，若改成 1 DW Request，Last DW BE 必須為 <code>0000b</code>；不能把本例的 <code>0011b</code> 直接沿用。這項規則接在 Figure 2-26 後，圖中的位置與周圍文字要一起讀。</p>
 </section>
+<section id="digest-check"><h2>TD 為 1，能確認接收端檢查過 ECRC 嗎？</h2>
+<p>只能先確認非 Flit 格式的 TLP 宣告帶有 Digest（尾端檢查欄位），還要檢查接收端能力與設定，才能判斷是否執行 ECRC（End-to-End CRC，端到端循環冗餘檢查）。沿用前面的 Non-Flit Memory Write：Header 為 12 bytes、Payload 為 8 bytes；若另設 TD=1，且沒有 Prefix，末尾的 Digest 再占 4 bytes，邏輯 TLP 共 24 bytes。這是作者依格式建立的模擬情境。</p>
+<p>先查 Figure 2-5 的 TD 與 Length：Length 描述 Payload 大小，Digest 不計入其中。接著讀 §2.2.3：TD 與實際 TLP 長度若不相符，屬於 Malformed TLP，錯誤與接收 Port 關聯。若接收端不支援 ECRC 檢查，規則要求忽略 Digest；轉送 Multicast TLP 且出口啟用 MC_Overlay 的中間接收端有另列例外，須查 §6.14.5。支援檢查時，繼續查 §2.7.1 的使用條件。</p>
+<p>不要把 TD=1 當成「檢查成功」的紀錄，也不要把 §2.2.3 的 Non-Flit TD 格式直接套到 Flit Mode。是否啟用與錯誤記錄，還需檢查實際接收元件及其 AER 設定。</p><p class="source-note">Base 6.0 §2.2.1.1、Figure 2-5（PDF／印刷 p.120）；§2.2.2–§2.2.3 <em>TLP Digest Rules - Non-Flit Mode Only</em>（pp.142、144）；§2.7.1 與 §6.14.5 提供後續條件。</p></section>
 <section id="mps-limits"><h2>同一個裝置的傳送與接收上限一定相同嗎？</h2>
 <p>不一定。MPS（Maximum Payload Size，TLP 資料負載大小上限）要分別從傳送 Function 與接收 Function 判斷。先查 Device Capabilities 的 <code>Max_Payload_Size Supported</code>、<code>Rx_MPS_Fixed</code>、<code>Mixed_MPS_Supported</code>，再查 Device Control 的 <code>Max_Payload_Size</code> 設定，最後回到 §2.2.2 判斷各欄位適用的條件。</p>
 <p>傳送端先算 <code>Tx_MPS_Limit</code>：單 Function 裝置使用該 Function 的設定；ARI（Alternative Routing-ID Interpretation，替代的 Function 識別方式）裝置使用 Function 0 的設定。非 ARI 多 Function 裝置各 Function 設定一致時使用共同值；不一致時使用由實作選定的 Function 的值。軟體不宜在不了解實作時設定不同值。</p>
