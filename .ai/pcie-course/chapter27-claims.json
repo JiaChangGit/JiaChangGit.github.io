@@ -553,6 +553,69 @@
       ],
       "status": "verified",
       "verified_on": "2026-10-29"
+    },
+    {
+      "id": "PCIE-CH27-014",
+      "claim": "ATS 結構、Capability 與 Control 的欄位、非 VF 零值、VF／PF 作用範圍及 STU。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "10.5.1",
+        "10.5.1.1",
+        "10.5.1.2",
+        "10.5.1.3",
+        "7.5.3.4"
+      ],
+      "document_pages": [
+        1513,
+        1514,
+        1515,
+        1516,
+        960
+      ],
+      "pdf_pages": [
+        1513,
+        1514,
+        1515,
+        1516,
+        960
+      ],
+      "figures": [
+        "10-29",
+        "10-30",
+        "10-31",
+        "10-32",
+        "7-25"
+      ],
+      "tables": [
+        "10-9",
+        "10-10",
+        "10-11",
+        "7-21"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-29"
+    },
+    {
+      "id": "PCIE-CH27-015",
+      "claim": "PRI 由 PF 提供共用介面時的 VF Capability 及 Requester ID、Response 目的 Function。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "10.5.2"
+      ],
+      "document_pages": [
+        1516
+      ],
+      "pdf_pages": [
+        1516
+      ],
+      "figures": [],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-29"
     }
   ]
 }

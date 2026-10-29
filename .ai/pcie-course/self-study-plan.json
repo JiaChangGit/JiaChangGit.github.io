@@ -1001,5 +1001,11 @@
     "location": "DOCS/pcie-course/chapter-27.html#pri-pasid-stop",
     "covered": "PASID 停止、Stop Marker、PRG Response 配對與錯誤，以及 Page Request Interface 的停止和資源條件。",
     "remaining": "裝置專屬停止通知、Host 緩衝與平台回收策略依平台文件確認；其他 Base 節次仍待逐節核對。"
+  },
+  "chapter_27_ats_config_audit": {
+    "status": "locally_verified",
+    "location": "DOCS/pcie-course/chapter-27.html#ats-capability-details",
+    "covered": "ATS Header、Capability 與 Control；Queue Depth 的非 VF 零值、VF/PF 關係及 STU 案例。",
+    "remaining": "AMA 具體值與 TPH、平台 IOMMU 行為仍需依相應規格及裝置平台文件確認；Base 其他節次持續核對。"
   }
 }

@@ -15912,10 +15912,12 @@
       "document_page": 1513,
       "pdf_page": 1513,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html"
+      ],
+      "review_note": "ATS 結構及 Endpoint、RCiEP、PF／VF 支援與啟用範圍已帶讀。"
     },
     {
       "section": "10.5.1.1",
@@ -15923,10 +15925,12 @@
       "document_page": 1514,
       "pdf_page": 1514,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html"
+      ],
+      "review_note": "ATS Header 的 ID、Version、Next Offset 與 Capability／Control 定位已帶讀。"
     },
     {
       "section": "10.5.1.2",
@@ -15934,10 +15938,12 @@
       "document_page": 1514,
       "pdf_page": 1514,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html"
+      ],
+      "review_note": "五個 Capability 欄位、零值與 VF／PF 範圍已帶讀。"
     },
     {
       "section": "10.5.1.3",
@@ -15945,10 +15951,12 @@
       "document_page": 1515,
       "pdf_page": 1515,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html"
+      ],
+      "review_note": "STU、AMAD、AMAE、Enable、預設與 PASID 控制條件已帶讀；AMA 各值的系統語意另查適用平台文件。"
     },
     {
       "section": "10.5.2",
@@ -15956,10 +15964,12 @@
       "document_page": 1516,
       "pdf_page": 1516,
       "planned_chapter": 27,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-27.html"
+      ],
+      "review_note": "已帶讀 Page Request Interface 的結構、獨立作用範圍與 PF/VF 共用及識別；各暫存器另見子節。"
     },
     {
       "section": "10.5.2.1",
