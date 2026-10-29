@@ -989,5 +989,11 @@
     "location": "DOCS/pcie-course/chapter-27.html#invalidate-scope",
     "covered": "Base 6.0 §§10.3.2–10.3.8 的完成、佇列、重疊、隱含事件與 PASID 失效範圍。",
     "remaining": "平台 IOMMU 與 ATS 停用／重用的實作依據仍需依平台文件確認；其他 Base 節次仍需逐節核對。"
+  },
+  "chapter_19_l0p_audit": {
+    "status": "locally_verified",
+    "location": "DOCS/pcie-course/chapter-19.html#l0p-case",
+    "covered": "L0p 能力、控制、x8 至 x4 Request／Ack、FLIT DLLP 寬度編碼與退出延遲。",
+    "remaining": "優先請求競爭、重試時間、升寬逐 Lane、其他控制欄位與平台政策仍須依原文及裝置資料確認；全 Base 逐節核對尚未完成。"
   }
 }

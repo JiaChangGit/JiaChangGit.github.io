@@ -2,6 +2,21 @@
 import unittest
 from scripts.validate_pcie_examples import result_tokens,validate_case,polling_gate_rows,differential_voltage_case,rx_calibration_case,margin_command_rows,power_budget_case,dpa_profile_case,ltr_switch_case,tph_table_case,ptm_dialog_case,ptm_config_case,sriov_resource_case,vf_enable_case,ats_read_case,invalidate_reply_case,pri_group_case
 
+class L0pManagementTests(unittest.TestCase):
+    def test_request_and_ack_use_distinct_width_fields(self):
+        self.assertEqual(result_tokens('l0p_management',dict(configured_width=8,target_width=4,priority=0)),
+                         ['28 00 04 04','28 00 06 40','010b','0100b'])
+
+    def test_invalid_downsize_is_rejected(self):
+        with self.assertRaises(ValueError):
+            result_tokens('l0p_management',dict(configured_width=4,target_width=8,priority=0))
+
+    def test_wrong_ack_width_position_is_detected(self):
+        case=dict(section='l0p-dllp',model='l0p_management',
+                  inputs=dict(configured_width=8,target_width=4,priority=0))
+        text='<section id="l0p-dllp">28 00 04 04 28 00 06 04 010b 0100b</section>'
+        self.assertIn('28 00 06 40',validate_case(case,text))
+
 class TeachingArithmeticTest(unittest.TestCase):
     def test_one_dw_rejects_last_enable(self):
         with self.assertRaises(ValueError):result_tokens('byte_enable',dict(length_dw=1,first_be=15,last_be=1))

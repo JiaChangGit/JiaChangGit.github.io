@@ -2737,13 +2737,15 @@
       "document_page": 448,
       "pdf_page": 448,
       "planned_chapter": 19,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [
         "PCIE-CH10-STATES-001",
         "PCIE-CH8-TRAINING-001"
       ],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-19.html"
+      ],
+      "review_note": "以 Figure 3-15、Table 4-44 帶讀 Request、Ack、寬度編碼與保留值；其餘未展示的分支仍須依原表查詢。"
     },
     {
       "section": "4.2.6.8",
@@ -4835,12 +4837,14 @@
       "document_page": 626,
       "pdf_page": 626,
       "planned_chapter": 23,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [
         "PCIE-CH10-ASPM-001"
       ],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-19.html"
+      ],
+      "review_note": "以兩端支援、Enable、寬度要求和 Local／Remote 延遲案例帶讀 L0p，Physical Layer 細節連回 §4.2.6.7。"
     },
     {
       "section": "5.4.1.3",

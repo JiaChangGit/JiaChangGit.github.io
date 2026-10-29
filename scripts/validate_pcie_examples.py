@@ -599,6 +599,18 @@ def result_tokens(model, x):
         return [f'{x["base"]+(x["ordinal"]-1)*x["aperture"]:X}h']
     if model=='rom':
         return [f'{x["image"]+x["pointer"]:X}h',f'{x["length_units"]*512:X}h',f'{x["image"]+x["length_units"]*512:X}h']
+    if model=='l0p_management':
+        # Device Control 3 and Table 4-44 use different width encodings.
+        widths={1:(0,1),2:(1,2),4:(2,4),8:(3,8),16:(4,0)}
+        configured=x['configured_width'];target=x['target_width'];priority=x['priority']
+        if configured not in widths or target not in widths or target>=configured or priority not in (0,1):
+            raise ValueError('Example requires a legal down-size and a one-bit priority')
+        register_width,dllp_width=widths[target]
+        request=[0x28,0,(priority<<4)|4,dllp_width]
+        ack=[0x28,0,6,dllp_width<<4]
+        return [' '.join(f'{v:02X}' for v in request),
+                ' '.join(f'{v:02X}' for v in ack),
+                f'{register_width:03b}b',f'{dllp_width:04b}b']
     if model=='capacity':
         raw=Fraction(x['gt_s']*x['lanes'],8)
         tlp=raw*Fraction(x['tlp_bytes'],x['flit_bytes'])
