@@ -269,6 +269,45 @@
       "tables": [],
       "status": "verified",
       "verified_on": "2026-10-29"
+    },
+    {
+      "id": "PCIE-CH14-MPS-LIMITS-001",
+      "claim": "Payload 傳送 Tx_MPS_Limit、接收 Rx_MPS_Limit 分別依單 Function、ARI、非 ARI 多 Function、Mixed_MPS_Supported 與 Rx_MPS_Fixed 條件判定；Flit-capable 欄位要求另查 Table 7-20。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.2",
+        "7.5.3.3",
+        "7.5.3.4"
+      ],
+      "figures": [
+        "7-24",
+        "7-25"
+      ],
+      "tables": [
+        "7-20",
+        "7-21"
+      ],
+      "document_pages": [
+        141,
+        142,
+        955,
+        958,
+        959,
+        960
+      ],
+      "pdf_pages": [
+        141,
+        142,
+        955,
+        958,
+        959,
+        960
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-30",
+      "notes": "案例為作者模擬；只分析選定條件，並非完整 §2.2.2 授課。"
     }
   ]
 }

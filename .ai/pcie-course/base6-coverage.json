@@ -627,10 +627,12 @@
       "document_page": 141,
       "pdf_page": 141,
       "planned_chapter": 14,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-14.html#mps-limits"
+      ],
+      "review_note": "已帶讀 payload 上限與欄位；AtomicOp 資料端序及其他例外需再按個別主題核對。"
     },
     {
       "section": "2.2.3",

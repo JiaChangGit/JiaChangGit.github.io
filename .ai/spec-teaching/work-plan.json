@@ -19,10 +19,10 @@
     "NVMe selected-series source and teaching review"
   ],
   "pending": [
-    "Base 6.0 detailed subsection coverage audit: 1090 unreviewed locators remain",
+    "Base 6.0 detailed subsection coverage audit: 1089 unreviewed locators remain",
     "Continue human review of the selected NVMe question bank, figure scenarios, and two reports; structural checks are not complete teaching verification"
   ],
-  "coverage_note": "38 ready PCIe topic lessons do not establish complete teaching of every Base 6.0 subsection; 234 guided locators and 1090 unreviewed locators are retained separately.",
+  "coverage_note": "38 ready PCIe topic lessons do not establish complete teaching of every Base 6.0 subsection; 235 guided locators and 1089 unreviewed locators are retained separately.",
   "self_study_revision": {
     "date": "2026-10-24",
     "policy": "Reference questions, classification and answer layouts are editorial inputs, not fixed requirements.",
