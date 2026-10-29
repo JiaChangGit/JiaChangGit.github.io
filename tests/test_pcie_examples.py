@@ -108,6 +108,19 @@ class PacketLayoutTest(unittest.TestCase):
                 self.assertEqual(ohc[0] & 0xf, prefix[0] & 0xf)
                 self.assertEqual(ohc[1:], prefix[1:])
 
+    def test_requester_id_capture_example_uses_destination_bdf(self):
+        bus, device, function = 3, 0, 0
+        requester_id = (bus << 8) | (device << 3) | function
+        self.assertEqual(requester_id, 0x0300)
+        course = Path(__file__).resolve().parents[1] / '.ai' / 'pcie-course'
+        for suffix in ('zh.html', 'post.zh.html', 'post.en.html'):
+            text = (course / ('chapter3.' + suffix)).read_text(encoding='utf-8')
+            match = re.search(r'<section id="requester-capture">(.*?)</section>', text, re.S)
+            self.assertIsNotNone(match, suffix)
+            self.assertIn('03:00.0', match.group(1))
+            self.assertIn(f'{requester_id:04X}h', match.group(1))
+            self.assertIn('04:00.0', match.group(1))
+
     def test_tag_table_ranges_follow_size_and_path(self):
         course = Path(__file__).resolve().parents[1] / '.ai' / 'pcie-course'
         range_5 = f'0–{(1 << 5) - 1}'

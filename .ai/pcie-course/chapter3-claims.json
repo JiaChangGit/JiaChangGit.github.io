@@ -457,6 +457,40 @@
       "status": "verified",
       "verified_on": "2026-10-28",
       "notes": "分別是不存在的目標與目標中未實作的 Register，不由單一軟體讀值判定原因。"
+    },
+    {
+      "id": "PCIE-CH3-RID-CAPTURE-001",
+      "claim": "一般 Function 從完成的 Type 0 Configuration Write 擷取 Bus/Device Number 用於自行發起的 Requester ID；首次 Configuration Write 之前不得發起 Non-Posted Request，Root Complex 存取系統開機裝置有例外。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.6.2",
+        "2.2.7.1",
+        "6.4"
+      ],
+      "document_pages": [
+        156,
+        157,
+        164,
+        165,
+        717,
+        718
+      ],
+      "pdf_pages": [
+        156,
+        157,
+        164,
+        165,
+        717,
+        718
+      ],
+      "figures": [
+        "2-33"
+      ],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-30"
     }
   ]
 }

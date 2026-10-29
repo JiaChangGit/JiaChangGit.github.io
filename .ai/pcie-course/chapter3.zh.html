@@ -81,6 +81,14 @@
 <p>Switch 內部是邏輯設定拓樸；本例沒有假設內部真的有另一條實體 PCIe Link，或每個 virtual Bridge 都要在實體線路上產生一份封包。這裡只描述規格要求的對外路由結果。</p>
 <details class="source-note"><summary>路由規則的來源</summary><p>Base 6.0 §7.3.2–§7.3.3，pp.912–913。Endpoint 對 Type 1 Configuration Request 依 UR 處理；Root Port／Switch 對有效的本地 Type 0 Request 則處理自身設定空間。本節沒有將 Type 0／Type 1 的角色延伸到所有其他 TLP。</p></details></section>
 
+<section id="requester-capture"><h2>裝置的 Requester ID 從哪裡來？</h2>
+<p>前一節沿路由找到 Endpoint；現在換到 Endpoint 自己發出要求的方向。Non-Flit Configuration Request 的 Figure 2-33 同時有 Requester ID 和 Destination ID：前者是這筆設定要求的發起者，後者指出要設定的 Function。兩者有不同角色，不能拿主機發起設定時的 Requester ID 當成 Endpoint 日後發起交易的身分。</p>
+<div class="example"><p><strong>【模擬資料】以下資料為教學用途建立，不代表特定硬體或平台。</strong>沿用一般非 ARI 的 Endpoint Function <code>03:00.0</code>，不使用 Shadow 或 Phantom Function。假設設定路徑已建立，主機送達一筆合法的 Type 0 Configuration Write，目標是這個 Function，並得到成功完成回覆。</p>
+<p>讀 §2.2.6.2：Function 必須從由它完成的 Type 0 Configuration Write 擷取 Bus 與 Device Number，並將擷取值用在它自身發起要求的 Requester ID。規格建議只在成功完成的要求上擷取；本例已假設成功。Function Number 仍是該 Function 的身分，因此本例正常組成的 Requester ID 是 <code>0300h</code>，不是主機那筆 Configuration Write 的 Requester ID。</p>
+<p>如果平台之後需要重新配置 Bus Number，先依 §6.4 完成相關工作停止與未完成交易的協調。假設新配置將同一 Function 設為 <code>04:00.0</code>，且它完成新的 Type 0 Configuration Write，Function 便需重新擷取新的 Bus／Device 值；後續自身發起的要求使用更新後的身分。本例不表示軟體可以在交易仍進行時直接改號。</p></div>
+<p>首次 Configuration Write 之前，Function 不得發起 Non-Posted Request（需要 Completion 的要求），因為回覆需要有效的 Requester ID。規格對 Root Complex 內的 Functions 存取系統開機裝置有例外；本例一般 Endpoint 不套用該例外。完成設定寫入後，仍須檢查 Bus Master Enable、資源與裝置初始化；取得身分本身不代表可以立即開始 DMA。</p>
+<p>ARI（Alternative Routing-ID Interpretation，替代路由識別方式）、Flit Mode Segment 與 Shadow Function 會改變部分識別或擷取規則，應查 §2.2.6.2 的相關條文，不套用本例的 BDF 拆解。</p>
+<p class="source">PCI Express Base 6.0 §2.2.6.2，文件頁／PDF 頁 156–157；§2.2.7.1、Figure 2-33，pp.164–165；§6.4 Device Synchronization，pp.717–718。</p></section>
 <section id="path-diagnosis"><h2>已知目標 BDF，讀取卻失敗時，先檢查哪一段？</h2>
 <p>沿用本章的拓撲，目標是 Endpoint 的 <code>03:00.1</code>。先找到連向它的分支，再由根部向下檢查每個 Bridge 的 Secondary／Subordinate Bus Number，確認目標 Bus 是否落在該分支的設定範圍。這裡的檢查順序是查閱方法，不代表硬體一定以這個時間順序處理。</p>
 <aside class="example"><strong>【模擬資料】從部分快照追查路徑</strong><p>假設平台允許使用 Bus 00–3F，正在管理此階層的軟體讀取相同時期的設定：Root Port 為 Secondary=01、Subordinate=02；通往目標的 Switch 與 Downstream A 的 Bus 設定尚未知。對 <code>03:00.1</code> 的 Configuration Read 沒取得可用資料。</p>
