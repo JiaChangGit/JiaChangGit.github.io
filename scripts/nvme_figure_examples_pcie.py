@@ -4,8 +4,8 @@ DATA = '''
 2|傳輸層次圖把 NVMe 操作與承載它的 PCIe 機制分開。|同一個 NVMe Read 可能涉及多次 PCIe 交易；不能把一個 TLP 直接當成一筆完整 NVMe 命令。
 3|PCIe 暫存器總覽把組態資訊、中斷能力與錯誤回報放在不同區域。|初始化時先找 BAR 與 capability list；讀 NVMe controller property 則走映射後的記憶體空間，兩者不是同一套 offset。
 4|Doorbell 依 queue 編號與 DSTRD 交錯排列。|先找 SQ0 Tail、CQ0 Head，再按 stride 找 SQ1 Tail、CQ1 Head；queue 編號每加 1 會跨過兩個 doorbell 位置。
-5|SQ Tail Doorbell 通知控制器主機已提交到哪個位置。|DSTRD＝0 時 stride＝4 bytes，SQ1 Tail offset＝1000h＋2×4＝1008h；寫入的是 tail index，不是命令 buffer 位址。
-6|CQ Head Doorbell 通知控制器哪些完成項目已被主機消耗。|DSTRD＝0 時 CQ1 Head offset＝1000h＋3×4＝100Ch；主機讀完 CQE 後推進 head，讓相應位置可再次使用。
+5|SQ Tail Doorbell 通知控制器主機已提交到哪個位置。|【模擬資料】DSTRD＝0 時 stride＝4 bytes，SQ1 Tail offset＝1000h＋2×4＝1008h；寫入的是 tail index，不是命令 buffer 位址。規格建議主機不要讀取 Doorbell；若讀取，回傳值由廠商決定。寫入不存在的 SQ Doorbell 則是未定義結果。
+6|CQ Head Doorbell 通知控制器哪些完成項目已被主機消耗。|【模擬資料】DSTRD＝0 時 CQ1 Head offset＝1000h＋3×4＝100Ch。假設 CQ 有 8 個項目，前次寫入 head=6，主機依序讀完項目 6、7、0 後寫入 head=1，控制器便可重新使用這 3 個位置；計算差值時須考慮環狀回繞。寫入不存在的 CQ Doorbell 會產生未定義結果。
 7|建立 CQ 時選擇其中斷向量，還要符合目前中斷模式能力。|IV＝3 指向量 3；若目前只啟用不足的向量數，不能只因欄位放得下 3 就認定有效。
 8|命令處理圖分開 SQ 取命令、資料交換與 CQ 回報結果。|追一次 Write：主機提交 SQE、控制器取得資料並處理、最後寫 CQE；doorbell 更新只代表提交位置改變。
 9|Pin、MSI 與多 MSI 模式的通知行為需要分別理解。|多個 CQ 共用一個通知來源時，主機可能需要檢查多個 CQ；中斷本身不攜帶每一筆 NVMe 完成結果。

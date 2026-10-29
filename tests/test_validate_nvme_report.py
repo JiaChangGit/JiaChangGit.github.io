@@ -36,6 +36,15 @@ class NvmeReportContractTest(unittest.TestCase):
             self.assertTrue(all(int(value) in {0, 4, 5} for value in selected))
         self.assertIn('直接以 PCIe 連接', LESSONS[45]['example'])
 
+    def test_pcie_transport_doorbell_example_wraps_queue_head(self):
+        from scripts.nvme_figure_examples_pcie import LESSONS
+
+        size, old_head, new_head = 8, 6, 1
+        released = (new_head - old_head) % size
+        self.assertEqual(released, 3)
+        self.assertIn('項目 6、7、0', LESSONS[6]['example'])
+        self.assertIn(f'{released} 個位置', LESSONS[6]['example'])
+
     def test_admin_io_overloaded_terms_use_command_context(self):
         from scripts.nvme_reader_terms import definitions
         for lang in ['zh','en']:
