@@ -698,6 +698,41 @@
       ],
       "status": "verified",
       "verified_on": "2026-10-29"
+    },
+    {
+      "id": "PCIE-CH27-018",
+      "claim": "Translation Completion 的 Exe、Priv、Global、有效 Requested 值及可選檢查。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "10.2.3",
+        "10.2.3.6",
+        "10.2.3.7",
+        "10.2.3.8"
+      ],
+      "document_pages": [
+        1485,
+        1486,
+        1489,
+        1490,
+        1491
+      ],
+      "pdf_pages": [
+        1485,
+        1486,
+        1489,
+        1490,
+        1491
+      ],
+      "figures": [
+        "10-14"
+      ],
+      "tables": [
+        "10-3"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-29"
     }
   ]
 }
