@@ -23,6 +23,7 @@
 <!-- /pcie-walk --></section>
 <section id="mapping"><h2>TC 與 VC 分別在哪裡決定？</h2>
 <p>TC（Traffic Class，流量類別）是 TLP 上的標籤，沿途保持相同；VC（Virtual Channel，虛擬通道）則由每一條 Link 的映射決定，用來對應佇列、緩衝與流量控制資源。§2.5.1 特別提醒：TLP 沒有 VC ID 欄位，接收端要依 TC/VC Map 找到該 TLP 所屬的 VC。</p>
+<p>先查 §2.2.6.6 的 Table 2-14：TC 是 3-bit 欄位，<code>000b</code> 代表所有 PCIe 裝置都必須支援的預設 TC0；<code>001b–111b</code> 代表 TC1–TC7，用於區分服務類別。實際的 TC 標記與 TC/VC 映射由系統軟體決定；TC 數字本身不保證特定頻寬或延遲。規格在這裡討論 PCIe fabric 內的服務，如何換成其他互連的服務政策則超出本規格的範圍。（Base 6.0 §2.2.6.6、Table 2-14，文件頁／PDF 頁 161。）</p>
 <p>先讀 Table 2-43（p.233）。在 VC0、VC1 這一列，右欄示範 TC0–TC6 對應 VC0、TC7 對應 VC1。這是一種配置範例；TC0 必須固定對應 VC0，其他受支援的 TC 則由軟體配置。同一個 TC 在一個 Port 或 Endpoint Function 內，只能映射到一個 VC。</p>
 <p>再看 Figure 2-88（p.234）的上半部：Endpoint 到 Switch 的 Link 只有 VC0，TC7 在這一段也走 VC0；Switch 到 Root Complex 的 Link 則把 TC7 對應到 VC1。TC7 的標籤沒有改變，改變的是各段使用的資源。必須一致的是同一條 Link 兩端的 VC ID 與映射，並非整個 Switch 的所有 Ports 都採同一份配置。</p>
 <p class="source">規格閱讀：§2.5 Virtual Channel (VC) Mechanism，pp.229–230；§2.5.1 Virtual Channel Identification (VC ID)，p.232；§2.5.2 TC to VC Mapping，Table 2-43 TC to VC Mapping Example，p.233；Figure 2-88 An Example of TC/VC Configurations，p.234。文件頁與 PDF 頁相同。</p></section>

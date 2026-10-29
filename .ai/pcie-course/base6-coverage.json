@@ -833,10 +833,14 @@
       "document_page": 161,
       "pdf_page": 161,
       "planned_chapter": 14,
-      "status": "unreviewed",
-      "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "status": "guided",
+      "existing_claim_candidates": [
+        "PCIE-CH16-TC-ENCODING-001"
+      ],
+      "teaching_locations": [
+        "chapter-16.html#mapping"
+      ],
+      "review_note": "依 §2.2.6.6 Table 2-14 與 Chapter 16 的映射案例，帶讀 TC 編碼、必備 TC0、逐 Link VC 資源、軟體配置及非 PCIe 互連邊界。"
     },
     {
       "section": "2.2.7",

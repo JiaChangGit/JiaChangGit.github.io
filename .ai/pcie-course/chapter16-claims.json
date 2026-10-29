@@ -185,6 +185,28 @@
       ],
       "status": "verified",
       "verified_on": "2026-10-28"
+    },
+    {
+      "id": "PCIE-CH16-TC-ENCODING-001",
+      "claim": "TC 為 3-bit 端到端標籤；TC0 是必備預設類別，TC1–TC7 是差異化服務類別，標記與 TC/VC 映射由系統軟體決定，非 PCIe 互連轉換不在本規格範圍。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.6.6"
+      ],
+      "document_pages": [
+        161
+      ],
+      "pdf_pages": [
+        161
+      ],
+      "figures": [],
+      "tables": [
+        "2-14"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-30"
     }
   ]
 }
