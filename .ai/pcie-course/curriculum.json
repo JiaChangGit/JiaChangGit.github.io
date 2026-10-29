@@ -750,12 +750,12 @@
       "number": 28,
       "title": "ACS、Peer-to-Peer 與 Multicast",
       "title_en": "ACS, Peer-to-Peer, and Multicast",
-      "question": "兩張卡在同一個 Switch 下，可以直接互相存取嗎？",
+      "question": "同一顆 Switch 內，直送、導引與多播如何由欄位決定？",
       "topics": [
-        "ACS 的能力、控制與請求轉送條件",
-        "Peer-to-Peer 的路由、隔離及平台前提",
-        "Multicast 的群組、位址窗口、轉送及阻擋",
-        "同一筆交易如何依條件走不同路徑"
+        "入口ACS、Port Number vector與Table 6-11的完整判讀",
+        "Request／Completion路徑、排序前提與ACS Violation",
+        "四個多播視窗、群組阻擋與兩個出口的完整案例",
+        "MC_Overlay地址改寫與ECRC處理"
       ],
       "prerequisites": [
         1,
@@ -769,8 +769,8 @@
         "PCIE-BASE-6.0"
       ],
       "publication_date": "2026-10-24",
-      "revision_date": "2026-10-24",
-      "teaching_revision": 2
+      "revision_date": "2026-10-29",
+      "teaching_revision": 3
     },
     {
       "number": 29,

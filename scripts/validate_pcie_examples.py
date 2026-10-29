@@ -14,6 +14,83 @@ import re
 
 ROOT=Path(__file__).resolve().parents[1]
 
+def acs_peer_decision(control, at, vector, target=2, requester=0x300,
+                      secondary=3, subordinate=3, completion=False, ro=False):
+    """An upstream peer packet at the example DSP; excludes enhanced ACS/FPB."""
+    if completion:
+        return 'Redirect' if control&8 and not ro else 'Direct'
+    if control&1 and not secondary <= requester>>8 <= subordinate:
+        return 'ACS Violation'
+    if control&2 and at != 0:return 'ACS Violation'
+    if control&64 and at == 2:return 'Direct'
+    if control&32:
+        if not vector&(1<<target):return 'Direct'
+        return 'Redirect' if control&4 else 'ACS Violation'
+    return 'Redirect' if control&4 else 'Direct'
+
+def acs_route_case(x):
+    """Decode the six independent, supported control snapshots in Chapter 28."""
+    cap=int(x['capability'],16);target=x['target_port'];size=cap>>8 or 256
+    if cap&127!=127 or not 0<=target<size:raise ValueError('Unsupported ACS case or vector index')
+    rows={}
+    for item in x['snapshots']:
+        control=int(item['control'],16);at=item['at'];vector=int(item['vector'],16)
+        if control&~127 or vector>>size or at not in (0,2):raise ValueError('Case exceeds basic ACS fields')
+        e=int(bool(control&32));r=int(bool(control&4));v=int(bool(vector&(1<<target)))
+        result=acs_peer_decision(control,at,vector,target,x['requester'],x['secondary'],x['subordinate'])
+        rows[item['id']]=[f'{control:04X}h',f'{at:02b}b',str(e),str(r),str(v),str(int(bool(control&64))),str(int(bool(control&2))),result]
+    return rows,[f'{cap:04X}h',f'{1<<target:08X}h']
+
+def multicast_setup(x):
+    cap=int(x['capability'],16);control=int(x['control'],16);raw=int(x['base_register'],16)
+    enabled=bool(control&0x8000);groups=(control&63)+1;index=raw&63;base=raw&~4095
+    if raw&0xfc0:raise ValueError('Reserved MC_Base_Address bits are nonzero')
+    if enabled and (index<12 or (control&63)>(cap&63)):
+        raise ValueError('Enabled Multicast index or group count is invalid')
+    if enabled and (base&((1<<(index+6))-1) or base+groups*(1<<index)>1<<64):
+        raise ValueError('Multicast base alignment or range is invalid')
+    return enabled,groups,index,base
+
+def multicast_packet(x,kind,address,at,block_all,block_untranslated):
+    """One Switch hit/block/replicate decision, not a full packet validator."""
+    enabled,groups,index,base=multicast_setup(x)
+    if not enabled or kind not in ('Memory Write','Address Routed Message') or not base<=address<base+groups*(1<<index):
+        return 'Unicast',None,[]
+    group=((address-base)>>index)&63
+    if block_all&(1<<group) or (at==0 and block_untranslated&(1<<group)):
+        return 'MC Blocked TLP',group,[]
+    outputs=[p['name'] for p in x['ports'] if not p['ingress'] and int(p['receive'],16)&(1<<group)]
+    return ' + '.join(outputs) if outputs else 'Silent drop',group,outputs
+
+def mc_overlay_address(address,raw):
+    """Equation 6-1: replace high bits only when Overlay Size is at least six."""
+    size=raw&63
+    return address if size<6 else (raw&~((1<<size)-1))|(address&((1<<size)-1))
+
+def multicast_case(x):
+    enabled,groups,index,base=multicast_setup(x);address=x['address']
+    result,group,outputs=multicast_packet(x,'Memory Write',address,2,0,0)
+    if group is None:raise ValueError('Main case must hit a Multicast Window')
+    config={'cap':['Multicast Capability','M+04h',x['capability'].upper()+'h'],
+            'control':['Multicast Control','M+06h',x['control'].upper()+'h'],
+            'base':['MC_Base_Address','M+08h',f'{int(x["base_register"],16):016X}h']}
+    ports={}
+    for port in x['ports']:
+        raw=int(port['overlay'],16)
+        if port['ingress']:outcome='No return'
+        elif port['name'] not in outputs:outcome='No copy'
+        else:
+            converted=mc_overlay_address(address,raw)
+            if not port['bar'][0]<=converted<port['bar'][1]:raise ValueError('Overlay misses recipient BAR')
+            outcome=f'{converted:08X}h'
+        ports[port['id']]=[port['name'],f'{int(port["receive"],16):016X}h','Yes' if port['ingress'] else 'No',f'{raw:016X}h',outcome]
+    outcomes={}
+    for item in x['packets']:
+        ba=int(item['block_all'],16);bu=int(item['block_untranslated'],16)
+        outcome,_,_=multicast_packet(x,item['kind'],item['address'],item['at'],ba,bu)
+        outcomes[item['id']]=[item['kind'],f'{item["address"]:08X}h',f'{item["at"]:02b}b',f'{ba:016X}h',f'{bu:016X}h',outcome]
+    return config,ports,outcomes,[f'{base:08X}h–{base+groups*(1<<index)-1:08X}h',f'{address&((1<<index)-1):X}h']
+
 def ats_read_case(x):
     """One PASID, 4-KiB, ordinary Read case; not a TA or permission manager."""
     pc=int(x['pasid_cap'],16);control=int(x['pasid_control'],16)
@@ -542,6 +619,24 @@ def normalized(text):
     return re.sub(r'[\s,，]','',text).casefold()
 
 def validate_case(case, text):
+    if case['model'] in ('acs_route','multicast'):
+        missing=[]
+        if case['model']=='acs_route':
+            rows,tokens=acs_route_case(case['inputs']);groups=[('data-acs-route',rows,None)]
+            passage=normalized(section_text(text,'registers'))
+        else:
+            config,ports,outcomes,tokens=multicast_case(case['inputs'])
+            groups=[('data-mc-config',config,slice(0,3)),('data-mc-port',ports,None),('data-mc-outcome',outcomes,None)]
+            passage=normalized(section_text(text,'multicast'))
+        missing.extend(t for t in tokens if normalized(t) not in passage)
+        for attr,rows,selection in groups:
+            for name,expected in rows.items():
+                row=re.search(r'<tr\b[^>]*'+attr+'="'+name+r'"[^>]*>(.*?)</tr>',text,re.S)
+                cells=re.findall(r'<td\b[^>]*>(.*?)</td>',row.group(1),re.S) if row else []
+                if selection:cells=cells[selection]
+                actual=[normalized(unescape(re.sub(r'<[^>]+>',' ',c))) for c in cells]
+                if actual!=[normalized(c) for c in expected]:missing.append(attr+' '+name+': derived cells do not match')
+        return missing
     if case['model'] in ('ats_read','invalidate_reply','pri_group'):
         missing=[]
         if case['model']=='ats_read':

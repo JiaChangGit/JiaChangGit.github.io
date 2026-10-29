@@ -355,4 +355,55 @@ class AtsPriTeachingTest(unittest.TestCase):
         wrong=text.replace('data-pri-credit="reply"><td>stage</td><td>0</td><td>0</td><td>3','data-pri-credit="reply"><td>stage</td><td>0</td><td>0</td><td>2')
         self.assertTrue(validate_case(case,wrong))
 
+class AcsMulticastTeachingTest(unittest.TestCase):
+    def setUp(self):
+        import copy,json
+        from scripts.validate_pcie_examples import ROOT
+        cases=json.loads((ROOT/'.ai/pcie-course/advanced-examples.json').read_text())['cases']
+        self.mc=copy.deepcopy(next(x['inputs'] for x in cases if x['model']=='multicast'))
+    def test_vector_zero_can_allow_direct_route_with_redirect_enabled(self):
+        from scripts.validate_pcie_examples import acs_peer_decision
+        self.assertEqual(acs_peer_decision(0x3d,0,0),'Direct')
+        self.assertEqual(acs_peer_decision(0x3d,0,4),'Redirect')
+        self.assertEqual(acs_peer_decision(0x39,0,4),'ACS Violation')
+    def test_translation_blocking_precedes_direct_translated_p2p(self):
+        from scripts.validate_pcie_examples import acs_peer_decision
+        self.assertEqual(acs_peer_decision(0x7d,2,4),'Direct')
+        self.assertEqual(acs_peer_decision(0x7f,2,4),'ACS Violation')
+    def test_source_validation_and_completion_have_separate_rules(self):
+        from scripts.validate_pcie_examples import acs_peer_decision
+        self.assertEqual(acs_peer_decision(0x1d,0,4,requester=0x600),'ACS Violation')
+        self.assertEqual(acs_peer_decision(0x7f,2,4,requester=0x600,completion=True),'Redirect')
+        self.assertEqual(acs_peer_decision(0x7f,2,4,completion=True,ro=True),'Direct')
+    def test_multicast_upper_bound_and_non_posted_read_remain_unicast(self):
+        from scripts.validate_pcie_examples import multicast_packet
+        self.assertEqual(multicast_packet(self.mc,'Memory Write',0x80003ffc,2,0,0)[1],3)
+        self.assertEqual(multicast_packet(self.mc,'Memory Write',0x80004000,2,0,0)[0],'Unicast')
+        self.assertEqual(multicast_packet(self.mc,'Memory Read',0x80002500,0,4,4)[0],'Unicast')
+    def test_blocking_differs_from_silent_drop_and_never_returns_to_ingress(self):
+        from scripts.validate_pcie_examples import multicast_packet
+        self.assertEqual(multicast_packet(self.mc,'Memory Write',0x80002500,0,0,4)[0],'MC Blocked TLP')
+        for port in self.mc['ports']:
+            if not port['ingress']:port['receive']='0'
+        self.assertEqual(multicast_packet(self.mc,'Memory Write',0x80002500,2,0,0)[0],'Silent drop')
+    def test_overlay_preserves_low_bits_and_detects_wrong_published_output(self):
+        from scripts.validate_pcie_examples import multicast_case,mc_overlay_address
+        self.assertEqual(mc_overlay_address(0x80002500,0x9000000c),0x90000500)
+        self.assertEqual(mc_overlay_address(0x80002500,0x90000005),0x80002500)
+        config,ports,outcomes,tokens=multicast_case(self.mc)
+        text='<section id="multicast">'+';'.join(tokens)+'</section>'+''.join('<tr '+attr+'="'+n+'">'+''.join('<td>'+v+'</td>' for v in row)+'</tr>' for attr,rows in [('data-mc-config',config),('data-mc-port',ports),('data-mc-outcome',outcomes)] for n,row in rows.items())
+        case=dict(model='multicast',inputs=self.mc)
+        self.assertEqual(validate_case(case,text),[])
+        self.assertTrue(validate_case(case,text.replace('<td>90000500h</td>','<td>90002500h</td>')))
+    def test_invalid_enabled_group_count_index_and_base_are_rejected(self):
+        from scripts.validate_pcie_examples import multicast_setup
+        for key,value in [('control','8004'),('base_register','8000000B'),('base_register','8000100C')]:
+            altered=dict(self.mc);altered[key]=value
+            with self.assertRaises(ValueError):multicast_setup(altered)
+    def test_zero_group_encoding_still_configures_one_group(self):
+        from scripts.validate_pcie_examples import multicast_setup,multicast_packet
+        self.mc.update(capability='8000',control='8000')
+        self.assertEqual(multicast_setup(self.mc)[1],1)
+        self.assertEqual(multicast_packet(self.mc,'Memory Write',0x80001000,2,0,0)[0],'Unicast')
+
 if __name__=='__main__':unittest.main()

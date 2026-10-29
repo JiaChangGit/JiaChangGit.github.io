@@ -917,5 +917,17 @@
       "MSG-008"
     ],
     "remaining": "全部大頁／多項TranslationCompletion、AMA、GlobalMapping、PASID停止與StopMarker、Shadow／VF共享併發及平台IOMMU實作仍須深入；未宣稱全Base完成。"
+  },
+  "chapter_28_revision": {
+    "status": "locally_verified",
+    "location": "DOCS/pcie-course/chapter-28.html#request-case",
+    "covered": "入口Port的ACS設定與向量、Table6-11分支、TB優先、回程與RC前提，以及四窗多播的成員、阻擋、Overlay地址及ECRC帶讀。",
+    "references": [
+      "ROUTE-007",
+      "INTEGRATION-008",
+      "ADV-002",
+      "ORDER-008"
+    ],
+    "remaining": "ACS Enhanced Capability完整分支、ARI Function Groups、RC特殊反射、多Function與VF多播共享、所有多播重配置競態與平台安全部署仍須深入；未宣稱全Base完成。"
   }
 }

@@ -2,51 +2,80 @@
   "schema_version": 1,
   "course": "pcie-course",
   "chapter": 28,
-  "updated": "2026-10-24",
+  "updated": "2026-10-29",
   "claims": [
     {
       "id": "PCIE-CH28-001",
-      "claim": "ACS控制點與正常阻擋導引目的。",
+      "claim": "ACS入口來源與轉譯檢查、作用範圍及Completion例外。",
       "kind": "specification",
       "source_id": "PCIE-BASE-6.0",
       "revision": "6.0",
       "sections": [
-        "6.12"
+        "6.12",
+        "6.12.1",
+        "6.12.1.1",
+        "6.12.1.2",
+        "6.12.1.3"
       ],
       "document_pages": [
-        751
+        751,
+        752,
+        753,
+        754,
+        755,
+        756
       ],
       "pdf_pages": [
-        751
+        751,
+        752,
+        753,
+        754,
+        755,
+        756
       ],
       "figures": [],
       "tables": [],
       "status": "verified",
-      "verified_on": "2026-10-24"
+      "verified_on": "2026-10-29"
     },
     {
       "id": "PCIE-CH28-002",
-      "claim": "導引方向、要求完成分工與P2P能力邊界。",
+      "claim": "Direct、Egress與Redirect交互作用，完整導引路徑、排序及ACS Violation的CA與記錄。",
       "kind": "specification",
       "source_id": "PCIE-BASE-6.0",
       "revision": "6.0",
       "sections": [
-        "6.12.1"
+        "6.12.2",
+        "6.12.3",
+        "6.12.5",
+        "6.12.6",
+        "6.12.6.1",
+        "6.12.6.2"
       ],
       "document_pages": [
-        753
+        757,
+        758,
+        759,
+        760,
+        761
       ],
       "pdf_pages": [
-        753
+        757,
+        758,
+        759,
+        760,
+        761
       ],
       "figures": [],
-      "tables": [],
+      "tables": [
+        "6-11"
+      ],
       "status": "verified",
-      "verified_on": "2026-10-24"
+      "verified_on": "2026-10-29"
     },
     {
       "id": "PCIE-CH28-003",
-      "claim": "多播群組視窗、命中、公式與ACS例外。",
+      "claim": "Multicast命中、群組公式、半開範圍與ACS Source Validation例外。",
       "kind": "specification",
       "source_id": "PCIE-BASE-6.0",
       "revision": "6.0",
@@ -56,18 +85,165 @@
       ],
       "document_pages": [
         765,
-        766
+        766,
+        767,
+        768
       ],
       "pdf_pages": [
         765,
-        766
+        766,
+        767,
+        768
       ],
       "figures": [
         "6-14"
       ],
       "tables": [],
       "status": "verified",
-      "verified_on": "2026-10-24"
+      "verified_on": "2026-10-29"
+    },
+    {
+      "id": "PCIE-CH28-004",
+      "claim": "多播結構配置、群組數減一編碼、一致性、成員出口與阻擋及靜默丟棄。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.14.1",
+        "6.14.2",
+        "6.14.3",
+        "6.14.4",
+        "7.9.11",
+        "7.9.11.1",
+        "7.9.11.2",
+        "7.9.11.3",
+        "7.9.11.4",
+        "7.9.11.5",
+        "7.9.11.6",
+        "7.9.11.7"
+      ],
+      "document_pages": [
+        766,
+        767,
+        768,
+        769,
+        1230,
+        1231,
+        1232,
+        1233,
+        1234,
+        1235
+      ],
+      "pdf_pages": [
+        766,
+        767,
+        768,
+        769,
+        1230,
+        1231,
+        1232,
+        1233,
+        1234,
+        1235
+      ],
+      "figures": [
+        "7-272",
+        "7-273",
+        "7-274",
+        "7-275",
+        "7-276",
+        "7-277",
+        "7-278",
+        "7-279"
+      ],
+      "tables": [
+        "7-243",
+        "7-244",
+        "7-245",
+        "7-246",
+        "7-247",
+        "7-248",
+        "7-249"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-29"
+    },
+    {
+      "id": "PCIE-CH28-005",
+      "claim": "MC_Overlay出口地址變換與ECRC保留、移除、重算或反相規則。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.14.5",
+        "7.9.11.8"
+      ],
+      "document_pages": [
+        769,
+        770,
+        1236
+      ],
+      "pdf_pages": [
+        769,
+        770,
+        1236
+      ],
+      "figures": [
+        "7-280"
+      ],
+      "tables": [
+        "6-12",
+        "7-250"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-29"
+    },
+    {
+      "id": "PCIE-CH28-006",
+      "claim": "ACS結構、ID版本、Capability與Control、VectorSize與PortNumber索引。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.7.11",
+        "7.7.11.1",
+        "7.7.11.2",
+        "7.7.11.3",
+        "7.7.11.4"
+      ],
+      "document_pages": [
+        1083,
+        1084,
+        1085,
+        1086,
+        1087,
+        1088,
+        1089
+      ],
+      "pdf_pages": [
+        1083,
+        1084,
+        1085,
+        1086,
+        1087,
+        1088,
+        1089
+      ],
+      "figures": [
+        "7-131",
+        "7-132",
+        "7-133",
+        "7-134",
+        "7-135"
+      ],
+      "tables": [
+        "7-116",
+        "7-117",
+        "7-118",
+        "7-119"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-29"
     }
   ]
 }
