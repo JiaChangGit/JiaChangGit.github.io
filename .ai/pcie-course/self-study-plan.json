@@ -929,5 +929,11 @@
       "ORDER-008"
     ],
     "remaining": "ACS Enhanced Capability完整分支、ARI Function Groups、RC特殊反射、多Function與VF多播共享、所有多播重配置競態與平台安全部署仍須深入；未宣稱全Base完成。"
+  },
+  "chapter_29_revision": {
+    "status": "locally_verified",
+    "location": "DOCS/pcie-course/chapter-29.html#resize",
+    "covered": "Resizable BAR能力與設定、資源範圍及重設順序，EA entry與範圍算例，Hierarchy ID與FPB閱讀入口。",
+    "remaining": "VF Resizable BAR完整資源佈局、EA其他Properties和64-bit entry、FPB各種vector與重配置、Hierarchy ID完整編碼仍待深入；未宣稱Base 6.0全規格完成。"
   }
 }

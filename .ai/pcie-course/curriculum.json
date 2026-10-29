@@ -776,7 +776,7 @@
       "number": 29,
       "title": "Enhanced Allocation、Resizable BAR 與拓樸轉譯",
       "title_en": "Enhanced Allocation, Resizable BARs, and Topology Translation",
-      "question": "裝置支援很大的 BAR，系統就一定能分配嗎？",
+      "question": "如何從 BAR 支援大小，走到完整資源配置？",
       "topics": [
         "Enhanced Allocation 的資源描述與有效欄位",
         "Resizable BAR 的支援大小、選擇與重新配置",
@@ -794,8 +794,8 @@
         "PCIE-BASE-6.0"
       ],
       "publication_date": "2026-10-24",
-      "revision_date": "2026-10-24",
-      "teaching_revision": 2
+      "revision_date": "2026-10-29",
+      "teaching_revision": 3
     },
     {
       "number": 30,
