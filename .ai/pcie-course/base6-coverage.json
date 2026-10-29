@@ -1316,12 +1316,14 @@
         "PCIE-CH5-COMPLETION-001",
         "PCIE-CH5-SPLIT-001",
         "PCIE-CH5-BOUNDARY-001",
-        "PCIE-CH5-EXAMPLE-001"
+        "PCIE-CH5-EXAMPLE-001",
+        "PCIE-CH15-MALFORMED-FC-001"
       ],
       "teaching_locations": [
-        "chapter-15.html"
+        "chapter-15.html",
+        "chapter-15.html#malformed-credit"
       ],
-      "review_note": "Read the cited pages and authored a connected explanation and worked example. Subsections require their own coverage review."
+      "review_note": "Read the cited pages and authored a connected explanation and worked example. Subsections require their own coverage review. 補充 Malformed 丟棄與 Receiver FC 追蹤條件，以及 Non-Flit 保留編碼的能力依賴。"
     },
     {
       "section": "2.3.1",

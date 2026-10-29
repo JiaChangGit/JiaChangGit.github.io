@@ -26,6 +26,13 @@
 <p>閱讀第一個判斷框時，留意 <strong>Ignoring Reserved Fields</strong>。接收端必須忽略 Reserved 欄位的值；封包中出現非零的 Reserved 值，並不能直接當成 Malformed TLP。至於有明確限制的格式欄位，仍須按各自的必要或可選檢查規則處理。這裡指標為 Reserved 的欄位，不包含 Fmt／Type 等有效欄位中的 Reserved 編碼；後者仍按適用模式的規則判斷。已判定為 Malformed 的 TLP 必須丟棄。</p>
 <p>確認是 Request 後，再接 Figure 2-83（p.213）：先判斷要求種類是否受支援，接著依該種類的規則執行。圖中虛線框是可選的 programming model 檢查；它允許特定裝置將違反自身存取限制的要求以 Completer Abort 處理，並非每筆要求都要依序走過的階段。這張圖提供分流，真正決定 CAS 或 DMWr 結果的細節，仍要回到 §6.15 或 §6.32。</p>
 <p class="source">規格閱讀：§2.3 Handling of Received TLPs，pp.204–206，Figure 2-81 Flowchart for Handling of Received TLPs，p.206；§2.3.1 Request Handling Rules，pp.208–213，Figure 2-83 Flowchart for Handling of Received Request，p.213。文件頁與 PDF 頁相同。</p></section>
+<section id="malformed-credit"><h2>封包格式錯誤時，接收端會怎麼處理 credit？</h2>
+<p>接續 Figure 2-81：接收端已從 Data Link Layer 收到 TLP，現在檢查交易層格式。<strong>所有被判定為 Malformed 的 TLP 都必須丟棄。</strong>接著讀 §2.3 旁邊的文字，才能知道 Receiver Flow Control（接收端流量控制）資訊是否更新；不能只看圖上的「Discard TLP」。</p>
+<div class="example"><p><strong>【模擬資料】以下資料為教學用途建立，不代表特定硬體或平台。</strong>兩筆互不相依的封包都已被判定為 Malformed。假設接收端已有各筆封包所需的 VC（Virtual Channel，虛擬通道）與緩衝區觀察資料。</p>
+<p>手機閱讀時，表格可以左右滑動。</p><div class="table-wrap"><table><thead><tr><th scope="col">接收端觀察</th><th scope="col">丟棄與 Flow Control 處理</th></tr></thead><tbody><tr><td>無法確定應釋放哪個 buffer，或 TLP 對應未初始化／停用的 VC</td><td>必須丟棄，且不得更新接收端的 Flow Control 資訊。</td></tr><tr><td>其他 Malformed TLP</td><td>仍必須丟棄；接收端可以選擇不更新 Flow Control 資訊。</td></tr></tbody></table></div>
+<p>第二列的「可以選擇不更新」不等於必須更新，也不等於每種裝置都選擇不更新。這些規則描述接收端追蹤資訊，不能只憑一次丟棄就推論實體 buffer 的全部狀態或傳送端已收到新的 credit。正常額度更新流程見 <a href="chapter-17.html">Chapter 17</a>。</p></div>
+<p>判定格式時，也要分清 Reserved 欄位和保留的編碼。在 Non-Flit Mode，若 Extended Fmt Field Supported=1，使用 Reserved 的 Fmt／Type 編碼須按 Malformed 處理；若該能力位為 0，對 Fmt[2]=1 的接收處理是 undefined（未定義）。Fmt[2]=0 且 Type 值未定義時，則須按 Malformed 處理。這與「接收端忽略 Reserved 欄位的值」是不同規則；Prefix 的位元拆解見 <a href="chapter-14.html#prefix-reading">Chapter 14</a>。</p>
+<p class="source">PCI Express Base 6.0 §2.3、Figure 2-81，文件頁／PDF 頁 204–206；§7.5.3.15、Table 7-33，p.992。個別格式是否需要檢查，仍應查其對應條文。</p></section>
 <section id="atomic"><h2>要更新共用計數器或比較後交換，先確認哪些能力？</h2>
 <p>AtomicOp（Atomic Operation，原子操作）在一次交易中讀取目標、依操作更新目標，再回傳原值。這段讀改寫不可被其他對該位置的存取拆開觀察。先用 §6.15 確認操作語意，再沿實際路徑查看各元件。</p>
 <div class="table-wrap"><table><thead><tr><th scope="col">操作</th><th scope="col">Request 提供的資料</th><th scope="col">正常完成時的動作與回傳值</th></tr></thead><tbody>

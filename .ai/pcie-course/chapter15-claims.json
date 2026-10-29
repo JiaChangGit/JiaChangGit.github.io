@@ -187,6 +187,37 @@
       ],
       "status": "verified",
       "verified_on": "2026-10-28"
+    },
+    {
+      "id": "PCIE-CH15-MALFORMED-FC-001",
+      "claim": "所有收到的 Malformed TLP 須丟棄；無法確定釋放的 buffer 或對應未初始化／停用 VC 時不得更新 Receiver FC 資訊，其他情況可選擇不更新。Non-Flit 的保留編碼處理依 Extended Fmt 支援及 Fmt[2] 而異。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.3",
+        "7.5.3.15"
+      ],
+      "document_pages": [
+        204,
+        205,
+        206,
+        992
+      ],
+      "pdf_pages": [
+        204,
+        205,
+        206,
+        992
+      ],
+      "figures": [
+        "2-81"
+      ],
+      "tables": [
+        "7-33"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-30"
     }
   ]
 }
