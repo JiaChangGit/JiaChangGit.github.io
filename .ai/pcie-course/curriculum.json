@@ -651,27 +651,26 @@
     {
       "number": 24,
       "title": "TPH、LTR 與 OBFF 的平台協調",
-      "title_en": "TPH, LTR, and OBFF",
-      "question": "裝置如何告訴平台「資料會怎麼用、多久需要服務」？",
+      "title_en": "TPH, LTR, and OBFF Platform Coordination",
+      "question": "資料用途、可等待的延遲與平台活動時窗，分別要查哪條規格路線？",
       "topics": [
-        "TPH 的提示、Steering Tag 與資料移動位置",
-        "LTR 的延遲容忍回報、編碼及更新",
-        "OBFF 的通知模式、條件與緩衝區協作",
-        "支援、配置、目前狀態與效益的證據"
+        "TPH 模式、Steering Tag 表格與實際選取案例",
+        "LTR 設定上限與訊息欄位的差異",
+        "Switch 彙整、延遲更新與舊需求失效",
+        "OBFF 訊號選擇、Variation 與接收條件"
       ],
       "prerequisites": [
-        6,
+        1,
         10,
-        16,
-        23
+        16
       ],
       "status": "ready",
       "sources": [
         "PCIE-BASE-6.0"
       ],
       "publication_date": "2026-10-24",
-      "revision_date": "2026-10-24",
-      "teaching_revision": 2
+      "revision_date": "2026-10-29",
+      "teaching_revision": 3
     },
     {
       "number": 25,

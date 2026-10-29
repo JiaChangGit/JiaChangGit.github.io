@@ -20,6 +20,8 @@
     {"chapter":37,"section":"flight","model":"flight","inputs":{"bytes_s":16000000000,"bytes_per_request":512,"delay_us":2,"limited_requests":8}},
     {"chapter":22,"section":"margin-example","model":"margin_command","inputs":{"gt_s":16,"port_type":"upstream","receiver":6,"caps":21,"timing_steps":32,"max_timing_percent":25,"limit":5,"right_steps":5,"errors":2}},
     {"chapter":23,"section":"budget-entries","model":"power_budget","inputs":{"entries":["000181B4","00058132","000381C8","0007813C"]}},
-    {"chapter":23,"section":"dpa-transition","model":"dpa_profile","inputs":{"capability":"08031002","latency_indicator":"00000004","allocation":[26,18,10],"high":0,"low":2}}
+    {"chapter":23,"section":"dpa-transition","model":"dpa_profile","inputs":{"capability":"08031002","latency_indicator":"00000004","allocation":[26,18,10],"high":0,"low":2}},
+    {"chapter":24,"section":"ltr-aggregate","model":"ltr_switch","inputs":{"switch_ns":1024,"sources":[{"id":"a","snoop":"880A","nosnoop":"080A"},{"id":"b","snoop":"8C01","nosnoop":"8808"}]}},
+    {"chapter":24,"section":"tph-table","model":"tph_table","inputs":{"capability":"00030203","entries":[49,66,83,100],"vector":2,"enabled_vectors":4}}
   ]
 }

@@ -1,6 +1,6 @@
 """Boundary checks and a deliberately incorrect published-result regression."""
 import unittest
-from scripts.validate_pcie_examples import result_tokens,validate_case,polling_gate_rows,differential_voltage_case,rx_calibration_case,margin_command_rows,power_budget_case,dpa_profile_case
+from scripts.validate_pcie_examples import result_tokens,validate_case,polling_gate_rows,differential_voltage_case,rx_calibration_case,margin_command_rows,power_budget_case,dpa_profile_case,ltr_switch_case,tph_table_case
 
 class TeachingArithmeticTest(unittest.TestCase):
     def test_one_dw_rejects_last_enable(self):
@@ -199,5 +199,36 @@ class PowerAllocationTeachingTest(unittest.TestCase):
     def test_nonmonotonic_allocation_array_is_rejected(self):
         self.dpa['allocation']=[26,10,18]
         with self.assertRaises(ValueError):dpa_profile_case(self.dpa)
+
+class PlatformHintTeachingTest(unittest.TestCase):
+    def setUp(self):
+        self.ltr=dict(switch_ns=1024,sources=[dict(id='a',snoop='880A',nosnoop='080A'),dict(id='b',snoop='8C01',nosnoop='8808')])
+        self.tph=dict(capability='00030203',entries=[49,66,83,100],vector=2,enabled_vectors=4)
+    def test_each_traffic_class_has_its_own_minimum_and_switch_deduction(self):
+        fields,aggregate=ltr_switch_case(self.ltr)
+        self.assertEqual(fields['a-nosnoop'][-1],'Ignored')
+        self.assertEqual(aggregate['snoop'],['Snoop','10,240 ns','1,024 ns','9,216 ns','8809h'])
+        self.assertEqual(aggregate['nosnoop'][-2:],['7,168 ns','8807h'])
+        text=''.join('<tr '+attribute+'="'+name+'">'+''.join('<td>'+v+'</td>' for v in row)+'</tr>' for attribute,rows in [('data-ltr-field',fields),('data-ltr-aggregate',aggregate)] for name,row in rows.items())
+        case=dict(model='ltr_switch',inputs=self.ltr)
+        self.assertEqual(validate_case(case,text),[])
+        self.assertTrue(validate_case(case,text.replace('<td>9,216 ns</td>','<td>10,240 ns</td>')))
+    def test_invalidated_source_does_not_retain_its_requirement(self):
+        self.ltr['sources'].pop()
+        self.assertEqual(ltr_switch_case(self.ltr)[1]['nosnoop'],['No requirement','0000h'])
+    def test_zero_requirement_value_produces_canonical_zero_upstream(self):
+        self.ltr['sources'][0]['snoop']='8800'
+        self.assertEqual(ltr_switch_case(self.ltr)[1]['snoop'][-2:],['0 ns','8000h'])
+        self.ltr['sources'][0]['snoop']='980A'  # Not Permitted scale is effectively infinite for this calculation.
+        self.assertEqual(ltr_switch_case(self.ltr)[1]['snoop'][-2:],['31,744 ns','881Fh'])
+    def test_vector_index_is_not_a_byte_offset(self):
+        self.assertEqual(tph_table_case(self.tph)['entry'],['T+10h','0053h'])
+        self.tph['enabled_vectors']=2
+        with self.assertRaises(ValueError):tph_table_case(self.tph)
+    def test_table_size_and_upper_tag_byte_obey_this_mode(self):
+        self.tph['entries'][2]=0x153
+        with self.assertRaises(ValueError):tph_table_case(self.tph)
+        self.tph['entries']=[49,66,83]
+        with self.assertRaises(ValueError):tph_table_case(self.tph)
 
 if __name__=='__main__':unittest.main()

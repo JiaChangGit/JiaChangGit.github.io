@@ -1,53 +1,55 @@
 {
   "walk_id": "ch24-overview",
-  "title": "裝置如何告訴平台「資料會怎麼用、多久需要服務」？",
-  "summary_html": "<p>TPH（TLP Processing Hints，交易處理提示）補充資料的預期用途；LTR（Latency Tolerance Reporting，延遲容忍度回報）描述服務需求；OBFF（Optimized Buffer Flush/Fill，最佳化緩衝排空／填入）由平台提示適合集中活動的時窗。先看方向，再看各自的欄位與限制。</p>",
-  "svg": "<svg viewBox=\"0 0 900 420\" role=\"img\" aria-labelledby=\"ch24-zh-t ch24-zh-d\"><title id=\"ch24-zh-t\">本章角色與事件</title><desc id=\"ch24-zh-d\">三種提示的方向與用途不同。</desc><g data-walk-target=\"ep\"><rect x=\"30\" y=\"50\" width=\"300\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"180.0\" y=\"79\" text-anchor=\"middle\" font-size=\"16\">Endpoint：知道工作需求</text></g><g data-walk-target=\"rc\"><rect x=\"565\" y=\"50\" width=\"300\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"715.0\" y=\"79\" text-anchor=\"middle\" font-size=\"16\">Root Complex：平台資源</text></g><g data-walk-target=\"tph\"><rect x=\"30\" y=\"300\" width=\"350\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"205.0\" y=\"329\" text-anchor=\"middle\" font-size=\"16\">TPH：資料預期如何使用</text></g><g data-walk-target=\"ltr\"><rect x=\"510\" y=\"300\" width=\"355\" height=\"44\" rx=\"10\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"687.5\" y=\"329\" text-anchor=\"middle\" font-size=\"16\">LTR：可容忍的服務延遲</text></g><g data-walk-target=\"a\"><path d=\"M330 85 L565 85\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"565,85 555.0,90.0 555.0,80.0\" fill=\"var(--accent)\"/><text x=\"447.5\" y=\"75.0\" text-anchor=\"middle\" font-size=\"16\">TPH／LTR 向平台</text></g><g data-walk-target=\"b\"><path d=\"M565 200 L330 200\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"330,200 340.0,195.0 340.0,205.0\" fill=\"var(--accent)\"/><text x=\"447.5\" y=\"190.0\" text-anchor=\"middle\" font-size=\"16\">OBFF 提示活動時窗</text></g><g data-walk-target=\"c\"><path d=\"M205 300 L180 118\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"180,118 186.31433377221953,127.22654805509666 176.4073618192544,128.58739585083362\" fill=\"var(--accent)\"/><text x=\"192.5\" y=\"199.0\" text-anchor=\"middle\" font-size=\"16\">用途</text></g><g data-walk-target=\"d\"><path d=\"M685 300 L715 118\" stroke=\"var(--accent)\" stroke-width=\"2\" fill=\"none\"/><polygon points=\"715,118 718.3070225032227,128.6800562808994 708.440168477214,127.05365177111779\" fill=\"var(--accent)\"/><text x=\"700.0\" y=\"199.0\" text-anchor=\"middle\" font-size=\"16\">需求</text></g></svg>",
-  "order_html": "<p>圖把三種機制放在同一對角色間比較，並不表示每筆交易依序執行全部提示。</p>",
-  "caption_html": "<p>作者依 Base 6.0 繪製的教學示意；省略與本章無關的交換。</p>",
+  "title": "三種提示分別在告訴誰、提供什麼資訊？",
+  "summary_html": "<p>裝置知道接下來的工作，平台知道中央資源何時適合活動。TPH（TLP Processing Hints，交易處理提示）補充資料用途；LTR（Latency Tolerance Reporting，延遲容忍度回報）提供服務需求；OBFF（Optimized Buffer Flush/Fill，最佳化緩衝排空／填入）把平台活動時窗告訴裝置。三者可各自實作與啟用，不必一起使用。</p>",
+  "svg": "<svg viewBox=\"0 0 900 310\" style=\"min-width:640px\" role=\"img\" aria-labelledby=\"ch24-zh-t ch24-zh-d\"><title id=\"ch24-zh-t\">三種平台協調資訊的方向與處理方式</title><desc id=\"ch24-zh-d\">TPH 隨 Memory Request 傳遞；Switch 彙整 LTR 需求後向上回報；OBFF 往下傳達平台活動時窗，各段分別接收。</desc><g data-walk-target=\"rc\"><rect x=\"20\" y=\"15\" width=\"200\" height=\"48\" rx=\"8\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"120\" y=\"44\" text-anchor=\"middle\" font-size=\"15\">Root Complex / Root Port</text></g><g data-walk-target=\"sw\"><rect x=\"350\" y=\"15\" width=\"200\" height=\"48\" rx=\"8\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"450\" y=\"44\" text-anchor=\"middle\" font-size=\"15\">Switch</text></g><g data-walk-target=\"ep\"><rect x=\"680\" y=\"15\" width=\"200\" height=\"48\" rx=\"8\" fill=\"var(--surface-alt)\" stroke=\"var(--line)\"/><text x=\"780\" y=\"44\" text-anchor=\"middle\" font-size=\"15\">Endpoint A / B</text></g><g data-walk-target=\"tph\"><text x=\"450\" y=\"95\" text-anchor=\"middle\" font-size=\"16\">TPH：Memory Request 加上用途提示</text><path d=\"M680 115 H550\" stroke=\"var(--accent)\" stroke-width=\"2\"/><polygon points=\"550,115 560,110 560,120\" fill=\"var(--accent)\"/><path d=\"M350 115 H220\" stroke=\"var(--accent)\" stroke-width=\"2\"/><polygon points=\"220,115 230,110 230,120\" fill=\"var(--accent)\"/><text x=\"450\" y=\"122\" text-anchor=\"middle\" font-size=\"15\">Memory TLP</text></g><g data-walk-target=\"ltr\"><text x=\"450\" y=\"180\" text-anchor=\"middle\" font-size=\"16\">LTR：彙整需求，扣除 Switch 延遲</text><path d=\"M680 200 H550\" stroke=\"var(--accent)\" stroke-width=\"2\"/><polygon points=\"550,200 560,195 560,205\" fill=\"var(--accent)\"/><path d=\"M350 200 H220\" stroke=\"var(--accent)\" stroke-width=\"2\"/><polygon points=\"220,200 230,195 230,205\" fill=\"var(--accent)\"/><text x=\"450\" y=\"207\" text-anchor=\"middle\" font-size=\"15\">最小值 − Lswitch</text></g><g data-walk-target=\"obff\"><text x=\"450\" y=\"265\" text-anchor=\"middle\" font-size=\"16\">OBFF：向下傳達平台活動時窗</text><path d=\"M220 285 H350\" stroke=\"var(--accent)\" stroke-width=\"2\"/><polygon points=\"350,285 340,280 340,290\" fill=\"var(--accent)\"/><path d=\"M550 285 H680\" stroke=\"var(--accent)\" stroke-width=\"2\"/><polygon points=\"680,285 670,280 670,290\" fill=\"var(--accent)\"/><text x=\"450\" y=\"292\" text-anchor=\"middle\" font-size=\"15\">各段接收／再傳達</text></g></svg>",
+  "order_html": "<p>這是資訊方向比較圖，不是三個連續步驟。圖以裝置向主機記憶體發起 Request 為例；TPH 也可用於其他 Memory Space 交易方向。</p>",
+  "caption_html": "<p>作者依 Base 6.0 §§6.17–6.19 繪製。LTR 與 OBFF 的 Message 在相鄰接收端終止；Switch 依各自規則彙整或繼續傳達資訊。</p>",
   "steps": [
     {
-      "title": "先辨識誰提供資訊",
+      "title": "先看資料用途與目標資源",
       "targets": [
         "ep",
-        "a",
+        "tph",
         "rc"
       ],
-      "html": "<p>Endpoint 知道資料接下來如何使用，以及能等待多久；平台知道中央資源何時適合活動。</p>",
-      "condition_html": "<p>提示協助最佳化，沒有改變基本 Memory Space 的存取權限與控制。</p>",
-      "source_html": "<p>Base 6.0 §6.17、§6.18、§6.19，pp.778–781、787。</p>",
+      "html": "<p>TPH（交易處理提示）跟著 Memory Request，讓接收端知道資料預期如何使用；Steering Tag 是平台指定的資源提示值。先查 Requester 模式與表格，再查目標及中間路徑的支援。</p>",
+      "condition_html": "<p>提示不改變既有 Memory Space 的存取條件，也不保證資料一定進入指定 Cache。</p>",
+      "source_html": "<p>Base 6.0 §§6.17.1–6.17.4，pp.778–781。</p>",
       "claim_ids": [
-        "PCIE-CH24-001",
-        "PCIE-CH24-002",
-        "PCIE-CH24-003"
+        "PCIE-CH24-001"
       ]
     },
     {
-      "title": "把用途與時間分開解碼",
+      "title": "沿上游讀延遲需求",
       "targets": [
-        "tph",
-        "c",
+        "ep",
         "ltr",
-        "d"
+        "sw",
+        "rc"
       ],
-      "html": "<p>TPH（提示資料用途的機制）查 Processing Hint 與 Steering Tag；LTR（回報服務等待需求的機制）查 Requirement、Value 與 Scale。</p>",
-      "condition_html": "<p>未宣告有效延遲需求時，Value／Scale 欄位會被忽略。</p>",
-      "source_html": "<p>Base 6.0 Table 6-13、Figure 6-15，pp.779、781。</p>",
+      "html": "<p>LTR（延遲需求回報）將 Snoop 與 No-Snoop 分開表示。Switch 先各取下游最嚴格的需求，再扣除自己的延遲，從 Upstream Port 送出彙整訊息。</p>",
+      "condition_html": "<p>Requirement=0 表示該類沒有延遲需求；不是要求零延遲。</p>",
+      "source_html": "<p>Base 6.0 §6.18，pp.781–784。</p>",
       "claim_ids": [
-        "PCIE-CH24-001",
-        "PCIE-CH24-002"
+        "PCIE-CH24-002",
+        "PCIE-CH24-005"
       ]
     },
     {
-      "title": "再看平台傳回的時窗",
+      "title": "沿下游看平台活動時窗",
       "targets": [
-        "b"
+        "rc",
+        "obff",
+        "sw",
+        "ep"
       ],
-      "html": "<p>OBFF（提示適合活動時機的機制）可區分 CPU Active、OBFF 與 Idle，讓裝置考慮集中傳輸或中斷。</p>",
-      "condition_html": "<p>它是 hint；已獲允許的 bus mastering 或中斷，不會只因沒有提示就一律禁止。</p>",
-      "source_html": "<p>Base 6.0 §6.19，p.787。</p>",
+      "html": "<p>OBFF（平台活動時窗提示）由平台往下傳達。先確認使用 WAKE# 還是 Message，再查各 Port 的 Enable 與傳送條件。</p>",
+      "condition_html": "<p>裝置仍可在既有控制允許時發起交易與中斷；是否配合時窗集中活動，還要考慮自身工作與緩衝。</p>",
+      "source_html": "<p>Base 6.0 §6.19，pp.787–790。</p>",
       "claim_ids": [
-        "PCIE-CH24-003"
+        "PCIE-CH24-003",
+        "PCIE-CH24-006"
       ]
     }
   ]

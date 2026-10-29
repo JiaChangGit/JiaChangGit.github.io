@@ -14,6 +14,54 @@ import re
 
 ROOT=Path(__file__).resolve().parents[1]
 
+def ltr_switch_case(x):
+    """Recompute the two-source, fixed-latency teaching example, not RC policy."""
+    if not isinstance(x['switch_ns'],int) or x['switch_ns']<0:
+        raise ValueError('Switch latency must be a nonnegative integer')
+    rows={}; values={'snoop':[],'nosnoop':[]}; requirements={'snoop':0,'nosnoop':0}
+    for source in x['sources']:
+        for traffic in values:
+            raw=int(source[traffic],16)
+            if not 0<=raw<=0xffff or raw&0x6000:
+                raise ValueError('LTR field outside 16 bits or Reserved bits set')
+            requirement=(raw>>15)&1; scale=(raw>>10)&7; value=raw&0x3ff
+            requirements[traffic]+=requirement
+            latency=value*32**scale if requirement and scale<=5 else None
+            values[traffic].append(latency)
+            meaning=(f'{latency:,} ns' if latency is not None else 'Not Permitted' if requirement else 'Ignored')
+            rows[source['id']+'-'+traffic]=[source['id'].upper()+' / '+('Snoop' if traffic=='snoop' else 'No-Snoop'),f'{raw:04X}h',str(requirement),f'{scale:03b}b',str(value),meaning]
+    aggregate={}
+    for traffic,latencies in values.items():
+        finite=[v for v in latencies if v is not None]
+        if not finite:
+            if requirements[traffic]:raise ValueError('No finite valid source for this example')
+            aggregate[traffic]=['No requirement','0000h']; continue
+        minimum=min(finite); result=max(0,minimum-x['switch_ns'])
+        # The displayed example uses an exact encoding. No rounding policy is implied.
+        encodings=[(s,result//32**s) for s in range(6) if result%32**s==0 and result//32**s<=1023]
+        if not encodings:raise ValueError('Result has no exact LTR encoding for this example')
+        # Use the largest exact scale for this author's example; the spec does not
+        # require a unique nonzero encoding when several represent the same time.
+        scale,value=encodings[-1] if result else (0,0)
+        raw=0x8000|(scale<<10)|value
+        aggregate[traffic]=['Snoop' if traffic=='snoop' else 'No-Snoop',f'{minimum:,} ns',f'{x["switch_ns"]:,} ns',f'{result:,} ns',f'{raw:04X}h']
+    return rows,aggregate
+
+def tph_table_case(x):
+    """Narrow ordinary-TPH Interrupt Vector Mode example with a local ST table."""
+    capability=int(x['capability'],16); entries=x['entries']; vector=x['vector']
+    size=((capability>>16)&0x7ff)+1
+    if capability&3!=3 or capability&(1<<8) or (capability>>9)&3!=1:
+        raise ValueError('Example requires ordinary TPH, vector support and a local table')
+    if not 1<=size<=64 or size!=len(entries) or not 0<=vector<min(size,x['enabled_vectors']):
+        raise ValueError('ST table size or vector range does not cover selection')
+    if any(not 0<=entry<=255 for entry in entries):
+        raise ValueError('Upper ST byte is RsvdP without Extended TPH')
+    offset=0xc+2*vector; control=(1<<8)|1
+    return {'cap':['T+04h',f'{capability:08X}h'],
+            'entry':[f'T+{offset:02X}h',f'{entries[vector]:04X}h'],
+            'control':['T+08h',f'{control:08X}h']}
+
 def power_budget_case(x):
     """Decode the chapter's non-extended D0, substate-0 two-rail example.
 
@@ -310,6 +358,24 @@ def normalized(text):
     return re.sub(r'[\s,，]','',text).casefold()
 
 def validate_case(case, text):
+    if case['model'] in ('ltr_switch','tph_table'):
+        missing=[]
+        if case['model']=='ltr_switch':
+            fields,aggregate=ltr_switch_case(case['inputs'])
+            groups=[('data-ltr-field',fields,False),('data-ltr-aggregate',aggregate,False)]
+        else:
+            groups=[('data-tph-case',tph_table_case(case['inputs']),True)]
+        for attribute,rows,prefix_only in groups:
+            for name,expected in rows.items():
+                row=re.search(r'<tr\b[^>]*'+attribute+'="'+name+r'"[^>]*>(.*?)</tr>',text,re.S)
+                cells=re.findall(r'<td\b[^>]*>(.*?)</td>',row.group(1),re.S) if row else []
+                actual=[normalized(unescape(re.sub(r'<[^>]+>',' ',cell))) for cell in cells]
+                if prefix_only:actual=actual[:len(expected)]
+                expected=[normalized(cell) for cell in expected]
+                if attribute=='data-ltr-field' and expected[-1]=='ignored' and actual:
+                    if actual[-1] in ('忽略不換算','ignored'):actual[-1]='ignored'
+                if actual!=expected:missing.append(attribute+' '+name+': derived cells do not match')
+        return missing
     if case['model'] in ('power_budget','dpa_profile'):
         missing=[]
         if case['model']=='power_budget':

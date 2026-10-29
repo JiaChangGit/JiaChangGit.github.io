@@ -859,5 +859,20 @@
       "PM-010"
     ],
     "remaining": "Extended Power Budgeting完整connector／sense資料、所有輔助電源授權與外形規格、平台總預算政策及實機功率量測仍須深入；未宣稱全Base完成。"
+  },
+  "chapter_24_revision": {
+    "status": "locally_verified",
+    "location": "DOCS/pcie-course/chapter-24.html#ltr-aggregate",
+    "covered": "以Switch雙Endpoint案例串起TPH表格與向量選取、LTR上限與訊息格式差異、雙類需求彙整及失效，對照OBFF Variation A/B與本地接收條件。",
+    "references": [
+      "CAP-004",
+      "CAP-005",
+      "CAP-007",
+      "MSG-001",
+      "MSG-002",
+      "MSG-008",
+      "PM-010"
+    ],
+    "remaining": "完整TPH各模式／Extended TPH封包、LTR全部動態延遲與時鐘策略、OBFF全部共享WAKE#拓撲與硬體／平台效益仍須深入；未宣稱全Base完成。"
   }
 }

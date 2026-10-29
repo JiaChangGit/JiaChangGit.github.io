@@ -2,77 +2,258 @@
   "schema_version": 1,
   "course": "pcie-course",
   "chapter": 24,
-  "updated": "2026-10-24",
+  "updated": "2026-10-29",
   "claims": [
     {
       "id": "PCIE-CH24-001",
-      "claim": "TPH用途、編碼、標籤與表格位置及既有存取規則。",
+      "claim": "TPH用途、Processing Hint映射、ST模式與端到端能力及存取邊界。",
       "kind": "specification",
       "source_id": "PCIE-BASE-6.0",
       "revision": "6.0",
       "sections": [
         "6.17",
         "6.17.1",
-        "6.17.2"
+        "6.17.2",
+        "6.17.3",
+        "6.17.4",
+        "7.5.3.15"
       ],
       "document_pages": [
         778,
         779,
-        781
+        780,
+        781,
+        991
       ],
       "pdf_pages": [
         778,
         779,
-        781
+        780,
+        781,
+        991
       ],
       "figures": [],
       "tables": [
-        "6-13"
+        "6-13",
+        "6-14"
       ],
       "status": "verified",
-      "verified_on": "2026-10-24"
+      "verified_on": "2026-10-29"
     },
     {
       "id": "PCIE-CH24-002",
-      "claim": "LTR用途、啟用順序、有效需求與比例及規範強度。",
+      "claim": "LTR啟用、Requirement／Value／Scale、服務延遲定義與規範強度。",
       "kind": "specification",
       "source_id": "PCIE-BASE-6.0",
       "revision": "6.0",
       "sections": [
-        "6.18"
+        "6.18",
+        "7.5.3.15",
+        "7.5.3.16"
       ],
       "document_pages": [
-        781
+        781,
+        782,
+        785,
+        786,
+        787,
+        991,
+        996
       ],
       "pdf_pages": [
-        781
+        781,
+        782,
+        785,
+        786,
+        787,
+        991,
+        996
       ],
       "figures": [
-        "6-15"
+        "6-15",
+        "6-16",
+        "6-17"
       ],
       "tables": [],
       "status": "verified",
-      "verified_on": "2026-10-24"
+      "verified_on": "2026-10-29"
     },
     {
       "id": "PCIE-CH24-003",
-      "claim": "OBFF方向、提示用途與D0限制。",
+      "claim": "OBFF方向、提示狀態、D0、訊號選擇、初始狀態與錯誤條件。",
       "kind": "specification",
       "source_id": "PCIE-BASE-6.0",
       "revision": "6.0",
       "sections": [
-        "6.19"
+        "6.19",
+        "7.5.3.15",
+        "7.5.3.16"
       ],
       "document_pages": [
-        787
+        787,
+        788,
+        789,
+        790,
+        992,
+        997
       ],
       "pdf_pages": [
-        787
+        787,
+        788,
+        789,
+        790,
+        992,
+        997
       ],
-      "figures": [],
+      "figures": [
+        "6-18",
+        "6-19"
+      ],
       "tables": [],
       "status": "verified",
-      "verified_on": "2026-10-24"
+      "verified_on": "2026-10-29"
+    },
+    {
+      "id": "PCIE-CH24-004",
+      "claim": "TPH Requester結構、表格位置大小、模式控制、ST entry與更新建議。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.17.2",
+        "6.17.3",
+        "7.9.13",
+        "7.9.13.1",
+        "7.9.13.2",
+        "7.9.13.3",
+        "7.9.13.4"
+      ],
+      "document_pages": [
+        779,
+        780,
+        1241,
+        1242,
+        1243,
+        1244,
+        1245
+      ],
+      "pdf_pages": [
+        779,
+        780,
+        1241,
+        1242,
+        1243,
+        1244,
+        1245
+      ],
+      "figures": [
+        "7-289",
+        "7-290",
+        "7-291",
+        "7-292",
+        "7-293",
+        "7-294"
+      ],
+      "tables": [
+        "7-257",
+        "7-258",
+        "7-259",
+        "7-260"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-29"
+    },
+    {
+      "id": "PCIE-CH24-005",
+      "claim": "LTR訊息本地終止、雙類需求彙整、延遲扣除、更新與DL_Down失效及平台上限暫存器。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.8.8",
+        "6.18",
+        "7.8.2",
+        "7.8.2.1",
+        "7.8.2.2",
+        "7.8.2.3"
+      ],
+      "document_pages": [
+        187,
+        188,
+        781,
+        782,
+        783,
+        784,
+        1101,
+        1102,
+        1103
+      ],
+      "pdf_pages": [
+        187,
+        188,
+        781,
+        782,
+        783,
+        784,
+        1101,
+        1102,
+        1103
+      ],
+      "figures": [
+        "2-57",
+        "2-58",
+        "7-142",
+        "7-143",
+        "7-144",
+        "7-145"
+      ],
+      "tables": [
+        "2-33",
+        "7-126",
+        "7-127",
+        "7-128"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-29"
+    },
+    {
+      "id": "PCIE-CH24-006",
+      "claim": "OBFF Message格式、逐段傳達、Variation A／B與平台時窗規範強度。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.8.9",
+        "6.19",
+        "7.5.3.16"
+      ],
+      "document_pages": [
+        188,
+        189,
+        787,
+        788,
+        789,
+        790,
+        997
+      ],
+      "pdf_pages": [
+        188,
+        189,
+        787,
+        788,
+        789,
+        790,
+        997
+      ],
+      "figures": [
+        "2-59",
+        "2-60"
+      ],
+      "tables": [
+        "2-34"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-29"
     }
   ]
 }
