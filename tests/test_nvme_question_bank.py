@@ -116,6 +116,14 @@ class QuestionBankTests(unittest.TestCase):
         self.assertIn('規格建議',zh)
         self.assertIn('specification recommends',en)
 
+    def test_queue_initialization_keeps_recommendation_distinct_from_create_rules(self):
+        byid={q['id']:q for q in QUESTIONS}
+        for question, answer in ((12,3),(21,5)):
+            zh,en=byid[question]['answers'][answer]
+            self.assertIn('建議',zh)
+            self.assertIn('recommends',en)
+        self.assertIn('init',byid[12]['refs'])
+
     def test_delete_sq_distinguishes_posted_from_host_read_completion(self):
         q=next(q for q in QUESTIONS if q['id']==18)
         zh,en=q['answers'][5]

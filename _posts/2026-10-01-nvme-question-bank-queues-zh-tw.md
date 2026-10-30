@@ -89,7 +89,7 @@ last_modified_at: 2026-10-23
 <p class="qa-answer-lead" id="q-012-a-01">SQ 中的命令需要一個有效的 CQ 來回報完成，所以 Host 必須先建立 CQ，才能建立指向它的 SQ。這是物件之間的依賴要求，不只是效能上的建議。</p><div class="qa-sections">
 <section class="qa-section" id="q-012-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
 <span class="qa-anchor" id="q-012-a-02"></span><p>一個 SQ 在建立時指定其 CQ；多個 SQ 可以指向同一個已存在的 CQ。</p>
-<span class="qa-anchor" id="q-012-a-03"></span><p>建立 queue 前，先取得 Number of Queues 配額，再確認 CAP.MQES／CQR、entry 大小與可用的 interrupt vector 範圍。後續 Create 命令的參數必須符合這些限制。</p>
+<span class="qa-anchor" id="q-012-a-03"></span><p>Base 2.4 的初始化流程建議使用 Set Features 的 Number of Queues 確認配額；實際建立時，也要確認 CAP.MQES／CQR、entry 大小及可用的 interrupt vector。Create 命令必須符合適用的欄位限制。這裡將規格建議的初始化順序與 Create 欄位的要求分開看。</p>
 <span class="qa-anchor" id="q-012-a-04"></span><p>Create CQ 用 PRP1、QID、QSIZE、PC、IEN、IV；Create SQ 加上 CQID、QPRIO、NVMSETID。NVMSETID=0 表示沒有指定 Set 關聯。</p>
 </section>
 <section class="qa-section" id="q-012-s-02" data-answer-section="2"><h3><span>2.</span> 先後順序與完成條件</h3>
@@ -109,10 +109,10 @@ last_modified_at: 2026-10-23
 <span class="qa-anchor" id="q-012-a-16"></span><p>應確認 Create SQ 的 CQID 與 Host 保存的 SQ→CQ 對照一致。Create CQ 成功只代表該 CQ 已存在，並不會自動把所有 SQ 都連到它。</p>
 </section>
 </div>
-<p class="qa-citations">來源：<a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-number">Base 2.4 §5.2.30.1.5</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+<p class="qa-citations">來源：<a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-number">Base 2.4 §5.2.30.1.5</a> · <a href="#ref-init">Base 2.4 §3.5.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-012-a-08"></span><span class="qa-anchor" id="q-012-a-09"></span><span class="qa-anchor" id="q-012-a-10"></span><span class="qa-anchor" id="q-012-a-11"></span><span class="qa-anchor" id="q-012-a-12"></span><span class="qa-anchor" id="q-012-a-13"></span><span class="qa-anchor" id="q-012-a-14"></span><span class="qa-anchor" id="q-012-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
-<p class="qa-citations">來源：<a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-number">Base 2.4 §5.2.30.1.5</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+<p class="qa-citations">來源：<a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-number">Base 2.4 §5.2.30.1.5</a> · <a href="#ref-init">Base 2.4 §3.5.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-013" data-question="13" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-013">Q13</a> 多個 SQ 共用一個 CQ 與每個 SQ 使用獨立 CQ 有什麼差異？</h2>
 
@@ -315,7 +315,7 @@ last_modified_at: 2026-10-23
 <span class="qa-anchor" id="q-021-a-04"></span><p>重建流程需要先設定 Admin Queue Register 與 CC，再視需要使用 Get／Set Features，最後以 Create CQ／SQ 建立 I/O 通道。這些步驟共同構成恢復流程，不能只做其中一部分。</p>
 </section>
 <section class="qa-section" id="q-021-s-02" data-answer-section="2"><h3><span>2.</span> 先後順序與完成條件</h3>
-<span class="qa-anchor" id="q-021-a-05"></span><p>Host 先確認 RDY=0，初始化 Admin CQ 的 Phase 與 CC，再啟用 controller 並等待就緒。接著恢復必要的 Feature、設定 Number of Queues，依序建立 CQ、SQ。只有完成上述步驟後，才能允許新的 I/O 提交。</p>
+<span class="qa-anchor" id="q-021-a-05"></span><p>例如，Host 確認 RDY=0、初始化 Admin CQ 的 Phase 與 CC，啟用 controller 並等待就緒，再恢復必要的 Feature。Base 2.4 建議在初始化時用 Set Features 確認 Number of Queues；此例採用這個流程，依回覆建立 CQ、再建立 SQ。新 I/O 要等對應 queue 建立成功後才能提交。</p>
 <span class="qa-anchor" id="q-021-a-06"></span><p>每筆 Create 都必須先在 Admin CQ 成功完成，對應的新 queue 才能使用。即使沿用相同 QID 或位址，也不能跳過這個完成確認。</p>
 </section>
 <section class="qa-section" id="q-021-s-03" data-answer-section="3"><h3><span>3.</span> 未符合條件時如何處理</h3>

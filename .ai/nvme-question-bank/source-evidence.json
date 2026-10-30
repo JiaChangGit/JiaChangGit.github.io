@@ -130,6 +130,7 @@
         "create",
         "queue",
         "number",
+        "init",
         "reset",
         "status",
         "error",

@@ -89,7 +89,7 @@ last_modified_at: 2026-10-23
 <p class="qa-answer-lead" id="q-012-a-01">Every I/O needs a valid completion destination. Create the CQ before its SQ: this is an ordering requirement, not merely a performance recommendation.</p><div class="qa-sections">
 <section class="qa-section" id="q-012-s-01" data-answer-section="1"><h3><span>1.</span> Prepare the operation</h3>
 <span class="qa-anchor" id="q-012-a-02"></span><p>An SQ selects its CQ at creation; several SQs may use one existing CQ.</p>
-<span class="qa-anchor" id="q-012-a-03"></span><p>Allocate Number of Queues first, then check MQES/CQR, entry sizes and interrupt-vector limits.</p>
+<span class="qa-anchor" id="q-012-a-03"></span><p>Base 2.4 recommends using Set Features Number of Queues during initialization. Also check MQES/CQR, entry sizes and interrupt-vector limits; Create fields remain subject to their applicable requirements. The recommended initialization sequence and individual field requirements have different normative strengths.</p>
 <span class="qa-anchor" id="q-012-a-04"></span><p>Create CQ uses PRP1, QID, QSIZE, PC, IEN and IV. Create SQ additionally uses CQID, QPRIO and NVMSETID; zero NVMSETID means no specific set association.</p>
 </section>
 <section class="qa-section" id="q-012-s-02" data-answer-section="2"><h3><span>2.</span> Sequence and completion conditions</h3>
@@ -109,10 +109,10 @@ last_modified_at: 2026-10-23
 <span class="qa-anchor" id="q-012-a-16"></span><p>Match CQID against the host&#x27;s SQ-to-CQ map. Creating a CQ does not automatically associate every SQ with it.</p>
 </section>
 </div>
-<p class="qa-citations">Sources: <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-number">Base 2.4 §5.2.30.1.5</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+<p class="qa-citations">Sources: <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-number">Base 2.4 §5.2.30.1.5</a> · <a href="#ref-init">Base 2.4 §3.5.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-012-a-08"></span><span class="qa-anchor" id="q-012-a-09"></span><span class="qa-anchor" id="q-012-a-10"></span><span class="qa-anchor" id="q-012-a-11"></span><span class="qa-anchor" id="q-012-a-12"></span><span class="qa-anchor" id="q-012-a-13"></span><span class="qa-anchor" id="q-012-a-14"></span><span class="qa-anchor" id="q-012-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
-<p class="qa-citations">Sources: <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-number">Base 2.4 §5.2.30.1.5</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+<p class="qa-citations">Sources: <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-number">Base 2.4 §5.2.30.1.5</a> · <a href="#ref-init">Base 2.4 §3.5.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-013" data-question="13" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-013">Q13</a> How does sharing a CQ differ from giving every SQ its own CQ?</h2>
 
@@ -315,7 +315,7 @@ last_modified_at: 2026-10-23
 <span class="qa-anchor" id="q-021-a-04"></span><p>Admin registers, CC, Get/Set Features and Create CQ/SQ together establish the recovery path.</p>
 </section>
 <section class="qa-section" id="q-021-s-02" data-answer-section="2"><h3><span>2.</span> Sequence and completion conditions</h3>
-<span class="qa-anchor" id="q-021-a-05"></span><p>Confirm RDY=0, initialize Admin CQ phases and CC, enable/wait ready, restore needed features, set Number of Queues, create CQ then SQ, and allow new I/O.</p>
+<span class="qa-anchor" id="q-021-a-05"></span><p>For example, confirm RDY=0, initialize Admin CQ phases and CC, enable and wait for readiness, then restore needed features. Base 2.4 recommends Set Features Number of Queues during initialization; this example follows it and creates the CQ before the SQ. Submit new I/O only after its queue is created successfully.</p>
 <span class="qa-anchor" id="q-021-a-06"></span><p>Each new queue becomes valid after its successful Create completion on Admin CQ, even when reusing an identifier or address.</p>
 </section>
 <section class="qa-section" id="q-021-s-03" data-answer-section="3"><h3><span>3.</span> Handle unmet conditions</h3>
