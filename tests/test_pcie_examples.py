@@ -548,4 +548,16 @@ class AcsMulticastTeachingTest(unittest.TestCase):
         self.assertEqual(multicast_setup(self.mc)[1],1)
         self.assertEqual(multicast_packet(self.mc,'Memory Write',0x80001000,2,0,0)[0],'Unicast')
 
+class SegmentCompletionExampleTest(unittest.TestCase):
+    def test_published_ohc_a5_bytes_match_segment_fields(self):
+        from scripts.validate_pcie_examples import ROOT
+        # Figure 2-11: Destination Segment, Completer Segment, DSV, LA/Status.
+        encoded = bytes([0x02, 0x03, 0x80, 0x00])
+        self.assertEqual((encoded[0], encoded[1], encoded[2] >> 7, encoded[2] & 0x7f, encoded[3]), (2, 3, 1, 0, 0))
+        for name in ('chapter5.zh.html','chapter5.post.zh.html','chapter5.post.en.html'):
+            page = (ROOT / '.ai/pcie-course' / name).read_text(encoding='utf-8')
+            segment = page.split('<section id="segment-completion">', 1)[1].split('</section>', 1)[0]
+            self.assertIn('02 03 80 00', segment)
+            self.assertIn('OHC-A5', segment)
+
 if __name__=='__main__':unittest.main()

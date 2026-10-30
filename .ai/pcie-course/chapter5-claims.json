@@ -477,6 +477,42 @@
       ],
       "status": "verified",
       "verified_on": "2026-10-30"
+    },
+    {
+      "id": "PCIE-CH5-SEGMENT-COMPLETION-001",
+      "claim": "Flit Mode 的 Non-Posted Memory Request 攜帶不同於 Completer 已捕捉值的 Requester Segment 時，相關 Completion 必須包含 OHC-A5；其 Destination Segment、Completer Segment 與 DSV 依 §2.2.1.2 的 Completer 規則設定。RC 接手交易另有規則。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.1.2",
+        "2.2.9.2"
+      ],
+      "document_pages": [
+        133,
+        134,
+        138,
+        139,
+        140,
+        141,
+        199
+      ],
+      "pdf_pages": [
+        133,
+        134,
+        138,
+        139,
+        140,
+        141,
+        199
+      ],
+      "figures": [
+        "2-11",
+        "2-13"
+      ],
+      "tables": [],
+      "status": "verified",
+      "verified_on": "2026-10-30"
     }
   ]
 }
