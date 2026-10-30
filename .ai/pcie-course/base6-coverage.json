@@ -1013,12 +1013,15 @@
       "document_page": 179,
       "pdf_page": 179,
       "planned_chapter": 14,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [
-        "PCIE-CH5-TYPE-001"
+        "PCIE-CH5-TYPE-001",
+        "PCIE-CH36-VDM-001"
       ],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-36.html#vdm"
+      ],
+      "review_note": "Chapter 36 帶讀 VDM Type、模式格式、路由、不支援處理及 PCI-SIG Subtype，並連至 FRS；橋接器特殊限制標示外部文件。"
     },
     {
       "section": "2.2.8.6.1",
@@ -1026,12 +1029,15 @@
       "document_page": 181,
       "pdf_page": 181,
       "planned_chapter": 14,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [
-        "PCIE-CH5-TYPE-001"
+        "PCIE-CH5-TYPE-001",
+        "PCIE-CH36-VDM-001"
       ],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-36.html#vdm"
+      ],
+      "review_note": "Chapter 36 帶讀 VDM Type、模式格式、路由、不支援處理及 PCI-SIG Subtype，並連至 FRS；橋接器特殊限制標示外部文件。"
     },
     {
       "section": "2.2.8.6.2",

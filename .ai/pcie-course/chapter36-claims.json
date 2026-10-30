@@ -237,6 +237,43 @@
       ],
       "status": "verified",
       "verified_on": "2026-10-30"
+    },
+    {
+      "id": "PCIE-CH36-VDM-001",
+      "claim": "一般 Vendor_Defined Message 與 PCI-SIG Defined VDM 的代碼、格式、路由與不支援處理。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.8.6",
+        "2.2.8.6.1",
+        "2.2.8.6.3"
+      ],
+      "document_pages": [
+        179,
+        180,
+        181,
+        182,
+        183
+      ],
+      "pdf_pages": [
+        179,
+        180,
+        181,
+        182,
+        183
+      ],
+      "figures": [
+        "2-47",
+        "2-48",
+        "2-49",
+        "2-50"
+      ],
+      "tables": [
+        "2-28"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-30"
     }
   ]
 }
