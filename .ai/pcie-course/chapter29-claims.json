@@ -142,6 +142,41 @@
       "tables": [],
       "status": "verified",
       "verified_on": "2026-10-29"
+    },
+    {
+      "id": "PCIE-CH29-HIERARCHY-MSG-001",
+      "claim": "Hierarchy ID Message 的 Header、Payload、System GUID、Authority ID 與接收端檢查。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.8.6.4",
+        "6.25"
+      ],
+      "document_pages": [
+        185,
+        186,
+        815,
+        816,
+        817
+      ],
+      "pdf_pages": [
+        185,
+        186,
+        815,
+        816,
+        817
+      ],
+      "figures": [
+        "2-55",
+        "2-56"
+      ],
+      "tables": [
+        "2-31",
+        "6-17"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-30"
     }
   ]
 }

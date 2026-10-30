@@ -1077,12 +1077,15 @@
       "document_page": 185,
       "pdf_page": 185,
       "planned_chapter": 14,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [
-        "PCIE-CH5-TYPE-001"
+        "PCIE-CH5-TYPE-001",
+        "PCIE-CH29-HIERARCHY-MSG-001"
       ],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-29.html#hierarchy-message"
+      ],
+      "review_note": "Chapter 29 帶讀兩種模式的 Message 格式、Header 與 Payload 中的 GUID、來源與接收檢查，連回 §6.25。"
     },
     {
       "section": "2.2.8.7",
