@@ -1054,10 +1054,13 @@
       "planned_chapter": 14,
       "status": "unreviewed",
       "existing_claim_candidates": [
-        "PCIE-CH5-TYPE-001"
+        "PCIE-CH5-TYPE-001",
+        "PCIE-CH34-008"
       ],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-34.html#frs-reason"
+      ],
+      "review_note": "Chapter 34 已帶讀 Reason、Requester ID、兩種模式的格式圖與可選接收檢查；本節其他欄位與例外仍待完整核對。"
     },
     {
       "section": "2.2.8.6.4",
