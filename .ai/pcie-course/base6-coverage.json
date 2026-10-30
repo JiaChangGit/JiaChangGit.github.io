@@ -1039,12 +1039,15 @@
       "document_page": 182,
       "pdf_page": 182,
       "planned_chapter": 14,
-      "status": "unreviewed",
+      "status": "guided",
       "existing_claim_candidates": [
-        "PCIE-CH5-TYPE-001"
+        "PCIE-CH5-TYPE-001",
+        "PCIE-CH34-009"
       ],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "teaching_locations": [
+        "chapter-34.html#drs-route"
+      ],
+      "review_note": "Chapter 34 帶讀 DRS 格式、兩種模式圖、接收端終止、接收檢查與後續 FRS；就緒範圍連回 §6.22.1。"
     },
     {
       "section": "2.2.8.6.3",

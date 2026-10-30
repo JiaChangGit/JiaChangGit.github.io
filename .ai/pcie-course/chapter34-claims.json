@@ -247,6 +247,48 @@
       ],
       "status": "verified",
       "verified_on": "2026-10-30"
+    },
+    {
+      "id": "PCIE-CH34-009",
+      "claim": "DRS 訊息的格式、接收端本地終止、後續 FRS 與適用的 DRS 支援條件。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.8.6.1",
+        "2.2.8.6.2",
+        "2.2.8.6.3",
+        "6.22.1",
+        "7.5.3.7"
+      ],
+      "document_pages": [
+        181,
+        182,
+        183,
+        184,
+        808,
+        809,
+        975
+      ],
+      "pdf_pages": [
+        181,
+        182,
+        183,
+        184,
+        808,
+        809,
+        975
+      ],
+      "figures": [
+        "2-51",
+        "2-52"
+      ],
+      "tables": [
+        "2-29",
+        "7-24"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-30"
     }
   ]
 }
