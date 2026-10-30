@@ -246,11 +246,11 @@ last_modified_at: 2026-10-23
 </section>
 <section class="qa-section" id="q-018-s-02" data-answer-section="2"><h3><span>2.</span> Establish the cause from evidence</h3>
 <span class="qa-anchor" id="q-018-a-03"></span><p>Consult host creation/deletion and outstanding-command records. These are runtime state, not Identify optional capabilities.</p>
-<span class="qa-anchor" id="q-018-a-05"></span><p>Drain before normal teardown. If deleting an SQ to stop work, treat remaining commands without CQEs as implicitly aborted after successful Delete.</p>
+<span class="qa-anchor" id="q-018-a-05"></span><p>Drain before normal teardown. On successful Delete SQ, previously submitted commands for which the controller had not posted a CQE are implicitly aborted. A CQE already posted but not yet read by the host remains an explicit completion.</p>
 </section>
 <section class="qa-section" id="q-018-s-03" data-answer-section="3"><h3><span>3.</span> Outcome and follow-up checks</h3>
 <span class="qa-anchor" id="q-018-a-06"></span><p>Before successful Delete SQ, original commands may complete normally or with abort status. After success, no further completions may be posted for those commands.</p>
-<span class="qa-anchor" id="q-018-a-16"></span><p>Account for both received CQEs and implicit aborts after successful Delete; do not require a physical CQE for every original command.</p>
+<span class="qa-anchor" id="q-018-a-16"></span><p>Distinguish commands whose CQEs were posted before successful Delete from commands implicitly aborted without posted CQEs. A host-read log alone may miss an already posted CQE, so absence of a read is insufficient.</p>
 <span class="qa-anchor" id="q-018-a-17"></span><p>First check whether Delete SQ itself completed successfully. Its outstanding state does not establish that all original work stopped.</p>
 </section>
 </div>

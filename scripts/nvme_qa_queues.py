@@ -101,10 +101,10 @@ add(18,'刪除不存在的 Queue、仍被 SQ 使用的 CQ 或仍有 Outstanding 
 刪除 SQ 會影響該 SQ 中尚未完成的 I/O。刪除 CQ 則另有前提：所有依賴它的 SQ 都必須已被刪除，才能繼續進行。 || SQ deletion affects its outstanding I/O; CQ deletion depends on the existence of every associated SQ.
 先檢查 Host 記錄的 queue 建立與刪除結果，以及尚未完成的命令。這些是目前的執行狀態，不能只靠 Identify 的選配能力位得知。 || Consult host creation/deletion and outstanding-command records. These are runtime state, not Identify optional capabilities.
 Delete 的 QID 必須有效且不為 0；目標 I/O 命令仍以各自 SQID／CID 辨識。 || Delete requires a valid nonzero QID; affected I/O commands retain their own SQID/CID identities.
-正常拆除時，Host 先等待既有工作完成，再刪除 queue。如果目的是中止工作而直接刪除 SQ，則在 Delete 成功後，將仍未收到 CQE 的原命令視為已隱含中止。 || Drain before normal teardown. If deleting an SQ to stop work, treat remaining commands without CQEs as implicitly aborted after successful Delete.
+正常拆除時，Host 先等待既有工作完成，再刪除 queue。若為了中止工作而直接刪除 SQ，Delete 成功時，先前提交且 controller 尚未張貼 CQE 的命令依規格形成隱含中止；已張貼但 Host 尚未讀取的 CQE，仍屬明確完成，不能只因 Host 還沒看到就當作隱含中止。 || Drain before normal teardown. On successful Delete SQ, previously submitted commands for which the controller had not posted a CQE are implicitly aborted. A CQE already posted but not yet read by the host remains an explicit completion.
 在 Delete SQ 成功之前，原命令可能正常完成，也可能收到表示中止的 CQE。但是 Delete SQ 一旦成功，controller 就不得再為那些原 SQ 命令寫入新的 completion。 || Before successful Delete SQ, original commands may complete normally or with abort status. After success, no further completions may be posted for those commands.
 QID 非法時回報 1/01h；CQ 仍被 SQ 使用時回報 1/0Ch。原 I/O 命令若因刪除 SQ 而中止，可以透過 CQE 回報 Command Aborted due to SQ Deletion（0/08h），也可能在 Delete 成功時依規則形成隱含完成，沒有各自的 CQE。 || Invalid QID: 1/01h. CQ still referenced: 1/0Ch. I/O aborted by SQ deletion uses 0/08h, including implicit completion established by successful Delete.
-驗證時，應把已收到 CQE 的命令，以及 Delete 成功後被視為隱含中止的命令，一起納入統計。不能只計算實際 CQE，並要求每筆原命令都一定有獨立回覆。 || Account for both received CQEs and implicit aborts after successful Delete; do not require a physical CQE for every original command.
+驗證時，應區分 controller 在 Delete 成功前已張貼 CQE 的命令，與未張貼 CQE、因 Delete 成功而隱含中止的命令。若只有 Host 讀取紀錄，還要確認是否有已張貼但尚未讀取的 CQE；不能只用「尚未讀到」判斷。 || Distinguish commands whose CQEs were posted before successful Delete from commands implicitly aborted without posted CQEs. A host-read log alone may miss an already posted CQE, so absence of a read is insufficient.
 先檢查 Delete SQ 是否已成功完成；在它還 outstanding 時，不能宣布所有原命令已停止。 || First check whether Delete SQ itself completed successfully. Its outstanding state does not establish that all original work stopped.
 ''')
 

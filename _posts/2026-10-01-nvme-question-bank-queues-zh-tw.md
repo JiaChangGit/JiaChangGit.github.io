@@ -246,11 +246,11 @@ last_modified_at: 2026-10-23
 </section>
 <section class="qa-section" id="q-018-s-02" data-answer-section="2"><h3><span>2.</span> 用哪些資料確認原因</h3>
 <span class="qa-anchor" id="q-018-a-03"></span><p>先檢查 Host 記錄的 queue 建立與刪除結果，以及尚未完成的命令。這些是目前的執行狀態，不能只靠 Identify 的選配能力位得知。</p>
-<span class="qa-anchor" id="q-018-a-05"></span><p>正常拆除時，Host 先等待既有工作完成，再刪除 queue。如果目的是中止工作而直接刪除 SQ，則在 Delete 成功後，將仍未收到 CQE 的原命令視為已隱含中止。</p>
+<span class="qa-anchor" id="q-018-a-05"></span><p>正常拆除時，Host 先等待既有工作完成，再刪除 queue。若為了中止工作而直接刪除 SQ，Delete 成功時，先前提交且 controller 尚未張貼 CQE 的命令依規格形成隱含中止；已張貼但 Host 尚未讀取的 CQE，仍屬明確完成，不能只因 Host 還沒看到就當作隱含中止。</p>
 </section>
 <section class="qa-section" id="q-018-s-03" data-answer-section="3"><h3><span>3.</span> 結果與後續驗證</h3>
 <span class="qa-anchor" id="q-018-a-06"></span><p>在 Delete SQ 成功之前，原命令可能正常完成，也可能收到表示中止的 CQE。但是 Delete SQ 一旦成功，controller 就不得再為那些原 SQ 命令寫入新的 completion。</p>
-<span class="qa-anchor" id="q-018-a-16"></span><p>驗證時，應把已收到 CQE 的命令，以及 Delete 成功後被視為隱含中止的命令，一起納入統計。不能只計算實際 CQE，並要求每筆原命令都一定有獨立回覆。</p>
+<span class="qa-anchor" id="q-018-a-16"></span><p>驗證時，應區分 controller 在 Delete 成功前已張貼 CQE 的命令，與未張貼 CQE、因 Delete 成功而隱含中止的命令。若只有 Host 讀取紀錄，還要確認是否有已張貼但尚未讀取的 CQE；不能只用「尚未讀到」判斷。</p>
 <span class="qa-anchor" id="q-018-a-17"></span><p>先檢查 Delete SQ 是否已成功完成；在它還 outstanding 時，不能宣布所有原命令已停止。</p>
 </section>
 </div>

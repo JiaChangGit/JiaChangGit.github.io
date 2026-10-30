@@ -116,6 +116,14 @@ class QuestionBankTests(unittest.TestCase):
         self.assertIn('規格建議',zh)
         self.assertIn('specification recommends',en)
 
+    def test_delete_sq_distinguishes_posted_from_host_read_completion(self):
+        q=next(q for q in QUESTIONS if q['id']==18)
+        zh,en=q['answers'][5]
+        self.assertIn('已張貼但 Host 尚未讀取',zh)
+        self.assertIn('posted but not yet read',en)
+        self.assertIn('尚未張貼 CQE',zh)
+        self.assertIn('had not posted a CQE',en)
+
     def test_apst_field_encoding_and_units(self):
         raw=(2000<<8)|(3<<3)
         self.assertEqual(raw,0x0007D018)
