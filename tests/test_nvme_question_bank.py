@@ -96,6 +96,9 @@ class QuestionBankTests(unittest.TestCase):
             self.assertIn('Invalid Doorbell Write Value',answer)
         for answer in q['answers'][9]:
             self.assertIn('Asynchronous Event Request',answer)
+        zh,en=q['answers'][7]
+        self.assertIn('尚未完成的 Asynchronous Event Request',zh)
+        self.assertIn('with an outstanding Asynchronous Event Request',en)
 
     def test_create_queue_error_recommendations_and_requirements_differ(self):
         byid={q['id']:q for q in QUESTIONS}

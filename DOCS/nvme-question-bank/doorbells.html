@@ -240,7 +240,7 @@ html[data-theme="dark"] .spec-teaching[data-spec-series="nvme"] { --st-accent:#7
 <section class="qa-section" id="q-023-s-01" data-answer-section="1"><h3><span>1.</span> 先區分是哪一種失敗</h3>
 <span class="qa-anchor" id="q-023-a-02"></span><p>錯誤會影響被寫入 Doorbell 的 queue。如果是多條 SQ 共用的 CQ，影響還可能延伸到這些 SQ。另外，向不存在的 queue 寫 Doorbell，與向有效 queue 寫入非法值，是兩種不同情況。</p>
 <span class="qa-anchor" id="q-023-a-04"></span><p>合法索引介於 0 與 size−1。寫入較小的值不一定是倒退，因為指標可能剛好繞回起點。再次寫入相同的值也不能視為一定安全的空更新：Base 2.4 Figure 153 將它列為 Invalid Doorbell Write Value 的可能原因之一。</p>
-<span class="qa-anchor" id="q-023-a-07"></span><p>向有效 queue 寫入非法值時，適用 Invalid Doorbell Write Value 的非同步錯誤處理；向不存在的 queue 寫 Doorbell 時，結果則未定義。前者的事件資訊碼不是這次 MMIO 寫入的 CQE Status，兩者不能混為一談。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>MMIO</dt><dd>Memory-Mapped I/O，記憶體映射輸入輸出</dd></div></dl>
+<span class="qa-anchor" id="q-023-a-07"></span><p>向有效 queue 寫入非法值，而且已有尚未完成的 Asynchronous Event Request（AER，非同步事件要求）時，controller 透過該 AER 回報 Invalid Doorbell Write Value；事件資訊不是這次 MMIO 寫入的 CQE Status。若沒有等待中的 AER，不能單憑這條規則保證已收到通知。向不存在的 queue 寫 Doorbell，結果則是未定義。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>MMIO</dt><dd>Memory-Mapped I/O，記憶體映射輸入輸出</dd></div></dl>
 </section>
 <section class="qa-section" id="q-023-s-02" data-answer-section="2"><h3><span>2.</span> 用哪些資料確認原因</h3>
 <span class="qa-anchor" id="q-023-a-03"></span><p>判斷指標是否合法，需要知道 queue 大小、原來的指標、可用或已處理的位置數量，以及 Doorbell 對應的 QID。只看新寫入的數字，無法判斷這次移動是否正確。</p>
