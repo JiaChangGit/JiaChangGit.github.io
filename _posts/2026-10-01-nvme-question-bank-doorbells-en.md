@@ -167,7 +167,7 @@ last_modified_at: 2026-10-23
 <figure class="qa-flow" id="q-027-flow"><figcaption>Phase changes per traversal, not per CQE</figcaption>
 <p>Assume a four-entry CQ; the host initially expects P=1.</p><ol class="qa-flow-steps">
 <li class="qa-flow-step"><strong>Inspect P at the current head</strong><p>If P does not match, wait: the slot has no new result for this traversal. Do not decode its stale CID or status.</p></li>
-<li class="qa-flow-step"><span class="qa-flow-arrow" aria-hidden="true">↓</span><strong>P matches → process the CQE</strong><p>Head visits 0, 1, 2 and 3. New CQEs in this traversal all use P=1.</p></li>
+<li class="qa-flow-step"><span class="qa-flow-arrow" aria-hidden="true">↓</span><strong>P matches → process the CQE</strong><p>Base 2.4 §4.2.1 requires P to be updated in the final write if the controller constructs a CQE with multiple writes. The host also follows platform memory-access rules when reading the other fields. Head visits 0, 1, 2 and 3; new CQEs in this traversal use P=1.</p></li>
 <li class="qa-flow-step"><span class="qa-flow-arrow" aria-hidden="true">↓</span><strong>Head wraps from 3 to 0 → invert expected phase</strong><p>Expect P=0 in the next traversal. Moving from slot 1 to 2 does not change the expected phase.</p></li>
 </ol><p class="qa-flow-conclusion">Recreating the CQ requires reinitializing phase bits and the host expectation. Four entries are used only to illustrate wrapping.</p></figure><dl class="st-terms" aria-label="Terms in this passage"><div><dt>CID</dt><dd>Command Identifier, unique among outstanding commands in one SQ</dd></div></dl>
 </section>

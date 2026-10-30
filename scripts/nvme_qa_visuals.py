@@ -26,7 +26,7 @@ flow(12, [5,6,17], '先有 CQ，SQ 才能引用它 || Create the CQ before an SQ
 flow(27, [5,6,17], 'Phase 跟著整圈變，不跟著每筆 CQE 變 || Phase changes per traversal, not per CQE',
      '教學假設 CQ 有 4 個位置，Host 第一圈期待 P=1。 || Assume a four-entry CQ; the host initially expects P=1.', [
     ('檢查目前 Head 的 P || Inspect P at the current head', 'P 不符期待值：這個位置還沒有本圈的新結果，先等待；不要解讀殘留的 CID 或 Status。 || If P does not match, wait: the slot has no new result for this traversal. Do not decode its stale CID or status.'),
-    ('P 符合 → 處理 CQE || P matches → process the CQE', 'Head 依序走 0、1、2、3；這一圈各位置的新 CQE 都使用 P=1。 || Head visits 0, 1, 2 and 3. New CQEs in this traversal all use P=1.'),
+    ('P 符合 → 處理 CQE || P matches → process the CQE', 'Base 2.4 §4.2.1 規定：若 controller 用多次寫入建立 CQE，須在最後一次寫入時更新 P。Host 讀取其他欄位時，還要遵循平台的記憶體存取規則。這一圈 Head 依序走 0、1、2、3，新 CQE 都使用 P=1。 || Base 2.4 §4.2.1 requires P to be updated in the final write if the controller constructs a CQE with multiple writes. The host also follows platform memory-access rules when reading the other fields. Head visits 0, 1, 2 and 3; new CQEs in this traversal use P=1.'),
     ('Head 從 3 回到 0 → 反轉期待值 || Head wraps from 3 to 0 → invert expected phase', '下一圈期待 P=0。若只從 1 移到 2，尚未換圈，期待值不變。 || Expect P=0 in the next traversal. Moving from slot 1 to 2 does not change the expected phase.')],
     '重新建立 CQ 時，要重新初始化 Phase 與 Host 的期待值。此處的 4-entry 大小只是方便看懂換圈的教學假設。 || Recreating the CQ requires reinitializing phase bits and the host expectation. Four entries are used only to illustrate wrapping.')
 

@@ -120,7 +120,7 @@ last_modified_at: 2026-10-23
 <section class="qa-section" id="q-034-s-02" data-answer-section="2"><h3><span>2.</span> 欄位、單位與判讀例子</h3>
 <span class="qa-anchor" id="q-034-a-04"></span><p>DW2：SQHD、SQID；DW3：CID、P、Status；DW0／1 是命令特定結果。SQHD 表示建立 CQE 當時已消費的位置。</p>
 <span class="qa-anchor" id="q-034-a-05"></span><p>先以 P 確認 CQE 有效，再透過 SQID 與 CID 找到原命令，解析 Status 及其他結果。接著更新 SQ 可用位置的紀錄，最後釋放這筆 CQE 所占的位置。</p>
-<span class="qa-anchor" id="q-034-a-06"></span><p>例如，一筆 completion 回報 SQHD=8，只表示 controller 的 SQ Head 已前進到 8。它不表示原先放在索引 0～7 的所有命令，都已經執行完成。</p>
+<span class="qa-anchor" id="q-034-a-06"></span><p>【模擬資料】同一條 SQ 的先前已知 Head 為 4，Host 收到有效 CQE，其 SQID 指向這條 SQ、CID=9、SQHD=8。若期間沒有繞回，SQHD 表示 controller 已取得位置 4～7 的 SQE，這些 SQ 位置可重用；CID 與 Status 則識別並回報 CID=9 的命令結果。其他已取得的命令不一定完成，其資料 buffer 也不能只因 SQE 位置可重用就提前回收。Figure 98 的註解還提醒：SQHD 是建立這筆 CQE 時的數值；Host 讀到 CQE 時，controller 實際的 Head 可能已前進到 10，但單靠這筆 CQE 無法知道。先讀 Base 2.4 §3.3.1.2 的提交與取得定義，再看 Figure 98 的 SQHD、SQID，接著用 Figure 99 的 CID、P 與 Status 配對及判讀結果。</p>
 </section>
 <section class="qa-section" id="q-034-s-03" data-answer-section="3"><h3><span>3.</span> 判讀時要保留的條件</h3>
 <span class="qa-anchor" id="q-034-a-07"></span><p>解析 Status 時，必須一起讀取 SCT 與 SC；P 不屬於錯誤碼。如果 CQE 格式異常或 CID 無法對回命令，先檢查記憶體內容及 queue 是否已重建，不要替這類現象自行定義新的 NVMe Status。</p>

@@ -135,6 +135,28 @@ class QuestionBankTests(unittest.TestCase):
         self.assertIn('尚未張貼 CQE',zh)
         self.assertIn('had not posted a CQE',en)
 
+    def test_sqhd_reports_creation_time_and_slot_reuse_not_all_completions(self):
+        q=next(q for q in QUESTIONS if q['id']==34)
+        zh,en=q['answers'][6]
+        for value in ('SQHD=8','CID=9','Figure 98','Figure 99'):
+            self.assertIn(value,zh);self.assertIn(value,en)
+        self.assertIn('建立這筆 CQE 時',zh)
+        self.assertIn('when this CQE is created',en)
+        self.assertIn('資料 buffer',zh)
+        self.assertIn('data buffers',en)
+
+    def test_phase_tag_update_is_last_write_for_multiwrite_cqe(self):
+        q=next(q for q in QUESTIONS if q['id']==27)
+        zh,en=q['answers'][5]
+        self.assertIn('最後一次寫入',zh)
+        self.assertIn('final write',en)
+        self.assertIn('平台',zh)
+        self.assertIn('platform',en)
+        self.assertIn('cqe',q['refs'])
+        for path,content in self.outputs.items():
+            if 'question-bank-doorbells-' in path.name or path.name=='doorbells.html':
+                self.assertIn('最後一次寫入' if 'en.md' not in path.name else 'final write',content)
+
     def test_apst_field_encoding_and_units(self):
         raw=(2000<<8)|(3<<3)
         self.assertEqual(raw,0x0007D018)
