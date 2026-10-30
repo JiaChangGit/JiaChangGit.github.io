@@ -74,7 +74,7 @@ last_modified_at: 2026-10-23
 <span class="qa-anchor" id="q-011-a-06"></span><p>每條 queue 至少需要 2 個位置。Admin Queue 最多有 4096 個位置，I/O Queue 則最多有 min(65536, MQES+1) 個。為了分辨 Full 與 Empty，環狀 queue 還必須保留一個位置不使用。</p>
 </section>
 <section class="qa-section" id="q-011-s-03" data-answer-section="3"><h3><span>3.</span> 判讀時要保留的條件</h3>
-<span class="qa-anchor" id="q-011-a-07"></span><p>I/O queue 大小非法時，回報 Invalid Queue Size（1/02h）；PRP offset 非零時，應回報 PRP Offset Invalid（0/13h）。若 PC 設定違反 CQR 要求，則要分別確認 Create SQ 與 Create CQ 使用的是建議還是強制回覆，不能把兩者的要求強度視為相同。</p>
+<span class="qa-anchor" id="q-011-a-07"></span><p>I/O queue 的 QSIZE 為 0 或超過支援範圍時，規格建議回報 Invalid Queue Size（1/02h）；PRP offset 非零時，建議回報 PRP Offset Invalid（0/13h）。若 PC 設定違反 CQR 要求，則要分別確認 Create SQ 與 Create CQ 使用的是建議還是強制回覆，不能把兩者的要求強度視為相同。</p>
 <span class="qa-anchor" id="q-011-a-16"></span><p>例如，同樣有 128 個位置，NVM SQ 需要 8192 bytes，而 CQ 只需要 2048 bytes。兩者的 QSIZE 雖然都是 127，每筆 entry 的大小卻不同，因此不能只憑 QSIZE 相同，就把所需的記憶體容量算成同一個數值。</p>
 </section>
 </div>
@@ -168,7 +168,7 @@ last_modified_at: 2026-10-23
 <section class="qa-section" id="q-015-s-01" data-answer-section="1"><h3><span>1.</span> 先區分是哪一種失敗</h3>
 <span class="qa-anchor" id="q-015-a-02"></span><p>這裡檢查的是透過 Admin Queue 提交的 Create I/O Queue 命令。判斷 QID 是否重複時，SQ 與 CQ 各有自己的識別空間，必須在相同類型內比較。</p>
 <span class="qa-anchor" id="q-015-a-04"></span><p>重點檢查 QID、CQID、QSIZE 與 IV，這些參數位於 CDW10／11。同時確認 IOSQES 與 IOCQES 已正確初始化，避免將 entry 大小設定錯誤誤認為個別 queue 參數的問題。</p>
-<span class="qa-anchor" id="q-015-a-07"></span><p>同類 QID 重複／0／超範圍：1/01h；QSIZE=0 或超支援：1/02h；合法範圍內 CQID 未建立：1/00h；CQID=0／超界：1/01h；非法 IV：1/08h。多個錯誤同時成立時，除特別規定外由實作選擇回哪個。</p>
+<span class="qa-anchor" id="q-015-a-07"></span><p>同類 QID 重複／0／超範圍，規格建議回 1/01h；QSIZE=0 或超支援，建議回 1/02h。Create SQ 的 CQID 若在合法範圍內但尚未建立，必須回 1/00h；CQID=0 或超界則必須回 1/01h。IV 超過 Transport 1.4 Figure 7 所述範圍時，建議回 1/08h。多個錯誤同時成立時，除特別規定外由實作選擇回哪個。</p>
 </section>
 <section class="qa-section" id="q-015-s-02" data-answer-section="2"><h3><span>2.</span> 用哪些資料確認原因</h3>
 <span class="qa-anchor" id="q-015-a-03"></span><p>CAP.MQES、Number of Queues 回覆和 PCIe interrupt 配置是合法範圍的依據。</p>
@@ -180,10 +180,10 @@ last_modified_at: 2026-10-23
 <span class="qa-anchor" id="q-015-a-17"></span><p>先確認測例確實只有一個非法條件，再核對預期的 SCT。這類命令專用錯誤通常要以 SCT=1 搭配 SC 判讀，不能只比較 SC 數字。</p>
 </section>
 </div>
-<p class="qa-citations">來源：<a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-irq">PCIe Transport 1.4 §3.5</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+<p class="qa-citations">來源：<a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-irq">PCIe Transport 1.4 §3.5</a> · <a href="#ref-pcie">PCIe Transport 1.4 §3.1–3.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-015-a-08"></span><span class="qa-anchor" id="q-015-a-09"></span><span class="qa-anchor" id="q-015-a-10"></span><span class="qa-anchor" id="q-015-a-11"></span><span class="qa-anchor" id="q-015-a-12"></span><span class="qa-anchor" id="q-015-a-13"></span><span class="qa-anchor" id="q-015-a-14"></span><span class="qa-anchor" id="q-015-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
-<p class="qa-citations">來源：<a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-irq">PCIe Transport 1.4 §3.5</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+<p class="qa-citations">來源：<a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-irq">PCIe Transport 1.4 §3.5</a> · <a href="#ref-pcie">PCIe Transport 1.4 §3.1–3.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-016" data-question="16" data-answer-kind="fields"><h2><a class="qa-qid" href="#q-016">Q16</a> Number of Queues Feature 回傳的數值與實際可建立的 Queue 數量有什麼關係？</h2>
 
@@ -348,6 +348,7 @@ last_modified_at: 2026-10-23
 <li id="ref-create"><strong>Base 2.4 · §5.3.1–5.3.2</strong><br>文件頁 527–531 · PDF 553–557 · Figure 571–579</li>
 <li id="ref-delete"><strong>Base 2.4 · §5.3.3–5.3.4</strong><br>文件頁 531–532 · PDF 557–558 · Figure 580–583</li>
 <li id="ref-fatal"><strong>Base 2.4 · §9.1–9.6.1</strong><br>文件頁 825–826 · PDF 851–852</li>
+<li id="ref-pcie"><strong>PCIe Transport 1.4 · §3.1–3.4</strong><br>文件頁 9–13 · PDF 9–13 · Figure 3–8</li>
 <li id="ref-irq"><strong>PCIe Transport 1.4 · §3.5</strong><br>文件頁 13–16 · PDF 13–16 · Figure 9</li>
 </ul><h3>需要看欄位圖時</h3><p>以下連結可開啟對應的圖表教學，查閱欄位及判讀方式。每張圖保留固定的教學位置，方便之後反覆查詢。</p><ul>
 <li><a href="/nvme/figure-reference/command/zh-tw/#figure-b101">Base 2.4 Figure 101 · Completion Queue Entry: Status Field</a></li>

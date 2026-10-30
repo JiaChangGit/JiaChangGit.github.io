@@ -169,6 +169,7 @@
         "create",
         "status",
         "irq",
+        "pcie",
         "reset",
         "error",
         "aer",

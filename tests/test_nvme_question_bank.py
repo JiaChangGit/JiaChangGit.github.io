@@ -97,6 +97,16 @@ class QuestionBankTests(unittest.TestCase):
         for answer in q['answers'][9]:
             self.assertIn('Asynchronous Event Request',answer)
 
+    def test_create_queue_error_recommendations_and_requirements_differ(self):
+        byid={q['id']:q for q in QUESTIONS}
+        zh,en=byid[15]['answers'][7]
+        self.assertIn('建議回 1/01h',zh)
+        self.assertIn('必須回 1/00h',zh)
+        self.assertIn('should return 1/01h',en)
+        self.assertIn('shall return 1/00h',en)
+        self.assertIn('Transport 1.4 Figure 7',en)
+        self.assertIn('建議回報 Invalid Queue Size',byid[11]['answers'][7][0])
+
     def test_apst_field_encoding_and_units(self):
         raw=(2000<<8)|(3<<3)
         self.assertEqual(raw,0x0007D018)

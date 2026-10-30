@@ -74,7 +74,7 @@ last_modified_at: 2026-10-23
 <span class="qa-anchor" id="q-011-a-06"></span><p>Minimum size is two slots; Admin maximum is 4096 and I/O maximum min(65536, MQES+1). One slot remains unavailable to distinguish full from empty.</p>
 </section>
 <section class="qa-section" id="q-011-s-03" data-answer-section="3"><h3><span>3.</span> Conditions that change the interpretation</h3>
-<span class="qa-anchor" id="q-011-a-07"></span><p>Invalid I/O sizes map to Invalid Queue Size (1/02h); nonzero PRP offsets should return PRP Offset Invalid (0/13h). Apply the specific SQ/CQ requirement for PC violating CQR.</p>
+<span class="qa-anchor" id="q-011-a-07"></span><p>For zero or unsupported I/O QSIZE, the specification recommends Invalid Queue Size (1/02h); a nonzero PRP offset should return PRP Offset Invalid (0/13h). Apply the specific SQ/CQ requirement for PC violating CQR.</p>
 <span class="qa-anchor" id="q-011-a-16"></span><p>A 128-slot NVM SQ needs 8192 bytes, its CQ 2048 bytes. Equal QSIZE=127 does not imply equal byte allocations.</p>
 </section>
 </div>
@@ -168,7 +168,7 @@ last_modified_at: 2026-10-23
 <section class="qa-section" id="q-015-s-01" data-answer-section="1"><h3><span>1.</span> Distinguish the failure conditions</h3>
 <span class="qa-anchor" id="q-015-a-02"></span><p>This concerns Create I/O Queue Admin commands. Duplicate QIDs are checked within the SQ or CQ identifier space respectively.</p>
 <span class="qa-anchor" id="q-015-a-04"></span><p>Inspect QID, CQID, QSIZE and IV, and initialization of IOSQES/IOCQES. The relevant parameters are in CDW10/11.</p>
-<span class="qa-anchor" id="q-015-a-07"></span><p>Duplicate/zero/out-of-range QID: 1/01h. Zero/unsupported QSIZE: 1/02h. In-range uncreated CQID: 1/00h. Zero/out-of-range CQID: 1/01h. Invalid IV: 1/08h. Unless specified otherwise, implementations choose among simultaneously applicable errors.</p>
+<span class="qa-anchor" id="q-015-a-07"></span><p>Duplicate/zero/out-of-range QID should return 1/01h; zero/unsupported QSIZE should return 1/02h. Create SQ shall return 1/00h for an in-range uncreated CQID, or 1/01h for zero/out-of-range CQID. An IV exceeding the range in Transport 1.4 Figure 7 should return 1/08h. Unless specified otherwise, implementations choose among simultaneously applicable errors.</p>
 </section>
 <section class="qa-section" id="q-015-s-02" data-answer-section="2"><h3><span>2.</span> Establish the cause from evidence</h3>
 <span class="qa-anchor" id="q-015-a-03"></span><p>CAP.MQES, Number of Queues allocations and PCIe interrupt configuration establish legal ranges.</p>
@@ -180,10 +180,10 @@ last_modified_at: 2026-10-23
 <span class="qa-anchor" id="q-015-a-17"></span><p>First check that only one field is invalid and the expected SCT is 1, rather than comparing SC alone.</p>
 </section>
 </div>
-<p class="qa-citations">Sources: <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-irq">PCIe Transport 1.4 §3.5</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+<p class="qa-citations">Sources: <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-irq">PCIe Transport 1.4 §3.5</a> · <a href="#ref-pcie">PCIe Transport 1.4 §3.1–3.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 <span class="qa-anchor" id="q-015-a-08"></span><span class="qa-anchor" id="q-015-a-09"></span><span class="qa-anchor" id="q-015-a-10"></span><span class="qa-anchor" id="q-015-a-11"></span><span class="qa-anchor" id="q-015-a-12"></span><span class="qa-anchor" id="q-015-a-13"></span><span class="qa-anchor" id="q-015-a-14"></span><span class="qa-anchor" id="q-015-a-15"></span>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
-<p class="qa-citations">Sources: <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-irq">PCIe Transport 1.4 §3.5</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+<p class="qa-citations">Sources: <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-irq">PCIe Transport 1.4 §3.5</a> · <a href="#ref-pcie">PCIe Transport 1.4 §3.1–3.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-016" data-question="16" data-answer-kind="fields"><h2><a class="qa-qid" href="#q-016">Q16</a> How do Number of Queues results relate to queues that can actually be created?</h2>
 
@@ -348,6 +348,7 @@ last_modified_at: 2026-10-23
 <li id="ref-create"><strong>Base 2.4 · §5.3.1–5.3.2</strong><br>Printed pages 527–531 · PDF 553–557 · Figure 571–579</li>
 <li id="ref-delete"><strong>Base 2.4 · §5.3.3–5.3.4</strong><br>Printed pages 531–532 · PDF 557–558 · Figure 580–583</li>
 <li id="ref-fatal"><strong>Base 2.4 · §9.1–9.6.1</strong><br>Printed pages 825–826 · PDF 851–852</li>
+<li id="ref-pcie"><strong>PCIe Transport 1.4 · §3.1–3.4</strong><br>Printed pages 9–13 · PDF 9–13 · Figure 3–8</li>
 <li id="ref-irq"><strong>PCIe Transport 1.4 · §3.5</strong><br>Printed pages 13–16 · PDF 13–16 · Figure 9</li>
 </ul><h3>When you need a field guide</h3><p>Existing figure explanations have canonical locations; use these links instead of duplicating the same guide.</p><ul>
 <li><a href="/nvme/figure-reference/command/en/#figure-b101">Base 2.4 Figure 101 · Completion Queue Entry: Status Field</a></li>
