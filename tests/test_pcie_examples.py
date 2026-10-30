@@ -133,6 +133,20 @@ class PacketLayoutTest(unittest.TestCase):
             self.assertIn(f'{before:04X}h', match.group(1))
             self.assertIn(f'{after:04X}h', match.group(1))
 
+    def test_flit_configuration_segment_capture_example(self):
+        segment, dsv, first_be, last_be = 0x02, 1, 0xf, 0
+        ohc_a3 = bytes([segment, 0, dsv << 7, (last_be << 4) | first_be])
+        self.assertEqual(ohc_a3.hex(' ').upper(), '02 00 80 0F')
+        self.assertEqual(0x200 + 0x0c, 0x20c)
+        course = Path(__file__).resolve().parents[1] / '.ai' / 'pcie-course'
+        for suffix in ('zh.html', 'post.zh.html', 'post.en.html'):
+            text = (course / ('chapter3.' + suffix)).read_text(encoding='utf-8')
+            match = re.search(r'<section id="segment-capture">(.*?)</section>', text, re.S)
+            self.assertIsNotNone(match, suffix)
+            self.assertIn(ohc_a3.hex(' ').upper(), match.group(1))
+            self.assertIn('20Ch', match.group(1))
+            self.assertIn('OHC-A5', match.group(1))
+
     def test_tag_table_ranges_follow_size_and_path(self):
         course = Path(__file__).resolve().parents[1] / '.ai' / 'pcie-course'
         range_5 = f'0–{(1 << 5) - 1}'

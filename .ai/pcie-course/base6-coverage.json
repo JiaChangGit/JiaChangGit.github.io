@@ -614,10 +614,12 @@
       "status": "guided",
       "existing_claim_candidates": [
         "PCIE-CH5-MODE-001",
-        "PCIE-CH1-RIDSEGMENT-001"
+        "PCIE-CH1-RIDSEGMENT-001",
+        "PCIE-CH3-SEGMENT-CAPTURE-001"
       ],
       "teaching_locations": [
-        "chapter-14.html"
+        "chapter-14.html",
+        "chapter-3.html#segment-capture"
       ],
       "review_note": "Read the cited pages and authored a connected explanation and worked example. Subsections require their own coverage review."
     },
@@ -784,15 +786,17 @@
         "PCIE-CH5-TAG-RANGE-001",
         "PCIE-CH5-TAG-ALIAS-001",
         "PCIE-CH3-RID-CAPTURE-001",
-        "PCIE-CH26-ARI-CAPTURE-001"
+        "PCIE-CH26-ARI-CAPTURE-001",
+        "PCIE-CH3-SEGMENT-CAPTURE-001"
       ],
       "teaching_locations": [
         "chapter-5.html#tag-range",
         "chapter-5.html#tag-alias",
         "chapter-3.html#requester-capture",
-        "chapter-26.html#ari-capture"
+        "chapter-26.html#ari-capture",
+        "chapter-3.html#segment-capture"
       ],
-      "review_note": "已部分帶讀 Transaction ID、Tag 範圍與別名、一般及 ARI Requester ID 擷取；尚須核對 Segment、Shadow／Phantom Function 等其餘規則，暫不列為完整帶讀。"
+      "review_note": "已部分帶讀 Transaction ID、Tag 範圍與別名、一般及 ARI Requester ID 與 Flit Segment 擷取；尚須核對 Shadow／Phantom Function 等其餘規則，暫不列為完整帶讀。"
     },
     {
       "section": "2.2.6.3",
@@ -10727,9 +10731,13 @@
       "pdf_page": 1076,
       "planned_chapter": 22,
       "status": "unreviewed",
-      "existing_claim_candidates": [],
-      "teaching_locations": [],
-      "review_note": "Candidate claim matches and a planned chapter are not proof of complete teaching coverage."
+      "existing_claim_candidates": [
+        "PCIE-CH3-SEGMENT-CAPTURE-001"
+      ],
+      "teaching_locations": [
+        "chapter-3.html#segment-capture"
+      ],
+      "review_note": "已部分帶讀 Segment Captured；Initial Link Width 和 Remote L0p Supported 等其餘欄位仍須核對，暫不列為完整帶讀。"
     },
     {
       "section": "7.7.10",

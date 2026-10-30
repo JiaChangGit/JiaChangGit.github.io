@@ -491,6 +491,64 @@
       "tables": [],
       "status": "verified",
       "verified_on": "2026-10-30"
+    },
+    {
+      "id": "PCIE-CH3-SEGMENT-CAPTURE-001",
+      "claim": "Root Port 以 Flit Mode 傳送 Configuration Request 時須附含有效 Destination Segment 的 OHC-A3；Function 成功完成 Flit Type 0 Configuration Write 時擷取 Segment，Segment Captured 反映 DSV；Non-Flit Configuration Write 清除此位元。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.1.2",
+        "2.2.6.2",
+        "2.2.9.2",
+        "7.7.9.1",
+        "7.7.9.4"
+      ],
+      "document_pages": [
+        123,
+        131,
+        132,
+        133,
+        134,
+        135,
+        140,
+        157,
+        199,
+        1072,
+        1073,
+        1076,
+        1077
+      ],
+      "pdf_pages": [
+        123,
+        131,
+        132,
+        133,
+        134,
+        135,
+        140,
+        157,
+        199,
+        1072,
+        1073,
+        1076,
+        1077
+      ],
+      "figures": [
+        "2-6",
+        "2-9",
+        "2-11",
+        "7-121",
+        "7-124"
+      ],
+      "tables": [
+        "2-6",
+        "7-107",
+        "7-110"
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-30"
     }
   ]
 }
