@@ -107,6 +107,15 @@ class QuestionBankTests(unittest.TestCase):
         self.assertIn('Transport 1.4 Figure 7',en)
         self.assertIn('建議回報 Invalid Queue Size',byid[11]['answers'][7][0])
 
+    def test_number_of_queues_distinguishes_supported_capabilities(self):
+        q=next(q for q in QUESTIONS if q['id']==16)
+        for answer in q['answers'][3]:
+            self.assertIn('011b',answer)
+            self.assertIn('Supported Capabilities',answer)
+        zh,en=q['answers'][5]
+        self.assertIn('規格建議',zh)
+        self.assertIn('specification recommends',en)
+
     def test_apst_field_encoding_and_units(self):
         raw=(2000<<8)|(3<<3)
         self.assertEqual(raw,0x0007D018)

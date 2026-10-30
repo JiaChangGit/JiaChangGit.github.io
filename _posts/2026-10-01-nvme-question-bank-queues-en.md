@@ -191,11 +191,11 @@ last_modified_at: 2026-10-23
 <p class="qa-answer-lead" id="q-016-a-01">Obtain SQ/CQ allocations before creating queues. Allocation is neither an instantiated queue nor queue depth.</p><div class="qa-sections">
 <section class="qa-section" id="q-016-s-01" data-answer-section="1"><h3><span>1.</span> Establish the source and scope</h3>
 <span class="qa-anchor" id="q-016-a-02"></span><p>FID 07h has controller scope and excludes Admin SQ/CQ.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>FID</dt><dd>Feature Identifier</dd></div></dl>
-<span class="qa-anchor" id="q-016-a-03"></span><p>Use Set Features FID 07h CQE DW0 for actual allocations, with Get Features readback. CAP.MQES separately limits per-queue depth.</p>
+<span class="qa-anchor" id="q-016-a-03"></span><p>A successful Set Features FID 07h returns allocations in CQE DW0. A successful Get Features with SEL other than 011b also returns them; SEL=011b returns Supported Capabilities, not allocation counts. CAP.MQES separately limits per-queue depth.</p>
 </section>
 <section class="qa-section" id="q-016-s-02" data-answer-section="2"><h3><span>2.</span> Fields, units and worked interpretation</h3>
 <span class="qa-anchor" id="q-016-a-04"></span><p>Requested NSQR/NCQR and returned NSQA/NCQA are zero-based. Allocations may be smaller or larger than requested because of allocation units.</p>
-<span class="qa-anchor" id="q-016-a-05"></span><p>Set it after CLR and before creating any I/O queue. The first successful setting fixes allocation until the next CLR.</p>
+<span class="qa-anchor" id="q-016-a-05"></span><p>If the host sets Number of Queues, the specification recommends doing so during initialization before creating any I/O queue. The first successful Set after Controller Level Reset (CLR) allocates the queues, and that allocation remains fixed until the next CLR.</p>
 <span class="qa-anchor" id="q-016-a-06"></span><p>DW0=00030007h allocates four CQs and eight SQs. Each still requires Create, with the respective QID ranges.</p>
 </section>
 <section class="qa-section" id="q-016-s-03" data-answer-section="3"><h3><span>3.</span> Checks across reset or power loss</h3>

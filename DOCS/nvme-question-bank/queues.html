@@ -367,11 +367,11 @@ html[data-theme="dark"] .spec-teaching[data-spec-series="nvme"] { --st-accent:#7
 <p class="qa-answer-lead" id="q-016-a-01">Host 先向 controller 取得 I/O SQ 與 CQ 的數量配額，再依配額建立 queue。配額只說明可建立的數量，既不代表 queue 已建立，也不代表每條 queue 的深度。</p><div class="qa-sections">
 <section class="qa-section" id="q-016-s-01" data-answer-section="1"><h3><span>1.</span> 先確認資料的來源與範圍</h3>
 <span class="qa-anchor" id="q-016-a-02"></span><p>FID 07h 作用於 controller，不包含 Admin SQ／CQ。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>FID</dt><dd>Feature Identifier，功能識別碼</dd></div></dl>
-<span class="qa-anchor" id="q-016-a-03"></span><p>實際分配數量應以 Set Features FID 07h 成功回覆的 CQE DW0 為準，之後也可用 Get Features 讀回。CAP.MQES 則回答另一個問題：每條 I/O Queue 最多可以有幾個 entry。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>FID</dt><dd>Feature Identifier，功能識別碼</dd></div></dl>
+<span class="qa-anchor" id="q-016-a-03"></span><p>實際分配數量可從 Set Features FID 07h 的成功回覆 CQE DW0 取得；成功的 Get Features 若 SEL 不是 011b，也會在 DW0 回報分配數量。SEL=011b 查的是 Supported Capabilities，不能當成 queue 配額。CAP.MQES 則回答另一個問題：每條 I/O Queue 最多可以有幾個 entry。</p><dl class="st-terms" aria-label="本段名詞"><div><dt>FID</dt><dd>Feature Identifier，功能識別碼</dd></div></dl>
 </section>
 <section class="qa-section" id="q-016-s-02" data-answer-section="2"><h3><span>2.</span> 欄位、單位與判讀例子</h3>
 <span class="qa-anchor" id="q-016-a-04"></span><p>CDW11 的 NSQR／NCQR 與 DW0 的 NSQA／NCQA 都是 zero-based；回覆可能比要求少，也可能因配置單位而較多。</p>
-<span class="qa-anchor" id="q-016-a-05"></span><p>Host 必須在 CLR 之後、任何 I/O Queue 建立之前設定 Number of Queues。第一筆成功的 Set 決定這一輪的配額；直到下一次 CLR 發生前，分配數量都不再改變。</p>
+<span class="qa-anchor" id="q-016-a-05"></span><p>Host 若要設定 Number of Queues，規格建議在初始化期間、建立任何 I/O Queue 之前送出。Controller Level Reset（CLR）後第一筆成功的 Set 會配置這一輪的 queue 數量；直到下一次 CLR 發生前，分配數量都不再改變。</p>
 <span class="qa-anchor" id="q-016-a-06"></span><p>例如，DW0=00030007h 表示分配了 4 個 CQ 與 8 個 SQ 的配額。Host 仍須逐一送出 Create 才能建立它們，而 CQ、SQ 的合法 QID 範圍分別依各自配額判斷。</p>
 </section>
 <section class="qa-section" id="q-016-s-03" data-answer-section="3"><h3><span>3.</span> 重設或斷電時，要確認什麼</h3>
