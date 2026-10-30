@@ -58,6 +58,11 @@ jobs:
         env:
           JEKYLL_ENV: production
 
+      - name: Remove scoped authoring markers from public pages
+        run: |
+          python3 -B scripts/clean_public_teaching.py --site-dir _site
+          python3 -B scripts/clean_public_teaching.py --site-dir _site --check
+
       - name: Verify PCIe pages were included
         run: |
           python3 -B scripts/validate_public_teaching.py --site-dir _site
