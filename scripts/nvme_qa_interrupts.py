@@ -38,12 +38,12 @@ CQE 仍以 SQID、CID 識別命令，中斷訊息不攜帶每筆命令的完整�
 ''')
 q(288,"Interrupt Coalescing 的 Threshold 與 Time 如何作用？ || How do coalescing threshold and time work?",'''
 合併多筆完成通知可減少 Host 中斷開銷，但可能增加通知延遲；CQE 本身仍可先寫入。 || Aggregation reduces host overhead at possible notification-latency cost without requiring delayed CQE posting.
-FID08h 僅適用 I/O queues，不適用 Admin CQ。 || FID08h applies to I/O queues, not Admin CQ.
-Get／Set FID08h 取得或設定 TIME 與 THR；再查各 vector 的 FID09h.CD。 || Read/configure TIME/THR and check each vector’s coalescing-disable bit.
-TIME[15:8] 單位100µs；THR[7:0] 是 zero-based 建議最小完成數。 || TIME is in100 µs units and THR is a zero-based recommended completion count.
+FID08h 僅適用 I/O queues，不適用 Admin CQ。THR 的門檻以 vector 為單位；TIME 則可由 controller 實作為個別 vector 計時，或跨所有 vectors 套用。 || FID08h applies to I/O queues, not Admin CQ. THR is a per-vector threshold; a controller may apply TIME per vector or across all vectors.
+用 Get／Set FID08h 取得或設定 TIME 與 THR；Get 的 SEL=011b 回覆的是 Supported Capabilities，不是這兩個值。再查各 vector 的 FID09h.CD。 || Use Get/Set FID08h for TIME and THR; Get with SEL=011b reports Supported Capabilities instead of those values. Also inspect each vector's FID09h.CD.
+先讀 Base 2.4 Figure 543：TIME[15:8] 的單位是 100 µs；THR[7:0] 是 zero-based 的建議最小完成數。再讀 PCIe Transport 1.4 §3.5，確認這兩個值對實作的約束。 || Read Base 2.4 Figure 543: TIME[15:8] uses 100 µs units and THR[7:0] is a zero-based recommended minimum completion count. Then read PCIe Transport 1.4 §3.5 for the implementation latitude.
 先確保兩欄非零且 CD=0，再以固定 workload 比較通知與 CQE 時間。 || Establish nonzero settings and CD0 before comparing notification timing under a fixed workload.
-TIME=5、THR=7 表示500µs與8筆完成的建議值；不是 controller 必須恰好等滿兩者才發通知。 || TIME5/THR7 recommends500 µs and 8 completions, not waiting for both exact values.
-PCIe 規範允許實作選擇合併算法，甚至不實作合併；不能因提早或稍晚於建議值就單獨判違規。 || PCIe permits implementation-specific aggregation, including none; deviation from recommended timing alone is not a violation.
+【模擬資料】TIME=5、THR=7 分別表示 500 µs 與每個 vector 8 筆 CQE 的建議值。假設兩條 CQ 共用同一 vector，且分別出現 3 筆與 5 筆完成，分析門檻時需一起看該 vector 的完成情況；通知不保證恰好在第 8 筆或 500 µs 發生。另一個 vector 的 TIME 如何計算，則需確認 controller 採每個 vector 計時，還是跨所有 vectors 套用。 || Simulated data: TIME=5 and THR=7 recommend 500 µs and eight CQEs per vector. If two CQs sharing one vector receive three and five completions, consider both when analyzing that vector's threshold; notification is not guaranteed exactly at the eighth completion or at 500 µs. For another vector, determine whether this controller applies TIME per vector or across all vectors.
+PCIe Transport 1.4 要求 PCIe controller 支援相關 Get／Set Features 命令，但允許自行選擇合併算法，甚至不實作合併；不能因通知早於或晚於建議值，就單獨判定違規。 || PCIe Transport 1.4 requires support for the related Get/Set Features commands, but leaves the aggregation algorithm implementation-specific, including no aggregation. Notification before or after a recommended value alone is not a violation.
 Host 更新 CQ Head 可讓計時或門檻重新開始；持續處理某 vector 的 workload 可能持續延後新通知。 || CQ-head updates may restart aggregation and ongoing servicing can continually postpone another notification.
 先確認測到的是 CQE 寫入延遲，還是中斷通知延遲。 || First distinguish completion posting from interrupt delay.
 ''')

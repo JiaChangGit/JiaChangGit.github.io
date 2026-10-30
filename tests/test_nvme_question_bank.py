@@ -157,6 +157,17 @@ class QuestionBankTests(unittest.TestCase):
             if 'question-bank-doorbells-' in path.name or path.name=='doorbells.html':
                 self.assertIn('最後一次寫入' if 'en.md' not in path.name else 'final write',content)
 
+    def test_coalescing_time_scope_and_supported_capabilities_are_distinct(self):
+        q=next(q for q in QUESTIONS if q['id']==288)
+        for zh,en in (q['answers'][2],q['answers'][3],q['answers'][6]):
+            self.assertTrue(zh and en)
+        self.assertIn('跨所有 vectors',q['answers'][2][0])
+        self.assertIn('across all vectors',q['answers'][2][1])
+        self.assertIn('SEL=011b',q['answers'][3][0])
+        self.assertIn('Supported Capabilities',q['answers'][3][1])
+        self.assertIn('8 筆',q['answers'][6][0])
+        self.assertIn('eight CQEs per vector',q['answers'][6][1])
+
     def test_apst_field_encoding_and_units(self):
         raw=(2000<<8)|(3<<3)
         self.assertEqual(raw,0x0007D018)

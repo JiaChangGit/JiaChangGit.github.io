@@ -87,16 +87,16 @@ last_modified_at: 2026-10-23
 <details open class="qa-answer" id="q-288-answer"><summary>Follow the explanation</summary>
 <p class="qa-answer-lead" id="q-288-a-01">Aggregation reduces host overhead at possible notification-latency cost without requiring delayed CQE posting.</p><div class="qa-sections">
 <section class="qa-section" id="q-288-s-01" data-answer-section="1"><h3><span>1.</span> Establish the source and scope</h3>
-<span class="qa-anchor" id="q-288-a-02"></span><p>FID 08h applies to I/O queues, not Admin CQ.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>FID</dt><dd>Feature Identifier</dd></div></dl>
-<span class="qa-anchor" id="q-288-a-03"></span><p>Read/configure TIME/THR and check each vector’s coalescing-disable bit.</p>
+<span class="qa-anchor" id="q-288-a-02"></span><p>FID 08h applies to I/O queues, not Admin CQ. THR is a per-vector threshold; a controller may apply TIME per vector or across all vectors.</p><dl class="st-terms" aria-label="Terms in this passage"><div><dt>FID</dt><dd>Feature Identifier</dd></div></dl>
+<span class="qa-anchor" id="q-288-a-03"></span><p>Use Get/Set FID 08h for TIME and THR; Get with SEL=011b reports Supported Capabilities instead of those values. Also inspect each vector&#x27;s FID 09h.CD.</p>
 </section>
 <section class="qa-section" id="q-288-s-02" data-answer-section="2"><h3><span>2.</span> Fields, units and worked interpretation</h3>
-<span class="qa-anchor" id="q-288-a-04"></span><p>TIME is in 100 µs units and THR is a zero-based recommended completion count.</p>
+<span class="qa-anchor" id="q-288-a-04"></span><p>Read Base 2.4 Figure 543: TIME[15:8] uses 100 µs units and THR[7:0] is a zero-based recommended minimum completion count. Then read PCIe Transport 1.4 §3.5 for the implementation latitude.</p>
 <span class="qa-anchor" id="q-288-a-05"></span><p>Establish nonzero settings and CD0 before comparing notification timing under a fixed workload.</p>
-<span class="qa-anchor" id="q-288-a-06"></span><p>TIME5/THR7 recommends 500 µs and 8 completions, not waiting for both exact values.</p>
+<span class="qa-anchor" id="q-288-a-06"></span><p>Simulated data: TIME=5 and THR=7 recommend 500 µs and eight CQEs per vector. If two CQs sharing one vector receive three and five completions, consider both when analyzing that vector&#x27;s threshold; notification is not guaranteed exactly at the eighth completion or at 500 µs. For another vector, determine whether this controller applies TIME per vector or across all vectors.</p>
 </section>
 <section class="qa-section" id="q-288-s-03" data-answer-section="3"><h3><span>3.</span> Conditions that change the interpretation</h3>
-<span class="qa-anchor" id="q-288-a-07"></span><p>PCIe permits implementation-specific aggregation, including none; deviation from recommended timing alone is not a violation.</p>
+<span class="qa-anchor" id="q-288-a-07"></span><p>PCIe Transport 1.4 requires support for the related Get/Set Features commands, but leaves the aggregation algorithm implementation-specific, including no aggregation. Notification before or after a recommended value alone is not a violation.</p>
 <span class="qa-anchor" id="q-288-a-16"></span><p>CQ-head updates may restart aggregation and ongoing servicing can continually postpone another notification.</p>
 </section>
 </div>

@@ -87,16 +87,16 @@ last_modified_at: 2026-10-23
 <details open class="qa-answer" id="q-288-answer"><summary>跟著解說理解</summary>
 <p class="qa-answer-lead" id="q-288-a-01">合併多筆完成通知可減少 Host 中斷開銷，但可能增加通知延遲；CQE 本身仍可先寫入。</p><div class="qa-sections">
 <section class="qa-section" id="q-288-s-01" data-answer-section="1"><h3><span>1.</span> 先確認資料的來源與範圍</h3>
-<span class="qa-anchor" id="q-288-a-02"></span><p>FID08h 僅適用 I/O queues，不適用 Admin CQ。</p>
-<span class="qa-anchor" id="q-288-a-03"></span><p>Get／Set FID08h 取得或設定 TIME 與 THR；再查各 vector 的 FID09h.CD。</p>
+<span class="qa-anchor" id="q-288-a-02"></span><p>FID08h 僅適用 I/O queues，不適用 Admin CQ。THR 的門檻以 vector 為單位；TIME 則可由 controller 實作為個別 vector 計時，或跨所有 vectors 套用。</p>
+<span class="qa-anchor" id="q-288-a-03"></span><p>用 Get／Set FID08h 取得或設定 TIME 與 THR；Get 的 SEL=011b 回覆的是 Supported Capabilities，不是這兩個值。再查各 vector 的 FID09h.CD。</p>
 </section>
 <section class="qa-section" id="q-288-s-02" data-answer-section="2"><h3><span>2.</span> 欄位、單位與判讀例子</h3>
-<span class="qa-anchor" id="q-288-a-04"></span><p>TIME[15:8] 單位 100µs；THR[7:0] 是 zero-based 建議最小完成數。</p>
+<span class="qa-anchor" id="q-288-a-04"></span><p>先讀 Base 2.4 Figure 543：TIME[15:8] 的單位是 100 µs；THR[7:0] 是 zero-based 的建議最小完成數。再讀 PCIe Transport 1.4 §3.5，確認這兩個值對實作的約束。</p>
 <span class="qa-anchor" id="q-288-a-05"></span><p>先確保兩欄非零且 CD=0，再以固定 workload 比較通知與 CQE 時間。</p>
-<span class="qa-anchor" id="q-288-a-06"></span><p>TIME=5、THR=7 表示 500µs 與 8 筆完成的建議值；不是 controller 必須恰好等滿兩者才發通知。</p>
+<span class="qa-anchor" id="q-288-a-06"></span><p>【模擬資料】TIME=5、THR=7 分別表示 500 µs 與每個 vector 8 筆 CQE 的建議值。假設兩條 CQ 共用同一 vector，且分別出現 3 筆與 5 筆完成，分析門檻時需一起看該 vector 的完成情況；通知不保證恰好在第 8 筆或 500 µs 發生。另一個 vector 的 TIME 如何計算，則需確認 controller 採每個 vector 計時，還是跨所有 vectors 套用。</p>
 </section>
 <section class="qa-section" id="q-288-s-03" data-answer-section="3"><h3><span>3.</span> 判讀時要保留的條件</h3>
-<span class="qa-anchor" id="q-288-a-07"></span><p>PCIe 規範允許實作選擇合併算法，甚至不實作合併；不能因提早或稍晚於建議值就單獨判違規。</p>
+<span class="qa-anchor" id="q-288-a-07"></span><p>PCIe Transport 1.4 要求 PCIe controller 支援相關 Get／Set Features 命令，但允許自行選擇合併算法，甚至不實作合併；不能因通知早於或晚於建議值，就單獨判定違規。</p>
 <span class="qa-anchor" id="q-288-a-16"></span><p>Host 更新 CQ Head 可讓計時或門檻重新開始；持續處理某 vector 的 workload 可能持續延後新通知。</p>
 </section>
 </div>
